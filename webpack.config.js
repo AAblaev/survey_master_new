@@ -1,5 +1,8 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = ({ mode } = { mode: "production" }) => {
   console.log(`mode is: ${mode}`);
@@ -33,7 +36,7 @@ module.exports = ({ mode } = { mode: "production" }) => {
         {
           test: /\.css$/,
           exclude: /node_modules/,
-          use: "css-loader",
+          use: [{ loader: MiniCssExtractPlugin.loader }, "css-loader"],
         },
       ],
     },
@@ -43,6 +46,18 @@ module.exports = ({ mode } = { mode: "production" }) => {
     plugins: [
       new HtmlWebpackPlugin({
         template: "./public/index.html",
+      }),
+      new CleanWebpackPlugin(),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, "public/favicon.ico"),
+            to: path.resolve(__dirname, "dist"),
+          },
+        ],
+      }),
+      new MiniCssExtractPlugin({
+        filename: `[name].css`,
       }),
     ],
   };
