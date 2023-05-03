@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import { call, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { IData } from "../../types";
+import { fakeData } from "../../utils/fakeData";
 import { fethData } from "../api";
 import { setNewData } from "../redux/actions";
 
@@ -18,13 +19,10 @@ function* fetchSurveyData() {
   // }
 
   try {
-    // const result: IResult = yield call(() => fethData(surveyID!));
+    // const result: IFetchResult = yield call(() => fethData());
+    // yield put(setNewData(result.data));
 
-    const result: IFetchResult = yield call(() => fethData());
-
-    console.log("result", result);
-    // const state: IState = getInitState(result.data, paramsObj);
-    yield put(setNewData(result.data));
+    yield put(setNewData(fakeData));
   } catch (e) {
     const error = e as AxiosError;
     // yield put(setError({ error: { status: true, message: error.message } }));

@@ -13,6 +13,12 @@ export type IData = {
   endDate: string;
   closeDate: string;
   isLimitTimeForCompletion: boolean;
+  isShowGreetingsPage: boolean;
+  greetingsPage: string;
+  isShowCompletionPage: boolean;
+  isShowDisqualificationPage: boolean;
+  disqualificationPage: string;
+  completionPage: string;
   limitTime: number;
   pages: IPage[];
 };
@@ -32,7 +38,7 @@ export type IQuestion = {
   type: number; //???
   title: string;
   order: number;
-  comment: string;
+  comment: string | null;
   branchRules: IBranchRule[];
   quoteRules: IQuoteRule[];
   visibilityRules: IVisibilityRule[];
@@ -60,6 +66,17 @@ export type IConfig = {
   timeLimit: number;
   title: string;
   options?: IOption[];
+  //
+  isLimited?: boolean;
+  isLimitedValue?: boolean;
+  limit?: {
+    min: number;
+    max: number;
+  };
+  limitValue?: {
+    min: number;
+    max: number;
+  };
 };
 
 export type IDataType =
@@ -75,7 +92,8 @@ export type IDataType =
   | "order"
   | "ratingscale"
   | "paircompare"
-  | "complex";
+  | "complex"
+  | "default";
 
 export type IAnswer = any;
 export type IBranchRule = {};
@@ -106,6 +124,8 @@ export type IUserAnswer = {
   [key: string]: IAnswer[];
 };
 
+export type ISlideMoveDirection = "left-to-right" | "right-to-left";
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -113,7 +133,7 @@ export type IState = {
   location: ILocation;
   params: IParams;
   userAnswers: IUserAnswer;
-  // slideMoveDirection: ISlideMoveDirection;
+  slideMoveDirection: ISlideMoveDirection;
   // relocate to section
   // pageQuestionCount: number;
 };

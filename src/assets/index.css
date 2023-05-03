@@ -1,4 +1,59 @@
 @import "~normalize.css";
 
-body {
+.right-to-left,
+.left-to-right {
+  width: 100%;
+}
+
+.right-to-left-enter {
+  width: 100%;
+  position: absolute;
+  transform: translateX(100%);
+  z-index: 10;
+}
+.right-to-left-enter-active {
+  width: 100%;
+  z-index: 10;
+  transform: translateX(0);
+  transition: all 0.5s ease;
+}
+
+.right-to-left-exit {
+  width: 100%;
+  position: absolute;
+  transform: translateX(0);
+  z-index: 11;
+}
+.right-to-left-exit-active {
+  width: 100%;
+  position: absolute;
+  transform: translateX(-100%);
+  transition: all 0.5s ease;
+  z-index: 11;
+}
+
+.left-to-right-enter {
+  width: 100%;
+  position: absolute;
+  transform: translateX(-100%);
+  z-index: 10;
+}
+.left-to-right-enter-active {
+  width: 100%;
+  z-index: 10;
+  transform: translateX(0);
+  transition: all 0.5s ease;
+}
+
+.left-to-right-exit {
+  width: 100%;
+  position: absolute;
+  transform: translateX(0);
+  z-index: 11;
+}
+.left-to-right-exit-active {
+  width: 100%;
+  position: absolute;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
 }

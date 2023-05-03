@@ -1,6 +1,7 @@
+import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
 import { IState } from "../../types";
 import { IAction } from "./actions.types";
-import { SET_NEW_DATA } from "./types";
+import { CHANGE_CURRENT_LOCATION, SET_NEW_DATA } from "./types";
 
 const initialState: IState = {
   loading: false,
@@ -14,6 +15,7 @@ const initialState: IState = {
   },
   params: {},
   userAnswers: {},
+  slideMoveDirection: DEFAULT_MOVE_DIRECTION,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -21,6 +23,15 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     case SET_NEW_DATA: {
       return { ...state, data: action.payload };
     }
+
+    case CHANGE_CURRENT_LOCATION: {
+      return {
+        ...state,
+        location: action.payload.location,
+        slideMoveDirection: action.payload.slideMoveDirection,
+      };
+    }
+
     default: {
       return { ...state };
     }
