@@ -1,4 +1,37 @@
 @import "~normalize.css";
+@import "~antd/dist/antd.css";
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.progress {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.questionSize {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.question {
+  font-size: 1em;
+}
+
+.questionNumber {
+  font-size: 1.5em;
+  margin-left: 3px;
+}
 
 .right-to-left,
 .left-to-right {

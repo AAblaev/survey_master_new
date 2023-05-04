@@ -16,19 +16,21 @@ import { changeCurretLocation } from "./services/redux/actions";
 export type IDesktop = ConnectedProps<typeof connector>;
 
 export const desctopCss = css`
-  background-color: pink;
+  background-color: #fff;
   width: 100%;
   min-height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  align-items: center;
 `;
 
 export const contentCss = css`
   flex: 1 0 auto;
   padding-top: 64px;
   padding-bottom: 64px;
+  width: 100%;
 `;
 
 export const buttonCss = css`
@@ -48,7 +50,6 @@ const Desktop: React.FC<IDesktop> = ({
   const dispatch = useDispatch();
 
   console.log("Desktop render");
-  console.log(location);
 
   useEffect(() => {
     dispatch({ type: "FETCH_SURVEY_DATA" });
@@ -121,14 +122,14 @@ const mapDispathToProps = (dispatch: Dispatch) => {
       dispatch(
         changeCurretLocation({
           location: location,
-          slideMoveDirection: "left-to-right",
+          slideMoveDirection: "right-to-left",
         })
       ),
     handleBackClick: (location: ILocation) =>
       dispatch(
         changeCurretLocation({
           location: location,
-          slideMoveDirection: "right-to-left",
+          slideMoveDirection: "left-to-right",
         })
       ),
   };

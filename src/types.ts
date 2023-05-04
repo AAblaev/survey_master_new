@@ -110,7 +110,7 @@ export type IParams = {
   [key: string]: string;
 };
 
-export type IParsedData = {};
+export type IParsedData = IData;
 export type IPageName = string;
 
 export type ILocation = {
