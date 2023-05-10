@@ -4,6 +4,7 @@ export const freeQuestionCss = css`
   & .MuiFormLabel-root {
     color: #000000;
     font-size: 1.3rem;
+    font-weight: 300;
   }
 
   & .MuiInputLabel-root {
@@ -26,5 +27,13 @@ export const freeQuestionCss = css`
   }
   & .MuiFilledInput-root:hover {
     background-color: transparent;
+  }
+`;
+
+export const selectQuestionCss = css`
+  & .MuiFormLabel-root {
+    color: #000000;
+    font-size: 1.3rem;
+    font-weight: 300;
   }
 `;

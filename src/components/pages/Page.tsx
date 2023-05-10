@@ -6,6 +6,7 @@ import { IState } from "../../types";
 import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
 import FreeQuestion from "../questions/FreeQuestion";
+import SelectQuestion from "../questions/SelectQuestion";
 
 export type IPage = ConnectedProps<typeof connector>;
 
@@ -43,6 +44,17 @@ const Page: React.FC<IPage> = ({ page, pageIndex }) => {
                 />
               );
             }
+            case "select":
+            case "multiselect": {
+              return (
+                <SelectQuestion
+                  currentQuestionIndex={index}
+                  question={q}
+                  key={index}
+                />
+              );
+            }
+
             default: {
               return <div key={index}>Данного типа вопроса нет</div>;
             }
