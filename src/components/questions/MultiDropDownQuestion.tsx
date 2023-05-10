@@ -33,7 +33,7 @@ export const formControlCss = css`
 export const chipWrapperCss = css``;
 export const chipCss = css``;
 
-const DropDownQuestion: React.FC<IFreeQuestionProps> = ({
+const MultiDropDownQuestion: React.FC<IFreeQuestionProps> = ({
   currentQuestionIndex,
   question,
   setAnswer,
@@ -62,8 +62,20 @@ const DropDownQuestion: React.FC<IFreeQuestionProps> = ({
 
       <FormControl variant="standard" css={formControlCss}>
         <Select
+          multiple
           value={userAnswer}
           onChange={handleChange}
+          renderValue={(items) => {
+            const ids = items as number[];
+            const options = ids.map((id: number) => optionsDict[id]);
+            return (
+              <div css={chipWrapperCss}>
+                {options.map(({ docID, title }) => (
+                  <Chip key={docID} label={title} css={chipCss} />
+                ))}
+              </div>
+            );
+          }}
           MenuProps={{
             anchorOrigin: {
               vertical: "bottom",
@@ -102,4 +114,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(DropDownQuestion);
+export default connect(
+  mapStateToProps,
+  mapDispathToProps
+)(MultiDropDownQuestion);

@@ -7,6 +7,7 @@ import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
 import FreeQuestion from "../questions/FreeQuestion";
 import SelectQuestion from "../questions/SelectQuestion";
+import DropDownQuestion from "../questions/DropDownQuestion";
 
 export type IPage = ConnectedProps<typeof connector>;
 
@@ -44,10 +45,21 @@ const Page: React.FC<IPage> = ({ page, pageIndex }) => {
                 />
               );
             }
+
+            // case "select":
+            // case "multiselect": {
+            //   return (
+            //     <SelectQuestion
+            //       currentQuestionIndex={index}
+            //       question={q}
+            //       key={index}
+            //     />
+            //   );
+            // }
             case "select":
             case "multiselect": {
               return (
-                <SelectQuestion
+                <DropDownQuestion
                   currentQuestionIndex={index}
                   question={q}
                   key={index}
