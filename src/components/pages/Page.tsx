@@ -8,6 +8,7 @@ import { Typography } from "@material-ui/core";
 import FreeQuestion from "../questions/FreeQuestion";
 import SelectQuestion from "../questions/SelectQuestion";
 import DropDownQuestion from "../questions/DropDownQuestion";
+import MultiDropDownQuestion from "../questions/MultiDropDownQuestion";
 
 export type IPage = ConnectedProps<typeof connector>;
 
@@ -46,20 +47,30 @@ const Page: React.FC<IPage> = ({ page, pageIndex }) => {
               );
             }
 
-            // case "select":
-            // case "multiselect": {
-            //   return (
-            //     <SelectQuestion
-            //       currentQuestionIndex={index}
-            //       question={q}
-            //       key={index}
-            //     />
-            //   );
-            // }
+            case "dropdown": {
+              return (
+                <DropDownQuestion
+                  currentQuestionIndex={index}
+                  question={q}
+                  key={index}
+                />
+              );
+            }
+
+            case "multidropdown": {
+              return (
+                <MultiDropDownQuestion
+                  currentQuestionIndex={index}
+                  question={q}
+                  key={index}
+                />
+              );
+            }
+
             case "select":
             case "multiselect": {
               return (
-                <DropDownQuestion
+                <SelectQuestion
                   currentQuestionIndex={index}
                   question={q}
                   key={index}

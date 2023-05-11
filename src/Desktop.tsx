@@ -12,6 +12,7 @@ import { TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
+import getPrevAndNextLocation from "./utils/getPrevAndNextLocation";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -48,8 +49,9 @@ const Desktop: React.FC<IDesktop> = ({
 }) => {
   const { title } = location;
   const dispatch = useDispatch();
+  const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
 
-  console.log("Desktop render");
+  // console.log("Desktop render");
 
   useEffect(() => {
     dispatch({ type: "FETCH_SURVEY_DATA" });
@@ -68,7 +70,7 @@ const Desktop: React.FC<IDesktop> = ({
           }
         >
           <CSSTransition
-            key={title}
+            key={title + location.pageIndex}
             classNames="left-to-right"
             timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
           >
@@ -77,29 +79,12 @@ const Desktop: React.FC<IDesktop> = ({
         </TransitionGroup>
       </div>
       <AppBar direction="bottom" fixed>
-        <Button
-          css={buttonCss}
-          onClick={() =>
-            handleBackClick({
-              pageIndex: 0,
-              pathName: "",
-              questionIndex: 0,
-              title: "campaning",
-            })
-          }
-        >
+        <Button css={buttonCss} onClick={() => handleBackClick(prevLocation)}>
           Назад
         </Button>
         <Button
           css={buttonCss}
-          onClick={() =>
-            handleForwardClick({
-              pageIndex: 0,
-              pathName: "",
-              questionIndex: 0,
-              title: "page",
-            })
-          }
+          onClick={() => handleForwardClick(nextLocation)}
         >
           Вперед
         </Button>
