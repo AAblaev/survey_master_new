@@ -19,10 +19,10 @@ function* fetchSurveyData() {
   // }
 
   try {
-    // const result: IFetchResult = yield call(() => fethData());
-    // yield put(setNewData(result.data));
+    const result: IFetchResult = yield call(() => fethData());
+    yield put(setNewData(result.data));
 
-    yield put(setNewData(fakeData));
+    // yield put(setNewData(fakeData));
   } catch (e) {
     const error = e as AxiosError;
     // yield put(setError({ error: { status: true, message: error.message } }));
