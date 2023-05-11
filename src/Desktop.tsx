@@ -25,6 +25,31 @@ export const desctopCss = css`
   flex-direction: column;
   overflow-x: hidden;
   align-items: center;
+  //
+  // // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
+  // @media (min-width: 576px) {
+  //   width: 50%;
+  // }
+  //
+  // // Устройства Medium (планшеты, 768 пикселей и выше)
+  // @media (min-width: 768px) {
+  //   width: 50%;
+  // }
+  //
+  // // Устройства Large (настольные компьютеры, 992 пикселей и выше)
+  // @media (min-width: 992px) {
+  //   width: 50%;
+  // }
+  //
+  // // Устройства X-Large (большие настольные компьютеры, 1200 пикселей и выше)
+  // @media (min-width: 1200px) {
+  //   width: 50%;
+  // }
+  //
+  // // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
+  // @media (min-width: 1400px) {
+  //   width: 50%;
+  // }
 `;
 
 export const contentCss = css`
@@ -46,6 +71,8 @@ const Desktop: React.FC<IDesktop> = ({
   slideMoveDirection,
   handleForwardClick,
   handleBackClick,
+  page,
+  pageIndex,
 }) => {
   const { title } = location;
   const dispatch = useDispatch();
@@ -74,7 +101,11 @@ const Desktop: React.FC<IDesktop> = ({
             classNames="left-to-right"
             timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
           >
-            {title === "campaning" ? <Survey /> : <Page />}
+            {title === "campaning" ? (
+              <Survey />
+            ) : (
+              <Page page={page} pageIndex={pageIndex} />
+            )}
           </CSSTransition>
         </TransitionGroup>
       </div>
@@ -94,10 +125,18 @@ const Desktop: React.FC<IDesktop> = ({
 };
 
 const mapStateToProps = (state: IState) => {
-  const { location, slideMoveDirection } = state;
+  const { location, slideMoveDirection, data } = state;
+
+  const emptyData = !Boolean(data);
+  const pages = data ? data.pages : [];
+  const { pageIndex } = location;
+  const currentPage = pages[pageIndex];
+
   return {
     location,
     slideMoveDirection,
+    page: currentPage,
+    pageIndex,
   };
 };
 

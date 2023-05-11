@@ -11,11 +11,13 @@ export const toolbarCss = css`
 `;
 
 export const bottomCss = css`
+  // padding-left: 20%;
   &.MuiAppBar-positionFixed {
     top: auto;
     bottom: 0;
     left: 0;
     right: auto;
+    background-color: #46acaf;
   }
 `;
 
