@@ -9,6 +9,7 @@ import FreeQuestion from "../questions/FreeQuestion";
 import SelectQuestion from "../questions/SelectQuestion";
 import DropDownQuestion from "../questions/DropDownQuestion";
 import MultiDropDownQuestion from "../questions/MultiDropDownQuestion";
+import FreeList from "../questions/free-list/free-list";
 
 // export type IPage = ConnectedProps<typeof connector>;
 
@@ -44,6 +45,16 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
             case "free": {
               return (
                 <FreeQuestion
+                  currentQuestionIndex={index}
+                  question={q}
+                  key={index}
+                />
+              );
+            }
+
+            case "freelist": {
+              return (
+                <FreeList
                   currentQuestionIndex={index}
                   question={q}
                   key={index}
