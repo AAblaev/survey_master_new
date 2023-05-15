@@ -4,6 +4,7 @@ import { IAction } from "./actions.types";
 import {
   CHANGE_CURRENT_LOCATION,
   SET_NEW_DATA,
+  SET_SURVEY_UID,
   SET_USER_ANSWER,
 } from "./types";
 
@@ -26,6 +27,16 @@ export const reducer = (state: IState = initialState, action: IAction) => {
   switch (action.type) {
     case SET_NEW_DATA: {
       return { ...state, data: action.payload };
+    }
+
+    case SET_SURVEY_UID: {
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          uid: action.payload,
+        },
+      };
     }
 
     case CHANGE_CURRENT_LOCATION: {

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { PATH_NAME } from "./const";
 
 // const headers = {
 // 	Accept:
@@ -8,11 +7,33 @@ import { PATH_NAME } from "./const";
 // 	"Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
 // };
 
-export const fethData = () => {
-  return axios(PATH_NAME, {
+export const fethData = (path: string) => {
+  return axios(path, {
     // headers: headers,
   });
 };
+
+export const sendData = (path: string, data: any[]) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  return axios.post(path, data, config);
+};
+
+// export const fethData = () => {
+//   const params = new URLSearchParams(document.location.search);
+//   const surveyID = params.get("surveyID");
+//   // const paramsObj: { [key: string]: any } = {};
+//   // console.log("params", params);
+//   // console.log("surveyID", surveyID);
+//
+//   return axios(PATH_NAME + surveyID, {
+//     // headers: headers,
+//   });
+// };
 
 // export const sendData = ({
 // 	data,

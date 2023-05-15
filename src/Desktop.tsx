@@ -13,6 +13,7 @@ import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
 import getPrevAndNextLocation from "./utils/getPrevAndNextLocation";
+import { SEND_SURVEY_DATA } from "./services/redux/types";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -67,22 +68,29 @@ export const buttonCss = css`
 `;
 
 const Desktop: React.FC<IDesktop> = ({
+  emptyData,
   location,
   slideMoveDirection,
   handleForwardClick,
   handleBackClick,
   page,
   pageIndex,
+  params,
 }) => {
   const { title } = location;
   const dispatch = useDispatch();
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
 
-  // console.log("Desktop render");
-
   useEffect(() => {
     dispatch({ type: "FETCH_SURVEY_DATA" });
   }, [dispatch]);
+
+  useEffect(() => {
+    if (emptyData) {
+      return;
+    }
+    // dispatch({ type: "START_SURVEY" });
+  }, [emptyData]);
   return (
     <div css={desctopCss}>
       <AppBar direction="top" fixed>
@@ -125,7 +133,7 @@ const Desktop: React.FC<IDesktop> = ({
 };
 
 const mapStateToProps = (state: IState) => {
-  const { location, slideMoveDirection, data } = state;
+  const { location, slideMoveDirection, data, params } = state;
 
   const emptyData = !Boolean(data);
   const pages = data ? data.pages : [];
@@ -137,6 +145,8 @@ const mapStateToProps = (state: IState) => {
     slideMoveDirection,
     page: currentPage,
     pageIndex,
+    emptyData,
+    params,
   };
 };
 
@@ -149,13 +159,15 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: "right-to-left",
         })
       ),
-    handleBackClick: (location: ILocation) =>
+    handleBackClick: (location: ILocation) => {
       dispatch(
         changeCurretLocation({
           location: location,
           slideMoveDirection: "left-to-right",
         })
-      ),
+      );
+      // dispatch({ type: SEND_SURVEY_DATA });
+    },
   };
 };
 

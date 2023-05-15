@@ -4,6 +4,7 @@ import {
   SET_NEW_STATE,
   CHANGE_CURRENT_LOCATION,
   SET_USER_ANSWER,
+  SET_SURVEY_UID,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -15,6 +16,12 @@ export const setNewState = (payload: IState) =>
 export const setNewData = (payload: IData) =>
   <const>{
     type: SET_NEW_DATA,
+    payload,
+  };
+
+export const setSurveyUid = (payload: string) =>
+  <const>{
+    type: SET_SURVEY_UID,
     payload,
   };
 
