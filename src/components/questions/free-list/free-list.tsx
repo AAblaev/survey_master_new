@@ -4,27 +4,16 @@ import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { setAnswer } from "../../../services/redux/actions";
-import { IOption, IQuestion, IState } from "../../../types";
-import { selectQuestionCss } from "../sc";
-import {
-  Chip,
-  Input,
-  InputLabel,
-  MenuItem,
-  Select,
-  Theme,
-} from "@material-ui/core";
-import { css } from "@emotion/react";
+import { IState } from "../../../types";
+import { freeQuestionCss } from "../sc";
+import { TextField } from "@material-ui/core";
 import { ICommonQuestionProps } from "../common-question.types";
+import { freeListItemCss, freeListItemLabelCss } from "./free-list-sc";
 
 type IStateProps = ReturnType<typeof mapStateToProps>;
 type IDispatchProps = ReturnType<typeof mapDispathToProps>;
 
 type IFreeListProps = IStateProps & IDispatchProps & ICommonQuestionProps;
-
-export const formControlCss = css`
-  width: 100%;
-`;
 
 const FreeList: React.FC<IFreeListProps> = ({
   currentQuestionIndex,
@@ -32,46 +21,51 @@ const FreeList: React.FC<IFreeListProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, title, config } = question;
+  const { docID, title, config, pageID, surveyID } = question;
   const options = config.options!;
-
-  const handleChange = (value: any) => {
-    const newAnswer = value.target.value;
+  const freeListLabel = `${currentQuestionIndex + 1}. ${title}`;
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    item: typeof options[0]
+  ) => {
+    const values = (userAnswer.length > 0 ? userAnswer : options).map(
+      (answer) => ({
+        ...answer,
+        value:
+          answer.docID === item.docID ? e.target.value : answer.value || "",
+        questionID: docID,
+        pageID,
+        surveyID,
+      })
+    );
     setAnswer({
       docID: docID,
-      value: newAnswer,
+      value: values,
     });
   };
 
   return (
-    <FormControl css={selectQuestionCss}>
-      <FormLabel id={String(docID)} component="legend">
-        {currentQuestionIndex + 1}. {title}
-      </FormLabel>
-
-      <FormControl variant="standard" css={formControlCss}>
-        <Select
-          value={userAnswer}
-          onChange={handleChange}
-          MenuProps={{
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "right",
-            },
-            transformOrigin: {
-              vertical: "top",
-              horizontal: "right",
-            },
-            getContentAnchorEl: null,
-          }}
-        >
-          {options.map((item) => (
-            <MenuItem key={item.docID} value={item.docID}>
-              {item.title}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+    <FormControl css={freeQuestionCss}>
+      <FormLabel component="legend">{freeListLabel}</FormLabel>
+      {options.map((item, i) => {
+        const answer = userAnswer.find((answer) => answer.docID === item.docID);
+        const label = `${currentQuestionIndex + 1}.${i + 1}. ${item.title}`;
+        return (
+          <FormControl key={item.docID} css={freeListItemCss}>
+            <FormLabel component="legend" css={freeListItemLabelCss}>
+              {label}
+            </FormLabel>
+            <TextField
+              InputProps={{ disableUnderline: true }}
+              color="primary"
+              variant="filled"
+              value={(answer && answer.value) || ""}
+              hiddenLabel
+              onChange={(e) => onChange(e, item)}
+            />
+          </FormControl>
+        );
+      })}
     </FormControl>
   );
 };
