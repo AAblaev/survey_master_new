@@ -35,22 +35,21 @@ export const accordionCss = css`
   }
 `;
 
-const Survey: React.FC<ISurvey> = ({ selectPage, pages }) => {
+const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   return (
     <div css={pageCss}>
       <ProgressLinear allQuestionCount={94} allQuestionsDoneCount={23} />
       <div>
         {pages.map((page, index) => {
-          // const allQuestionCount = page.questions.length;
-          // const doneQuestionCount = page.questions.filter(q =>
-          // 	isQuestionDone(q)
-          // ).length;
-          // const requiredQuestionsCount = page.questions.filter(
-          // 	q => q.config.isRequired
-          // ).length;
-          const allQuestionCount = 10;
-          const doneQuestionCount = 7;
-          const requiredQuestionsCount = 8;
+          const allQuestionCount = page.questions.length;
+          const requiredQuestionsCount = page.questions.length;
+          let doneQuestionCount = 0;
+          // let requiredQuestionsCount = 0;
+          page.questions.forEach((q) => {
+            userAnswers.hasOwnProperty(q.docID) && doneQuestionCount++;
+          });
+          // const doneQuestionCount = 7;
+          // const requiredQuestionsCount = 8;
 
           return (
             <Accordion
@@ -109,8 +108,10 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages }) => {
 
 const mapStateToProps = (state: IState) => {
   const pages = state.data ? state.data.pages : [];
+  const userAnswers = state.userAnswers;
   return {
     pages,
+    userAnswers,
   };
 };
 

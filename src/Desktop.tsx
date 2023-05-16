@@ -13,7 +13,11 @@ import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
 import getPrevAndNextLocation from "./utils/getPrevAndNextLocation";
-import { SEND_SURVEY_DATA } from "./services/redux/types";
+import {
+  FETCH_SURVEY_DATA,
+  SEND_SURVEY_DATA,
+  START_SURVEY,
+} from "./services/redux/types";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -76,25 +80,38 @@ const Desktop: React.FC<IDesktop> = ({
   page,
   pageIndex,
   params,
+  fetchData,
+  startSurvey,
 }) => {
   const { title } = location;
-  const dispatch = useDispatch();
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
 
   useEffect(() => {
-    dispatch({ type: "FETCH_SURVEY_DATA" });
-  }, [dispatch]);
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     if (emptyData) {
       return;
     }
-    // dispatch({ type: "START_SURVEY" });
+    startSurvey();
   }, [emptyData]);
   return (
     <div css={desctopCss}>
       <AppBar direction="top" fixed>
-        <div>AppBarTop</div>
+        <Button
+          css={buttonCss}
+          onClick={() =>
+            handleBackClick({
+              pageIndex: 0,
+              pathName: "",
+              questionIndex: 0,
+              title: "campaning",
+            })
+          }
+        >
+          К списку страниц
+        </Button>
       </AppBar>
       <div css={contentCss}>
         <TransitionGroup
@@ -125,7 +142,7 @@ const Desktop: React.FC<IDesktop> = ({
           css={buttonCss}
           onClick={() => handleForwardClick(nextLocation)}
         >
-          Вперед
+          {title === "campaning" ? "Вперед" : "Сохранить и вперед"}
         </Button>
       </AppBar>
     </div>
@@ -152,13 +169,17 @@ const mapStateToProps = (state: IState) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    handleForwardClick: (location: ILocation) =>
+    fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
+    startSurvey: () => dispatch({ type: START_SURVEY }),
+    handleForwardClick: (location: ILocation) => {
       dispatch(
         changeCurretLocation({
           location: location,
           slideMoveDirection: "right-to-left",
         })
-      ),
+      );
+      dispatch({ type: SEND_SURVEY_DATA });
+    },
     handleBackClick: (location: ILocation) => {
       dispatch(
         changeCurretLocation({
@@ -166,7 +187,6 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: "left-to-right",
         })
       );
-      // dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };
