@@ -1,6 +1,6 @@
 import React from "react";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
-import { IState } from "../../types";
+import { IPage, IState } from "../../types";
 import { Dispatch } from "redux";
 import { css } from "@emotion/react";
 import ProgressLinear from "../common/ProgressLinear";
@@ -36,20 +36,31 @@ export const accordionCss = css`
 `;
 
 const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
+  const allQuestionCount = pages.reduce(
+    (acc: number, page: IPage) => (acc += page.questions.length),
+    0
+  );
+
+  const allQuestionsDoneCount = Object.values(userAnswers).filter(
+    (ans) => ans.length !== 0
+  ).length;
+
   return (
     <div css={pageCss}>
-      <ProgressLinear allQuestionCount={94} allQuestionsDoneCount={23} />
+      <ProgressLinear
+        allQuestionCount={allQuestionCount}
+        allQuestionsDoneCount={allQuestionsDoneCount}
+      />
       <div>
         {pages.map((page, index) => {
           const allQuestionCount = page.questions.length;
           const requiredQuestionsCount = page.questions.length;
           let doneQuestionCount = 0;
-          // let requiredQuestionsCount = 0;
           page.questions.forEach((q) => {
-            userAnswers.hasOwnProperty(q.docID) && doneQuestionCount++;
+            userAnswers.hasOwnProperty(q.docID) &&
+              userAnswers[q.docID].length !== 0 &&
+              doneQuestionCount++;
           });
-          // const doneQuestionCount = 7;
-          // const requiredQuestionsCount = 8;
 
           return (
             <Accordion
