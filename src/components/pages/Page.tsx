@@ -10,6 +10,7 @@ import SelectQuestion from "../questions/SelectQuestion";
 import DropDownQuestion from "../questions/DropDownQuestion";
 import MultiDropDownQuestion from "../questions/MultiDropDownQuestion";
 import FreeList from "../questions/free-list/free-list";
+import Scale from "../questions/scale/scale";
 
 // export type IPage = ConnectedProps<typeof connector>;
 
@@ -59,6 +60,12 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
                   question={q}
                   key={index}
                 />
+              );
+            }
+
+            case "scale": {
+              return (
+                <Scale currentQuestionIndex={index} question={q} key={index} />
               );
             }
 

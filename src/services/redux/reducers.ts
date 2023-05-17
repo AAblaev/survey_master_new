@@ -48,13 +48,12 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     }
 
     case SET_USER_ANSWER: {
-      const docID = action.payload.docID;
-      const value = action.payload.value;
+      const { questionID } = action.payload;
       return {
         ...state,
         userAnswers: {
           ...state.userAnswers,
-          [docID]: value,
+          [questionID]: action.payload,
         },
       };
     }
