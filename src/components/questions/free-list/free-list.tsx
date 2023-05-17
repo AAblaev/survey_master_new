@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { setAnswer } from "../../../services/redux/actions";
-import { IState } from "../../../types";
+import { IAnswer, IState } from "../../../types";
 import { freeQuestionCss } from "../sc";
 import { TextField } from "@material-ui/core";
 import { ICommonQuestionProps } from "../common-question.types";
@@ -24,23 +24,24 @@ const FreeList: React.FC<IFreeListProps> = ({
   const { docID, title, config, pageID, surveyID } = question;
   const options = config.options!;
   const freeListLabel = `${currentQuestionIndex + 1}. ${title}`;
+  const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     item: typeof options[0]
   ) => {
-    const values = (userAnswer.length > 0 ? userAnswer : options).map(
-      (answer) => ({
-        ...answer,
-        value:
-          answer.docID === item.docID ? e.target.value : answer.value || "",
-        questionID: docID,
-        pageID,
-        surveyID,
-      })
-    );
+    const values = options.map((option) => ({
+      optionID: option.docID,
+      value:
+        option.docID === item.docID
+          ? e.target.value
+          : (userAnswerExist &&
+              userAnswer.values.find((el) => el.optionID === option.docID)
+                ?.value) ||
+            "",
+    }));
     setAnswer({
-      docID: docID,
-      value: values,
+      questionID: docID,
+      values: values,
     });
   };
 
@@ -48,7 +49,9 @@ const FreeList: React.FC<IFreeListProps> = ({
     <FormControl css={freeQuestionCss}>
       <FormLabel component="legend">{freeListLabel}</FormLabel>
       {options.map((item, i) => {
-        const answer = userAnswer.find((answer) => answer.docID === item.docID);
+        const answer = userAnswer?.values.find(
+          (answer) => answer.optionID === item.docID
+        );
         const label = `${currentQuestionIndex + 1}.${i + 1}. ${item.title}`;
         return (
           <FormControl key={item.docID} css={freeListItemCss}>
@@ -74,14 +77,12 @@ const mapStateToProps = (state: IState, props: ICommonQuestionProps) => {
   const { userAnswers } = state;
   const { question } = props;
   const { docID } = question;
-  return { userAnswer: userAnswers[docID] ? userAnswers[docID] : [] };
+  return { userAnswer: userAnswers[docID] ? userAnswers[docID] : null };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    setAnswer: ({ docID, value }: { docID: number; value: any[] }) => {
-      dispatch(setAnswer({ docID, value }));
-    },
+    setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
   };
 };
 

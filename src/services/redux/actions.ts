@@ -1,4 +1,10 @@
-import { IData, ILocation, ISlideMoveDirection, IState } from "../../types";
+import {
+  IAnswer,
+  IData,
+  ILocation,
+  ISlideMoveDirection,
+  IState,
+} from "../../types";
 import {
   SET_NEW_DATA,
   SET_NEW_STATE,
@@ -34,7 +40,7 @@ export const changeCurretLocation = (payload: {
     payload,
   };
 
-export const setAnswer = (payload: { docID: number; value: any[] }) =>
+export const setAnswer = (payload: IAnswer) =>
   <const>{
     type: SET_USER_ANSWER,
     payload,

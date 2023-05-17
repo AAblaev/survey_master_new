@@ -93,9 +93,16 @@ export type IDataType =
   | "ratingscale"
   | "paircompare"
   | "complex"
+  | "scale"
   | "default";
 
-export type IAnswer = any;
+export type IAnswer = {
+  questionID: number;
+  values: { optionID: number; value: string }[];
+  // unable_answer: boolean;
+  // nothing_answer: boolean;
+  // other_answer: { enabled: boolean; value: string };
+};
 export type IBranchRule = {};
 export type IQuoteRule = {};
 export type IVisibilityRule = {};
@@ -121,7 +128,7 @@ export type ILocation = {
 };
 
 export type IUserAnswer = {
-  [key: string]: IAnswer[];
+  [key: string]: IAnswer;
 };
 
 export type ISlideMoveDirection = "left-to-right" | "right-to-left";
