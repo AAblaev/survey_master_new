@@ -5,10 +5,10 @@ import { IPage, IState } from "../../types";
 
 import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
-import FreeQuestion from "../questions/FreeQuestion";
-import SelectQuestion from "../questions/SelectQuestion";
-import DropDownQuestion from "../questions/DropDownQuestion";
-import MultiDropDownQuestion from "../questions/MultiDropDownQuestion";
+import FreeQuestion from "../questions/free/free";
+import SelectQuestion from "../questions/select/Select";
+import DropDownQuestion from "../questions/dropdown/DropDown";
+import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
 import FreeList from "../questions/free-list/free-list";
 import Scale from "../questions/scale/scale";
 

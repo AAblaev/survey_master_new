@@ -4,8 +4,8 @@ import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
-import { setAnswer } from "../../services/redux/actions";
-import { IQuestion, IState } from "../../types";
+import { setAnswer } from "../../../services/redux/actions";
+import { IAnswer, IQuestion, IState } from "../../../types";
 import { freeQuestionCss } from "./sc";
 
 export type OwnProps = {
@@ -24,8 +24,11 @@ const FreeQuestion: React.FC<IFreeQuestionProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, title, pageID, surveyID } = question;
-  const value = userAnswer.length === 0 ? "" : userAnswer[0].value;
+  const { docID, title } = question;
+  const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+  const value = userAnswerExist
+    ? (userAnswer.values as IAnswer["values"])[0].value
+    : "";
 
   return (
     <FormControl css={freeQuestionCss}>
@@ -45,10 +48,8 @@ const FreeQuestion: React.FC<IFreeQuestionProps> = ({
         value={value}
         onChange={(e) => {
           setAnswer({
-            docID: docID,
-            value: [
-              { value: e.target.value, questionID: docID, pageID, surveyID },
-            ],
+            questionID: docID,
+            values: [{ value: e.target.value, optionID: docID }],
           });
         }}
       />
@@ -66,9 +67,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    setAnswer: ({ docID, value }: { docID: number; value: any[] }) => {
-      dispatch(setAnswer({ docID, value }));
-    },
+    setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
   };
 };
 

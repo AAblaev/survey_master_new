@@ -42,7 +42,7 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   );
 
   const allQuestionsDoneCount = Object.values(userAnswers).filter(
-    (ans) => ans.length !== 0
+    (ans) => ans.values.length !== 0
   ).length;
 
   return (
@@ -58,7 +58,7 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
           let doneQuestionCount = 0;
           page.questions.forEach((q) => {
             userAnswers.hasOwnProperty(q.docID) &&
-              userAnswers[q.docID].length !== 0 &&
+              userAnswers[q.docID].values.length !== 0 &&
               doneQuestionCount++;
           });
 

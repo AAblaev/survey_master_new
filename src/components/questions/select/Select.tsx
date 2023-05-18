@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import { setAnswer } from "../../services/redux/actions";
-import { IQuestion, IState } from "../../types";
-import { selectQuestionCss } from "./sc";
+import { setAnswer } from "../../../services/redux/actions";
+import { selectQuestionCss } from "../sc";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core";
+import { IQuestion, IState, IAnswer } from "../../../types";
 
 type OwnProps = {
   key: number;
@@ -30,8 +30,16 @@ const SelectQuestion: React.FC<IFreeQuestionProps> = ({
   const { docID, title, pageID, surveyID, config } = question;
   const { dataType } = config;
   const options = config.options!;
+
+  const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+
+  const valuesArr = userAnswerExist ? (userAnswer as IAnswer).values : [];
+  const valuesIdArr: number[] = userAnswerExist
+    ? valuesArr.map((item) => item.optionID)
+    : [];
+
   const isSelected = (docID: number) => {
-    return userAnswer.some((ans) => ans.docID === docID);
+    return valuesIdArr.some((id) => id === docID);
   };
 
   const GreenCheckbox = withStyles({
@@ -54,17 +62,19 @@ const SelectQuestion: React.FC<IFreeQuestionProps> = ({
           const isChecked = isSelected(item.docID);
           const handleChange = () => {
             setAnswer({
-              docID: docID,
-              value: isChecked ? [] : [{ pageID, surveyID, ...item }],
+              questionID: docID,
+              values: isChecked
+                ? []
+                : [{ optionID: item.docID, value: item.title }],
             });
           };
 
           const handleChange2 = () => {
             setAnswer({
-              docID: docID,
-              value: isChecked
-                ? userAnswer.filter((ans) => ans.docID !== item.docID)
-                : [...userAnswer, { pageID, surveyID, ...item }],
+              questionID: docID,
+              values: isChecked
+                ? valuesArr.filter((v) => v.optionID !== item.docID)
+                : [...valuesArr, { optionID: item.docID, value: item.title }],
             });
           };
 
@@ -98,9 +108,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    setAnswer: ({ docID, value }: { docID: number; value: any[] }) => {
-      dispatch(setAnswer({ docID, value }));
-    },
+    setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
   };
 };
 
