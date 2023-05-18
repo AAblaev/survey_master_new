@@ -4,6 +4,6 @@ export const userAnswerParses = (userAnswers: IUserAnswer) => {
   const docIDs = Object.keys(userAnswers);
   return docIDs.map((docID) => ({
     questionID: docID,
-    values: userAnswers[docID],
+    values: userAnswers[docID].values,
   }));
 };
