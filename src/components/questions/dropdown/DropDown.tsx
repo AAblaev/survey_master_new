@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import { setAnswer } from "../../services/redux/actions";
-import { IOption, IQuestion, IState } from "../../types";
-import { selectQuestionCss } from "./sc";
+import { setAnswer } from "../../../services/redux/actions";
+import { IAnswer, IOption, IQuestion, IState } from "../../../types";
+import { selectQuestionCss } from "../sc";
 import {
   Chip,
   Input,
@@ -33,24 +33,35 @@ export const formControlCss = css`
 export const chipWrapperCss = css``;
 export const chipCss = css``;
 
-const MultiDropDownQuestion: React.FC<IFreeQuestionProps> = ({
+const DropDownQuestion: React.FC<IFreeQuestionProps> = ({
   currentQuestionIndex,
   question,
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, title, pageID, surveyID, config } = question;
+  const { docID, title, config } = question;
+
   const options = config.options!;
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
     {}
   ) as { [key: string]: IOption };
 
-  const handleChange = (value: any) => {
-    const newAnswer = value.target.value;
+  const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+  const value = userAnswerExist
+    ? optionsDict[(userAnswer.values as IAnswer["values"])[0].optionID].docID
+    : "";
+
+  const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const optionID = e.target.value as number;
     setAnswer({
-      docID: docID,
-      value: newAnswer,
+      questionID: docID,
+      values: [
+        {
+          optionID: optionID,
+          value: String(optionsDict[optionID].title),
+        },
+      ],
     });
   };
 
@@ -62,20 +73,8 @@ const MultiDropDownQuestion: React.FC<IFreeQuestionProps> = ({
 
       <FormControl variant="standard" css={formControlCss}>
         <Select
-          multiple
-          value={userAnswer}
+          value={value}
           onChange={handleChange}
-          renderValue={(items) => {
-            const ids = items as number[];
-            const options = ids.map((id: number) => optionsDict[id]);
-            return (
-              <div css={chipWrapperCss}>
-                {options.map(({ docID, title }) => (
-                  <Chip key={docID} label={title} css={chipCss} />
-                ))}
-              </div>
-            );
-          }}
           MenuProps={{
             anchorOrigin: {
               vertical: "bottom",
@@ -87,6 +86,7 @@ const MultiDropDownQuestion: React.FC<IFreeQuestionProps> = ({
             },
             getContentAnchorEl: null,
           }}
+          renderValue={(value: any) => `${optionsDict[value].title}`}
         >
           {options.map((item) => (
             <MenuItem key={item.docID} value={item.docID}>
@@ -108,13 +108,8 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    setAnswer: ({ docID, value }: { docID: number; value: any[] }) => {
-      dispatch(setAnswer({ docID, value }));
-    },
+    setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispathToProps
-)(MultiDropDownQuestion);
+export default connect(mapStateToProps, mapDispathToProps)(DropDownQuestion);
