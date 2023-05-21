@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { connect, ConnectedProps, useDispatch } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
 
 import { css } from "@emotion/react";
 import "./assets/index.css";
-import { ILocation, IState } from "./types";
+import { ILocation, IPathName, ISlideMoveDirection, IState } from "./types";
 import { Dispatch } from "redux";
 import AppBar from "./components/common/AppBar";
 import { TIMEOUT_VALUE } from "./consts/const";
@@ -18,6 +18,8 @@ import {
   SEND_SURVEY_DATA,
   START_SURVEY,
 } from "./services/redux/types";
+import ProgressBar from "./components/common/ProgressBar";
+import GreetingPage from "./components/pages/GreetingPage";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -72,19 +74,103 @@ export const buttonCss = css`
 `;
 
 const Desktop: React.FC<IDesktop> = ({
+  loading,
+  error,
   emptyData,
   location,
   slideMoveDirection,
-  handleForwardClick,
-  handleBackClick,
+  handleClick,
   page,
   pageIndex,
-  params,
+  // params,
   fetchData,
   startSurvey,
+  greetingsPage,
+  buttonStartCaption,
+  buttonBackCaption,
+  buttonFinishCaption,
+  buttonNextCaption,
+  // completionPage,
+  // disqualificationPage,
 }) => {
-  const { title } = location;
-  const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
+  const { title, pathName } = location;
+
+  const bottomBtnRender = (location: ILocation) => {
+    const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
+    switch (location.pathName) {
+      case "greeting": {
+        return [
+          <Button
+            css={buttonCss}
+            onClick={() =>
+              handleClick({
+                location: {
+                  pageIndex: 0,
+                  questionIndex: 0,
+                  pathName: "survey",
+                  title: "survey",
+                },
+                slideMoveDirection: "right-to-left",
+                needSendAnswers: false,
+              })
+            }
+          >
+            {buttonStartCaption}
+          </Button>,
+        ];
+      }
+      case "survey": {
+        return [
+          <Button
+            css={buttonCss}
+            onClick={() =>
+              handleClick({
+                location: {
+                  pageIndex: 0,
+                  questionIndex: 0,
+                  pathName: "section",
+                  title: "section",
+                },
+                slideMoveDirection: "right-to-left",
+                needSendAnswers: false,
+              })
+            }
+          >
+            {buttonNextCaption}
+          </Button>,
+        ];
+      }
+
+      case "section": {
+        return [
+          <Button
+            css={buttonCss}
+            onClick={() =>
+              handleClick({
+                location: nextLocation,
+                slideMoveDirection: "right-to-left",
+                needSendAnswers: true,
+              })
+            }
+          >
+            {buttonNextCaption}
+          </Button>,
+          <Button
+            css={buttonCss}
+            onClick={() =>
+              handleClick({
+                location: prevLocation,
+                slideMoveDirection: "left-to-right",
+                needSendAnswers: true,
+              })
+            }
+          >
+            {buttonBackCaption}
+          </Button>,
+        ];
+      }
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -96,22 +182,55 @@ const Desktop: React.FC<IDesktop> = ({
     }
     startSurvey();
   }, [emptyData]);
+
+  if (error.status) {
+    return (
+      <div css={desctopCss}>
+        <AppBar direction="top" fixed></AppBar>
+        <div css={contentCss}>
+          <div>Error: {error.message}</div>
+        </div>
+        <AppBar direction="bottom" fixed></AppBar>
+      </div>
+    );
+  }
+
+  const slideRender = (pathName: IPathName) => {
+    if (pathName === "greeting") return <GreetingPage html={greetingsPage} />;
+    if (pathName === "survey") return <Survey />;
+    if (pathName === "section")
+      return <Page page={page} pageIndex={pageIndex} />;
+    return null;
+  };
+
   return (
     <div css={desctopCss}>
+      {loading && (
+        <ProgressBar
+          position={"absolute"}
+          background={"rgba(255, 255, 255, 0.5)"}
+        />
+      )}
       <AppBar direction="top" fixed>
-        <Button
-          css={buttonCss}
-          onClick={() =>
-            handleBackClick({
-              pageIndex: 0,
-              pathName: "",
-              questionIndex: 0,
-              title: "campaning",
-            })
-          }
-        >
-          К списку страниц
-        </Button>
+        {pathName === "section" && (
+          <Button
+            css={buttonCss}
+            onClick={() =>
+              handleClick({
+                location: {
+                  pageIndex: 0,
+                  questionIndex: 0,
+                  pathName: "survey",
+                  title: "survey",
+                },
+                slideMoveDirection: "left-to-right",
+                needSendAnswers: true,
+              })
+            }
+          >
+            К списку страниц
+          </Button>
+        )}
       </AppBar>
       <div css={contentCss}>
         <TransitionGroup
@@ -126,44 +245,49 @@ const Desktop: React.FC<IDesktop> = ({
             classNames="left-to-right"
             timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
           >
-            {title === "campaning" ? (
-              <Survey />
-            ) : (
-              <Page page={page} pageIndex={pageIndex} />
-            )}
+            {slideRender(pathName)}
           </CSSTransition>
         </TransitionGroup>
       </div>
       <AppBar direction="bottom" fixed>
-        <Button css={buttonCss} onClick={() => handleBackClick(prevLocation)}>
-          Назад
-        </Button>
-        <Button
-          css={buttonCss}
-          onClick={() => handleForwardClick(nextLocation)}
-        >
-          {title === "campaning" ? "Вперед" : "Сохранить и вперед"}
-        </Button>
+        {bottomBtnRender(location)}
       </AppBar>
     </div>
   );
 };
 
 const mapStateToProps = (state: IState) => {
-  const { location, slideMoveDirection, data, params } = state;
+  console.log("state", state);
+
+  const { loading, error, location, slideMoveDirection, data, params } = state;
 
   const emptyData = !Boolean(data);
   const pages = data ? data.pages : [];
   const { pageIndex } = location;
   const currentPage = pages[pageIndex];
-
+  const greetingsPage = data ? data.greetingsPage : "";
+  const completionPage = data ? data.completionPage : "";
+  const disqualificationPage = data ? data.disqualificationPage : "";
+  const buttonStartCaption = data ? data.buttonStartCaption : "";
+  const buttonBackCaption = data ? data.buttonBackCaption : "";
+  const buttonFinishCaption = data ? data.buttonFinishCaption : "";
+  const buttonNextCaption = data ? data.buttonNextCaption : "";
   return {
+    loading,
+    error,
     location,
     slideMoveDirection,
     page: currentPage,
     pageIndex,
     emptyData,
     params,
+    greetingsPage,
+    completionPage,
+    disqualificationPage,
+    buttonStartCaption,
+    buttonBackCaption,
+    buttonFinishCaption,
+    buttonNextCaption,
   };
 };
 
@@ -171,22 +295,19 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY }),
-    handleForwardClick: (location: ILocation) => {
+    handleClick: (payload: {
+      location: ILocation;
+      slideMoveDirection: ISlideMoveDirection;
+      needSendAnswers: boolean;
+    }) => {
+      const { location, slideMoveDirection, needSendAnswers } = payload;
       dispatch(
         changeCurretLocation({
           location: location,
-          slideMoveDirection: "right-to-left",
+          slideMoveDirection: slideMoveDirection,
         })
       );
-      dispatch({ type: SEND_SURVEY_DATA });
-    },
-    handleBackClick: (location: ILocation) => {
-      dispatch(
-        changeCurretLocation({
-          location: location,
-          slideMoveDirection: "left-to-right",
-        })
-      );
+      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };

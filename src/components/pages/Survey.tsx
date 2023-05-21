@@ -1,5 +1,5 @@
 import React from "react";
-import { connect, ConnectedProps, useDispatch } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { IPage, IState } from "../../types";
 import { Dispatch } from "redux";
 import { css } from "@emotion/react";
@@ -133,9 +133,9 @@ const mapDispathToProps = (dispatch: Dispatch) => {
         changeCurretLocation({
           location: {
             pageIndex: index,
-            pathName: "",
+            pathName: "section",
             questionIndex: 0,
-            title: "page",
+            title: "section",
           },
           slideMoveDirection: "right-to-left",
         })

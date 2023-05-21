@@ -11,6 +11,8 @@ import {
   CHANGE_CURRENT_LOCATION,
   SET_USER_ANSWER,
   SET_SURVEY_UID,
+  IS_LOADING,
+  IS_ERROR,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -22,6 +24,18 @@ export const setNewState = (payload: IState) =>
 export const setNewData = (payload: IData) =>
   <const>{
     type: SET_NEW_DATA,
+    payload,
+  };
+
+export const setLoading = (payload: boolean) =>
+  <const>{
+    type: IS_LOADING,
+    payload,
+  };
+
+export const setError = (payload: string) =>
+  <const>{
+    type: IS_ERROR,
     payload,
   };
 

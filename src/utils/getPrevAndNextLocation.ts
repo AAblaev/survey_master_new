@@ -1,34 +1,17 @@
 import { ILocation } from "../types";
 
-const getPrevAndNextLocation = (location: ILocation) => {
-  if (location.title === "campaning") {
-    return [
-      {
-        pageIndex: 0,
-        pathName: "",
-        questionIndex: 0,
-        title: "campaning",
-      },
-      {
-        pageIndex: 0,
-        pathName: "",
-        questionIndex: 0,
-        title: "page",
-      },
-    ];
-  }
-
+const getPrevAndNextLocation = (location: ILocation): ILocation[] => {
   if (location.pageIndex === 0) {
     return [
       {
         pageIndex: 0,
-        pathName: "",
+        pathName: "survey",
         questionIndex: 0,
         title: "campaning",
       },
       {
         pageIndex: 1,
-        pathName: "",
+        pathName: "section",
         questionIndex: 0,
         title: "page",
       },
@@ -38,13 +21,13 @@ const getPrevAndNextLocation = (location: ILocation) => {
   return [
     {
       pageIndex: location.pageIndex - 1,
-      pathName: "",
+      pathName: "section",
       questionIndex: 0,
       title: "page",
     },
     {
       pageIndex: location.pageIndex + 1,
-      pathName: "",
+      pathName: "section",
       questionIndex: 0,
       title: "page",
     },
