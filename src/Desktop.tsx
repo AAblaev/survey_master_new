@@ -20,6 +20,7 @@ import {
 } from "./services/redux/types";
 import ProgressBar from "./components/common/ProgressBar";
 import GreetingPage from "./components/pages/GreetingPage";
+import bottomBtnRender from "./components/common/renderBottomBtns";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -94,83 +95,6 @@ const Desktop: React.FC<IDesktop> = ({
   // disqualificationPage,
 }) => {
   const { title, pathName } = location;
-
-  const bottomBtnRender = (location: ILocation) => {
-    const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
-    switch (location.pathName) {
-      case "greeting": {
-        return [
-          <Button
-            css={buttonCss}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "survey",
-                  title: "survey",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
-          >
-            {buttonStartCaption}
-          </Button>,
-        ];
-      }
-      case "survey": {
-        return [
-          <Button
-            css={buttonCss}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "section",
-                  title: "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
-          >
-            {buttonNextCaption}
-          </Button>,
-        ];
-      }
-
-      case "section": {
-        return [
-          <Button
-            css={buttonCss}
-            onClick={() =>
-              handleClick({
-                location: nextLocation,
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: true,
-              })
-            }
-          >
-            {buttonNextCaption}
-          </Button>,
-          <Button
-            css={buttonCss}
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
-          >
-            {buttonBackCaption}
-          </Button>,
-        ];
-      }
-    }
-  };
 
   useEffect(() => {
     fetchData();
@@ -250,14 +174,21 @@ const Desktop: React.FC<IDesktop> = ({
         </TransitionGroup>
       </div>
       <AppBar direction="bottom" fixed>
-        {bottomBtnRender(location)}
+        {bottomBtnRender({
+          location,
+          buttonStartCaption,
+          buttonNextCaption,
+          buttonBackCaption,
+          buttonFinishCaption,
+          handleClick,
+        })}
       </AppBar>
     </div>
   );
 };
 
 const mapStateToProps = (state: IState) => {
-  console.log("state", state);
+  // console.log("state", state);
 
   const { loading, error, location, slideMoveDirection, data, params } = state;
 
