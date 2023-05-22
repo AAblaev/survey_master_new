@@ -72,37 +72,34 @@ const ScaleView: React.FC<IScaleViewProps> = ({
   const smileys = getSmileys(options.length);
 
   return (
-    <FormControl css={rootCss}>
-      <FormLabel component="legend">{label}</FormLabel>
-      <div css={optionsCss(orientation, view)}>
-        {options.map((item, index) => {
-          const checked = selected !== null && selected.optionID === item.docID;
-          const beforeChecked = selectedIndex !== null && selectedIndex > index;
-          const resolvedChecked =
-            view === "stars" ? checked || beforeChecked : checked;
+    <div css={optionsCss(orientation, view)}>
+      {options.map((item, index) => {
+        const checked = selected !== null && selected.optionID === item.docID;
+        const beforeChecked = selectedIndex !== null && selectedIndex > index;
+        const resolvedChecked =
+          view === "stars" ? checked || beforeChecked : checked;
 
-          return (
-            <div
-              key={item.docID}
-              css={optionCss(resolvedChecked, view, colors[index])}
-              onClick={() => onClick(item)}
-            >
-              {view === "stars" ? (
-                resolvedChecked ? (
-                  <StarIcon />
-                ) : (
-                  <StarOutlineIcon />
-                )
-              ) : view === "table" || view === "color" ? (
-                item.title
-              ) : view === "smiles" || view === "smiles-monochrome" ? (
-                smileys[index]
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-    </FormControl>
+        return (
+          <div
+            key={item.docID}
+            css={optionCss(resolvedChecked, view, colors[index])}
+            onClick={() => onClick(item)}
+          >
+            {view === "stars" ? (
+              resolvedChecked ? (
+                <StarIcon />
+              ) : (
+                <StarOutlineIcon />
+              )
+            ) : view === "table" || view === "color" ? (
+              item.title
+            ) : view === "smiles" || view === "smiles-monochrome" ? (
+              smileys[index]
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

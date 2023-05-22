@@ -15,6 +15,7 @@ import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
 
 import { css } from "@emotion/react";
+import { Card } from "@material-ui/core";
 
 export type OwnProps = {
   key: number;
@@ -25,6 +26,10 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispathToProps>;
 
 type IQuestionProps = StateProps & OwnProps & DispatchProps;
+
+const cardCss = css`
+  padding: 20px;
+`;
 
 const Question: React.FC<IQuestionProps> = ({
   currentQuestionIndex,
@@ -110,10 +115,12 @@ const Question: React.FC<IQuestionProps> = ({
   };
 
   return (
-    <FormControl css={freeQuestionCss} focused={false}>
-      <FormLabel component="legend">{freeListLabel}</FormLabel>
-      {renderQuestionView(questionType)}
-    </FormControl>
+    <Card css={cardCss}>
+      <FormControl css={freeQuestionCss} focused={false}>
+        <FormLabel component="legend">{freeListLabel}</FormLabel>
+        {renderQuestionView(questionType)}
+      </FormControl>
+    </Card>
   );
 };
 

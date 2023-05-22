@@ -25,7 +25,7 @@ import bottomBtnRender from "./components/common/renderBottomBtns";
 export type IDesktop = ConnectedProps<typeof connector>;
 
 export const desctopCss = css`
-  background-color: #fff;
+  background-color: #e0e0e0;
   width: 100%;
   min-height: 100vh;
   position: relative;
@@ -238,7 +238,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };
