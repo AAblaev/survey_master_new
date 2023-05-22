@@ -24,7 +24,7 @@ const rootCss = (position: IProgressBarPosition, background: string) => {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
 
     position: ${position};
     background: ${background};
