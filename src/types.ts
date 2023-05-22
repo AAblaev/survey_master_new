@@ -42,7 +42,8 @@ export type IQuestion = {
   type: number; //???
   title: string;
   order: number;
-  comment: string | null;
+  comment: string;
+  hasComment: boolean;
   branchRules: IBranchRule[];
   quoteRules: IQuoteRule[];
   visibilityRules: IVisibilityRule[];
@@ -98,6 +99,7 @@ export type IDataType =
   | "paircompare"
   | "complex"
   | "scale"
+  | "html"
   | "default";
 
 export type IAnswer = {
