@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 
 export const freeQuestionCss = css`
+  width: 100%;
   & .MuiFormLabel-root {
     color: #000000;
     font-size: 1.3rem;

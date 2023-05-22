@@ -1,16 +1,17 @@
 import React from "react";
-import { connect, ConnectedProps, useDispatch } from "react-redux";
-import { Dispatch } from "redux";
-import { IPage, IState } from "../../types";
 
+import { IPage } from "../../types";
+
+import Question from "../questions";
 import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
-import FreeQuestion from "../questions/free/free";
-import SelectQuestion from "../questions/select/Select";
-import DropDownQuestion from "../questions/dropdown/DropDown";
-import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
-import FreeList from "../questions/free-list/free-list";
-import Scale from "../questions/scale/scale";
+import { DEFAULT_BACKGROUND_COLOR } from "../../consts/const";
+// import FreeQuestion from "../questions/free/free";
+// import SelectQuestion from "../questions/select/Select";
+// import DropDownQuestion from "../questions/dropdown/DropDown";
+// import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
+// import FreeList from "../questions/free-list/free-list";
+// import Scale from "../questions/scale/scale";
 
 // export type IPage = ConnectedProps<typeof connector>;
 
@@ -19,18 +20,49 @@ export type IPageProps = {
   pageIndex: number;
 };
 export const pageCss = css`
-  padding-right: 40px;
-  padding-left: 40px;
-  background-color: #fff;
+  background-color: ${DEFAULT_BACKGROUND_COLOR};
   display: flex;
   flex-direction: column;
+  padding-right: 40px;
+  padding-left: 40px;
+
+  // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
+  @media (min-width: 576px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  // Устройства Medium (планшеты, 768 пикселей и выше)
+  @media (min-width: 768px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  // Устройства Large (настольные компьютеры, 992 пикселей и выше)
+  @media (min-width: 992px) {
+    padding-right: 15%;
+    padding-left: 15%;
+  }
+
+  // Устройства X-Large (большие настольные компьютеры, 1200 пикселей и выше)
+  @media (min-width: 1200px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
+
+  // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
+  @media (min-width: 1400px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
 `;
 
-export const questionWrapperCss = css`
+export const questionListCss = css`
   display: flex;
   flex-direction: column;
   gap: 40px;
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
@@ -40,75 +72,10 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
   return (
     <div css={pageCss}>
       <Typography>{title}</Typography>
-      <div css={questionWrapperCss}>
-        {questions.map((q, index) => {
-          switch (q.config.dataType) {
-            case "free": {
-              return (
-                <FreeQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "freelist": {
-              return (
-                <FreeList
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "scale": {
-              return (
-                <Scale currentQuestionIndex={index} question={q} key={index} />
-              );
-            }
-
-            case "dropdown": {
-              return (
-                <DropDownQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "multidropdown": {
-              return (
-                <MultiDropDownQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "select":
-            case "multiselect": {
-              return (
-                <SelectQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            default: {
-              return (
-                <div key={index}>
-                  Данного типа вопроса нет {q.config.dataType}
-                </div>
-              );
-            }
-          }
-        })}
+      <div css={questionListCss}>
+        {questions.map((q, index) => (
+          <Question key={index} currentQuestionIndex={index} question={q} />
+        ))}
       </div>
     </div>
   );

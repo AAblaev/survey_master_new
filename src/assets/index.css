@@ -10,9 +10,34 @@ body {
 }
 
 .progress {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  /* padding-top: 20px;
+  padding-bottom: 20px; */
+  margin-top: 84px;
   width: 100%;
+  @media (min-width: 576px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  @media (min-width: 768px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  @media (min-width: 992px) {
+    padding-right: 15%;
+    padding-left: 15%;
+  }
+
+  @media (min-width: 1200px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
+
+  @media (min-width: 1400px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
 }
 
 .questionSize {

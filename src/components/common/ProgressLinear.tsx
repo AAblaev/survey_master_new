@@ -14,16 +14,14 @@ const ProgressLinear: React.FC<IProgressLinearProps> = ({
 }) => {
   const progress = Math.floor((allQuestionsDoneCount / allQuestionCount) * 100);
   return (
-    <div>
-      <div className="progress">
-        <Typography variant="body1" gutterBottom>
-          Общий прогресс
-        </Typography>
-        <Progress strokeColor={DEFAULT_STROKE} percent={progress} />
-        <Typography variant="caption" display="block" gutterBottom>
-          {`Выполнено вопросов: ${allQuestionsDoneCount}/${allQuestionCount}`}
-        </Typography>
-      </div>
+    <div className="progress">
+      <Typography variant="body1" gutterBottom>
+        Общий прогресс
+      </Typography>
+      <Progress strokeColor={DEFAULT_STROKE} percent={progress} />
+      <Typography variant="caption" display="block" gutterBottom>
+        {`Выполнено вопросов: ${allQuestionsDoneCount}/${allQuestionCount}`}
+      </Typography>
     </div>
   );
 };

@@ -1,10 +1,16 @@
+import { AxiosError } from "axios";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import { IData } from "../../types";
-// import { fakeData } from "../../utils/fakeData";
+import { fakeData } from "../../utils/fakeData";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { fethData, sendData } from "../api";
 import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
-import { setLoading, setNewData, setSurveyUid } from "../redux/actions";
+import {
+  setError,
+  setLoading,
+  setNewData,
+  setSurveyUid,
+} from "../redux/actions";
 import { selectAnswers, selectSurveyID, selectUid } from "../redux/selectors";
 import {
   FETCH_SURVEY_DATA,
@@ -41,8 +47,9 @@ function* fetchSurveyData() {
     yield put(setLoading(false));
   } catch (e) {
     console.log("Error fetchSurveyData");
-    // const error = e as AxiosError;
-    // yield put(setError({ error: { status: true, message: error.message } }));
+    yield put(setLoading(false));
+    const error = e as AxiosError;
+    yield put(setError({ status: true, message: error.message }));
   }
 }
 

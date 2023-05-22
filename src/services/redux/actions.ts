@@ -33,7 +33,7 @@ export const setLoading = (payload: boolean) =>
     payload,
   };
 
-export const setError = (payload: string) =>
+export const setError = (payload: { status: boolean; message: string }) =>
   <const>{
     type: IS_ERROR,
     payload,

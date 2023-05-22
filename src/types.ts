@@ -17,6 +17,8 @@ export type IData = {
   greetingsPage: string;
   isShowCompletionPage: boolean;
   isShowDisqualificationPage: boolean;
+  isShowQuestionsCount: boolean;
+  isShowProgressbar: boolean;
   disqualificationPage: string;
   completionPage: string;
   limitTime: number;
@@ -48,6 +50,12 @@ export type IQuestion = {
   quoteRules: IQuoteRule[];
   visibilityRules: IVisibilityRule[];
   config: IConfig;
+  isRequired: boolean;
+  hasOtherAnswer: boolean;
+  hasNothingAnswer: boolean;
+  hasUnableAnswer: boolean;
+  hint?: string;
+  scaleType?: number;
 };
 
 export type IOption = {
@@ -71,6 +79,8 @@ export type IConfig = {
   timeLimit: number;
   title: string;
   options?: IOption[];
+  view?: string;
+  orientation?: string;
   //
   isLimited?: boolean;
   isLimitedValue?: boolean;
