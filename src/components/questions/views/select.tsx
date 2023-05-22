@@ -16,6 +16,13 @@ export const freeListItemLabelCss = css`
   color: #787878 !important;
 `;
 
+export const formGroupCss = css`
+  &.MuiFormGroup-root {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
 type ISelectViewProps = {
   currentQuestionIndex: number;
   question: IQuestion;
@@ -54,7 +61,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
   })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
   return (
-    <FormGroup>
+    <FormGroup css={formGroupCss}>
       {options.map((item, index) => {
         const isChecked = isSelected(item.docID);
         const handleChange = () => {
