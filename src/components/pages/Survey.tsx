@@ -1,9 +1,8 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { IPage, IState } from "../../types";
+import { IState } from "../../types";
 import { Dispatch } from "redux";
 import { css } from "@emotion/react";
-import ProgressLinear from "../common/ProgressLinear";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -18,8 +17,8 @@ type ISurvey = ConnectedProps<typeof connector>;
 
 export const pageCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
-  padding-right: 40px;
-  padding-left: 40px;
+  margin-bottom: 20px;
+
   // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
   @media (min-width: 576px) {
     padding-right: 5%;
