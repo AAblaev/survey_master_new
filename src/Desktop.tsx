@@ -5,10 +5,16 @@ import Button from "@material-ui/core/Button";
 
 import { css } from "@emotion/react";
 import "./assets/index.css";
-import { ILocation, IPathName, ISlideMoveDirection, IState } from "./types";
+import {
+  ILocation,
+  IPage,
+  IPathName,
+  ISlideMoveDirection,
+  IState,
+} from "./types";
 import { Dispatch } from "redux";
 import AppBar from "./components/common/AppBar";
-import { TIMEOUT_VALUE } from "./consts/const";
+import { DEFAULT_BACKGROUND_COLOR, TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
@@ -21,11 +27,12 @@ import {
 import ProgressBar from "./components/common/ProgressBar";
 import GreetingPage from "./components/pages/GreetingPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
+import ProgressLinear from "./components/common/ProgressLinear";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
 export const desctopCss = css`
-  background-color: #e0e0e0;
+  background-color: ${DEFAULT_BACKGROUND_COLOR};
   width: 100%;
   min-height: 100vh;
   position: relative;
@@ -62,7 +69,6 @@ export const desctopCss = css`
 
 export const contentCss = css`
   flex: 1 0 auto;
-  padding-top: 64px;
   padding-bottom: 64px;
   width: 100%;
 `;
@@ -75,6 +81,8 @@ export const buttonCss = css`
 `;
 
 const Desktop: React.FC<IDesktop> = ({
+  pages,
+  userAnswers,
   loading,
   error,
   emptyData,
@@ -127,6 +135,15 @@ const Desktop: React.FC<IDesktop> = ({
     return null;
   };
 
+  const allQuestionCount = pages.reduce(
+    (acc: number, page: IPage) => (acc += page.questions.length),
+    0
+  );
+
+  const allQuestionsDoneCount = Object.values(userAnswers).filter(
+    (ans) => ans.values.length !== 0
+  ).length;
+
   return (
     <div css={desctopCss}>
       {loading && (
@@ -156,6 +173,12 @@ const Desktop: React.FC<IDesktop> = ({
           </Button>
         )}
       </AppBar>
+      {pathName !== "greeting" && (
+        <ProgressLinear
+          allQuestionCount={allQuestionCount}
+          allQuestionsDoneCount={allQuestionsDoneCount}
+        />
+      )}
       <div css={contentCss}>
         <TransitionGroup
           childFactory={(child) =>
@@ -190,7 +213,15 @@ const Desktop: React.FC<IDesktop> = ({
 const mapStateToProps = (state: IState) => {
   // console.log("state", state);
 
-  const { loading, error, location, slideMoveDirection, data, params } = state;
+  const {
+    loading,
+    error,
+    location,
+    slideMoveDirection,
+    data,
+    params,
+    userAnswers,
+  } = state;
 
   const emptyData = !Boolean(data);
   const pages = data ? data.pages : [];
@@ -204,6 +235,8 @@ const mapStateToProps = (state: IState) => {
   const buttonFinishCaption = data ? data.buttonFinishCaption : "";
   const buttonNextCaption = data ? data.buttonNextCaption : "";
   return {
+    pages,
+    userAnswers,
     loading,
     error,
     location,
@@ -238,7 +271,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };

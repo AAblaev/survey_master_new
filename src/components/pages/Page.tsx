@@ -5,6 +5,7 @@ import { IPage } from "../../types";
 import Question from "../questions";
 import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
+import { DEFAULT_BACKGROUND_COLOR } from "../../consts/const";
 // import FreeQuestion from "../questions/free/free";
 // import SelectQuestion from "../questions/select/Select";
 // import DropDownQuestion from "../questions/dropdown/DropDown";
@@ -19,7 +20,7 @@ export type IPageProps = {
   pageIndex: number;
 };
 export const pageCss = css`
-  background-color: #e0e0e0;
+  background-color: ${DEFAULT_BACKGROUND_COLOR};
   display: flex;
   flex-direction: column;
   padding-right: 40px;
@@ -51,8 +52,8 @@ export const pageCss = css`
 
   // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
   @media (min-width: 1400px) {
-    padding-right: 30%;
-    padding-left: 30%;
+    padding-right: 20%;
+    padding-left: 20%;
   }
 `;
 
@@ -61,6 +62,7 @@ export const questionListCss = css`
   flex-direction: column;
   gap: 40px;
   margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {

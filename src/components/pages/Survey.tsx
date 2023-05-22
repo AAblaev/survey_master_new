@@ -11,15 +11,44 @@ import { Progress } from "antd";
 import Typography from "@material-ui/core/Typography";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Button from "@material-ui/core/Button";
-import { DEFAULT_STROKE } from "../../consts/const";
+import { DEFAULT_STROKE, DEFAULT_BACKGROUND_COLOR } from "../../consts/const";
 import { changeCurretLocation } from "../../services/redux/actions";
 
 type ISurvey = ConnectedProps<typeof connector>;
 
 export const pageCss = css`
-  background-color: #fff;
+  background-color: ${DEFAULT_BACKGROUND_COLOR};
   padding-right: 40px;
   padding-left: 40px;
+  // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
+  @media (min-width: 576px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  // Устройства Medium (планшеты, 768 пикселей и выше)
+  @media (min-width: 768px) {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+
+  // Устройства Large (настольные компьютеры, 992 пикселей и выше)
+  @media (min-width: 992px) {
+    padding-right: 15%;
+    padding-left: 15%;
+  }
+
+  // Устройства X-Large (большие настольные компьютеры, 1200 пикселей и выше)
+  @media (min-width: 1200px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
+
+  // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
+  @media (min-width: 1400px) {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
 `;
 
 export const accordionCss = css`
@@ -36,21 +65,8 @@ export const accordionCss = css`
 `;
 
 const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
-  const allQuestionCount = pages.reduce(
-    (acc: number, page: IPage) => (acc += page.questions.length),
-    0
-  );
-
-  const allQuestionsDoneCount = Object.values(userAnswers).filter(
-    (ans) => ans.values.length !== 0
-  ).length;
-
   return (
     <div css={pageCss}>
-      <ProgressLinear
-        allQuestionCount={allQuestionCount}
-        allQuestionsDoneCount={allQuestionsDoneCount}
-      />
       <div>
         {pages.map((page, index) => {
           const allQuestionCount = page.questions.length;

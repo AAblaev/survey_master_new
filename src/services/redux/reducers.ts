@@ -7,6 +7,7 @@ import {
   SET_SURVEY_UID,
   SET_USER_ANSWER,
   IS_LOADING,
+  IS_ERROR,
   // IS_ERROR,
 } from "./types";
 
@@ -33,6 +34,10 @@ export const reducer = (state: IState = initialState, action: IAction) => {
 
     case IS_LOADING: {
       return { ...state, loading: action.payload };
+    }
+
+    case IS_ERROR: {
+      return { ...state, error: action.payload };
     }
 
     case SET_SURVEY_UID: {
