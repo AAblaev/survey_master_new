@@ -1,16 +1,16 @@
 import React from "react";
-import { connect, ConnectedProps, useDispatch } from "react-redux";
-import { Dispatch } from "redux";
-import { IPage, IState } from "../../types";
 
+import { IPage } from "../../types";
+
+import Question from "../questions";
 import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
-import FreeQuestion from "../questions/free/free";
-import SelectQuestion from "../questions/select/Select";
-import DropDownQuestion from "../questions/dropdown/DropDown";
-import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
-import FreeList from "../questions/free-list/free-list";
-import Scale from "../questions/scale/scale";
+// import FreeQuestion from "../questions/free/free";
+// import SelectQuestion from "../questions/select/Select";
+// import DropDownQuestion from "../questions/dropdown/DropDown";
+// import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
+// import FreeList from "../questions/free-list/free-list";
+// import Scale from "../questions/scale/scale";
 
 // export type IPage = ConnectedProps<typeof connector>;
 
@@ -26,7 +26,7 @@ export const pageCss = css`
   flex-direction: column;
 `;
 
-export const questionWrapperCss = css`
+export const questionListCss = css`
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -40,75 +40,10 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
   return (
     <div css={pageCss}>
       <Typography>{title}</Typography>
-      <div css={questionWrapperCss}>
-        {questions.map((q, index) => {
-          switch (q.config.dataType) {
-            case "free": {
-              return (
-                <FreeQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "freelist": {
-              return (
-                <FreeList
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "scale": {
-              return (
-                <Scale currentQuestionIndex={index} question={q} key={index} />
-              );
-            }
-
-            case "dropdown": {
-              return (
-                <DropDownQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "multidropdown": {
-              return (
-                <MultiDropDownQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            case "select":
-            case "multiselect": {
-              return (
-                <SelectQuestion
-                  currentQuestionIndex={index}
-                  question={q}
-                  key={index}
-                />
-              );
-            }
-
-            default: {
-              return (
-                <div key={index}>
-                  Данного типа вопроса нет {q.config.dataType}
-                </div>
-              );
-            }
-          }
-        })}
+      <div css={questionListCss}>
+        {questions.map((q, index) => (
+          <Question key={index} currentQuestionIndex={index} question={q} />
+        ))}
       </div>
     </div>
   );
