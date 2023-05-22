@@ -30,8 +30,20 @@ module.exports = ({ mode } = { mode: "production" }) => {
           use: ["url-loader", "file-loader"],
         },
         {
-          test: /\.(png|jpg|svg|gif)$/,
+          test: /\.(png|jpg|gif)$/,
           use: ["file-loader"],
+        },
+        {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: "@svgr/webpack",
+              options: { ext: "tsx" },
+            },
+            {
+              loader: "file-loader",
+            },
+          ],
         },
         {
           test: /\.css$/,
