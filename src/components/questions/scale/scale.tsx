@@ -16,12 +16,14 @@ type IStateProps = ReturnType<typeof mapStateToProps>;
 type IDispatchProps = ReturnType<typeof mapDispathToProps>;
 type IScaleProps = IStateProps & IDispatchProps & ICommonQuestionProps;
 
-export type IViewType =
+export type IView =
   | "stars"
   | "table"
   | "color"
   | "smiles"
   | "smiles-monochrome";
+
+export type IOrientation = "horizontal" | "vertical";
 
 const Scale: React.FC<IScaleProps> = ({
   currentQuestionIndex,
@@ -38,8 +40,8 @@ const Scale: React.FC<IScaleProps> = ({
     selected !== null
       ? options.findIndex((item) => item.docID === selected.optionID)
       : null;
-  const horizontal = true;
-  const viewType = "smiles-monochrome" as IViewType;
+  const orientation = "horizontal" as IOrientation;
+  const view = "smiles-monochrome" as IView;
 
   const onClick = (item: typeof options[0]) => {
     const values =
@@ -62,28 +64,28 @@ const Scale: React.FC<IScaleProps> = ({
   return (
     <FormControl css={rootCss}>
       <FormLabel component="legend">{label}</FormLabel>
-      <div css={optionsCss(horizontal, viewType)}>
+      <div css={optionsCss(orientation, view)}>
         {options.map((item, index) => {
           const checked = selected !== null && selected.optionID === item.docID;
           const beforeChecked = selectedIndex !== null && selectedIndex > index;
           const resolvedChecked =
-            viewType === "stars" ? checked || beforeChecked : checked;
+            view === "stars" ? checked || beforeChecked : checked;
 
           return (
             <div
               key={item.docID}
-              css={optionCss(resolvedChecked, viewType, colors[index])}
+              css={optionCss(resolvedChecked, view, colors[index])}
               onClick={() => onClick(item)}
             >
-              {viewType === "stars" ? (
+              {view === "stars" ? (
                 resolvedChecked ? (
                   <StarIcon />
                 ) : (
                   <StarOutlineIcon />
                 )
-              ) : viewType === "table" || viewType === "color" ? (
+              ) : view === "table" || view === "color" ? (
                 item.title
-              ) : viewType === "smiles" || viewType === "smiles-monochrome" ? (
+              ) : view === "smiles" || view === "smiles-monochrome" ? (
                 smileys[index]
               ) : null}
             </div>

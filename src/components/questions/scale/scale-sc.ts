@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { IViewType } from "./scale";
+import { IOrientation, IView } from "./scale";
 
 export const rootCss = css`
   & .MuiFormLabel-root {
@@ -9,11 +9,11 @@ export const rootCss = css`
   }
 `;
 
-export const optionsCss = (horizontal: boolean, viewType: IViewType) => {
-  const gap = viewType === "table" ? 4 : 0;
+export const optionsCss = (orientation: IOrientation, view: IView) => {
+  const gap = view === "table" ? 4 : 0;
   return css`
     display: flex;
-    flex-direction: ${horizontal ? "row" : "column"};
+    flex-direction: ${orientation === "horizontal" ? "row" : "column"};
     gap: ${gap}px;
     flex-wrap: wrap;
   `;
@@ -21,7 +21,7 @@ export const optionsCss = (horizontal: boolean, viewType: IViewType) => {
 
 export const optionCss = (
   selected: boolean,
-  viewType: IViewType,
+  view: IView,
   highlightColor: string
 ) => {
   let color = "transparent";
@@ -31,25 +31,25 @@ export const optionCss = (
   let boxShadow = "none";
   let flex = "0 1 auto";
 
-  if (viewType === "table") {
+  if (view === "table") {
     color = selected ? "#fff" : "inherit";
     backgroundColor = selected ? "#46acaf" : "transparent";
     borderWidth = 1;
     flex = "1 1 0%";
-  } else if (viewType === "color") {
+  } else if (view === "color") {
     color = "inherit";
     backgroundColor = highlightColor;
     boxShadow = selected
       ? "#46acaf 0px 0px 0px 0.5em inset"
       : "#46acaf 0px 0px 0px 0em inset";
     flex = "1 1 0%";
-  } else if (viewType === "stars") {
+  } else if (view === "stars") {
     color = selected ? "gold" : "#46acaf";
     justifyContent = "flex-start";
-  } else if (viewType === "smiles") {
+  } else if (view === "smiles") {
     color = selected ? "#fff" : highlightColor;
     backgroundColor = selected ? "#46acaf" : "transparent";
-  } else if (viewType === "smiles-monochrome") {
+  } else if (view === "smiles-monochrome") {
     color = selected ? "#fff" : "#46acaf";
     backgroundColor = selected ? "#46acaf" : "transparent";
   }
