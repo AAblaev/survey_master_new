@@ -17,6 +17,7 @@ import SelectView from "./views/select";
 import { css } from "@emotion/react";
 import { Card, Typography } from "@material-ui/core";
 import { PRIMARY_COLOR } from "../../consts/const";
+import Html from "./views/html";
 
 export type OwnProps = {
   key: number;
@@ -45,6 +46,17 @@ const titleTextCss = css`
   font-size: 1.2rem;
 `;
 
+const viewDict = {
+  free: FreeView,
+  freelist: FreeListView,
+  dropdown: DropDownView,
+  multidropdown: MultiDropDownView,
+  scale: ScaleView,
+  select: SelectView,
+  multiselect: SelectView,
+  html: Html,
+};
+
 const Question: React.FC<IQuestionProps> = ({
   currentQuestionIndex,
   question,
@@ -52,80 +64,9 @@ const Question: React.FC<IQuestionProps> = ({
   setAnswer,
 }) => {
   const { title, config } = question;
-  const questionType = config.dataType;
-
-  const renderQuestionView = (questionType: IDataType) => {
-    switch (questionType) {
-      case "free": {
-        return (
-          <FreeView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "freelist": {
-        return (
-          <FreeListView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "dropdown": {
-        return (
-          <DropDownView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "multidropdown": {
-        return (
-          <MultiDropDownView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-      case "scale": {
-        return (
-          <ScaleView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-      case "select":
-      case "multiselect": {
-        return (
-          <SelectView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      default: {
-        return <div>Данного типа вопроса нет {questionType}</div>;
-      }
-    }
-  };
+  const questionType = config.dataType as keyof typeof viewDict;
+  const ViewComponent = viewDict[questionType];
+  const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
 
   return (
     <div>
@@ -136,7 +77,16 @@ const Question: React.FC<IQuestionProps> = ({
 
       <Card css={cardCss}>
         <FormControl css={freeQuestionCss} focused={false}>
-          {renderQuestionView(questionType)}
+          {isRealisedTypeOfQuestion ? (
+            <ViewComponent
+              currentQuestionIndex={currentQuestionIndex}
+              question={question}
+              userAnswer={userAnswer as IAnswer}
+              setAnswer={setAnswer}
+            />
+          ) : (
+            <div>Данного типа вопроса нет {questionType}</div>
+          )}
         </FormControl>
       </Card>
     </div>
