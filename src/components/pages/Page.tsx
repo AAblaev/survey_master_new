@@ -1,24 +1,15 @@
 import React from "react";
-
-import { IPage } from "../../types";
-
-import Question from "../questions";
-import { css } from "@emotion/react";
 import { Typography } from "@material-ui/core";
-import { DEFAULT_BACKGROUND_COLOR } from "../../consts/const";
-// import FreeQuestion from "../questions/free/free";
-// import SelectQuestion from "../questions/select/Select";
-// import DropDownQuestion from "../questions/dropdown/DropDown";
-// import MultiDropDownQuestion from "../questions/multidropdown/MultiDropDown";
-// import FreeList from "../questions/free-list/free-list";
-// import Scale from "../questions/scale/scale";
-
-// export type IPage = ConnectedProps<typeof connector>;
+import { css } from "@emotion/react";
+import Question from "../questions";
+import { IPage } from "../../types";
+import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "../../consts/const";
 
 export type IPageProps = {
   page: IPage;
   pageIndex: number;
 };
+
 export const pageCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
   display: flex;
@@ -65,13 +56,21 @@ export const questionListCss = css`
   margin-bottom: 20px;
 `;
 
+export const titleCss = css`
+  &.MuiTypography-body1 {
+    font-size: 1.2rem;
+    color: ${PRIMARY_COLOR};
+    font-weight: bold;
+  }
+`;
+
 const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
   const questions = page.questions ? page.questions : [];
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
 
   return (
     <div css={pageCss}>
-      <Typography>{title}</Typography>
+      <Typography css={titleCss}>{title}</Typography>
       <div css={questionListCss}>
         {questions.map((q, index) => (
           <Question key={index} currentQuestionIndex={index} question={q} />
@@ -82,20 +81,3 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
 };
 
 export default Page;
-
-// const mapStateToProps = (state: IState) => {
-//   const { location, data } = state;
-//   const emptyData = !Boolean(data);
-//   const pages = data ? data.pages : [];
-//   const { pageIndex } = location;
-//   const currentPage = pages[pageIndex];
-//
-//   return {
-//     page: currentPage,
-//     pageIndex,
-//   };
-// };
-//
-// const connector = connect(mapStateToProps);
-//
-// export default connector(Page);

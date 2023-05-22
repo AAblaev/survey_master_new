@@ -3,12 +3,13 @@ import { AppBar as MaterialAppBar } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 
 import { css } from "@emotion/react";
+import { PRIMARY_COLOR } from "../../consts/const";
 
 export const toolbarCss = (direction: IAppBarDirection) => css`
   display: flex;
   flex-direction: ${direction === "bottom" ? "row-reverse" : "row"};
   justify-content: space-between;
-  background-color: #46acaf;
+  background-color: ${PRIMARY_COLOR};
 `;
 
 export const bottomCss = css`

@@ -37,6 +37,7 @@ const bottomBtnRender = ({
     case "greeting": {
       return [
         <Button
+          key="1"
           css={buttonCss}
           onClick={() =>
             handleClick({
@@ -58,6 +59,7 @@ const bottomBtnRender = ({
     case "survey": {
       return [
         <Button
+          key="1"
           css={buttonCss}
           onClick={() =>
             handleClick({
@@ -80,6 +82,7 @@ const bottomBtnRender = ({
     case "section": {
       return [
         <Button
+          key="1"
           css={buttonCss}
           onClick={() =>
             handleClick({
@@ -92,6 +95,7 @@ const bottomBtnRender = ({
           {buttonNextCaption}
         </Button>,
         <Button
+          key="2"
           css={buttonCss}
           onClick={() =>
             handleClick({

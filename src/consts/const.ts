@@ -11,4 +11,5 @@ export const DEFAULT_STROKE = {
   "100%": "#87d068",
 };
 
-export const DEFAULT_BACKGROUND_COLOR = "#e0e0e0";
+export const DEFAULT_BACKGROUND_COLOR = "#F9F9F9";
+export const PRIMARY_COLOR = "#46acaf";

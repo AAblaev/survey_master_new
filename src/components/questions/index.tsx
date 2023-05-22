@@ -15,7 +15,9 @@ import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
 
 import { css } from "@emotion/react";
-import { Card } from "@material-ui/core";
+import { Card, Typography } from "@material-ui/core";
+import { PRIMARY_COLOR } from "../../consts/const";
+import Html from "./views/html";
 
 export type OwnProps = {
   key: number;
@@ -30,6 +32,30 @@ type IQuestionProps = StateProps & OwnProps & DispatchProps;
 const cardCss = css`
   padding: 20px;
 `;
+const titleCss = css`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+const titleCountCss = css`
+  font-size: 1.2rem;
+  color: ${PRIMARY_COLOR};
+  font-weight: bold;
+`;
+const titleTextCss = css`
+  font-size: 1.2rem;
+`;
+
+const viewDict = {
+  free: FreeView,
+  freelist: FreeListView,
+  dropdown: DropDownView,
+  multidropdown: MultiDropDownView,
+  scale: ScaleView,
+  select: SelectView,
+  multiselect: SelectView,
+  html: Html,
+};
 
 const Question: React.FC<IQuestionProps> = ({
   currentQuestionIndex,
@@ -38,89 +64,32 @@ const Question: React.FC<IQuestionProps> = ({
   setAnswer,
 }) => {
   const { title, config } = question;
-  const questionType = config.dataType;
-  const freeListLabel = `${currentQuestionIndex + 1}. ${title}`;
-
-  const renderQuestionView = (questionType: IDataType) => {
-    switch (questionType) {
-      case "free": {
-        return (
-          <FreeView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "freelist": {
-        return (
-          <FreeListView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "dropdown": {
-        return (
-          <DropDownView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      case "multidropdown": {
-        return (
-          <MultiDropDownView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-      case "scale": {
-        return (
-          <ScaleView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-      case "select":
-      case "multiselect": {
-        return (
-          <SelectView
-            currentQuestionIndex={currentQuestionIndex}
-            question={question}
-            userAnswer={userAnswer as IAnswer}
-            setAnswer={setAnswer}
-          />
-        );
-      }
-
-      default: {
-        return <div>Данного типа вопроса нет {questionType}</div>;
-      }
-    }
-  };
+  const questionType = config.dataType as keyof typeof viewDict;
+  const ViewComponent = viewDict[questionType];
+  const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
 
   return (
-    <Card css={cardCss}>
-      <FormControl css={freeQuestionCss} focused={false}>
-        <FormLabel component="legend">{freeListLabel}</FormLabel>
-        {renderQuestionView(questionType)}
-      </FormControl>
-    </Card>
+    <div>
+      <div css={titleCss}>
+        <div css={titleCountCss}>{currentQuestionIndex + 1}.</div>
+        <div css={titleTextCss}>{title}</div>
+      </div>
+
+      <Card css={cardCss}>
+        <FormControl css={freeQuestionCss} focused={false}>
+          {isRealisedTypeOfQuestion ? (
+            <ViewComponent
+              currentQuestionIndex={currentQuestionIndex}
+              question={question}
+              userAnswer={userAnswer as IAnswer}
+              setAnswer={setAnswer}
+            />
+          ) : (
+            <div>Данного типа вопроса нет {questionType}</div>
+          )}
+        </FormControl>
+      </Card>
+    </div>
   );
 };
 
@@ -129,7 +98,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   const { question } = props;
   const { docID } = question;
 
-  return { userAnswer: userAnswers[docID] ? userAnswers[docID] : [] };
+  return { userAnswer: userAnswers[docID] ? userAnswers[docID] : null };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
