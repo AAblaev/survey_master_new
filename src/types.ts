@@ -1,9 +1,9 @@
-export type IPathname =
-  | "/"
-  | "/campaning"
-  | "/section"
-  | "/question"
-  | "/answer";
+// export type IPathname =
+//   | "/"
+//   | "/campaning"
+//   | "/section"
+//   | "/question"
+//   | "/answer";
 
 export type IData = {
   docID: number;
@@ -21,6 +21,10 @@ export type IData = {
   completionPage: string;
   limitTime: number;
   pages: IPage[];
+  buttonBackCaption: string;
+  buttonFinishCaption: string;
+  buttonNextCaption: string;
+  buttonStartCaption: string;
 };
 
 export type IPage = {
@@ -119,9 +123,10 @@ export type IParams = {
 
 export type IParsedData = IData;
 export type IPageName = string;
+export type IPathName = "greeting" | "survey" | "section" | "completion";
 
 export type ILocation = {
-  pathName: string;
+  pathName: IPathName;
   title: string;
   pageIndex: number;
   questionIndex: number;

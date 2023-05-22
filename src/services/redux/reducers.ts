@@ -6,6 +6,8 @@ import {
   SET_NEW_DATA,
   SET_SURVEY_UID,
   SET_USER_ANSWER,
+  IS_LOADING,
+  // IS_ERROR,
 } from "./types";
 
 const initialState: IState = {
@@ -13,8 +15,8 @@ const initialState: IState = {
   error: { message: "", status: false },
   data: null,
   location: {
-    pathName: "/campaning",
-    title: "campaning",
+    pathName: "greeting",
+    title: "greeting",
     pageIndex: 0,
     questionIndex: 0,
   },
@@ -27,6 +29,10 @@ export const reducer = (state: IState = initialState, action: IAction) => {
   switch (action.type) {
     case SET_NEW_DATA: {
       return { ...state, data: action.payload };
+    }
+
+    case IS_LOADING: {
+      return { ...state, loading: action.payload };
     }
 
     case SET_SURVEY_UID: {

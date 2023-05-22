@@ -4,8 +4,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 
 import { css } from "@emotion/react";
 
-export const toolbarCss = css`
+export const toolbarCss = (direction: IAppBarDirection) => css`
   display: flex;
+  flex-direction: ${direction === "bottom" ? "row-reverse" : "row"};
   justify-content: space-between;
   background-color: #46acaf;
 `;
@@ -39,7 +40,7 @@ const AppBar: React.FC<IAppBarProps> = ({ children, direction, fixed }) => {
       css={appBarCss(direction)}
       position={fixed ? "fixed" : "static"}
     >
-      <Toolbar css={toolbarCss}>{children}</Toolbar>
+      <Toolbar css={toolbarCss(direction)}>{children}</Toolbar>
     </MaterialAppBar>
   );
 };
