@@ -27,13 +27,15 @@ import ProgressBar from "./components/common/ProgressBar";
 import GreetingPage from "./components/pages/GreetingPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
 export const desctopCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
   width: 100%;
-  min-height: 100vh;
+  // min-height: 100vh;
+  height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -68,9 +70,13 @@ export const desctopCss = css`
 
 export const contentCss = css`
   flex: 1 0 auto;
-  margin-top: 84px;
-  margin-bottom: 64px;
   width: 100%;
+  margin: 56px 0;
+  height: calc(100% - 112px);
+  @media (min-width: 600px) {
+    margin: 64px 0;
+    height: calc(100% - 128px);
+  }
 `;
 
 export const buttonCss = css`
@@ -179,28 +185,30 @@ const Desktop: React.FC<IDesktop> = ({
       </AppBar>
 
       <div css={contentCss}>
-        {pathName !== "greeting" && (
-          <ProgressLinear
-            allQuestionCount={allQuestionCount}
-            allQuestionsDoneCount={allQuestionsDoneCount}
-          />
-        )}
-        <TransitionGroup
-          css={transitionGroupCss}
-          childFactory={(child) =>
-            React.cloneElement(child, {
-              classNames: slideMoveDirection,
-            })
-          }
-        >
-          <CSSTransition
-            key={title + location.pageIndex}
-            classNames="left-to-right"
-            timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
+        <PerfectScrollbar>
+          {pathName !== "greeting" && (
+            <ProgressLinear
+              allQuestionCount={allQuestionCount}
+              allQuestionsDoneCount={allQuestionsDoneCount}
+            />
+          )}
+          <TransitionGroup
+            css={transitionGroupCss}
+            childFactory={(child) =>
+              React.cloneElement(child, {
+                classNames: slideMoveDirection,
+              })
+            }
           >
-            {slideRender(pathName)}
-          </CSSTransition>
-        </TransitionGroup>
+            <CSSTransition
+              key={title + location.pageIndex}
+              classNames="left-to-right"
+              timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
+            >
+              {slideRender(pathName)}
+            </CSSTransition>
+          </TransitionGroup>
+        </PerfectScrollbar>
       </div>
       <AppBar direction="bottom" fixed>
         {bottomBtnRender({

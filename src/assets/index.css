@@ -10,10 +10,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  height: 100%;
+}
+
 .progress {
   /* padding-top: 20px;
   padding-bottom: 20px; */
   width: 100%;
+  margin-top: 20px;
   @media (min-width: 576px) {
     padding-right: 5%;
     padding-left: 5%;

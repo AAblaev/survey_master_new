@@ -9,7 +9,7 @@ const greetingPageCss = css`
   color: #000000;
   font-size: 1.2rem;
   font-weight: 300;
-  margin: 20px;
+  // margin: 20px;
 
   // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
   @media (min-width: 576px) {
