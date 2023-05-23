@@ -2,10 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import TextField from "@material-ui/core/TextField";
 import { setAnswer } from "../../services/redux/actions";
-import { IAnswer, IDataType, IQuestion, IState } from "../../types";
+import { IAnswer, IQuestion, IState } from "../../types";
 import { freeQuestionCss } from "./sc";
 import FreeView from "./views/free";
 import FreeListView from "./views/free-list";
@@ -15,7 +13,7 @@ import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
 
 import { css } from "@emotion/react";
-import { Card, Typography } from "@material-ui/core";
+import { Card } from "@material-ui/core";
 import { PRIMARY_COLOR } from "../../consts/const";
 import Html from "./views/html";
 
@@ -29,8 +27,10 @@ export type DispatchProps = ReturnType<typeof mapDispathToProps>;
 
 type IQuestionProps = StateProps & OwnProps & DispatchProps;
 
-const cardCss = css`
-  padding: 20px;
+const cardCss = (needPadding: boolean) => css`
+  ${needPadding && `padding: 20px;`}
+  background-color: #fff;
+  border: 1px solid #bdbdbd;
 `;
 const titleCss = css`
   display: flex;
@@ -67,6 +67,7 @@ const Question: React.FC<IQuestionProps> = ({
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
+  const needPadding = questionType !== "scale";
 
   return (
     <div>
@@ -75,7 +76,7 @@ const Question: React.FC<IQuestionProps> = ({
         <div css={titleTextCss}>{title}</div>
       </div>
 
-      <Card css={cardCss}>
+      <div css={cardCss(needPadding)}>
         <FormControl css={freeQuestionCss} focused={false}>
           {isRealisedTypeOfQuestion ? (
             <ViewComponent
@@ -88,7 +89,7 @@ const Question: React.FC<IQuestionProps> = ({
             <div>Данного типа вопроса нет {questionType}</div>
           )}
         </FormControl>
-      </Card>
+      </div>
     </div>
   );
 };
