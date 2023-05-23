@@ -41,9 +41,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
   const options = config.options!;
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
-  const valuesArr = userAnswerExist
-    ? (userAnswer as IAnswer).values.filter((v) => v.optionID !== -2)
-    : [];
+  const valuesArr = userAnswerExist ? (userAnswer as IAnswer).values : [];
   const valuesIdArr: number[] = userAnswerExist
     ? valuesArr.map((item) => item.optionID)
     : [];

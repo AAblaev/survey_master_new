@@ -67,7 +67,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       onChange={(e) => {
         setAnswer({
           questionID: docID,
-          values: [{ value: e.target.value, optionID: docID }],
+          values: [{ value: e.target.value, optionID: 0 }],
         });
       }}
     />

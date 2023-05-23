@@ -8,14 +8,15 @@ import {
 } from "@material-ui/core";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer } from "../../../types";
+import { EXTRA_ANSWER } from "../../../consts/const";
 
-export type INotAnyOnePrors = {
+export type IUnableCheckbox = {
   userAnswer: IAnswer;
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
 };
 
-const NotAnyOne: React.FC<INotAnyOnePrors> = ({
+const UnableCheckbox: React.FC<IUnableCheckbox> = ({
   userAnswer,
   setAnswer,
   questionID,
@@ -23,14 +24,16 @@ const NotAnyOne: React.FC<INotAnyOnePrors> = ({
   const checked = Boolean(
     userAnswer &&
       userAnswer.values.length &&
-      userAnswer.values[0].optionID === -2
+      userAnswer.values[0].optionID === EXTRA_ANSWER.UNABLE
   );
   const handleChange = () => {
     checked && setAnswer({ questionID: questionID, values: [] });
     !checked &&
       setAnswer({
         questionID: questionID,
-        values: [{ optionID: -2, value: "ничего из вышеперечисленного" }],
+        values: [
+          { optionID: EXTRA_ANSWER.UNABLE, value: "Затрудняюсь ответить" },
+        ],
       });
   };
   return (
@@ -44,10 +47,10 @@ const NotAnyOne: React.FC<INotAnyOnePrors> = ({
           name={"name"}
         />
       }
-      label="Ничего из вышеперечисленного"
-      key={"notAnyOne"}
+      label="Затрудняюсь ответить"
+      key={"unable"}
     />
   );
 };
 
-export default NotAnyOne;
+export default UnableCheckbox;
