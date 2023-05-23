@@ -5,6 +5,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core";
 import { IQuestion, IAnswer } from "../../../types";
+import GreenCheckbox from "../../common/GreenCheckbox";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -49,16 +50,6 @@ const SelectView: React.FC<ISelectViewProps> = ({
   const isSelected = (docID: number) => {
     return valuesIdArr.some((id) => id === docID);
   };
-
-  const GreenCheckbox = withStyles({
-    root: {
-      color: "#46acaf",
-      "&$checked": {
-        color: "#46acaf",
-      },
-    },
-    checked: {},
-  })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
   return (
     <FormGroup css={formGroupCss}>

@@ -16,6 +16,7 @@ import { css } from "@emotion/react";
 import { Card } from "@material-ui/core";
 import { PRIMARY_COLOR } from "../../consts/const";
 import Html from "./views/html";
+import NotAnyOne from "./extra/notAnyone";
 
 export type OwnProps = {
   key: number;
@@ -79,12 +80,14 @@ const Question: React.FC<IQuestionProps> = ({
       <div css={cardCss(needPadding)}>
         <FormControl css={freeQuestionCss} focused={false}>
           {isRealisedTypeOfQuestion ? (
-            <ViewComponent
-              currentQuestionIndex={currentQuestionIndex}
-              question={question}
-              userAnswer={userAnswer as IAnswer}
-              setAnswer={setAnswer}
-            />
+            <>
+              <ViewComponent
+                currentQuestionIndex={currentQuestionIndex}
+                question={question}
+                userAnswer={userAnswer as IAnswer}
+                setAnswer={setAnswer}
+              />
+            </>
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
           )}
@@ -93,6 +96,7 @@ const Question: React.FC<IQuestionProps> = ({
     </div>
   );
 };
+// <NotAnyOne />
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
   const { userAnswers } = state;
