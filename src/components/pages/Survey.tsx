@@ -16,7 +16,6 @@ import { changeCurretLocation } from "../../services/redux/actions";
 type ISurvey = ConnectedProps<typeof connector>;
 
 export const pageCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
   margin-bottom: 20px;
 
   // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)

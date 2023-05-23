@@ -67,6 +67,15 @@ export type IOption = {
   width: number;
 };
 
+export type IView =
+  | "stars"
+  | "table"
+  | "color"
+  | "smiles"
+  | "smiles-monochrome";
+
+export type IOrientation = "horizontal" | "vertical";
+
 export type IConfig = {
   dataType: IDataType;
   isConfirmable: boolean;
@@ -79,8 +88,8 @@ export type IConfig = {
   timeLimit: number;
   title: string;
   options?: IOption[];
-  view?: string;
-  orientation?: string;
+  view?: IView;
+  orientation?: IOrientation;
   //
   isLimited?: boolean;
   isLimitedValue?: boolean;

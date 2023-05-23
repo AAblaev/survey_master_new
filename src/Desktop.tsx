@@ -18,7 +18,6 @@ import { DEFAULT_BACKGROUND_COLOR, TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
-import getPrevAndNextLocation from "./utils/getPrevAndNextLocation";
 import {
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
@@ -69,7 +68,8 @@ export const desctopCss = css`
 
 export const contentCss = css`
   flex: 1 0 auto;
-  padding-bottom: 64px;
+  margin-top: 84px;
+  margin-bottom: 64px;
   width: 100%;
 `;
 
@@ -78,6 +78,10 @@ export const buttonCss = css`
   &.MuiButton-root {
     color: #fff;
   }
+`;
+
+export const transitionGroupCss = css`
+  margin-top: 20px;
 `;
 
 const Desktop: React.FC<IDesktop> = ({
@@ -173,14 +177,16 @@ const Desktop: React.FC<IDesktop> = ({
           </Button>
         )}
       </AppBar>
-      {pathName !== "greeting" && (
-        <ProgressLinear
-          allQuestionCount={allQuestionCount}
-          allQuestionsDoneCount={allQuestionsDoneCount}
-        />
-      )}
+
       <div css={contentCss}>
+        {pathName !== "greeting" && (
+          <ProgressLinear
+            allQuestionCount={allQuestionCount}
+            allQuestionsDoneCount={allQuestionsDoneCount}
+          />
+        )}
         <TransitionGroup
+          css={transitionGroupCss}
           childFactory={(child) =>
             React.cloneElement(child, {
               classNames: slideMoveDirection,
@@ -271,7 +277,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };

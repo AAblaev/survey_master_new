@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { IOrientation, IView } from "./scale";
+import { IOrientation, IView } from "../../../../types";
 
 export const rootCss = css`
   & .MuiFormLabel-root {

@@ -11,7 +11,6 @@ export type IPageProps = {
 };
 
 export const pageCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
   display: flex;
   flex-direction: column;
   padding-right: 40px;
