@@ -57,11 +57,10 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
         const answer = userAnswer?.values.find(
           (answer) => answer.optionID === item.docID
         );
-        const label = `${currentQuestionIndex + 1}.${i + 1}. ${item.title}`;
         return (
           <FormControl key={item.docID} css={freeListItemCss}>
             <FormLabel component="legend" css={freeListItemLabelCss}>
-              {label}
+              {item.title}
             </FormLabel>
             <TextField
               InputProps={{ disableUnderline: true }}
