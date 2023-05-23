@@ -64,7 +64,7 @@ const Question: React.FC<IQuestionProps> = ({
   userAnswer,
   setAnswer,
 }) => {
-  const { title, config } = question;
+  const { title, config, hasNothingAnswer } = question;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
@@ -80,16 +80,21 @@ const Question: React.FC<IQuestionProps> = ({
       <div css={cardCss(needPadding)}>
         <FormControl css={freeQuestionCss} focused={false}>
           {isRealisedTypeOfQuestion ? (
-            <>
-              <ViewComponent
-                currentQuestionIndex={currentQuestionIndex}
-                question={question}
-                userAnswer={userAnswer as IAnswer}
-                setAnswer={setAnswer}
-              />
-            </>
+            <ViewComponent
+              currentQuestionIndex={currentQuestionIndex}
+              question={question}
+              userAnswer={userAnswer as IAnswer}
+              setAnswer={setAnswer}
+            />
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
+          )}
+          {hasNothingAnswer && (
+            <NotAnyOne
+              userAnswer={userAnswer as IAnswer}
+              setAnswer={setAnswer}
+              questionID={question.docID}
+            />
           )}
         </FormControl>
       </div>
