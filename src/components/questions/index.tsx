@@ -18,6 +18,7 @@ import { EXTRA_ANSWER, PRIMARY_COLOR } from "../../consts/const";
 import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
+import OtherCheckbox from "./extra/otherCheckbox";
 
 export type OwnProps = {
   key: number;
@@ -113,6 +114,13 @@ const Question: React.FC<IQuestionProps> = ({
           )}
           {hasNothingAnswer && (
             <NothingCheckbox
+              userAnswer={answerWithExtra as IAnswer}
+              setAnswer={setAnswer}
+              questionID={question.docID}
+            />
+          )}
+          {hasOtherAnswer && (
+            <OtherCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}

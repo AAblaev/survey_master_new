@@ -1,11 +1,5 @@
-import React, { useEffect } from "react";
-import { css } from "@emotion/react";
-import {
-  Checkbox,
-  CheckboxProps,
-  FormControlLabel,
-  withStyles,
-} from "@material-ui/core";
+import React from "react";
+import { FormControlLabel } from "@material-ui/core";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
@@ -41,9 +35,7 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
       control={
         <GreenCheckbox
           checked={checked}
-          onChange={() => {
-            handleChange();
-          }}
+          onChange={handleChange}
           name={"name"}
         />
       }
