@@ -62,12 +62,9 @@ function* startSurvey() {
     yield put(setSurveyUid(result.data));
     yield put(setLoading(false));
 
-    // console.log("startSurvey success", result);
-  } catch (e) {
-    console.log("Error startSurvey");
-    yield put(setLoading(false));
-    const error = e as AxiosError;
-    yield put(setError({ status: true, message: error.message }));
+    console.log("startSurvey success", result);
+  } catch (err) {
+    console.log("error", err);
   }
 }
 
@@ -82,12 +79,9 @@ function* sendSurveyData() {
     const result: unknown = yield call(() => sendData(path, answers));
     yield put(setLoading(false));
 
-    // console.log("sendSurveyData success", result);
-  } catch (e) {
-    console.log("Error sendSurveyData");
-    yield put(setLoading(false));
-    const error = e as AxiosError;
-    yield put(setError({ status: true, message: error.message }));
+    console.log("sendSurveyData success", result);
+  } catch (err) {
+    console.log("error", err);
   }
 }
 
