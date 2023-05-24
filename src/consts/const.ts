@@ -13,3 +13,9 @@ export const DEFAULT_STROKE = {
 
 export const DEFAULT_BACKGROUND_COLOR = "#F9F9F9";
 export const PRIMARY_COLOR = "#46acaf";
+
+export enum EXTRA_ANSWER {
+  UNABLE = -1,
+  NOTHING = -2,
+  OTHER = -3,
+}

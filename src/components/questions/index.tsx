@@ -14,8 +14,11 @@ import SelectView from "./views/select";
 
 import { css } from "@emotion/react";
 import { Card } from "@material-ui/core";
-import { PRIMARY_COLOR } from "../../consts/const";
+import { EXTRA_ANSWER, PRIMARY_COLOR } from "../../consts/const";
 import Html from "./views/html";
+import NothingCheckbox from "./extra/nothingCheckbox";
+import UnableCheckbox from "./extra/unableCheckbox";
+import OtherCheckbox from "./extra/otherCheckbox";
 
 export type OwnProps = {
   key: number;
@@ -57,17 +60,38 @@ const viewDict = {
   html: Html,
 };
 
+export const extraFilter = (userAnswer: IAnswer): IAnswer => {
+  const extraIdsArr = Object.values(EXTRA_ANSWER);
+  return {
+    questionID: userAnswer.questionID,
+    values: userAnswer.values.filter(
+      (option) => !extraIdsArr.includes(option.optionID)
+    ),
+  };
+};
+
 const Question: React.FC<IQuestionProps> = ({
   currentQuestionIndex,
   question,
-  userAnswer,
+  userAnswer: answerWithExtra,
   setAnswer,
 }) => {
-  const { title, config } = question;
+  const {
+    title,
+    config,
+    hasNothingAnswer,
+    hasOtherAnswer,
+    hasUnableAnswer,
+  } = question;
+  const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
   const needPadding = questionType !== "scale";
+  const userAnswer =
+    answerWithExtra && hasExtra
+      ? extraFilter(answerWithExtra)
+      : answerWithExtra;
 
   return (
     <div>
@@ -88,11 +112,33 @@ const Question: React.FC<IQuestionProps> = ({
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
           )}
+          {hasNothingAnswer && (
+            <NothingCheckbox
+              userAnswer={answerWithExtra as IAnswer}
+              setAnswer={setAnswer}
+              questionID={question.docID}
+            />
+          )}
+          {hasOtherAnswer && (
+            <OtherCheckbox
+              userAnswer={answerWithExtra as IAnswer}
+              setAnswer={setAnswer}
+              questionID={question.docID}
+            />
+          )}
+          {hasUnableAnswer && (
+            <UnableCheckbox
+              userAnswer={answerWithExtra as IAnswer}
+              setAnswer={setAnswer}
+              questionID={question.docID}
+            />
+          )}
         </FormControl>
       </div>
     </div>
   );
 };
+// <NotAnyOne />
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
   const { userAnswers } = state;
