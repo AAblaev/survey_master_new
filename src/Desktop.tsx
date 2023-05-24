@@ -28,6 +28,7 @@ import GreetingPage from "./components/pages/GreetingPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import Typography from "@material-ui/core/Typography";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -91,6 +92,7 @@ export const transitionGroupCss = css`
 `;
 
 const Desktop: React.FC<IDesktop> = ({
+  name,
   pages,
   userAnswers,
   loading,
@@ -111,6 +113,8 @@ const Desktop: React.FC<IDesktop> = ({
   buttonNextCaption,
   // completionPage,
   // disqualificationPage,
+  isShowProgressbar,
+  isShowQuestionsCount,
 }) => {
   const { title, pathName } = location;
 
@@ -196,9 +200,16 @@ const Desktop: React.FC<IDesktop> = ({
           }}
         >
           {pathName !== "greeting" && (
+            <Typography variant="h6" component="h1" className="progress">
+              {name}
+            </Typography>
+          )}
+          {pathName !== "greeting" && (
             <ProgressLinear
               allQuestionCount={allQuestionCount}
               allQuestionsDoneCount={allQuestionsDoneCount}
+              isShowProgressbar={isShowProgressbar}
+              isShowQuestionsCount={isShowQuestionsCount}
             />
           )}
           <TransitionGroup
@@ -267,6 +278,10 @@ const mapStateToProps = (state: IState) => {
   const buttonBackCaption = data ? data.buttonBackCaption : "";
   const buttonFinishCaption = data ? data.buttonFinishCaption : "";
   const buttonNextCaption = data ? data.buttonNextCaption : "";
+  const name = data ? data.name : "";
+  const isShowProgressbar = data ? data.isShowProgressbar : false;
+  const isShowQuestionsCount = data ? data.isShowQuestionsCount : false;
+
   return {
     pages,
     userAnswers,
@@ -285,6 +300,9 @@ const mapStateToProps = (state: IState) => {
     buttonBackCaption,
     buttonFinishCaption,
     buttonNextCaption,
+    name,
+    isShowProgressbar,
+    isShowQuestionsCount,
   };
 };
 
