@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
@@ -154,6 +154,9 @@ const Desktop: React.FC<IDesktop> = ({
     (ans) => ans.values.length !== 0
   ).length;
 
+  const perfectScrollbarRef = useRef<any>(null);
+  const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
+
   return (
     <div css={desctopCss}>
       {loading && (
@@ -185,7 +188,13 @@ const Desktop: React.FC<IDesktop> = ({
       </AppBar>
 
       <div css={contentCss}>
-        <PerfectScrollbar>
+        <PerfectScrollbar
+          options={{ suppressScrollX: true }}
+          ref={perfectScrollbarRef}
+          containerRef={(ref) => {
+            perfectScrollbarContainerRef.current = ref;
+          }}
+        >
           {pathName !== "greeting" && (
             <ProgressLinear
               allQuestionCount={allQuestionCount}
@@ -204,6 +213,16 @@ const Desktop: React.FC<IDesktop> = ({
               key={title + location.pageIndex}
               classNames="left-to-right"
               timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
+              onExiting={() => {
+                if (perfectScrollbarContainerRef.current)
+                  perfectScrollbarContainerRef.current.scrollTop = 0;
+              }}
+              onExited={() => {
+                setTimeout(() => {
+                  if (perfectScrollbarRef.current)
+                    perfectScrollbarRef.current.updateScroll();
+                });
+              }}
             >
               {slideRender(pathName)}
             </CSSTransition>
@@ -285,7 +304,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };
