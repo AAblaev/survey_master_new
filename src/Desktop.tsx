@@ -19,6 +19,7 @@ import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
 import {
+  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   START_SURVEY,
@@ -102,6 +103,7 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
+  completeSurvey,
   page,
   pageIndex,
   // params,
@@ -123,12 +125,12 @@ const Desktop: React.FC<IDesktop> = ({
     fetchData();
   }, [fetchData]);
 
-  useEffect(() => {
-    if (emptyData) {
-      return;
-    }
-    startSurvey();
-  }, [emptyData]);
+  // useEffect(() => {
+  //   if (emptyData) {
+  //     return;
+  //   }
+  //   startSurvey();
+  // }, [emptyData]);
 
   if (error.status) {
     return (
@@ -149,7 +151,7 @@ const Desktop: React.FC<IDesktop> = ({
       return <Page page={page} pageIndex={pageIndex} />;
     return null;
   };
-
+  const pagesCount = pages.length;
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) => (acc += page.questions.length),
     0
@@ -160,7 +162,7 @@ const Desktop: React.FC<IDesktop> = ({
   ).length;
 
   const allRequiredQuestionDone = isRequiredQuestionDone(pages, userAnswers);
-  console.log("allRequiredQuestionDone", allRequiredQuestionDone);
+  // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
@@ -252,6 +254,9 @@ const Desktop: React.FC<IDesktop> = ({
           buttonBackCaption,
           buttonFinishCaption,
           handleClick,
+          startSurvey,
+          completeSurvey,
+          pagesCount,
         })}
       </AppBar>
     </div>
@@ -314,6 +319,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY }),
+    completeSurvey: () => dispatch({ type: COMPLETE_SURVEY }),
     handleClick: (payload: {
       location: ILocation;
       slideMoveDirection: ISlideMoveDirection;
@@ -326,7 +332,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };

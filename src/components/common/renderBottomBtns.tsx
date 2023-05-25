@@ -22,6 +22,9 @@ type IBottomBtnRenderProps = {
     slideMoveDirection: ISlideMoveDirection;
     needSendAnswers: boolean;
   }) => void;
+  completeSurvey: () => void;
+  startSurvey: () => void;
+  pagesCount: number;
 };
 
 const bottomBtnRender = ({
@@ -31,6 +34,9 @@ const bottomBtnRender = ({
   buttonBackCaption,
   buttonFinishCaption,
   handleClick,
+  completeSurvey,
+  pagesCount,
+  startSurvey,
 }: IBottomBtnRenderProps) => {
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
   switch (location.pathName) {
@@ -39,7 +45,7 @@ const bottomBtnRender = ({
         <Button
           key="1"
           css={buttonCss}
-          onClick={() =>
+          onClick={() => {
             handleClick({
               location: {
                 pageIndex: 0,
@@ -49,8 +55,9 @@ const bottomBtnRender = ({
               },
               slideMoveDirection: "right-to-left",
               needSendAnswers: false,
-            })
-          }
+            });
+            startSurvey();
+          }}
         >
           {buttonStartCaption}
         </Button>,
@@ -83,15 +90,19 @@ const bottomBtnRender = ({
         <Button
           key="1"
           css={buttonCss}
-          onClick={() =>
-            handleClick({
-              location: nextLocation,
-              slideMoveDirection: "right-to-left",
-              needSendAnswers: true,
-            })
-          }
+          onClick={() => {
+            nextLocation.pageIndex === pagesCount
+              ? completeSurvey()
+              : handleClick({
+                  location: nextLocation,
+                  slideMoveDirection: "right-to-left",
+                  needSendAnswers: true,
+                });
+          }}
         >
-          {buttonNextCaption}
+          {nextLocation.pageIndex === pagesCount
+            ? buttonFinishCaption
+            : buttonNextCaption}
         </Button>,
         <Button
           key="2"
