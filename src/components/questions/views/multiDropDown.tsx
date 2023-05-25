@@ -7,6 +7,7 @@ import { setAnswer } from "../../../services/redux/actions";
 import { IAnswer, IOption, IQuestion, IState } from "../../../types";
 import { selectQuestionCss } from "../sc";
 import {
+  Box,
   Chip,
   Input,
   InputLabel,
@@ -15,6 +16,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { css } from "@emotion/react";
+import { DEFAULT_HINT_VALUE } from "../../../consts/const";
 
 type IMultiDropDownViewProps = {
   currentQuestionIndex: number;
@@ -27,7 +29,11 @@ export const formControlCss = css`
   width: 100%;
 `;
 
-export const chipWrapperCss = css``;
+export const chipWrapperCss = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+`;
 export const chipCss = css``;
 
 const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
@@ -35,25 +41,35 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, title, config } = question;
+  const { docID, hint, config } = question;
   const options = config.options!;
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
-    {}
+    {
+      default: {
+        docID: 0,
+        height: 0,
+        order: 0,
+        photoID: 0,
+        title: hint ? hint : DEFAULT_HINT_VALUE,
+        width: 0,
+      },
+    }
   ) as { [key: string]: IOption };
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const value = userAnswerExist
     ? (userAnswer as IAnswer).values.map((item) => item.optionID)
-    : [];
+    : ["default"];
 
   const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const optionIDs = e.target.value as number[];
-
-    const newValue = optionIDs.map((optionID) => ({
-      optionID: optionID,
-      value: String(optionsDict[optionID].title),
-    }));
+    const optionIDs = e.target.value as string[];
+    const newValue = optionIDs
+      .filter((optionID) => optionID !== "default")
+      .map((optionID) => ({
+        optionID: Number(optionID),
+        value: String(optionsDict[optionID].title),
+      }));
 
     setAnswer({
       questionID: docID,
@@ -68,8 +84,9 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         value={value}
         onChange={handleChange}
         renderValue={(items) => {
-          const ids = items as number[];
-          const options = ids.map((id: number) => optionsDict[id]);
+          const ids = items as string[];
+          const options = ids.map((id: string) => optionsDict[id]);
+          if (ids.length === 1 && ids[0] === "default") return options[0].title;
           return (
             <div css={chipWrapperCss}>
               {options.map(({ docID, title }) => (

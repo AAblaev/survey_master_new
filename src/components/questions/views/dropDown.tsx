@@ -16,6 +16,11 @@ export const formControlCss = css`
   width: 100%;
 `;
 
+export const renderValueCss = (isDefault: boolean) =>
+  css`
+    color: ${isDefault ? "grey" : "black"};
+  `;
+
 export const chipWrapperCss = css``;
 export const chipCss = css``;
 
@@ -58,7 +63,6 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       ],
     });
   };
-  console.log(optionsDict);
 
   return (
     <FormControl variant="standard" css={formControlCss}>
@@ -77,7 +81,11 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           },
           getContentAnchorEl: null,
         }}
-        renderValue={(value: any) => `${optionsDict[value].title}`}
+        renderValue={(value: any) => (
+          <span css={renderValueCss(value === "default")}>
+            {optionsDict[value].title}
+          </span>
+        )}
       >
         {options.map((item) => (
           <MenuItem key={item.docID} value={item.docID}>
