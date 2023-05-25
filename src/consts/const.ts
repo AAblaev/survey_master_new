@@ -19,3 +19,5 @@ export enum EXTRA_ANSWER {
   NOTHING = -2,
   OTHER = -3,
 }
+
+export const DEFAULT_HINT_VALUE = "- выбрать -";

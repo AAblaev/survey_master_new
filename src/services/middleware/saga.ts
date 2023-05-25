@@ -42,8 +42,10 @@ function* fetchSurveyData() {
 
   try {
     yield put(setLoading(true));
-    const result: IFetchResult = yield call(() => fethData(path));
-    yield put(setNewData(result.data));
+    // const result: IFetchResult = yield call(() => fethData(path));
+    // yield put(setNewData(result.data));
+    yield put(setNewData(fakeData));
+
     yield put(setLoading(false));
   } catch (e) {
     console.log("Error fetchSurveyData");

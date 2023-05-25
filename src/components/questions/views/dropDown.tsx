@@ -3,6 +3,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { IAnswer, IOption, IQuestion, IState } from "../../../types";
 import { MenuItem, Select } from "@material-ui/core";
 import { css } from "@emotion/react";
+import { DEFAULT_HINT_VALUE } from "../../../consts/const";
 
 type IDropDownViewProps = {
   currentQuestionIndex: number;
@@ -23,18 +24,27 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, config } = question;
+  const { docID, config, hint } = question;
 
   const options = config.options!;
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
-    {}
+    {
+      default: {
+        docID: -1,
+        height: 0,
+        order: 0,
+        photoID: 0,
+        title: hint ? hint : DEFAULT_HINT_VALUE,
+        width: 0,
+      },
+    }
   ) as { [key: string]: IOption };
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const value = userAnswerExist
     ? optionsDict[(userAnswer.values as IAnswer["values"])[0].optionID].docID
-    : "";
+    : "default";
 
   const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const optionID = e.target.value as number;
@@ -48,12 +58,14 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       ],
     });
   };
+  console.log(optionsDict);
 
   return (
     <FormControl variant="standard" css={formControlCss}>
       <Select
         value={value}
         onChange={handleChange}
+        defaultValue="default"
         MenuProps={{
           anchorOrigin: {
             vertical: "bottom",

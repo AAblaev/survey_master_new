@@ -322,7 +322,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
           slideMoveDirection: slideMoveDirection,
         })
       );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+      // needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
     },
   };
 };

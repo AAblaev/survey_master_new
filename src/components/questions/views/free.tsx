@@ -47,7 +47,8 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, title } = question;
+  const { docID, config } = question;
+  const isMultiline = config.isMultiline;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const value = userAnswerExist
     ? (userAnswer.values as IAnswer["values"])[0].value
@@ -60,8 +61,8 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       label="Ответ"
       color="primary"
       fullWidth
-      multiline
-      minRows={6}
+      multiline={isMultiline}
+      minRows={2}
       variant="filled"
       value={value}
       onChange={(e) => {
