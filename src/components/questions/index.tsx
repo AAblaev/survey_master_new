@@ -87,7 +87,12 @@ const Question: React.FC<IQuestionProps> = ({
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
-  const needPadding = questionType !== "scale";
+  const needPadding =
+    questionType === "free" ||
+    questionType === "freelist" ||
+    questionType === "select" ||
+    questionType === "multiselect" ||
+    questionType === "html";
   const userAnswer =
     answerWithExtra && hasExtra
       ? extraFilter(answerWithExtra)

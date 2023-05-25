@@ -1,4 +1,5 @@
 import React from "react";
+import CloseIcon from "@material-ui/icons/Close";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
@@ -9,6 +10,7 @@ import { selectQuestionCss } from "../sc";
 import {
   Box,
   Chip,
+  IconButton,
   Input,
   InputLabel,
   MenuItem,
@@ -16,7 +18,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { css } from "@emotion/react";
-import { DEFAULT_HINT_VALUE } from "../../../consts/const";
+import { DEFAULT_HINT_VALUE, PRIMARY_COLOR } from "../../../consts/const";
 
 type IMultiDropDownViewProps = {
   currentQuestionIndex: number;
@@ -34,7 +36,17 @@ export const chipWrapperCss = css`
   flex-wrap: wrap;
   gap: 5px;
 `;
-export const chipCss = css``;
+export const chipCss = (notDefault: boolean) => css`
+  ${notDefault && "background-color: #46acaf57"};
+  padding: 5px;
+  border-radius: 5px;
+`;
+
+export const selectCss = css`
+  & .MuiSelect-selectMenu {
+    min-height: 2em;
+  }
+`;
 
 const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
   question,
@@ -81,16 +93,26 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
     <FormControl variant="standard" css={formControlCss}>
       <Select
         multiple
+        onClick={(e) => {
+          console.log(e.target);
+        }}
         value={value}
         onChange={handleChange}
         renderValue={(items) => {
           const ids = items as string[];
           const options = ids.map((id: string) => optionsDict[id]);
-          if (ids.length === 1 && ids[0] === "default") return options[0].title;
+          if (ids.length === 1 && ids[0] === "default")
+            return (
+              <div key={docID} css={chipCss(false)}>
+                {options[0].title}
+              </div>
+            );
           return (
             <div css={chipWrapperCss}>
               {options.map(({ docID, title }) => (
-                <Chip key={docID} label={title} css={chipCss} />
+                <div key={docID} css={chipCss(true)}>
+                  {title}
+                </div>
               ))}
             </div>
           );
@@ -106,6 +128,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
           },
           getContentAnchorEl: null,
         }}
+        css={selectCss}
       >
         {options.map((item) => (
           <MenuItem key={item.docID} value={item.docID}>

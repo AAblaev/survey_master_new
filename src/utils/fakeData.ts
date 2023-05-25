@@ -55,7 +55,7 @@ export const fakeData: IData = {
             columnsCount: 0,
             title: "",
             isEnable: true,
-            dataType: "dropdown",
+            dataType: "multidropdown",
             isTimeLimited: false,
             timeLimit: 0,
             isShowOnButton: false,
