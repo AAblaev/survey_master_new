@@ -93,9 +93,6 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
     <FormControl variant="standard" css={formControlCss}>
       <Select
         multiple
-        onClick={(e) => {
-          console.log(e.target);
-        }}
         value={value}
         onChange={handleChange}
         renderValue={(items) => {

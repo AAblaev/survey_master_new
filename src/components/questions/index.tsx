@@ -83,12 +83,12 @@ const Question: React.FC<IQuestionProps> = ({
     hasOtherAnswer,
     hasUnableAnswer,
   } = question;
+  const questionText = `<div>${title}</div>`;
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
   const needPadding =
-    questionType === "free" ||
     questionType === "freelist" ||
     questionType === "select" ||
     questionType === "multiselect" ||
@@ -102,7 +102,9 @@ const Question: React.FC<IQuestionProps> = ({
     <div>
       <div css={titleCss}>
         <div css={titleCountCss}>{currentQuestionIndex + 1}.</div>
-        <div css={titleTextCss}>{title}</div>
+        <div css={titleTextCss}>
+          <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+        </div>
       </div>
 
       <div css={cardCss(needPadding)}>

@@ -78,7 +78,6 @@ const bottomBtnRender = ({
         </Button>,
       ];
     }
-
     case "section": {
       return [
         <Button

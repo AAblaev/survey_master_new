@@ -17,6 +17,9 @@ export const sendData = (path: string, data: any[]) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
+      // "Access-Control-Allow-Origin": "*",
+      // "Access-Control-Allow-Headers":
+      //   "Origin, X-Requested-With, Content-Type, Accept",
     },
   };
 

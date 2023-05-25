@@ -29,6 +29,7 @@ import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Typography from "@material-ui/core/Typography";
+import { isQuestionDone, isRequiredQuestionDone } from "./utils/questionIsDone";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -155,8 +156,11 @@ const Desktop: React.FC<IDesktop> = ({
   );
 
   const allQuestionsDoneCount = Object.values(userAnswers).filter(
-    (ans) => ans.values.length !== 0
+    isQuestionDone
   ).length;
+
+  const allRequiredQuestionDone = isRequiredQuestionDone(pages, userAnswers);
+  console.log("allRequiredQuestionDone", allRequiredQuestionDone);
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);

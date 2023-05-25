@@ -63,7 +63,6 @@ function* startSurvey() {
     // const result: IStartResult = yield call(() => fethData(path));
     // yield put(setSurveyUid(result.data));
     // yield put(setLoading(false));
-    //
     // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);

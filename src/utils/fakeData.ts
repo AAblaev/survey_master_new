@@ -26,6 +26,13 @@ export const fakeData: IData = {
   isShowProgressbar: false,
   pages: [
     {
+      docID: 2,
+      surveyID: 1,
+      order: 0,
+      title: "",
+      questions: [],
+    },
+    {
       docID: 1,
       surveyID: 1,
       order: 0,
@@ -36,14 +43,14 @@ export const fakeData: IData = {
           type: 3,
           pageID: 96,
           surveyID: 5,
-          isRequired: true,
+          isRequired: false,
           hasOtherAnswer: false,
           hasNothingAnswer: false,
           hasUnableAnswer: false,
           hint: "",
           scaleType: 0,
           title:
-            "Пожалуйста, оцените состояние здоровья этого ребенка. Что из перечисленного верно:",
+            "Пожалуйста, оцените состояние здоровья этого ребенка.<br> Что из перечисленного верно:",
           order: 7,
           comment: "",
           config: {
