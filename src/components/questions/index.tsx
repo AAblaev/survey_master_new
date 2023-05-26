@@ -4,17 +4,20 @@ import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
 import { setAnswer } from "../../services/redux/actions";
 import { IAnswer, IQuestion, IState } from "../../types";
-import { freeQuestionCss } from "./sc";
+import {
+  cardCss,
+  formControlCss,
+  titleCountCss,
+  titleCss,
+  titleTextCss,
+} from "./sc";
 import FreeView from "./views/free";
 import FreeListView from "./views/free-list";
 import DropDownView from "./views/dropDown";
 import MultiDropDownView from "./views/multiDropDown";
 import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
-
-import { css } from "@emotion/react";
-import { Card } from "@material-ui/core";
-import { EXTRA_ANSWER, PRIMARY_COLOR } from "../../consts/const";
+import { EXTRA_ANSWER } from "../../consts/const";
 import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
@@ -27,27 +30,7 @@ export type OwnProps = {
 };
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispathToProps>;
-
 type IQuestionProps = StateProps & OwnProps & DispatchProps;
-
-const cardCss = (needPadding: boolean) => css`
-  ${needPadding && `padding: 20px;`}
-  background-color: #fff;
-  border: 1px solid #bdbdbd;
-`;
-const titleCss = css`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-`;
-const titleCountCss = css`
-  font-size: 1.2rem;
-  color: ${PRIMARY_COLOR};
-  font-weight: bold;
-`;
-const titleTextCss = css`
-  font-size: 1.2rem;
-`;
 
 const viewDict = {
   free: FreeView,
@@ -82,26 +65,46 @@ const Question: React.FC<IQuestionProps> = ({
     hasNothingAnswer,
     hasOtherAnswer,
     hasUnableAnswer,
+    isRequired,
   } = question;
+  const questionText = `<div>${title}${
+    isRequired ? '<span style="color:red;">*</span>' : ""
+  }</div>`;
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
-  const needPadding = questionType !== "scale";
+  const needPadding =
+    questionType === "freelist" ||
+    questionType === "select" ||
+    questionType === "multiselect" ||
+    questionType === "html" ||
+    !isRealisedTypeOfQuestion;
   const userAnswer =
     answerWithExtra && hasExtra
       ? extraFilter(answerWithExtra)
       : answerWithExtra;
 
+  const disabled = Boolean(
+    answerWithExtra &&
+      Boolean(
+        answerWithExtra.values.find(
+          (ans) => ans.optionID === EXTRA_ANSWER.UNABLE
+        )
+      )
+  );
+
   return (
     <div>
-      <div css={titleCss}>
+      <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex + 1}.</div>
-        <div css={titleTextCss}>{title}</div>
+        <div css={titleTextCss}>
+          <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+        </div>
       </div>
 
       <div css={cardCss(needPadding)}>
-        <FormControl css={freeQuestionCss} focused={false}>
+        <FormControl css={formControlCss(disabled)} focused={false}>
           {isRealisedTypeOfQuestion ? (
             <ViewComponent
               currentQuestionIndex={currentQuestionIndex}
@@ -126,19 +129,18 @@ const Question: React.FC<IQuestionProps> = ({
               questionID={question.docID}
             />
           )}
-          {hasUnableAnswer && (
-            <UnableCheckbox
-              userAnswer={answerWithExtra as IAnswer}
-              setAnswer={setAnswer}
-              questionID={question.docID}
-            />
-          )}
         </FormControl>
+        {hasUnableAnswer && (
+          <UnableCheckbox
+            userAnswer={answerWithExtra as IAnswer}
+            setAnswer={setAnswer}
+            questionID={question.docID}
+          />
+        )}
       </div>
     </div>
   );
 };
-// <NotAnyOne />
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
   const { userAnswers } = state;

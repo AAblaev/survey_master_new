@@ -3,7 +3,7 @@ import { call, put, select, takeEvery } from "redux-saga/effects";
 import { IData } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { userAnswerParses } from "../../utils/userAnswerParser";
-import { fethData, sendData } from "../api";
+import { complete, fethData, sendData } from "../api";
 import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
 import {
   setError,
@@ -13,6 +13,7 @@ import {
 } from "../redux/actions";
 import { selectAnswers, selectSurveyID, selectUid } from "../redux/selectors";
 import {
+  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   START_SURVEY,
@@ -44,6 +45,8 @@ function* fetchSurveyData() {
     yield put(setLoading(true));
     const result: IFetchResult = yield call(() => fethData(path));
     yield put(setNewData(result.data));
+    // yield put(setNewData(fakeData));
+
     yield put(setLoading(false));
   } catch (e) {
     console.log("Error fetchSurveyData");
@@ -61,7 +64,6 @@ function* startSurvey() {
     const result: IStartResult = yield call(() => fethData(path));
     yield put(setSurveyUid(result.data));
     yield put(setLoading(false));
-
     console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
@@ -85,10 +87,32 @@ function* sendSurveyData() {
   }
 }
 
+function* completeSurvey() {
+  const { uid } = yield select(selectUid);
+  const { userAnswers } = yield select(selectAnswers);
+  const answers = userAnswerParses(userAnswers);
+  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
+  const pathComplete = PATH_NAME + "complete/" + uid;
+
+  try {
+    yield put(setLoading(true));
+    const result1: unknown = yield call(() => sendData(pathSendData, answers));
+    const result2: unknown = yield call(() => complete(pathComplete, {}));
+
+    yield put(setLoading(false));
+
+    console.log("completeSurvey send success", result1);
+    console.log("completeSurvey complete success", result2);
+  } catch (err) {
+    console.log("error", err);
+  }
+}
+
 function* mySaga() {
   yield takeEvery(FETCH_SURVEY_DATA, fetchSurveyData);
   yield takeEvery(START_SURVEY, startSurvey);
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
+  yield takeEvery(COMPLETE_SURVEY, completeSurvey);
 }
 
 export default mySaga;

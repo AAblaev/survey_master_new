@@ -19,16 +19,18 @@ import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { changeCurretLocation } from "./services/redux/actions";
 import {
+  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   START_SURVEY,
 } from "./services/redux/types";
 import ProgressBar from "./components/common/ProgressBar";
-import GreetingPage from "./components/pages/GreetingPage";
+import InfoPage from "./components/pages/InfoPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Typography from "@material-ui/core/Typography";
+import { isQuestionDone, isRequiredQuestionDone } from "./utils/questionIsDone";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -42,31 +44,6 @@ export const desctopCss = css`
   flex-direction: column;
   overflow-x: hidden;
   align-items: center;
-  //
-  // // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
-  // @media (min-width: 576px) {
-  //   width: 50%;
-  // }
-  //
-  // // Устройства Medium (планшеты, 768 пикселей и выше)
-  // @media (min-width: 768px) {
-  //   width: 50%;
-  // }
-  //
-  // // Устройства Large (настольные компьютеры, 992 пикселей и выше)
-  // @media (min-width: 992px) {
-  //   width: 50%;
-  // }
-  //
-  // // Устройства X-Large (большие настольные компьютеры, 1200 пикселей и выше)
-  // @media (min-width: 1200px) {
-  //   width: 50%;
-  // }
-  //
-  // // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
-  // @media (min-width: 1400px) {
-  //   width: 50%;
-  // }
 `;
 
 export const contentCss = css`
@@ -101,6 +78,7 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
+  completeSurvey,
   page,
   pageIndex,
   // params,
@@ -111,7 +89,7 @@ const Desktop: React.FC<IDesktop> = ({
   buttonBackCaption,
   buttonFinishCaption,
   buttonNextCaption,
-  // completionPage,
+  completionPage,
   // disqualificationPage,
   isShowProgressbar,
   isShowQuestionsCount,
@@ -121,13 +99,6 @@ const Desktop: React.FC<IDesktop> = ({
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  useEffect(() => {
-    if (emptyData) {
-      return;
-    }
-    startSurvey();
-  }, [emptyData]);
 
   if (error.status) {
     return (
@@ -142,21 +113,25 @@ const Desktop: React.FC<IDesktop> = ({
   }
 
   const slideRender = (pathName: IPathName) => {
-    if (pathName === "greeting") return <GreetingPage html={greetingsPage} />;
+    if (pathName === "greeting") return <InfoPage html={greetingsPage} />;
+    if (pathName === "completion") return <InfoPage html={completionPage} />;
     if (pathName === "survey") return <Survey />;
     if (pathName === "section")
       return <Page page={page} pageIndex={pageIndex} />;
     return null;
   };
-
+  const pagesCount = pages.length;
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) => (acc += page.questions.length),
     0
   );
 
   const allQuestionsDoneCount = Object.values(userAnswers).filter(
-    (ans) => ans.values.length !== 0
+    isQuestionDone
   ).length;
+
+  const allRequiredQuestionDone = isRequiredQuestionDone(pages, userAnswers);
+  // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
@@ -248,6 +223,9 @@ const Desktop: React.FC<IDesktop> = ({
           buttonBackCaption,
           buttonFinishCaption,
           handleClick,
+          startSurvey,
+          completeSurvey,
+          pagesCount,
         })}
       </AppBar>
     </div>
@@ -310,6 +288,20 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY }),
+    completeSurvey: () => {
+      dispatch({ type: COMPLETE_SURVEY });
+      dispatch(
+        changeCurretLocation({
+          location: {
+            pageIndex: 0,
+            questionIndex: 0,
+            pathName: "completion",
+            title: "completion",
+          },
+          slideMoveDirection: "right-to-left",
+        })
+      );
+    },
     handleClick: (payload: {
       location: ILocation;
       slideMoveDirection: ISlideMoveDirection;

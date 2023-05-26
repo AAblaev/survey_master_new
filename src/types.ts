@@ -45,7 +45,7 @@ export type IQuestion = {
   title: string;
   order: number;
   comment: string;
-  hasComment: boolean;
+  hasComment?: boolean;
   branchRules: IBranchRule[];
   quoteRules: IQuoteRule[];
   visibilityRules: IVisibilityRule[];
@@ -91,6 +91,7 @@ export type IConfig = {
   view?: IView;
   orientation?: IOrientation;
   //
+  columnsCount?: number;
   isLimited?: boolean;
   isLimitedValue?: boolean;
   limit?: {

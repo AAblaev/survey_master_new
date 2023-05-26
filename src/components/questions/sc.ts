@@ -1,6 +1,9 @@
 import { css } from "@emotion/react";
+import { PRIMARY_COLOR } from "../../consts/const";
 
-export const freeQuestionCss = css`
+export const formControlCss = (disabled: boolean) => css`
+  ${disabled && `filter: grayscale(100%)`};
+
   width: 100%;
   & .MuiFormLabel-root {
     color: #000000;
@@ -29,6 +32,28 @@ export const freeQuestionCss = css`
   & .MuiFilledInput-root:hover {
     background-color: transparent;
   }
+`;
+
+export const cardCss = (needPadding: boolean) => css`
+  ${needPadding && `padding: 20px;`}
+  background-color: #fff;
+  border: 1px solid #bdbdbd;
+`;
+export const titleCss = (disabled: boolean) => css`
+  ${disabled && `filter: grayscale(100%)`};
+
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+export const titleCountCss = css`
+  font-size: 1.2rem;
+  color: ${PRIMARY_COLOR};
+  font-weight: bold;
+`;
+
+export const titleTextCss = css`
+  font-size: 1.2rem;
 `;
 
 export const selectQuestionCss = css`
