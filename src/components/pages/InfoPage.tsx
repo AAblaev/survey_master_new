@@ -1,7 +1,7 @@
 import React from "react";
 import { css } from "@emotion/react";
 
-type IGreetingPageProps = {
+type IInfoPageProps = {
   html: string;
 };
 
@@ -42,7 +42,7 @@ const greetingPageCss = css`
   }
 `;
 
-const GreetingPage: React.FC<IGreetingPageProps> = ({ html }) => {
+const InfoPage: React.FC<IInfoPageProps> = ({ html }) => {
   return (
     <div css={greetingPageCss}>
       <div dangerouslySetInnerHTML={{ __html: html }}></div>
@@ -50,4 +50,4 @@ const GreetingPage: React.FC<IGreetingPageProps> = ({ html }) => {
   );
 };
 
-export default GreetingPage;
+export default InfoPage;
