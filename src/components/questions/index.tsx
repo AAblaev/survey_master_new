@@ -17,6 +17,8 @@ import DropDownView from "./views/dropDown";
 import MultiDropDownView from "./views/multiDropDown";
 import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
+import MatrixView from "./views/matrix";
+
 import { EXTRA_ANSWER } from "../../consts/const";
 import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
@@ -41,6 +43,7 @@ const viewDict = {
   select: SelectView,
   multiselect: SelectView,
   html: Html,
+  matrix: MatrixView,
 };
 
 export const extraFilter = (userAnswer: IAnswer): IAnswer => {
@@ -79,6 +82,7 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "select" ||
     questionType === "multiselect" ||
     questionType === "html" ||
+    questionType === "matrix" ||
     !isRealisedTypeOfQuestion;
   const userAnswer =
     answerWithExtra && hasExtra
