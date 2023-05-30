@@ -21,6 +21,12 @@ export const tdCss = css`
   font-weight: normal;
   border: 1px solid black;
   text-align: center;
+  // & > .MuiButtonBase-root {
+  //   display: none;
+  // }
+  // &::after {
+  //   content: "1";
+  // }
 `;
 
 type IMatrixViewProps = {
@@ -54,11 +60,25 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   );
 
   const handleClick = (rowDocID: number, columnDocID: number) => {
+    const newValues = values.filter((value) => value.optionID !== rowDocID);
     setAnswer({
       questionID: docID,
-      values: [...values, { optionID: rowDocID, value: String(columnDocID) }],
+      values: [
+        ...newValues,
+        { optionID: rowDocID, value: String(columnDocID) },
+      ],
     });
   };
+
+  const trCss = css`
+    display: table-row;
+    display: flex;
+    flex-direction: column;
+  `;
+
+  const theadCss = css`
+    display: none;
+  `;
 
   return (
     <table>
