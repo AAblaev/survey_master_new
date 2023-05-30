@@ -64,7 +64,7 @@ function* startSurvey() {
     const result: IStartResult = yield call(() => fethData(path));
     yield put(setSurveyUid(result.data));
     yield put(setLoading(false));
-    console.log("startSurvey success", result);
+    // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
   }
@@ -77,11 +77,11 @@ function* sendSurveyData() {
   const path = PATH_NAME + "answers/?uid=" + uid;
 
   try {
-    yield put(setLoading(true));
-    const result: unknown = yield call(() => sendData(path, answers));
-    yield put(setLoading(false));
-
-    console.log("sendSurveyData success", result);
+    // yield put(setLoading(true));
+    // const result: unknown = yield call(() => sendData(path, answers));
+    // yield put(setLoading(false));
+    //
+    // console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);
   }

@@ -1,11 +1,12 @@
 import React from "react";
 import { Checkbox, CheckboxProps, withStyles } from "@material-ui/core";
+import { PRIMARY_COLOR } from "../../consts/const";
 
 const GreenCheckbox = withStyles({
   root: {
-    color: "#46acaf",
+    color: PRIMARY_COLOR,
     "&$checked": {
-      color: "#46acaf",
+      color: PRIMARY_COLOR,
     },
   },
   checked: {},

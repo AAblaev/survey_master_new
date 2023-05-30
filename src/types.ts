@@ -65,6 +65,7 @@ export type IOption = {
   photoID: number;
   title: string;
   width: number;
+  dimension?: number;
 };
 
 export type IView =
