@@ -34,11 +34,13 @@ export const formControlCss = css`
 export const chipWrapperCss = css`
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 0.5em;
+  padding-left: 0.5em;
 `;
-export const chipCss = (notDefault: boolean) => css`
-  ${notDefault && "background-color: #46acaf57"};
-  padding: 5px;
+export const chipCss = (isDefault: boolean) => css`
+  color: ${isDefault ? "#555" : "inherit"};
+  background-color: ${isDefault ? "transparent" : "#e5e5e5"};
+  padding: 0.5em;
   border-radius: 5px;
 `;
 
@@ -95,19 +97,20 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         multiple
         value={value}
         onChange={handleChange}
+        disableUnderline
         renderValue={(items) => {
           const ids = items as string[];
           const options = ids.map((id: string) => optionsDict[id]);
           if (ids.length === 1 && ids[0] === "default")
             return (
-              <div key={docID} css={chipCss(false)}>
+              <div key={docID} css={chipCss(true)}>
                 {options[0].title}
               </div>
             );
           return (
             <div css={chipWrapperCss}>
               {options.map(({ docID, title }) => (
-                <div key={docID} css={chipCss(true)}>
+                <div key={docID} css={chipCss(false)}>
                   {title}
                 </div>
               ))}

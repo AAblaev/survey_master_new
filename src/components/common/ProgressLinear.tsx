@@ -1,7 +1,7 @@
 import React from "react";
 import { Progress } from "antd";
 import Typography from "@material-ui/core/Typography";
-import { DEFAULT_STROKE } from "../../consts/const";
+import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
 
 type IProgressLinearProps = {
   allQuestionsDoneCount: number;
@@ -17,23 +17,30 @@ const ProgressLinear: React.FC<IProgressLinearProps> = ({
   isShowQuestionsCount,
 }) => {
   const progress = Math.floor((allQuestionsDoneCount / allQuestionCount) * 100);
+  const questionCount = `ПРОЙДЕНО: ${allQuestionsDoneCount} из ${allQuestionCount} (${progress}%)`;
   return (
-    <div className="progress">
+    <>
+      {isShowQuestionsCount && (
+        <div className="progress-question-count">{questionCount}</div>
+      )}
       {isShowProgressbar && (
         <>
-          <Typography variant="body1" gutterBottom>
-            Общий прогресс
-          </Typography>
+          {false && (
+            <Typography variant="body1" gutterBottom>
+              Общий прогресс
+            </Typography>
+          )}
 
-          <Progress strokeColor={DEFAULT_STROKE} percent={progress} />
+          <Progress
+            strokeColor={DEFAULT_STROKE_COLOR}
+            trailColor={DEFAULT_TRAIL_COLOR}
+            percent={progress}
+            showInfo={false}
+            size="small"
+          />
         </>
       )}
-      {isShowQuestionsCount && (
-        <Typography variant="caption" display="block" gutterBottom>
-          {`Выполнено вопросов: ${allQuestionsDoneCount}/${allQuestionCount}`}
-        </Typography>
-      )}
-    </div>
+    </>
   );
 };
 

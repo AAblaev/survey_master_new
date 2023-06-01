@@ -66,6 +66,10 @@ export const buttonCss = css`
 
 export const transitionGroupCss = css`
   margin-top: 20px;
+  margin-bottom: 20px;
+  & > div {
+    box-sizing: border-box;
+  }
 `;
 
 const Desktop: React.FC<IDesktop> = ({
@@ -175,17 +179,17 @@ const Desktop: React.FC<IDesktop> = ({
           }}
         >
           {pathName !== "greeting" && (
-            <Typography variant="h6" component="h1" className="progress">
-              {name}
-            </Typography>
+            <div className="survey-name adaptive-paddings">{name}</div>
           )}
           {pathName !== "greeting" && (
-            <ProgressLinear
-              allQuestionCount={allQuestionCount}
-              allQuestionsDoneCount={allQuestionsDoneCount}
-              isShowProgressbar={isShowProgressbar}
-              isShowQuestionsCount={isShowQuestionsCount}
-            />
+            <div className="adaptive-paddings">
+              <ProgressLinear
+                allQuestionCount={allQuestionCount}
+                allQuestionsDoneCount={allQuestionsDoneCount}
+                isShowProgressbar={isShowProgressbar}
+                isShowQuestionsCount={isShowProgressbar}
+              />
+            </div>
           )}
           <TransitionGroup
             css={transitionGroupCss}
