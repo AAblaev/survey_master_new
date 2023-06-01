@@ -10,42 +10,19 @@ import { Progress } from "antd";
 import Typography from "@material-ui/core/Typography";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Button from "@material-ui/core/Button";
-import { DEFAULT_STROKE, DEFAULT_BACKGROUND_COLOR } from "../../consts/const";
+import {
+  DEFAULT_STROKE_COLOR,
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_TRAIL_COLOR,
+} from "../../consts/const";
 import { changeCurretLocation } from "../../services/redux/actions";
 
 type ISurvey = ConnectedProps<typeof connector>;
 
-export const pageCss = css`
-  margin-bottom: 20px;
-
-  // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
-  @media (min-width: 576px) {
-    padding-right: 5%;
-    padding-left: 5%;
-  }
-
-  // Устройства Medium (планшеты, 768 пикселей и выше)
-  @media (min-width: 768px) {
-    padding-right: 5%;
-    padding-left: 5%;
-  }
-
-  // Устройства Large (настольные компьютеры, 992 пикселей и выше)
-  @media (min-width: 992px) {
-    padding-right: 15%;
-    padding-left: 15%;
-  }
-
-  // Устройства X-Large (большие настольные компьютеры, 1200 пикселей и выше)
-  @media (min-width: 1200px) {
-    padding-right: 20%;
-    padding-left: 20%;
-  }
-
-  // Устройства XX-Large (большие настольные компьютеры, 1400 пикселей и выше)
-  @media (min-width: 1400px) {
-    padding-right: 20%;
-    padding-left: 20%;
+const pageCss = css`
+  @media (max-width: 576px) {
+    padding-right: 0%;
+    padding-left: 0%;
   }
 `;
 
@@ -64,7 +41,7 @@ export const accordionCss = css`
 
 const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   return (
-    <div css={pageCss}>
+    <div css={pageCss} className="adaptive-paddings">
       <div>
         {pages.map((page, index) => {
           const allQuestionCount = page.questions.length;
@@ -79,9 +56,10 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
           return (
             <Accordion
               key={index}
-              defaultExpanded={true}
+              // defaultExpanded={true}
               disabled={false}
               css={accordionCss}
+              elevation={0}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -90,8 +68,9 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
               >
                 <Progress
                   type="circle"
-                  width={50}
-                  strokeColor={DEFAULT_STROKE}
+                  size={50}
+                  strokeColor={DEFAULT_STROKE_COLOR}
+                  trailColor={DEFAULT_TRAIL_COLOR}
                   percent={Math.floor(
                     (doneQuestionCount / allQuestionCount) * 100
                   )}

@@ -6,9 +6,9 @@ type IInfoPageProps = {
 };
 
 const greetingPageCss = css`
-  color: #000000;
-  font-size: 1.2rem;
-  font-weight: 300;
+  // color: #000000;
+  // font-size: 1.2rem;
+  // font-weight: 300;
   // margin: 20px;
 
   // Устройства Small (телефоны с горизонтальной ориентацией, 576 пикселей и выше)
@@ -44,7 +44,10 @@ const greetingPageCss = css`
 
 const InfoPage: React.FC<IInfoPageProps> = ({ html }) => {
   return (
-    <div css={greetingPageCss}>
+    <div
+      // css={greetingPageCss}
+      className="adaptive-paddings"
+    >
       <div dangerouslySetInnerHTML={{ __html: html }}></div>
     </div>
   );

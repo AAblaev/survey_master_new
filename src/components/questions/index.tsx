@@ -76,14 +76,14 @@ const Question: React.FC<IQuestionProps> = ({
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
-  const isRealisedTypeOfQuestion = viewDict.hasOwnProperty(questionType);
+  const isImplementedQuestionType = viewDict.hasOwnProperty(questionType);
   const needPadding =
     questionType === "freelist" ||
     questionType === "select" ||
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
-    !isRealisedTypeOfQuestion;
+    !isImplementedQuestionType;
   const userAnswer =
     answerWithExtra && hasExtra
       ? extraFilter(answerWithExtra)
@@ -108,8 +108,14 @@ const Question: React.FC<IQuestionProps> = ({
       </div>
 
       <div css={cardCss(needPadding)}>
-        <FormControl css={formControlCss(disabled)} focused={false}>
-          {isRealisedTypeOfQuestion ? (
+        <FormControl
+          css={formControlCss({
+            disabled,
+            noBorderOnInput: questionType === "free",
+          })}
+          focused={false}
+        >
+          {isImplementedQuestionType ? (
             <ViewComponent
               currentQuestionIndex={currentQuestionIndex}
               question={question}

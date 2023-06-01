@@ -11,8 +11,9 @@ export const freeListItemCss = css`
 `;
 
 export const freeListItemLabelCss = css`
-  font-size: 1.2em !important;
-  color: #787878 !important;
+  font-size: 0.8rem !important;
+  // color: #787878 !important;
+  margin-bottom: 0.5em;
 `;
 
 type IFreeListViewProps = {

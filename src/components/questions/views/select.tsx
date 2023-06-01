@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
-import { withStyles } from "@material-ui/core";
+import { Typography, withStyles } from "@material-ui/core";
 import { IQuestion, IAnswer } from "../../../types";
 import GreenCheckbox from "../../common/GreenCheckbox";
 
@@ -81,7 +81,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
                 name={item.title}
               />
             }
-            label={item.title}
+            label={<Typography variant="body2">{item.title}</Typography>}
             key={index}
           />
         );

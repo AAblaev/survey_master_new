@@ -18,7 +18,8 @@ export const formControlCss = css`
 
 export const renderValueCss = (isDefault: boolean) =>
   css`
-    color: ${isDefault ? "grey" : "black"};
+    color: ${isDefault ? "#555" : "inherit"};
+    padding: 0.5em;
   `;
 
 export const chipWrapperCss = css``;
@@ -49,7 +50,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const value = userAnswerExist
     ? optionsDict[(userAnswer.values as IAnswer["values"])[0].optionID].docID
-    : "default";
+    : "";
 
   const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const optionID = e.target.value as number;
@@ -69,7 +70,8 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       <Select
         value={value}
         onChange={handleChange}
-        defaultValue="default"
+        defaultValue=""
+        disableUnderline
         MenuProps={{
           anchorOrigin: {
             vertical: "bottom",
@@ -81,11 +83,16 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           },
           getContentAnchorEl: null,
         }}
-        renderValue={(value: any) => (
-          <span css={renderValueCss(value === "default")}>
-            {optionsDict[value].title}
-          </span>
-        )}
+        displayEmpty={true}
+        renderValue={(value: any) => {
+          return (
+            <span css={renderValueCss(value === "")}>
+              {value === ""
+                ? optionsDict["default"].title
+                : optionsDict[value].title}
+            </span>
+          );
+        }}
       >
         {options.map((item) => (
           <MenuItem key={item.docID} value={item.docID}>
