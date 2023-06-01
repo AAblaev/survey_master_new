@@ -140,14 +140,14 @@ const Question: React.FC<IQuestionProps> = ({
             />
           )}
         </FormControl>
-        {hasUnableAnswer && (
-          <UnableCheckbox
-            userAnswer={answerWithExtra as IAnswer}
-            setAnswer={setAnswer}
-            questionID={question.docID}
-          />
-        )}
       </div>
+      {hasUnableAnswer && (
+        <UnableCheckbox
+          userAnswer={answerWithExtra as IAnswer}
+          setAnswer={setAnswer}
+          questionID={question.docID}
+        />
+      )}
     </div>
   );
 };

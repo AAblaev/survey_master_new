@@ -85,7 +85,6 @@ const Desktop: React.FC<IDesktop> = ({
   completeSurvey,
   page,
   pageIndex,
-  // params,
   fetchData,
   startSurvey,
   greetingsPage,
@@ -94,9 +93,9 @@ const Desktop: React.FC<IDesktop> = ({
   buttonFinishCaption,
   buttonNextCaption,
   completionPage,
-  // disqualificationPage,
   isShowProgressbar,
   isShowQuestionsCount,
+  questionCount,
 }) => {
   const { title, pathName } = location;
 
@@ -121,7 +120,9 @@ const Desktop: React.FC<IDesktop> = ({
     if (pathName === "completion") return <InfoPage html={completionPage} />;
     if (pathName === "survey") return <Survey />;
     if (pathName === "section")
-      return <Page page={page} pageIndex={pageIndex} />;
+      return (
+        <Page page={page} pageIndex={pageIndex} questionCount={questionCount} />
+      );
     return null;
   };
   const pagesCount = pages.length;
@@ -263,7 +264,11 @@ const mapStateToProps = (state: IState) => {
   const name = data ? data.name : "";
   const isShowProgressbar = data ? data.isShowProgressbar : false;
   const isShowQuestionsCount = data ? data.isShowQuestionsCount : false;
-
+  const questionCount: number = pages.reduce((acc: number, page, index) => {
+    if (index < pageIndex) {
+      return acc + page.questions.length;
+    } else return acc;
+  }, 0);
   return {
     pages,
     userAnswers,
@@ -285,6 +290,7 @@ const mapStateToProps = (state: IState) => {
     name,
     isShowProgressbar,
     isShowQuestionsCount,
+    questionCount,
   };
 };
 
