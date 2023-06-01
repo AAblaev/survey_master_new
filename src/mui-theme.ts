@@ -23,7 +23,7 @@ const theme = createTheme({
     },
     body2: {
       color: "inherit",
-      fontSize: "0.8rem",
+      fontSize: "0.84rem",
     },
   },
   overrides: {
