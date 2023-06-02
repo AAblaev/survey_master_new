@@ -8,6 +8,7 @@ import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "../../consts/const";
 export type IPageProps = {
   page: IPage;
   pageIndex: number;
+  questionCount: number;
 };
 
 export const questionListCss = css`
@@ -24,7 +25,7 @@ export const titleCss = css`
   }
 `;
 
-const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
+const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
   const questions = page.questions ? page.questions : [];
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
 
@@ -33,7 +34,11 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex }) => {
       {false && <Typography css={titleCss}>{title}</Typography>}
       <div css={questionListCss}>
         {questions.map((q, index) => (
-          <Question key={index} currentQuestionIndex={index} question={q} />
+          <Question
+            key={index}
+            currentQuestionIndex={questionCount + index}
+            question={q}
+          />
         ))}
       </div>
     </div>
