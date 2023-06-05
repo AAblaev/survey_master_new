@@ -12,12 +12,13 @@ export const tbodyMobileCss = css`
 `;
 
 export const tbodyCss = css`
+  ${tbodyMobileCss}
   @media (min-width: 576px) {
     ${tbodyMobileCss}
   }
 
   @media (min-width: 768px) {
-    ${tbodyMobileCss}
+    ${tbodyDesctopCss}
   }
 
   @media (min-width: 992px) {
@@ -41,14 +42,17 @@ const tableDesctopCss = css`
 `;
 
 export const tableCss = css`
+  font-size: 0.84rem;
   border-spacing: 0px;
   border-collapse: collapse;
+  ${tableMobileCss}
+
   @media (min-width: 576px) {
     ${tableMobileCss}
   }
 
   @media (min-width: 768px) {
-    ${tableMobileCss}
+    ${tableDesctopCss}
   }
 
   @media (min-width: 992px) {
@@ -64,19 +68,23 @@ export const tableCss = css`
   }
 `;
 
+const trMobileCss = css`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const trDesctopCss = css``;
+
 export const trCss = css`
-  display: table-row;
+  ${trMobileCss}
 
   @media (min-width: 576px) {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    ${trMobileCss}
   }
 
   @media (min-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: table-row;
   }
 
   @media (min-width: 992px) {
@@ -93,12 +101,13 @@ export const trCss = css`
 `;
 
 export const theadCss = css`
+  display: none;
   @media (min-width: 576px) {
     display: none;
   }
 
   @media (min-width: 768px) {
-    display: none;
+    display: table-header-group;
   }
 
   @media (min-width: 992px) {
@@ -116,6 +125,8 @@ export const theadCss = css`
 
 export const thRowMobileCss = css`
   padding: 0px;
+  text-align: left;
+  padding: 0px;
   font-weight: 600;
 `;
 export const thRowDesctopCss = css`
@@ -125,16 +136,13 @@ export const thRowDesctopCss = css`
 `;
 
 export const thRowCss = css`
-  text-align: left;
-  font-weight: normal;
-  // font-size: 1.2rem;
-
+  ${thRowMobileCss}
   @media (min-width: 576px) {
     ${thRowMobileCss}
   }
 
   @media (min-width: 768px) {
-    ${thRowMobileCss}
+    ${thRowDesctopCss}
   }
 
   @media (min-width: 992px) {
@@ -155,12 +163,12 @@ export const thColumnCss = css`
   font-weight: normal;
   padding: 10px;
   max-width: 100px;
+  text-align: start;
   overflow-wrap: anywhere;
 `;
 
 export const tdMobileCss = (isSelected: boolean, content: string) => css`
   display: flex;
-  align-items: center;
   cursor: pointer;
   padding:1rem;
   border: 1px solid #e5e5e5;
@@ -186,18 +194,22 @@ export const tdDesctopCss = css`
   &::after {
     content: "";
   }
+
+  // &:hover {
+  //   border-color: red;
+  // }
 `;
 
 export const tdCss = (isSelected: boolean, content: string) => css`
   font-weight: normal;
   text-align: center;
-
+  ${tdMobileCss(isSelected, content)}
   @media (min-width: 576px) {
     ${tdMobileCss(isSelected, content)}
   }
 
   @media (min-width: 768px) {
-    ${tdMobileCss(isSelected, content)}
+    ${tdDesctopCss}
   }
 
   @media (min-width: 992px) {
