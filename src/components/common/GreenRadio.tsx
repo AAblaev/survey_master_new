@@ -11,6 +11,6 @@ const GreenRadio = withStyles({
     },
   },
   checked: {},
-})((props: RadioProps) => <Radio color="default" {...props} />);
+})((props: RadioProps) => <Radio size="medium" color="default" {...props} />);
 
 export default GreenRadio;

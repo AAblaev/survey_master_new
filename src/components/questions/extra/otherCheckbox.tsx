@@ -44,9 +44,9 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
         key={"other"}
       />
       <TextField
-        id="outlined-multiline-static"
+        id={"otherTextField" + questionID}
         InputProps={{ disableUnderline: true }}
-        label="Ответ"
+        label=""
         color="primary"
         fullWidth
         multiline

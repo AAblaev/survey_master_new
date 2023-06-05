@@ -170,7 +170,7 @@ export const thColumnCss = css`
 export const tdMobileCss = (isSelected: boolean, content: string) => css`
   display: flex;
   cursor: pointer;
-  padding:1rem;
+  padding: 0.5rem;
   border: 1px solid #e5e5e5;
 
   ${isSelected && "background-color: #e5e5e5;"}
@@ -188,6 +188,7 @@ export const tdMobileCss = (isSelected: boolean, content: string) => css`
 export const tdDesctopCss = css`
   background-color: white;
   display: table-cell;
+  text-align: center;
   & > .MuiButtonBase-root {
     display: inline-block;
   }
@@ -202,7 +203,7 @@ export const tdDesctopCss = css`
 
 export const tdCss = (isSelected: boolean, content: string) => css`
   font-weight: normal;
-  text-align: center;
+
   ${tdMobileCss(isSelected, content)}
   @media (min-width: 576px) {
     ${tdMobileCss(isSelected, content)}
