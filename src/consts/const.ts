@@ -23,3 +23,4 @@ export enum EXTRA_ANSWER {
 }
 
 export const DEFAULT_HINT_VALUE = "";
+export const DEFAULT_COLUMNS_COUNT = 2;

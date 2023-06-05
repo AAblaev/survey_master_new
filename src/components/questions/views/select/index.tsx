@@ -1,28 +1,11 @@
 import React from "react";
-import { css } from "@emotion/react";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox, { CheckboxProps } from "@material-ui/core/Checkbox";
-import { Typography, withStyles } from "@material-ui/core";
-import { IQuestion, IAnswer } from "../../../types";
-import GreenCheckbox from "../../common/GreenCheckbox";
-
-export const freeListItemCss = css`
-  margin-top: 10px !important;
-  margin-bottom: 10px !important;
-`;
-
-export const freeListItemLabelCss = css`
-  font-size: 1.2em !important;
-  color: #787878 !important;
-`;
-
-export const formGroupCss = css`
-  &.MuiFormGroup-root {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-`;
+import { Typography } from "@material-ui/core";
+import { IQuestion, IAnswer } from "../../../../types";
+import GreenCheckbox from "../../../common/GreenCheckbox";
+import { formGroupCss } from "./sc";
+import { DEFAULT_COLUMNS_COUNT } from "../../../../consts/const";
 
 type ISelectViewProps = {
   currentQuestionIndex: number;
@@ -37,7 +20,10 @@ const SelectView: React.FC<ISelectViewProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { dataType } = config;
+  const { dataType, columnsCount: backendColumnsCount } = config;
+  const columnsCount = backendColumnsCount
+    ? backendColumnsCount
+    : DEFAULT_COLUMNS_COUNT;
   const options = config.options!;
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
@@ -51,7 +37,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
   };
 
   return (
-    <FormGroup css={formGroupCss}>
+    <FormGroup css={formGroupCss(columnsCount)}>
       {options.map((item, index) => {
         const isChecked = isSelected(item.docID);
         const handleChange = () => {

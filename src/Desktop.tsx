@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 import { css } from "@emotion/react";
 import "./assets/index.css";
@@ -17,12 +19,14 @@ import AppBar from "./components/common/AppBar";
 import { DEFAULT_BACKGROUND_COLOR, TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
+import { Modal, ModalHeader, ModalContent } from "./components/common/modal";
 import { changeCurretLocation } from "./services/redux/actions";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   START_SURVEY,
+  TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
 import ProgressBar from "./components/common/ProgressBar";
 import InfoPage from "./components/pages/InfoPage";
@@ -30,7 +34,10 @@ import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Typography from "@material-ui/core/Typography";
-import { isQuestionDone, isRequiredQuestionDone } from "./utils/questionIsDone";
+import {
+  findFirstIncompleteQuestion,
+  isQuestionDone,
+} from "./utils/questionIsDone";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -72,6 +79,12 @@ export const transitionGroupCss = css`
   }
 `;
 
+export const modalHeaderWrapperCss = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const Desktop: React.FC<IDesktop> = ({
   name,
   pages,
@@ -82,7 +95,7 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
-  completeSurvey,
+  submit,
   page,
   pageIndex,
   fetchData,
@@ -96,12 +109,11 @@ const Desktop: React.FC<IDesktop> = ({
   isShowProgressbar,
   isShowQuestionsCount,
   questionCount,
+  modalVisible,
+  openModal,
+  closeModal,
 }) => {
   const { title, pathName } = location;
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   if (error.status) {
     return (
@@ -135,11 +147,27 @@ const Desktop: React.FC<IDesktop> = ({
     isQuestionDone
   ).length;
 
-  const allRequiredQuestionDone = isRequiredQuestionDone(pages, userAnswers);
+  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
+
+  const completeSurvey = () => {
+    if (!resultValidation) {
+      submit();
+      return;
+    }
+
+    openModal();
+
+    console.log("еще не все");
+    console.log("resultValidation", resultValidation);
+  };
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div css={desctopCss}>
@@ -233,6 +261,20 @@ const Desktop: React.FC<IDesktop> = ({
           pagesCount,
         })}
       </AppBar>
+
+      <Modal visible={modalVisible} onClosed={closeModal} size="sm">
+        <ModalHeader>
+          <div css={modalHeaderWrapperCss}>
+            <span>Отмена</span>
+            <IconButton onClick={() => closeModal()}>
+              <CloseIcon />
+            </IconButton>
+          </div>
+        </ModalHeader>
+        <ModalContent>
+          <div>Пожауйста, ответьте на обязательные вопросы</div>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
@@ -248,6 +290,7 @@ const mapStateToProps = (state: IState) => {
     data,
     params,
     userAnswers,
+    modalVisible,
   } = state;
 
   const emptyData = !Boolean(data);
@@ -291,6 +334,7 @@ const mapStateToProps = (state: IState) => {
     isShowProgressbar,
     isShowQuestionsCount,
     questionCount,
+    modalVisible,
   };
 };
 
@@ -298,7 +342,10 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY }),
-    completeSurvey: () => {
+    openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
+    closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
+
+    submit: () => {
       dispatch({ type: COMPLETE_SURVEY });
       dispatch(
         changeCurretLocation({

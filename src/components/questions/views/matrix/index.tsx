@@ -56,7 +56,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
 
   return (
     <PerfectScrollbar
-      option={{ suppressScrollX: false, suppressScrollY: true }}
+      options={{ suppressScrollX: false, suppressScrollY: true }}
       css={wrapperCss}
     >
       <table css={tableCss}>

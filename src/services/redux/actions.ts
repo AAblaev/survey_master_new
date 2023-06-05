@@ -13,6 +13,7 @@ import {
   SET_SURVEY_UID,
   IS_LOADING,
   IS_ERROR,
+  TOGGLE_MODAL_VISIBLE,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -57,5 +58,11 @@ export const changeCurretLocation = (payload: {
 export const setAnswer = (payload: IAnswer) =>
   <const>{
     type: SET_USER_ANSWER,
+    payload,
+  };
+
+export const toggleModalVoisible = (payload: boolean) =>
+  <const>{
+    type: TOGGLE_MODAL_VISIBLE,
     payload,
   };

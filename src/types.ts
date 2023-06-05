@@ -169,6 +169,7 @@ export type IState = {
   params: IParams;
   userAnswers: IUserAnswer;
   slideMoveDirection: ISlideMoveDirection;
+  modalVisible: boolean;
   // relocate to section
   // pageQuestionCount: number;
 };

@@ -5,7 +5,7 @@ import { PRIMARY_COLOR } from "../../consts/const";
 
 const GreenRadio = withStyles({
   root: {
-    color: PRIMARY_COLOR,
+    color: "grey",
     "&$checked": {
       color: PRIMARY_COLOR,
     },
