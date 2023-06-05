@@ -30,7 +30,10 @@ import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import Typography from "@material-ui/core/Typography";
-import { isQuestionDone, isRequiredQuestionDone } from "./utils/questionIsDone";
+import {
+  findFirstIncompleteQuestion,
+  isQuestionDone,
+} from "./utils/questionIsDone";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -82,7 +85,7 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
-  completeSurvey,
+  submit,
   page,
   pageIndex,
   fetchData,
@@ -98,10 +101,6 @@ const Desktop: React.FC<IDesktop> = ({
   questionCount,
 }) => {
   const { title, pathName } = location;
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   if (error.status) {
     return (
@@ -135,11 +134,25 @@ const Desktop: React.FC<IDesktop> = ({
     isQuestionDone
   ).length;
 
-  const allRequiredQuestionDone = isRequiredQuestionDone(pages, userAnswers);
+  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
+
+  const completeSurvey = () => {
+    if (!resultValidation) {
+      submit();
+      return;
+    }
+
+    console.log("еще не все");
+    console.log("resultValidation", resultValidation);
+  };
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div css={desctopCss}>
@@ -298,7 +311,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY }),
-    completeSurvey: () => {
+    submit: () => {
       dispatch({ type: COMPLETE_SURVEY });
       dispatch(
         changeCurretLocation({
