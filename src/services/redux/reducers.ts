@@ -8,12 +8,14 @@ import {
   SET_USER_ANSWER,
   IS_LOADING,
   IS_ERROR,
+  TOGGLE_MODAL_VISIBLE,
   // IS_ERROR,
 } from "./types";
 
 const initialState: IState = {
   loading: false,
   error: { message: "", status: false },
+  modalVisible: false,
   data: null,
   location: {
     pathName: "greeting",
@@ -66,6 +68,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           ...state.userAnswers,
           [questionID]: action.payload,
         },
+      };
+    }
+
+    case TOGGLE_MODAL_VISIBLE: {
+      return {
+        ...state,
+        modalVisible: action.payload,
       };
     }
 
