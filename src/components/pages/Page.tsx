@@ -15,6 +15,7 @@ export const questionListCss = css`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  margin-bottom: 40px;
 `;
 
 export const titleCss = css`
@@ -30,7 +31,7 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
 
   return (
-    <div className="adaptive-paddings">
+    <>
       {false && <Typography css={titleCss}>{title}</Typography>}
       <div css={questionListCss}>
         {questions.map((q, index) => (
@@ -41,7 +42,7 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
           />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

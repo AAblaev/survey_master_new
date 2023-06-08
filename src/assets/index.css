@@ -43,6 +43,7 @@ body {
   padding-bottom: 20px; */
   /* width: 100%;
   margin-top: 20px; */
+
   padding-right: 5%;
   padding-left: 5%;
 
@@ -52,8 +53,8 @@ body {
   }
 
   @media (min-width: 768px) {
-    padding-right: 5%;
-    padding-left: 5%;
+    padding-right: 10%;
+    padding-left: 10%;
   }
 
   @media (min-width: 992px) {

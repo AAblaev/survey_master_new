@@ -13,7 +13,15 @@ export const toolbarCss = (direction: IAppBarDirection) => css`
 `;
 
 export const bottomCss = css`
-  // padding-left: 20%;
+  &.MuiAppBar-root {
+    display: flex;
+  }
+  @media (min-width: 768px) {
+    &.MuiAppBar-root {
+      display: none;
+    }
+  }
+
   &.MuiAppBar-positionFixed {
     top: auto;
     bottom: 0;
@@ -24,6 +32,9 @@ export const bottomCss = css`
 `;
 
 export const appBarCss = (direction: IAppBarDirection) => css`
+  &.MuiAppBar-root {
+    z-index: 3000;
+  }
   ${direction === "bottom" && bottomCss}
 `;
 

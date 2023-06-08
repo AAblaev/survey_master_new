@@ -4,6 +4,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import { css } from "@emotion/react";
 import "./assets/index.css";
@@ -16,7 +17,11 @@ import {
 } from "./types";
 import { Dispatch } from "redux";
 import AppBar from "./components/common/AppBar";
-import { DEFAULT_BACKGROUND_COLOR, TIMEOUT_VALUE } from "./consts/const";
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  PRIMARY_COLOR,
+  TIMEOUT_VALUE,
+} from "./consts/const";
 import Survey from "./components/pages/Survey";
 import Page from "./components/pages/Page";
 import { Modal, ModalHeader, ModalContent } from "./components/common/modal";
@@ -33,18 +38,17 @@ import InfoPage from "./components/pages/InfoPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import Typography from "@material-ui/core/Typography";
 import {
   findFirstIncompleteQuestion,
   isQuestionDone,
 } from "./utils/questionIsDone";
+import contentBtnRender from "./components/common/renderContentBtns";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
 export const desctopCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
   width: 100%;
-  // min-height: 100vh;
   height: 100%;
   position: relative;
   display: flex;
@@ -56,24 +60,42 @@ export const desctopCss = css`
 export const contentCss = css`
   flex: 1 0 auto;
   width: 100%;
-  margin: 56px 0;
+  margin-top: 56px;
+  margin-bottom: 56px;
   height: calc(100% - 112px);
-  @media (min-width: 600px) {
-    margin: 64px 0;
-    height: calc(100% - 128px);
+  position: relative;
+
+  @media (min-width: 768px) {
+    margin-top: 64px;
+    margin-bottom: 0px;
+    height: calc(100% - 64px);
   }
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
 `;
 
-export const buttonCss = css`
+export const homeButtonCss = css`
   background-color: #3b424a;
   &.MuiButton-root {
     color: #fff;
   }
 `;
 
+export const finishButtonCss = css`
+  &.MuiButtonBase-root {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    &.MuiButtonBase-root {
+      display: inline-flex;
+    }
+  }
+`;
+
 export const transitionGroupCss = css`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
   & > div {
     box-sizing: border-box;
   }
@@ -128,12 +150,59 @@ const Desktop: React.FC<IDesktop> = ({
   }
 
   const slideRender = (pathName: IPathName) => {
-    if (pathName === "greeting") return <InfoPage html={greetingsPage} />;
-    if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "greeting")
+      return (
+        <div className="adaptive-paddings">
+          <InfoPage html={greetingsPage} />
+          <Button
+            key="start"
+            variant="contained"
+            onClick={() => {
+              handleClick({
+                location: {
+                  pageIndex: 0,
+                  questionIndex: 0,
+                  pathName: "survey",
+                  title: "survey",
+                },
+                slideMoveDirection: "right-to-left",
+                needSendAnswers: false,
+              });
+              startSurvey();
+            }}
+          >
+            {buttonStartCaption}
+          </Button>
+        </div>
+      );
+    if (pathName === "completion")
+      return (
+        <div className="adaptive-paddings">
+          <InfoPage html={completionPage} />
+        </div>
+      );
     if (pathName === "survey") return <Survey />;
     if (pathName === "section")
       return (
-        <Page page={page} pageIndex={pageIndex} questionCount={questionCount} />
+        <div className="adaptive-paddings">
+          <Page
+            page={page}
+            pageIndex={pageIndex}
+            questionCount={questionCount}
+          />
+          {pathName === "section" && pageIndex + 1 === pages.length && (
+            <Button
+              key="finish"
+              css={finishButtonCss}
+              variant="contained"
+              onClick={() => {
+                completeSurvey();
+              }}
+            >
+              {buttonFinishCaption}
+            </Button>
+          )}
+        </div>
       );
     return null;
   };
@@ -155,11 +224,7 @@ const Desktop: React.FC<IDesktop> = ({
       submit();
       return;
     }
-
     openModal();
-
-    console.log("еще не все");
-    console.log("resultValidation", resultValidation);
   };
 
   const perfectScrollbarRef = useRef<any>(null);
@@ -180,7 +245,7 @@ const Desktop: React.FC<IDesktop> = ({
       <AppBar direction="top" fixed>
         {pathName === "section" && (
           <Button
-            css={buttonCss}
+            css={homeButtonCss}
             onClick={() =>
               handleClick({
                 location: {
@@ -200,6 +265,17 @@ const Desktop: React.FC<IDesktop> = ({
       </AppBar>
 
       <div css={contentCss}>
+        {contentBtnRender({
+          location,
+          buttonStartCaption,
+          buttonNextCaption,
+          buttonBackCaption,
+          buttonFinishCaption,
+          handleClick,
+          startSurvey,
+          completeSurvey,
+          pagesCount,
+        })}
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           ref={perfectScrollbarRef}
