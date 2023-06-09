@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-
 import { css } from "@emotion/react";
 import "./assets/index.css";
 import {
@@ -43,6 +42,7 @@ import {
   isQuestionDone,
 } from "./utils/questionIsDone";
 import contentBtnRender from "./components/common/renderContentBtns";
+import Nav from "./components/common/Nav";
 
 export type IDesktop = ConnectedProps<typeof connector>;
 
@@ -82,7 +82,7 @@ export const homeButtonCss = css`
   }
 `;
 
-export const finishButtonCss = css`
+export const onlyDesctopButtonCss = css`
   &.MuiButtonBase-root {
     display: none;
   }
@@ -157,6 +157,7 @@ const Desktop: React.FC<IDesktop> = ({
           <Button
             key="start"
             variant="contained"
+            css={onlyDesctopButtonCss}
             onClick={() => {
               handleClick({
                 location: {
@@ -193,7 +194,7 @@ const Desktop: React.FC<IDesktop> = ({
           {pathName === "section" && pageIndex + 1 === pages.length && (
             <Button
               key="finish"
-              css={finishButtonCss}
+              css={onlyDesctopButtonCss}
               variant="contained"
               onClick={() => {
                 completeSurvey();
@@ -244,23 +245,43 @@ const Desktop: React.FC<IDesktop> = ({
       )}
       <AppBar direction="top" fixed>
         {pathName === "section" && (
-          <Button
-            css={homeButtonCss}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "survey",
-                  title: "survey",
-                },
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
-          >
-            К списку страниц
-          </Button>
+          <>
+            <Button
+              key="home"
+              css={homeButtonCss}
+              onClick={() =>
+                handleClick({
+                  location: {
+                    pageIndex: 0,
+                    questionIndex: 0,
+                    pathName: "survey",
+                    title: "survey",
+                  },
+                  slideMoveDirection: "left-to-right",
+                  needSendAnswers: true,
+                })
+              }
+            >
+              К списку страниц
+            </Button>
+            <Nav
+              title={page.title ? page.title : `Страница ${pageIndex + 1}`}
+              pages={pages}
+              currentPageIndex={pageIndex}
+              onChange={(pageIndex, slideMoveDirection) => {
+                handleClick({
+                  location: {
+                    pageIndex: pageIndex,
+                    pathName: "section",
+                    questionIndex: 0,
+                    title: "section",
+                  },
+                  needSendAnswers: true,
+                  slideMoveDirection: slideMoveDirection,
+                });
+              }}
+            />
+          </>
         )}
       </AppBar>
 
