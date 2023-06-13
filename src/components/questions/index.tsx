@@ -68,6 +68,8 @@ const Question: React.FC<IQuestionProps> = ({
     hasNothingAnswer,
     hasOtherAnswer,
     hasUnableAnswer,
+    hasComment,
+    comment,
     isRequired,
   } = question;
   const questionText = `<div>${title}${
@@ -103,44 +105,51 @@ const Question: React.FC<IQuestionProps> = ({
       <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex + 1}.</div>
         <div css={titleTextCss}>
-          <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+          {config.dataType !== "textblock" && (
+            <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+          )}
+          {hasComment && (
+            <div dangerouslySetInnerHTML={{ __html: comment }}></div>
+          )}
         </div>
       </div>
 
-      <div css={cardCss(needPadding)}>
-        <FormControl
-          css={formControlCss({
-            disabled,
-            noBorderOnInput: questionType === "free",
-          })}
-          focused={false}
-        >
-          {isImplementedQuestionType ? (
-            <ViewComponent
-              currentQuestionIndex={currentQuestionIndex}
-              question={question}
-              userAnswer={userAnswer as IAnswer}
-              setAnswer={setAnswer}
-            />
-          ) : (
-            <div>Данного типа вопроса нет {questionType}</div>
-          )}
-          {hasNothingAnswer && (
-            <NothingCheckbox
-              userAnswer={answerWithExtra as IAnswer}
-              setAnswer={setAnswer}
-              questionID={question.docID}
-            />
-          )}
-          {hasOtherAnswer && (
-            <OtherCheckbox
-              userAnswer={answerWithExtra as IAnswer}
-              setAnswer={setAnswer}
-              questionID={question.docID}
-            />
-          )}
-        </FormControl>
-      </div>
+      {config.dataType !== "textblock" && (
+        <div css={cardCss(needPadding)}>
+          <FormControl
+            css={formControlCss({
+              disabled,
+              noBorderOnInput: questionType === "free",
+            })}
+            focused={false}
+          >
+            {isImplementedQuestionType ? (
+              <ViewComponent
+                currentQuestionIndex={currentQuestionIndex}
+                question={question}
+                userAnswer={userAnswer as IAnswer}
+                setAnswer={setAnswer}
+              />
+            ) : (
+              <div>Данного типа вопроса нет {questionType}</div>
+            )}
+            {hasNothingAnswer && (
+              <NothingCheckbox
+                userAnswer={answerWithExtra as IAnswer}
+                setAnswer={setAnswer}
+                questionID={question.docID}
+              />
+            )}
+            {hasOtherAnswer && (
+              <OtherCheckbox
+                userAnswer={answerWithExtra as IAnswer}
+                setAnswer={setAnswer}
+                questionID={question.docID}
+              />
+            )}
+          </FormControl>
+        </div>
+      )}
       {hasUnableAnswer && (
         <UnableCheckbox
           userAnswer={answerWithExtra as IAnswer}

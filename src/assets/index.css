@@ -2,6 +2,10 @@
 /* @import "~antd/dist/antd.css"; */
 @import "./react-perfect-scrollbar.css";
 
+:root {
+  --transition-duration: 0.4s; /* CSS-переменная для длительности перехода */
+}
+
 html {
   height: 100%;
   font-size: 14px;
@@ -122,7 +126,7 @@ body {
 .right-to-left-enter-active {
   position: absolute;
   transform: translateX(0);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
   width: 90%;
 
   @media (min-width: 576px) {
@@ -149,7 +153,7 @@ body {
 .right-to-left-exit-active {
   width: 100%;
   transform: translateX(-100%);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
 }
 
 .left-to-right-enter {
@@ -176,7 +180,7 @@ body {
 .left-to-right-enter-active {
   position: absolute;
   transform: translateX(0);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
   width: 90%;
 
   @media (min-width: 576px) {
@@ -206,5 +210,5 @@ body {
   width: 100%;
   /* position: absolute; */
   transform: translateX(100%);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
 }

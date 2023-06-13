@@ -121,6 +121,7 @@ export type IDataType =
   | "complex"
   | "scale"
   | "html"
+  | "textblock"
   | "default";
 
 export type IAnswer = {
