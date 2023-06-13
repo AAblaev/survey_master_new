@@ -1,5 +1,6 @@
 import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
+import CheckIcon from "@material-ui/icons/Check";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
@@ -47,6 +48,20 @@ export const chipCss = (isDefault: boolean) => css`
 export const selectCss = css`
   & .MuiSelect-selectMenu {
     min-height: 2em;
+  }
+`;
+
+export const iconCss = (selected: boolean) => css`
+  &.MuiSvgIcon-root {
+    margin-right: 5px;
+    fill: ${PRIMARY_COLOR};
+    ${!selected && "visibility:hidden"}
+  }
+`;
+
+export const menuItemCss = css`
+  &.MuiListItem-root.Mui-selected {
+    background-color: transparent;
   }
 `;
 
@@ -131,8 +146,11 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         css={selectCss}
       >
         {options.map((item) => (
-          <MenuItem key={item.docID} value={item.docID}>
-            {item.title}
+          <MenuItem key={item.docID} value={item.docID} css={menuItemCss}>
+            <CheckIcon
+              css={iconCss((value as number[]).includes(item.docID))}
+            />
+            <span>{item.title}</span>
           </MenuItem>
         ))}
       </Select>

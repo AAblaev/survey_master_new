@@ -71,6 +71,7 @@ const Nav: React.FC<INavProps> = ({
       >
         {pages.map((page, pageIndex) => (
           <MenuItem
+            key={pageIndex}
             css={menuItemCss}
             onClick={() => {
               onChange(
