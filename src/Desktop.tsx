@@ -63,7 +63,8 @@ export const contentCss = css`
   margin-top: 56px;
   margin-bottom: 56px;
   height: calc(100% - 112px);
-  position: relative;
+  // display: flex;
+  // flex-direction: column;
 
   @media (min-width: 768px) {
     margin-top: 64px;
@@ -95,7 +96,7 @@ export const onlyDesctopButtonCss = css`
 `;
 
 export const transitionGroupCss = css`
-  margin-bottom: 50px;
+  padding-bottom: 40px;
   & > div {
     box-sizing: border-box;
   }
@@ -105,6 +106,35 @@ export const modalHeaderWrapperCss = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const gridContainerCss = css`
+  flex-grow: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: 15% auto 15%;
+  grid-template-rows: auto;
+
+  @media (min-width: 576px) {
+    grid-template-columns: 5% auto 5%;
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: 10% auto 10%;
+  }
+
+  @media (min-width: 992px) {
+    grid-template-columns: 15% auto 15%;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: 20% auto 20%;
+  }
+`;
+
+const borderCss = css`
+  background-color: ${DEFAULT_BACKGROUND_COLOR};
+  z-index: 20;
 `;
 
 const Desktop: React.FC<IDesktop> = ({
@@ -152,7 +182,7 @@ const Desktop: React.FC<IDesktop> = ({
   const slideRender = (pathName: IPathName) => {
     if (pathName === "greeting")
       return (
-        <div className="adaptive-paddings">
+        <div>
           <InfoPage html={greetingsPage} />
           <Button
             key="start"
@@ -176,16 +206,11 @@ const Desktop: React.FC<IDesktop> = ({
           </Button>
         </div>
       );
-    if (pathName === "completion")
-      return (
-        <div className="adaptive-paddings">
-          <InfoPage html={completionPage} />
-        </div>
-      );
+    if (pathName === "completion") return <InfoPage html={completionPage} />;
     if (pathName === "survey") return <Survey />;
     if (pathName === "section")
       return (
-        <div className="adaptive-paddings">
+        <div>
           <Page
             page={page}
             pageIndex={pageIndex}
@@ -317,32 +342,36 @@ const Desktop: React.FC<IDesktop> = ({
               />
             </div>
           )}
-          <TransitionGroup
-            css={transitionGroupCss}
-            childFactory={(child) =>
-              React.cloneElement(child, {
-                classNames: slideMoveDirection,
-              })
-            }
-          >
-            <CSSTransition
-              key={title + location.pageIndex}
-              classNames="left-to-right"
-              timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
-              onExiting={() => {
-                if (perfectScrollbarContainerRef.current)
-                  perfectScrollbarContainerRef.current.scrollTop = 0;
-              }}
-              onExited={() => {
-                setTimeout(() => {
-                  if (perfectScrollbarRef.current)
-                    perfectScrollbarRef.current.updateScroll();
-                });
-              }}
+          <div css={gridContainerCss}>
+            <div css={borderCss}></div>
+            <TransitionGroup
+              css={transitionGroupCss}
+              childFactory={(child) =>
+                React.cloneElement(child, {
+                  classNames: slideMoveDirection,
+                })
+              }
             >
-              {slideRender(pathName)}
-            </CSSTransition>
-          </TransitionGroup>
+              <CSSTransition
+                key={title + location.pageIndex}
+                classNames="left-to-right"
+                timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
+                onExiting={() => {
+                  if (perfectScrollbarContainerRef.current)
+                    perfectScrollbarContainerRef.current.scrollTop = 0;
+                }}
+                onExited={() => {
+                  setTimeout(() => {
+                    if (perfectScrollbarRef.current)
+                      perfectScrollbarRef.current.updateScroll();
+                  });
+                }}
+              >
+                {slideRender(pathName)}
+              </CSSTransition>
+            </TransitionGroup>
+            <div css={borderCss}></div>
+          </div>
         </PerfectScrollbar>
       </div>
       <AppBar direction="bottom" fixed>

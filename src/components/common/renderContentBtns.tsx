@@ -12,7 +12,7 @@ const iconBtnCss = (side: "left" | "right") => css`
     display: none;
     position: absolute;
     top: 47%;
-    z-index: 1;
+    z-index: 2000;
   }
 
   & .MuiSvgIcon-fontSizeLarge {

@@ -41,7 +41,7 @@ export const accordionCss = css`
 
 const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   return (
-    <div css={pageCss} className="adaptive-paddings">
+    <div css={pageCss}>
       <div>
         {pages.map((page, index) => {
           const allQuestionCount = page.questions.length;

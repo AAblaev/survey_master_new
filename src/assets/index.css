@@ -39,11 +39,6 @@ body {
 }
 
 .adaptive-paddings {
-  /* padding-top: 20px;
-  padding-bottom: 20px; */
-  /* width: 100%;
-  margin-top: 20px; */
-
   padding-right: 5%;
   padding-left: 5%;
 
@@ -104,56 +99,112 @@ body {
 }
 
 .right-to-left-enter {
-  width: 100%;
   position: absolute;
   transform: translateX(100%);
-  z-index: 10;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 .right-to-left-enter-active {
-  width: 100%;
   position: absolute;
-  z-index: 10;
   transform: translateX(0);
   transition: all 0.5s ease;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 
 .right-to-left-exit {
   width: 100%;
-  position: absolute;
   transform: translateX(0);
-  z-index: 11;
 }
 .right-to-left-exit-active {
   width: 100%;
-  position: absolute;
   transform: translateX(-100%);
   transition: all 0.5s ease;
-  z-index: 11;
 }
 
 .left-to-right-enter {
-  width: 100%;
   position: absolute;
   transform: translateX(-100%);
-  z-index: 10;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 .left-to-right-enter-active {
-  width: 100%;
   position: absolute;
-  z-index: 10;
   transform: translateX(0);
   transition: all 0.5s ease;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 
 .left-to-right-exit {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   transform: translateX(0);
-  z-index: 11;
+  /* z-index: 11; */
 }
 .left-to-right-exit-active {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   transform: translateX(100%);
   transition: all 0.5s ease;
 }
