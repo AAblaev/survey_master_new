@@ -63,17 +63,12 @@ export const contentCss = css`
   margin-top: 56px;
   margin-bottom: 56px;
   height: calc(100% - 112px);
-  // display: flex;
-  // flex-direction: column;
 
   @media (min-width: 768px) {
     margin-top: 64px;
     margin-bottom: 0px;
     height: calc(100% - 64px);
   }
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
 `;
 
 export const homeButtonCss = css`
@@ -112,7 +107,7 @@ const gridContainerCss = css`
   flex-grow: 1;
   position: relative;
   display: grid;
-  grid-template-columns: 15% auto 15%;
+  grid-template-columns: 5% auto 5%;
   grid-template-rows: auto;
 
   @media (min-width: 576px) {
