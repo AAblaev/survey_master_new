@@ -42,10 +42,10 @@ function* fetchSurveyData() {
   // }
 
   try {
-    yield put(setLoading(true));
-    const result: IFetchResult = yield call(() => fethData(path));
-    yield put(setNewData(result.data));
-    // yield put(setNewData(fakeData));
+    // yield put(setLoading(true));
+    // const result: IFetchResult = yield call(() => fethData(path));
+    // yield put(setNewData(result.data));
+    yield put(setNewData(fakeData));
 
     yield put(setLoading(false));
   } catch (e) {
@@ -101,8 +101,8 @@ function* completeSurvey() {
 
     yield put(setLoading(false));
 
-    console.log("completeSurvey send success", result1);
-    console.log("completeSurvey complete success", result2);
+    // console.log("completeSurvey send success", result1);
+    // console.log("completeSurvey complete success", result2);
   } catch (err) {
     console.log("error", err);
   }

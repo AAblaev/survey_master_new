@@ -108,7 +108,7 @@ const Question: React.FC<IQuestionProps> = ({
           {config.dataType !== "textblock" && (
             <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
           )}
-          {hasComment && (
+          {(hasComment || config.dataType === "textblock") && (
             <div dangerouslySetInnerHTML={{ __html: comment }}></div>
           )}
         </div>

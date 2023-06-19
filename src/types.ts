@@ -44,7 +44,7 @@ export type IQuestion = {
   type: number; //???
   title: string;
   order: number;
-  comment: string;
+  comment: string | null;
   hasComment?: boolean;
   branchRules: IBranchRule[];
   quoteRules: IQuoteRule[];
@@ -88,7 +88,8 @@ export type IConfig = {
   isTimeLimited: boolean;
   timeLimit: number;
   title: string;
-  options?: IOption[];
+  options?: IOption[] | null;
+  simpleType?: ISimpleType;
   view?: IView;
   orientation?: IOrientation;
   //
@@ -103,8 +104,14 @@ export type IConfig = {
     min: number;
     max: number;
   };
+  //
+  dateType?: unknown;
+  scaleType?: unknown;
+  mobileTabularView?: boolean;
+  isChooseManyInrow?: boolean;
+  isChooseManyIncol?: boolean;
 };
-
+export type ISimpleType = "boolean" | "string";
 export type IDataType =
   | "select"
   | "dropdown"
@@ -126,7 +133,7 @@ export type IDataType =
 
 export type IAnswer = {
   questionID: number;
-  values: { optionID: number; value: string }[];
+  values: { optionID: string; value: string }[];
   // unable_answer: boolean;
   // nothing_answer: boolean;
   // other_answer: { enabled: boolean; value: string };
