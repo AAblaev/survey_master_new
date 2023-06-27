@@ -91,10 +91,3 @@ const Nav: React.FC<INavProps> = ({
 };
 
 export default Nav;
-
-// <Button key="nav" css={homeButtonCss} onClick={() => {}}>
-//   <span>
-//     {page.title ? page.title : `Страница ${pageIndex + 1}`}
-//   </span>
-//   <ArrowDropDownIcon />
-// </Button>

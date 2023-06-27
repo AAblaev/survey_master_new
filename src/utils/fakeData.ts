@@ -23,7 +23,8 @@ export const fakeData: IData = {
   buttonNextCaption: "Далее",
   buttonBackCaption: "Назад",
   isShowQuestionsCount: true,
-  isShowProgressbar: false,
+  isShowProgressbar: true,
+  isShowPageList: false,
   pages: [
     {
       docID: 337,
@@ -651,7 +652,7 @@ export const fakeData: IData = {
           comment: null,
           hasComment: false,
           config: {
-            simpleType: "boolean",
+            simpleType: "string",
             mobileTabularView: false,
             isChooseManyInrow: false,
             isChooseManyIncol: true,
@@ -816,4 +817,32 @@ export const fakeData: IData = {
       ],
     },
   ],
+};
+
+const newFakeData = {
+  docID: 9,
+  name: "Тестовый опрос 31.05.2023",
+  beginDate: "30.12.1899 00:00:00",
+  endDate: "30.12.1899 00:00:00",
+  isLimitTimeForCompletion: false,
+  limitTime: 0,
+  isClosed: false,
+  closeDate: "30.12.1899 00:00:00",
+  isShowGreetingsPage: true,
+  greetingsPage:
+    "<p><strong>Здравствуйте!  </strong></p><p>Примите, пожалуйста, участие в нашем опросе. Ваше мнение для нас очень важно!</p>",
+  isShowCompletionPage: false,
+  completionPage:
+    "<p><strong>Благодарим Вас за честные ответы и потраченное время!</strong></p><p><strong>Мы обязательно учтем Ваше мнение!</strong></p>",
+  isShowDisqualificationPage: false,
+  disqualificationPage:
+    "<p><strong>Данный опрос направлен на фокусное исследование аудитории по заданным параметрам.</strong></p><p><strong>Похоже, один из ваших критериев не прошёл фильтр выборки, в связи с чем Вы не сможете продолжить опрос.</strong></p><p><strong>Благодарим Вас за уделённое время.</strong></p>",
+  buttonStartCaption: "Начать",
+  buttonFinishCaption: "Завершить",
+  buttonNextCaption: "Далее",
+  buttonBackCaption: "Назад",
+  isShowQuestionsCount: false,
+  isShowProgressbar: true,
+  isShowPageList: false,
+  pages: [],
 };

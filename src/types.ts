@@ -19,6 +19,7 @@ export type IData = {
   isShowDisqualificationPage: boolean;
   isShowQuestionsCount: boolean;
   isShowProgressbar: boolean;
+  isShowPageList: boolean;
   disqualificationPage: string;
   completionPage: string;
   limitTime: number;
@@ -133,7 +134,7 @@ export type IDataType =
 
 export type IAnswer = {
   questionID: number;
-  values: { optionID: string; value: string }[];
+  values: { optionID: number | string; value: string }[];
   // unable_answer: boolean;
   // nothing_answer: boolean;
   // other_answer: { enabled: boolean; value: string };

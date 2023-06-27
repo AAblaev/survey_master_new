@@ -7,7 +7,7 @@ const Html: React.FC<IHtmlProps> = ({ question }) => {
   const { comment } = question;
   const markup = useMemo(
     () => ({
-      __html: comment,
+      __html: comment ? comment : "",
     }),
     [comment]
   );

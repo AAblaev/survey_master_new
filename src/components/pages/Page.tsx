@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import Question from "../questions";
 import { IPage } from "../../types";
 import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "../../consts/const";
+import TextBlock from "../textBlock";
 
 export type IPageProps = {
   page: IPage;
@@ -29,18 +30,25 @@ export const titleCss = css`
 const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
   const questions = page.questions ? page.questions : [];
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
+  let counter = 0;
 
   return (
     <>
       {false && <Typography css={titleCss}>{title}</Typography>}
       <div css={questionListCss}>
-        {questions.map((q, index) => (
-          <Question
-            key={index}
-            currentQuestionIndex={questionCount + index}
-            question={q}
-          />
-        ))}
+        {questions.map((q, index) => {
+          if (q.config.dataType === "textblock") {
+            return <TextBlock key={index} question={q} />;
+          }
+          counter++;
+          return (
+            <Question
+              key={index}
+              currentQuestionIndex={questionCount + counter}
+              question={q}
+            />
+          );
+        })}
       </div>
     </>
   );

@@ -19,7 +19,7 @@ const theme = createTheme({
     ].join(","),
     body1: {
       color: "inherit",
-      fontSize: "1rem",
+      fontSize: "0.84rem",
     },
     body2: {
       color: "inherit",

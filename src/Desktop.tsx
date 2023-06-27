@@ -227,9 +227,12 @@ const Desktop: React.FC<IDesktop> = ({
       );
     return null;
   };
+
   const pagesCount = pages.length;
   const allQuestionCount = pages.reduce(
-    (acc: number, page: IPage) => (acc += page.questions.length),
+    (acc: number, page: IPage) =>
+      (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
+        .length),
     0
   );
 
@@ -237,8 +240,8 @@ const Desktop: React.FC<IDesktop> = ({
     isQuestionDone
   ).length;
 
+  //???
   const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
-  // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
 
   const completeSurvey = () => {
     if (!resultValidation) {
@@ -430,7 +433,10 @@ const mapStateToProps = (state: IState) => {
   const isShowQuestionsCount = data ? data.isShowQuestionsCount : false;
   const questionCount: number = pages.reduce((acc: number, page, index) => {
     if (index < pageIndex) {
-      return acc + page.questions.length;
+      return (
+        acc +
+        page.questions.filter((q) => q.config.dataType !== "textblock").length
+      );
     } else return acc;
   }, 0);
   return {
