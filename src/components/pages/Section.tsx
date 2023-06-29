@@ -3,10 +3,10 @@ import { Typography } from "@material-ui/core";
 import { css } from "@emotion/react";
 import Question from "../questions";
 import { IPage } from "../../types";
-import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "../../consts/const";
+import { PRIMARY_COLOR } from "../../consts/const";
 import TextBlock from "../textBlock";
 
-export type IPageProps = {
+export type ISectionProps = {
   page: IPage;
   pageIndex: number;
   questionCount: number;
@@ -27,7 +27,11 @@ export const titleCss = css`
   }
 `;
 
-const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
+const Section: React.FC<ISectionProps> = ({
+  page,
+  pageIndex,
+  questionCount,
+}) => {
   const questions = page.questions ? page.questions : [];
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
   let counter = 0;
@@ -54,4 +58,4 @@ const Page: React.FC<IPageProps> = ({ page, pageIndex, questionCount }) => {
   );
 };
 
-export default Page;
+export default Section;

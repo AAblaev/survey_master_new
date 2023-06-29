@@ -5,7 +5,6 @@ import Button from "@material-ui/core/Button";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { css } from "@emotion/react";
 import "./assets/index.css";
 import {
   ILocation,
@@ -16,13 +15,8 @@ import {
 } from "./types";
 import { Dispatch } from "redux";
 import AppBar from "./components/common/AppBar";
-import {
-  DEFAULT_BACKGROUND_COLOR,
-  PRIMARY_COLOR,
-  TIMEOUT_VALUE,
-} from "./consts/const";
+import { TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
-import Page from "./components/pages/Page";
 import { Modal, ModalHeader, ModalContent } from "./components/common/modal";
 import { changeCurretLocation } from "./services/redux/actions";
 import {
@@ -43,94 +37,19 @@ import {
 } from "./utils/questionIsDone";
 import contentBtnRender from "./components/common/renderContentBtns";
 import Nav from "./components/common/Nav";
+import {
+  borderCss,
+  contentCss,
+  desctopCss,
+  gridContainerCss,
+  homeButtonCss,
+  modalHeaderWrapperCss,
+  onlyDesctopButtonCss,
+  transitionGroupCss,
+} from "./sc";
+import Section from "./components/pages/Section";
 
 export type IDesktop = ConnectedProps<typeof connector>;
-
-export const desctopCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  align-items: center;
-`;
-
-export const contentCss = css`
-  flex: 1 0 auto;
-  width: 100%;
-  margin-top: 56px;
-  margin-bottom: 56px;
-  height: calc(100% - 112px);
-
-  @media (min-width: 768px) {
-    margin-top: 64px;
-    margin-bottom: 0px;
-    height: calc(100% - 64px);
-  }
-`;
-
-export const homeButtonCss = css`
-  background-color: #3b424a;
-  &.MuiButton-root {
-    color: #fff;
-  }
-`;
-
-export const onlyDesctopButtonCss = css`
-  &.MuiButtonBase-root {
-    display: none;
-  }
-
-  @media (min-width: 768px) {
-    &.MuiButtonBase-root {
-      display: inline-flex;
-    }
-  }
-`;
-
-export const transitionGroupCss = css`
-  padding-bottom: 40px;
-  & > div {
-    box-sizing: border-box;
-  }
-`;
-
-export const modalHeaderWrapperCss = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const gridContainerCss = css`
-  flex-grow: 1;
-  position: relative;
-  display: grid;
-  grid-template-columns: 5% auto 5%;
-  grid-template-rows: auto;
-
-  @media (min-width: 576px) {
-    grid-template-columns: 5% auto 5%;
-  }
-
-  @media (min-width: 768px) {
-    grid-template-columns: 10% auto 10%;
-  }
-
-  @media (min-width: 992px) {
-    grid-template-columns: 15% auto 15%;
-  }
-
-  @media (min-width: 1200px) {
-    grid-template-columns: 20% auto 20%;
-  }
-`;
-
-const borderCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
-  z-index: 20;
-`;
 
 const Desktop: React.FC<IDesktop> = ({
   name,
@@ -153,26 +72,14 @@ const Desktop: React.FC<IDesktop> = ({
   buttonFinishCaption,
   buttonNextCaption,
   completionPage,
+  isShowPageList,
   isShowProgressbar,
-  isShowQuestionsCount,
   questionCount,
   modalVisible,
   openModal,
   closeModal,
 }) => {
   const { title, pathName } = location;
-
-  if (error.status) {
-    return (
-      <div css={desctopCss}>
-        <AppBar direction="top" fixed></AppBar>
-        <div css={contentCss}>
-          <div>Error: {error.message}</div>
-        </div>
-        <AppBar direction="bottom" fixed></AppBar>
-      </div>
-    );
-  }
 
   const slideRender = (pathName: IPathName) => {
     if (pathName === "greeting")
@@ -188,8 +95,8 @@ const Desktop: React.FC<IDesktop> = ({
                 location: {
                   pageIndex: 0,
                   questionIndex: 0,
-                  pathName: "survey",
-                  title: "survey",
+                  pathName: isShowPageList ? "survey" : "section",
+                  title: isShowPageList ? "survey" : "section",
                 },
                 slideMoveDirection: "right-to-left",
                 needSendAnswers: false,
@@ -206,7 +113,7 @@ const Desktop: React.FC<IDesktop> = ({
     if (pathName === "section")
       return (
         <div>
-          <Page
+          <Section
             page={page}
             pageIndex={pageIndex}
             questionCount={questionCount}
@@ -255,8 +162,20 @@ const Desktop: React.FC<IDesktop> = ({
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    emptyData && fetchData();
+  }, [fetchData, emptyData]);
+
+  if (error.status) {
+    return (
+      <div css={desctopCss}>
+        <AppBar direction="top" fixed></AppBar>
+        <div css={contentCss}>
+          <div>Error: {error.message}</div>
+        </div>
+        <AppBar direction="bottom" fixed></AppBar>
+      </div>
+    );
+  }
 
   return (
     <div css={desctopCss}>
@@ -269,41 +188,44 @@ const Desktop: React.FC<IDesktop> = ({
       <AppBar direction="top" fixed>
         {pathName === "section" && (
           <>
-            <Button
-              key="home"
-              css={homeButtonCss}
-              onClick={() =>
-                handleClick({
-                  location: {
-                    pageIndex: 0,
-                    questionIndex: 0,
-                    pathName: "survey",
-                    title: "survey",
-                  },
-                  slideMoveDirection: "left-to-right",
-                  needSendAnswers: true,
-                })
-              }
-            >
-              К списку страниц
-            </Button>
-            <Nav
-              title={page.title ? page.title : `Страница ${pageIndex + 1}`}
-              pages={pages}
-              currentPageIndex={pageIndex}
-              onChange={(pageIndex, slideMoveDirection) => {
-                handleClick({
-                  location: {
-                    pageIndex: pageIndex,
-                    pathName: "section",
-                    questionIndex: 0,
-                    title: "section",
-                  },
-                  needSendAnswers: true,
-                  slideMoveDirection: slideMoveDirection,
-                });
-              }}
-            />
+            {isShowPageList ? (
+              <Button
+                key="home"
+                css={homeButtonCss}
+                onClick={() =>
+                  handleClick({
+                    location: {
+                      pageIndex: 0,
+                      questionIndex: 0,
+                      pathName: "survey",
+                      title: "survey",
+                    },
+                    slideMoveDirection: "left-to-right",
+                    needSendAnswers: true,
+                  })
+                }
+              >
+                К списку страниц
+              </Button>
+            ) : (
+              <Nav
+                title={page.title ? page.title : `Страница ${pageIndex + 1}`}
+                pages={pages}
+                currentPageIndex={pageIndex}
+                onChange={(pageIndex, slideMoveDirection) => {
+                  handleClick({
+                    location: {
+                      pageIndex: pageIndex,
+                      pathName: "section",
+                      questionIndex: 0,
+                      title: "section",
+                    },
+                    needSendAnswers: true,
+                    slideMoveDirection: slideMoveDirection,
+                  });
+                }}
+              />
+            )}
           </>
         )}
       </AppBar>
@@ -319,6 +241,7 @@ const Desktop: React.FC<IDesktop> = ({
           startSurvey,
           completeSurvey,
           pagesCount,
+          isShowPageList,
         })}
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
@@ -383,6 +306,7 @@ const Desktop: React.FC<IDesktop> = ({
           startSurvey,
           completeSurvey,
           pagesCount,
+          isShowPageList,
         })}
       </AppBar>
 
@@ -431,6 +355,7 @@ const mapStateToProps = (state: IState) => {
   const name = data ? data.name : "";
   const isShowProgressbar = data ? data.isShowProgressbar : false;
   const isShowQuestionsCount = data ? data.isShowQuestionsCount : false;
+  const isShowPageList = data ? data.isShowPageList : false;
   const questionCount: number = pages.reduce((acc: number, page, index) => {
     if (index < pageIndex) {
       return (
@@ -460,6 +385,7 @@ const mapStateToProps = (state: IState) => {
     name,
     isShowProgressbar,
     isShowQuestionsCount,
+    isShowPageList,
     questionCount,
     modalVisible,
   };

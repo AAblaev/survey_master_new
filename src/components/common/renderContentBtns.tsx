@@ -46,27 +46,6 @@ const iconBtnCss = (side: "left" | "right") => css`
   }
 
 `;
-//
-// export const iconRightButtonCss = css`
-//   ${iconBtnCss}
-//   &.MuiButtonBase-root {
-//     position: absolute;
-//     right: 0;
-//     top: 47%;
-//     z-index: 1;
-//   }
-// `;
-//
-// export const iconLeftButtonCss = css`
-//   ${iconBtnCss}
-//   &.MuiButtonBase-root {
-//     position: absolute;
-//     left: 0;
-//     top: 47%;
-//     z-index: 1;
-//     transform: rotate(180deg);
-//   }
-// `;
 
 export const buttonWrapper = (side: "left" | "right") => css`
   display: none;
@@ -109,6 +88,7 @@ type IBtnRenderProps = {
   completeSurvey: () => void;
   startSurvey: () => void;
   pagesCount: number;
+  isShowPageList: boolean;
 };
 
 const contentBtnRender = ({
@@ -121,6 +101,7 @@ const contentBtnRender = ({
   completeSurvey,
   pagesCount,
   startSurvey,
+  isShowPageList,
 }: IBtnRenderProps) => {
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
   switch (location.pathName) {
@@ -182,6 +163,7 @@ const contentBtnRender = ({
         <IconButton
           key="IconButton2"
           css={iconBtnCss("left")}
+          disabled={!isShowPageList && prevLocation.pathName === "survey"}
           onClick={() =>
             handleClick({
               location: prevLocation,

@@ -64,7 +64,7 @@ export const bottomCss = css`
 
 export const appBarCss = (direction: IAppBarDirection) => css`
   &.MuiAppBar-root {
-    z-index: 3000;
+    z-index: 6000;
   }
   ${direction === "bottom" && bottomCss}
 `;

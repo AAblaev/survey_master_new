@@ -4,7 +4,7 @@ export const DEFAULT_QUESTION_INDEX = 0;
 export const DEFAULT_PAGE_INDEX = 0;
 
 export const DEFAULT_MOVE_DIRECTION: ISlideMoveDirection = "left-to-right";
-export const TIMEOUT_VALUE = 400;
+export const TIMEOUT_VALUE = 600;
 
 export const DEFAULT_STROKE_COLOR = {
   "0%": "#108ee9",

@@ -24,7 +24,7 @@ export const fakeData: IData = {
   buttonBackCaption: "Назад",
   isShowQuestionsCount: true,
   isShowProgressbar: true,
-  isShowPageList: false,
+  isShowPageList: true,
   pages: [
     {
       docID: 337,
@@ -32,6 +32,38 @@ export const fakeData: IData = {
       order: 1,
       title: "",
       questions: [
+        {
+          docID: 333,
+          type: 11,
+          pageID: 338,
+          surveyID: 9,
+          isRequired: false,
+          hasOtherAnswer: false,
+          hasNothingAnswer: false,
+          hasUnableAnswer: false,
+          hint: "",
+          title: "",
+          order: 4,
+          comment:
+            "<p>Давайте дальше поговорим о влиянии пандемии на Вашу работу.</p>",
+          hasComment: false,
+          config: {
+            title: "",
+            isEnable: true,
+            dataType: "textblock",
+            isTimeLimited: false,
+            timeLimit: 0,
+            isShowOnButton: false,
+            isRequired: false,
+            isSaveTime: false,
+            isMultiline: false,
+            isConfirmable: false,
+            options: null,
+          },
+          visibilityRules: [],
+          branchRules: [],
+          quoteRules: [],
+        },
         {
           docID: 334,
           type: 6,

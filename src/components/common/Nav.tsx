@@ -4,10 +4,10 @@ import Button from "@material-ui/core/Button";
 import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { homeButtonCss } from "../../Desktop";
 import { IPage, ISlideMoveDirection } from "../../types";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR } from "../../consts/const";
+import { homeButtonCss } from "../../sc";
 
 const StyledMenu = withStyles({
   paper: {

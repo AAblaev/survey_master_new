@@ -3,7 +3,7 @@
 @import "./react-perfect-scrollbar.css";
 
 :root {
-  --transition-duration: 0.4s; /* CSS-переменная для длительности перехода */
+  --transition-duration: 0.6s; /* CSS-переменная для длительности перехода */
 }
 
 html {
@@ -23,6 +23,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   color: #2b2b2b;
+}
+
+p {
+  margin: 0 0 10px;
 }
 
 #root {
@@ -104,7 +108,7 @@ body {
 
 .right-to-left-enter {
   position: absolute;
-  transform: translateX(100%);
+  transform: translateX(200%);
   width: 90%;
 
   @media (min-width: 576px) {
@@ -152,13 +156,13 @@ body {
 }
 .right-to-left-exit-active {
   width: 100%;
-  transform: translateX(-100%);
+  transform: translateX(-200%);
   transition: all var(--transition-duration) ease;
 }
 
 .left-to-right-enter {
   position: absolute;
-  transform: translateX(-100%);
+  transform: translateX(-200%);
   width: 90%;
 
   @media (min-width: 576px) {
@@ -209,6 +213,6 @@ body {
 .left-to-right-exit-active {
   width: 100%;
   /* position: absolute; */
-  transform: translateX(100%);
+  transform: translateX(200%);
   transition: all var(--transition-duration) ease;
 }

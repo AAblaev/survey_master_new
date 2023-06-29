@@ -4,10 +4,13 @@ import { ILocation, ISlideMoveDirection } from "../../types";
 import getPrevAndNextLocation from "../../utils/getPrevAndNextLocation";
 import Button from "@material-ui/core/Button";
 
-export const buttonCss = css`
+export const buttonCss = (isShow: boolean) => css`
   background-color: #3b424a;
   &.MuiButton-root {
     color: #fff;
+  }
+  &.MuiButtonBase-root {
+    display: ${isShow ? "inline-flex" : "none"};
   }
 `;
 
@@ -25,6 +28,7 @@ type IBottomBtnRenderProps = {
   completeSurvey: () => void;
   startSurvey: () => void;
   pagesCount: number;
+  isShowPageList: boolean;
 };
 
 const bottomBtnRender = ({
@@ -37,21 +41,23 @@ const bottomBtnRender = ({
   completeSurvey,
   pagesCount,
   startSurvey,
+  isShowPageList,
 }: IBottomBtnRenderProps) => {
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
+  const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
   switch (location.pathName) {
     case "greeting": {
       return [
         <Button
           key="1"
-          css={buttonCss}
+          css={buttonCss(true)}
           onClick={() => {
             handleClick({
               location: {
                 pageIndex: 0,
                 questionIndex: 0,
-                pathName: "survey",
-                title: "survey",
+                pathName: isShowPageList ? "survey" : "section",
+                title: isShowPageList ? "survey" : "section",
               },
               slideMoveDirection: "right-to-left",
               needSendAnswers: false,
@@ -67,7 +73,7 @@ const bottomBtnRender = ({
       return [
         <Button
           key="1"
-          css={buttonCss}
+          css={buttonCss(true)}
           onClick={() =>
             handleClick({
               location: {
@@ -89,7 +95,7 @@ const bottomBtnRender = ({
       return [
         <Button
           key="1"
-          css={buttonCss}
+          css={buttonCss(true)}
           onClick={() => {
             nextLocation.pageIndex === pagesCount
               ? completeSurvey()
@@ -106,7 +112,7 @@ const bottomBtnRender = ({
         </Button>,
         <Button
           key="2"
-          css={buttonCss}
+          css={buttonCss(showBackBtn)}
           onClick={() =>
             handleClick({
               location: prevLocation,
