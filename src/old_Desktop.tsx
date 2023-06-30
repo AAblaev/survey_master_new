@@ -295,6 +295,7 @@ const Desktop: React.FC<IDesktop> = ({
           </div>
         </PerfectScrollbar>
       </div>
+
       <AppBar direction="bottom" fixed>
         {bottomBtnRender({
           location,
