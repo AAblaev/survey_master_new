@@ -68,6 +68,8 @@ const Question: React.FC<IQuestionProps> = ({
     hasNothingAnswer,
     hasOtherAnswer,
     hasUnableAnswer,
+    hasComment,
+    comment,
     isRequired,
   } = question;
   const questionText = `<div>${title}${
@@ -93,7 +95,7 @@ const Question: React.FC<IQuestionProps> = ({
     answerWithExtra &&
       Boolean(
         answerWithExtra.values.find(
-          (ans) => ans.optionID === EXTRA_ANSWER.UNABLE
+          (ans) => (ans.optionID as number) === EXTRA_ANSWER.UNABLE
         )
       )
   );
@@ -101,9 +103,14 @@ const Question: React.FC<IQuestionProps> = ({
   return (
     <div>
       <div css={titleCss(disabled)}>
-        <div css={titleCountCss}>{currentQuestionIndex + 1}.</div>
+        <div css={titleCountCss}>{currentQuestionIndex}.</div>
         <div css={titleTextCss}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+          {hasComment && (
+            <div
+              dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
+            ></div>
+          )}
         </div>
       </div>
 
@@ -141,6 +148,7 @@ const Question: React.FC<IQuestionProps> = ({
           )}
         </FormControl>
       </div>
+
       {hasUnableAnswer && (
         <UnableCheckbox
           userAnswer={answerWithExtra as IAnswer}

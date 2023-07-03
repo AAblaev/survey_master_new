@@ -13,7 +13,7 @@ module.exports = ({ mode } = { mode: "production" }) => {
     output: {
       publicPath: "/",
       path: path.resolve(__dirname, "build"),
-      filename: "bundle.js",
+      filename: "bundle.[contenthash].js",
     },
     module: {
       rules: [
@@ -69,7 +69,7 @@ module.exports = ({ mode } = { mode: "production" }) => {
         ],
       }),
       new MiniCssExtractPlugin({
-        filename: `[name].css`,
+        filename: `[name].[contenthash].css`,
       }),
     ],
   };

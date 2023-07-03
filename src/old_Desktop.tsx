@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Button from "@material-ui/core/Button";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-
-import { css } from "@emotion/react";
 import "./assets/index.css";
 import {
   ILocation,
@@ -16,9 +15,8 @@ import {
 } from "./types";
 import { Dispatch } from "redux";
 import AppBar from "./components/common/AppBar";
-import { DEFAULT_BACKGROUND_COLOR, TIMEOUT_VALUE } from "./consts/const";
+import { TIMEOUT_VALUE } from "./consts/const";
 import Survey from "./components/pages/Survey";
-import Page from "./components/pages/Page";
 import { Modal, ModalHeader, ModalContent } from "./components/common/modal";
 import { changeCurretLocation } from "./services/redux/actions";
 import {
@@ -33,57 +31,25 @@ import InfoPage from "./components/pages/InfoPage";
 import bottomBtnRender from "./components/common/renderBottomBtns";
 import ProgressLinear from "./components/common/ProgressLinear";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import Typography from "@material-ui/core/Typography";
 import {
   findFirstIncompleteQuestion,
   isQuestionDone,
 } from "./utils/questionIsDone";
+import contentBtnRender from "./components/common/renderContentBtns";
+import Nav from "./components/common/Nav";
+import {
+  borderCss,
+  contentCss,
+  desctopCss,
+  gridContainerCss,
+  homeButtonCss,
+  modalHeaderWrapperCss,
+  onlyDesctopButtonCss,
+  transitionGroupCss,
+} from "./sc";
+import Section from "./components/pages/Section";
 
 export type IDesktop = ConnectedProps<typeof connector>;
-
-export const desctopCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
-  width: 100%;
-  // min-height: 100vh;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  align-items: center;
-`;
-
-export const contentCss = css`
-  flex: 1 0 auto;
-  width: 100%;
-  margin: 56px 0;
-  height: calc(100% - 112px);
-  @media (min-width: 600px) {
-    margin: 64px 0;
-    height: calc(100% - 128px);
-  }
-`;
-
-export const buttonCss = css`
-  background-color: #3b424a;
-  &.MuiButton-root {
-    color: #fff;
-  }
-`;
-
-export const transitionGroupCss = css`
-  margin-top: 20px;
-  margin-bottom: 20px;
-  & > div {
-    box-sizing: border-box;
-  }
-`;
-
-export const modalHeaderWrapperCss = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
 const Desktop: React.FC<IDesktop> = ({
   name,
@@ -106,14 +72,98 @@ const Desktop: React.FC<IDesktop> = ({
   buttonFinishCaption,
   buttonNextCaption,
   completionPage,
+  isShowPageList,
   isShowProgressbar,
-  isShowQuestionsCount,
   questionCount,
   modalVisible,
   openModal,
   closeModal,
 }) => {
   const { title, pathName } = location;
+
+  const slideRender = (pathName: IPathName) => {
+    if (pathName === "greeting")
+      return (
+        <div>
+          <InfoPage html={greetingsPage} />
+          <Button
+            key="start"
+            variant="contained"
+            css={onlyDesctopButtonCss}
+            onClick={() => {
+              handleClick({
+                location: {
+                  pageIndex: 0,
+                  questionIndex: 0,
+                  pathName: isShowPageList ? "survey" : "section",
+                  title: isShowPageList ? "survey" : "section",
+                },
+                slideMoveDirection: "right-to-left",
+                needSendAnswers: false,
+              });
+              startSurvey();
+            }}
+          >
+            {buttonStartCaption}
+          </Button>
+        </div>
+      );
+    if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "survey") return <Survey />;
+    if (pathName === "section")
+      return (
+        <div>
+          <Section
+            page={page}
+            pageIndex={pageIndex}
+            questionCount={questionCount}
+          />
+          {pathName === "section" && pageIndex + 1 === pages.length && (
+            <Button
+              key="finish"
+              css={onlyDesctopButtonCss}
+              variant="contained"
+              onClick={() => {
+                completeSurvey();
+              }}
+            >
+              {buttonFinishCaption}
+            </Button>
+          )}
+        </div>
+      );
+    return null;
+  };
+
+  const pagesCount = pages.length;
+  const allQuestionCount = pages.reduce(
+    (acc: number, page: IPage) =>
+      (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
+        .length),
+    0
+  );
+
+  const allQuestionsDoneCount = Object.values(userAnswers).filter(
+    isQuestionDone
+  ).length;
+
+  //???
+  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
+
+  const completeSurvey = () => {
+    if (!resultValidation) {
+      submit();
+      return;
+    }
+    openModal();
+  };
+
+  const perfectScrollbarRef = useRef<any>(null);
+  const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    emptyData && fetchData();
+  }, [fetchData, emptyData]);
 
   if (error.status) {
     return (
@@ -127,48 +177,6 @@ const Desktop: React.FC<IDesktop> = ({
     );
   }
 
-  const slideRender = (pathName: IPathName) => {
-    if (pathName === "greeting") return <InfoPage html={greetingsPage} />;
-    if (pathName === "completion") return <InfoPage html={completionPage} />;
-    if (pathName === "survey") return <Survey />;
-    if (pathName === "section")
-      return (
-        <Page page={page} pageIndex={pageIndex} questionCount={questionCount} />
-      );
-    return null;
-  };
-  const pagesCount = pages.length;
-  const allQuestionCount = pages.reduce(
-    (acc: number, page: IPage) => (acc += page.questions.length),
-    0
-  );
-
-  const allQuestionsDoneCount = Object.values(userAnswers).filter(
-    isQuestionDone
-  ).length;
-
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
-  // console.log("allRequiredQuestionDone", allRequiredQuestionDone);
-
-  const completeSurvey = () => {
-    if (!resultValidation) {
-      submit();
-      return;
-    }
-
-    openModal();
-
-    console.log("еще не все");
-    console.log("resultValidation", resultValidation);
-  };
-
-  const perfectScrollbarRef = useRef<any>(null);
-  const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   return (
     <div css={desctopCss}>
       {loading && (
@@ -179,27 +187,62 @@ const Desktop: React.FC<IDesktop> = ({
       )}
       <AppBar direction="top" fixed>
         {pathName === "section" && (
-          <Button
-            css={buttonCss}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "survey",
-                  title: "survey",
-                },
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
-          >
-            К списку страниц
-          </Button>
+          <>
+            {isShowPageList ? (
+              <Button
+                key="home"
+                css={homeButtonCss}
+                onClick={() =>
+                  handleClick({
+                    location: {
+                      pageIndex: 0,
+                      questionIndex: 0,
+                      pathName: "survey",
+                      title: "survey",
+                    },
+                    slideMoveDirection: "left-to-right",
+                    needSendAnswers: true,
+                  })
+                }
+              >
+                К списку страниц
+              </Button>
+            ) : (
+              <Nav
+                title={page.title ? page.title : `Страница ${pageIndex + 1}`}
+                pages={pages}
+                currentPageIndex={pageIndex}
+                onChange={(pageIndex, slideMoveDirection) => {
+                  handleClick({
+                    location: {
+                      pageIndex: pageIndex,
+                      pathName: "section",
+                      questionIndex: 0,
+                      title: "section",
+                    },
+                    needSendAnswers: true,
+                    slideMoveDirection: slideMoveDirection,
+                  });
+                }}
+              />
+            )}
+          </>
         )}
       </AppBar>
 
       <div css={contentCss}>
+        {contentBtnRender({
+          location,
+          buttonStartCaption,
+          buttonNextCaption,
+          buttonBackCaption,
+          buttonFinishCaption,
+          handleClick,
+          startSurvey,
+          completeSurvey,
+          pagesCount,
+          isShowPageList,
+        })}
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           ref={perfectScrollbarRef}
@@ -220,34 +263,39 @@ const Desktop: React.FC<IDesktop> = ({
               />
             </div>
           )}
-          <TransitionGroup
-            css={transitionGroupCss}
-            childFactory={(child) =>
-              React.cloneElement(child, {
-                classNames: slideMoveDirection,
-              })
-            }
-          >
-            <CSSTransition
-              key={title + location.pageIndex}
-              classNames="left-to-right"
-              timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
-              onExiting={() => {
-                if (perfectScrollbarContainerRef.current)
-                  perfectScrollbarContainerRef.current.scrollTop = 0;
-              }}
-              onExited={() => {
-                setTimeout(() => {
-                  if (perfectScrollbarRef.current)
-                    perfectScrollbarRef.current.updateScroll();
-                });
-              }}
+          <div css={gridContainerCss}>
+            <div css={borderCss}></div>
+            <TransitionGroup
+              css={transitionGroupCss}
+              childFactory={(child) =>
+                React.cloneElement(child, {
+                  classNames: slideMoveDirection,
+                })
+              }
             >
-              {slideRender(pathName)}
-            </CSSTransition>
-          </TransitionGroup>
+              <CSSTransition
+                key={title + location.pageIndex}
+                classNames="left-to-right"
+                timeout={{ enter: TIMEOUT_VALUE, exit: TIMEOUT_VALUE }}
+                onExiting={() => {
+                  if (perfectScrollbarContainerRef.current)
+                    perfectScrollbarContainerRef.current.scrollTop = 0;
+                }}
+                onExited={() => {
+                  setTimeout(() => {
+                    if (perfectScrollbarRef.current)
+                      perfectScrollbarRef.current.updateScroll();
+                  });
+                }}
+              >
+                {slideRender(pathName)}
+              </CSSTransition>
+            </TransitionGroup>
+            <div css={borderCss}></div>
+          </div>
         </PerfectScrollbar>
       </div>
+
       <AppBar direction="bottom" fixed>
         {bottomBtnRender({
           location,
@@ -259,6 +307,7 @@ const Desktop: React.FC<IDesktop> = ({
           startSurvey,
           completeSurvey,
           pagesCount,
+          isShowPageList,
         })}
       </AppBar>
 
@@ -307,9 +356,13 @@ const mapStateToProps = (state: IState) => {
   const name = data ? data.name : "";
   const isShowProgressbar = data ? data.isShowProgressbar : false;
   const isShowQuestionsCount = data ? data.isShowQuestionsCount : false;
+  const isShowPageList = data ? data.isShowPageList : false;
   const questionCount: number = pages.reduce((acc: number, page, index) => {
     if (index < pageIndex) {
-      return acc + page.questions.length;
+      return (
+        acc +
+        page.questions.filter((q) => q.config.dataType !== "textblock").length
+      );
     } else return acc;
   }, 0);
   return {
@@ -333,6 +386,7 @@ const mapStateToProps = (state: IState) => {
     name,
     isShowProgressbar,
     isShowQuestionsCount,
+    isShowPageList,
     questionCount,
     modalVisible,
   };

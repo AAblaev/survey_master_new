@@ -1,7 +1,7 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import GreenRadio from "../../../common/GreenRadio";
-import { IAnswer, IOption, IQuestion } from "../../../../types";
+import { IAnswer, IOption, IQuestion, ISimpleType } from "../../../../types";
 import {
   tableCss,
   tbodyCss,
@@ -12,6 +12,8 @@ import {
   trCss,
   wrapperCss,
 } from "./sc";
+import BoolCell from "./BoolCell";
+import TextFieldCell from "./TextCell";
 
 type IMatrixViewProps = {
   currentQuestionIndex: number;
@@ -20,19 +22,20 @@ type IMatrixViewProps = {
   userAnswer: IAnswer;
 };
 
+type IValuesDict = { [key: string]: string };
+
 const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
   setAnswer,
   userAnswer,
 }) => {
-  const { docID } = question;
+  const { docID, config } = question;
+  const simpleType = config.simpleType as ISimpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
 
-  type IValuesDict = { [key: number]: string };
-
   const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
-    acc[item.optionID] = item.value;
+    acc[String(item.optionID)] = item.value;
     return acc;
   }, {});
 
@@ -44,12 +47,34 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   );
 
   const handleClick = (rowDocID: number, columnDocID: number) => {
-    const newValues = values.filter((value) => value.optionID !== rowDocID);
+    const newValues = values.filter(
+      (value) => Number(value.optionID) !== rowDocID
+    );
     setAnswer({
       questionID: docID,
       values: [
         ...newValues,
-        { optionID: rowDocID, value: String(columnDocID) },
+        { optionID: String(rowDocID), value: String(columnDocID) },
+      ],
+    });
+  };
+
+  const handleChange = (
+    rowDocID: number,
+    columnDocID: number,
+    value: string
+  ) => {
+    const newValues = values.filter(
+      (value) => value.optionID !== rowDocID + "col" + columnDocID
+    );
+    setAnswer({
+      questionID: docID,
+      values: [
+        ...newValues,
+        {
+          optionID: rowDocID + "col" + columnDocID,
+          value: value,
+        },
       ],
     });
   };
@@ -74,20 +99,30 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
           {rows.map((rh, rhIndex) => (
             <tr key={rhIndex} css={trCss}>
               <th css={thRowCss}>{rh.title}</th>
-              {columns.map((option, chIndex) => (
-                <td
-                  css={tdCss(
-                    valuesDict[rh.docID] === String(option.docID),
-                    option.title
-                  )}
-                  key={rhIndex + "td" + chIndex}
-                  onClick={() => handleClick(rh.docID, option.docID)}
-                >
-                  <GreenRadio
-                    checked={valuesDict[rh.docID] === String(option.docID)}
-                  />
-                </td>
-              ))}
+              {columns.map((option, chIndex) => {
+                if (simpleType === "boolean")
+                  return (
+                    <BoolCell
+                      key={rhIndex + "td" + chIndex}
+                      rowDocID={rh.docID}
+                      columnDocID={option.docID}
+                      isChecked={valuesDict[rh.docID] === String(option.docID)}
+                      handleClick={handleClick}
+                      title={option.title}
+                    />
+                  );
+                if (simpleType === "string")
+                  return (
+                    <TextFieldCell
+                      key={rhIndex + "td" + chIndex}
+                      rowDocID={rh.docID}
+                      columnDocID={option.docID}
+                      handleChange={handleChange}
+                      value={valuesDict[rh.docID + "col" + option.docID]}
+                      title={option.title}
+                    />
+                  );
+              })}
             </tr>
           ))}
         </tbody>

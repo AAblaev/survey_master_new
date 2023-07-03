@@ -10,10 +10,49 @@ export const toolbarCss = (direction: IAppBarDirection) => css`
   flex-direction: ${direction === "bottom" ? "row-reverse" : "row"};
   justify-content: space-between;
   background-color: ${PRIMARY_COLOR};
+
+  padding-right: 5%;
+  padding-left: 5%;
+
+  @media (min-width: 576px) {
+    &.MuiToolbar-gutters {
+      padding-right: 5%;
+      padding-left: 5%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    &.MuiToolbar-gutters {
+      padding-right: 10%;
+      padding-left: 10%;
+    }
+  }
+
+  @media (min-width: 992px) {
+    &.MuiToolbar-gutters {
+      padding-right: 15%;
+      padding-left: 15%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    &.MuiToolbar-gutters {
+      padding-right: 20%;
+      padding-left: 20%;
+    }
+  }
 `;
 
 export const bottomCss = css`
-  // padding-left: 20%;
+  &.MuiAppBar-root {
+    display: flex;
+  }
+  @media (min-width: 768px) {
+    &.MuiAppBar-root {
+      display: none;
+    }
+  }
+
   &.MuiAppBar-positionFixed {
     top: auto;
     bottom: 0;
@@ -24,6 +63,9 @@ export const bottomCss = css`
 `;
 
 export const appBarCss = (direction: IAppBarDirection) => css`
+  &.MuiAppBar-root {
+    z-index: 6000;
+  }
   ${direction === "bottom" && bottomCss}
 `;
 

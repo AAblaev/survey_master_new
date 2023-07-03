@@ -41,11 +41,15 @@ export const accordionCss = css`
 
 const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   return (
-    <div css={pageCss} className="adaptive-paddings">
+    <div css={pageCss}>
       <div>
         {pages.map((page, index) => {
-          const allQuestionCount = page.questions.length;
-          const requiredQuestionsCount = page.questions.length;
+          const allQuestionCount = page.questions.filter(
+            (q) => q.config.dataType !== "textblock"
+          ).length;
+          const requiredQuestionsCount = page.questions.filter(
+            (q) => q.config.dataType !== "textblock"
+          ).length;
           let doneQuestionCount = 0;
           page.questions.forEach((q) => {
             userAnswers.hasOwnProperty(q.docID) &&

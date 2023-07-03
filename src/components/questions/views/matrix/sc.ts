@@ -132,6 +132,7 @@ export const thRowMobileCss = css`
 export const thRowDesctopCss = css`
   padding: 10px 20px;
   width: 30%;
+  min-width: 300px;
   font-weight: normal;
 `;
 
@@ -195,10 +196,6 @@ export const tdDesctopCss = css`
   &::after {
     content: "";
   }
-
-  // &:hover {
-  //   border-color: red;
-  // }
 `;
 
 export const tdCss = (isSelected: boolean, content: string) => css`
@@ -228,4 +225,33 @@ export const tdCss = (isSelected: boolean, content: string) => css`
 
 export const wrapperCss = css`
   padding-bottom: 20px;
+`;
+
+export const textFieldCellCss = css`
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  // min-width: 100px;
+
+  @media (min-width: 576px) {
+    display: flex;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    display: table-cell;
+  }
+`;
+
+export const titleTextFieldCellCss = css`
+  display: block;
+  width: 30%;
+  @media (min-width: 576px) {
+    display: block;
+    width: 30%;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;

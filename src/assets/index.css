@@ -2,6 +2,10 @@
 /* @import "~antd/dist/antd.css"; */
 @import "./react-perfect-scrollbar.css";
 
+:root {
+  --transition-duration: 0.6s; /* CSS-переменная для длительности перехода */
+}
+
 html {
   height: 100%;
   font-size: 14px;
@@ -19,6 +23,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   color: #2b2b2b;
+}
+
+p {
+  margin: 0 0 10px;
 }
 
 #root {
@@ -39,10 +47,6 @@ body {
 }
 
 .adaptive-paddings {
-  /* padding-top: 20px;
-  padding-bottom: 20px; */
-  /* width: 100%;
-  margin-top: 20px; */
   padding-right: 5%;
   padding-left: 5%;
 
@@ -52,8 +56,8 @@ body {
   }
 
   @media (min-width: 768px) {
-    padding-right: 5%;
-    padding-left: 5%;
+    padding-right: 10%;
+    padding-left: 10%;
   }
 
   @media (min-width: 992px) {
@@ -103,56 +107,112 @@ body {
 }
 
 .right-to-left-enter {
-  width: 100%;
   position: absolute;
-  transform: translateX(100%);
-  z-index: 10;
+  transform: translateX(200%);
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 .right-to-left-enter-active {
-  width: 100%;
   position: absolute;
-  z-index: 10;
   transform: translateX(0);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 
 .right-to-left-exit {
   width: 100%;
-  position: absolute;
   transform: translateX(0);
-  z-index: 11;
 }
 .right-to-left-exit-active {
   width: 100%;
-  position: absolute;
-  transform: translateX(-100%);
-  transition: all 0.5s ease;
-  z-index: 11;
+  transform: translateX(-200%);
+  transition: all var(--transition-duration) ease;
 }
 
 .left-to-right-enter {
-  width: 100%;
   position: absolute;
-  transform: translateX(-100%);
-  z-index: 10;
+  transform: translateX(-200%);
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 .left-to-right-enter-active {
-  width: 100%;
   position: absolute;
-  z-index: 10;
   transform: translateX(0);
-  transition: all 0.5s ease;
+  transition: all var(--transition-duration) ease;
+  width: 90%;
+
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 80%;
+  }
+
+  @media (min-width: 992px) {
+    width: 70%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 60%;
+  }
 }
 
 .left-to-right-exit {
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   transform: translateX(0);
-  z-index: 11;
+  /* z-index: 11; */
 }
 .left-to-right-exit-active {
   width: 100%;
-  position: absolute;
-  transform: translateX(100%);
-  transition: all 0.5s ease;
+  /* position: absolute; */
+  transform: translateX(200%);
+  transition: all var(--transition-duration) ease;
 }
