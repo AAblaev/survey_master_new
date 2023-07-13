@@ -111,7 +111,11 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                       title={option.title}
                     />
                   );
-                if (simpleType === "string")
+                if (
+                  simpleType === "string" ||
+                  simpleType === "int" ||
+                  simpleType === "float"
+                )
                   return (
                     <TextFieldCell
                       key={rhIndex + "td" + chIndex}
@@ -122,6 +126,8 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                       title={option.title}
                     />
                   );
+
+                return null;
               })}
             </tr>
           ))}

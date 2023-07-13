@@ -43,6 +43,9 @@ export const chipCss = (isDefault: boolean) => css`
   background-color: ${isDefault ? "transparent" : "#e5e5e5"};
   padding: 0.5em;
   border-radius: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
 `;
 
 export const selectCss = css`
@@ -62,6 +65,9 @@ export const iconCss = (selected: boolean) => css`
 export const menuItemCss = css`
   &.MuiListItem-root.Mui-selected {
     background-color: transparent;
+  }
+  &.MuiMenuItem-root {
+    white-space: wrap;
   }
 `;
 

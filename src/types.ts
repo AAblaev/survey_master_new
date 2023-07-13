@@ -112,7 +112,7 @@ export type IConfig = {
   isChooseManyInrow?: boolean;
   isChooseManyIncol?: boolean;
 };
-export type ISimpleType = "boolean" | "string";
+export type ISimpleType = "boolean" | "string" | "int" | "float" | "datetime"; //number, float, date
 export type IDataType =
   | "select"
   | "dropdown"

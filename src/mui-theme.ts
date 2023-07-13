@@ -62,6 +62,11 @@ const theme = createTheme({
         fontSize: ".84rem",
       },
     },
+    MuiPopover: {
+      root: {
+        zIndex: "10000 !important" as any,
+      },
+    },
   },
 });
 

@@ -47,6 +47,7 @@ export const cardCss = (needPadding: boolean) => css`
   ${needPadding && `padding: 20px;`}
   background-color: #fff;
   border: 1px solid #e5e5e5;
+  overflow: hidden;
 `;
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
