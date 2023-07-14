@@ -49,31 +49,6 @@ p {
 .adaptive-paddings {
   padding-right: 5%;
   padding-left: 5%;
-
-  @media (min-width: 576px) {
-    padding-right: 5%;
-    padding-left: 5%;
-  }
-
-  @media (min-width: 768px) {
-    padding-right: 10%;
-    padding-left: 10%;
-  }
-
-  @media (min-width: 992px) {
-    padding-right: 15%;
-    padding-left: 15%;
-  }
-
-  @media (min-width: 1200px) {
-    padding-right: 20%;
-    padding-left: 20%;
-  }
-
-  @media (min-width: 1400px) {
-    padding-right: 20%;
-    padding-left: 20%;
-  }
 }
 
 .ant-progress-inner {
@@ -110,44 +85,13 @@ p {
   position: absolute;
   transform: translateX(200%);
   width: 90%;
-
-  @media (min-width: 576px) {
-    width: 90%;
-  }
-
-  @media (min-width: 768px) {
-    width: 80%;
-  }
-
-  @media (min-width: 992px) {
-    width: 70%;
-  }
-
-  @media (min-width: 1200px) {
-    width: 60%;
-  }
 }
+
 .right-to-left-enter-active {
   position: absolute;
   transform: translateX(0);
   transition: all var(--transition-duration) ease;
   width: 90%;
-
-  @media (min-width: 576px) {
-    width: 90%;
-  }
-
-  @media (min-width: 768px) {
-    width: 80%;
-  }
-
-  @media (min-width: 992px) {
-    width: 70%;
-  }
-
-  @media (min-width: 1200px) {
-    width: 60%;
-  }
 }
 
 .right-to-left-exit {
@@ -164,44 +108,13 @@ p {
   position: absolute;
   transform: translateX(-200%);
   width: 90%;
-
-  @media (min-width: 576px) {
-    width: 90%;
-  }
-
-  @media (min-width: 768px) {
-    width: 80%;
-  }
-
-  @media (min-width: 992px) {
-    width: 70%;
-  }
-
-  @media (min-width: 1200px) {
-    width: 60%;
-  }
 }
+
 .left-to-right-enter-active {
   position: absolute;
   transform: translateX(0);
   transition: all var(--transition-duration) ease;
   width: 90%;
-
-  @media (min-width: 576px) {
-    width: 90%;
-  }
-
-  @media (min-width: 768px) {
-    width: 80%;
-  }
-
-  @media (min-width: 992px) {
-    width: 70%;
-  }
-
-  @media (min-width: 1200px) {
-    width: 60%;
-  }
 }
 
 .left-to-right-exit {
@@ -215,4 +128,63 @@ p {
   /* position: absolute; */
   transform: translateX(200%);
   transition: all var(--transition-duration) ease;
+}
+
+@media only screen and (min-width: 576px) {
+  .adaptive-paddings {
+    padding-right: 5%;
+    padding-left: 5%;
+  }
+  .right-to-left-enter,
+  .right-to-left-enter-active,
+  .left-to-right-enter,
+  .left-to-right-enter-active {
+    width: 90%;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .adaptive-paddings {
+    padding-right: 10%;
+    padding-left: 10%;
+  }
+  .right-to-left-enter,
+  .right-to-left-enter-active,
+  .left-to-right-enter,
+  .left-to-right-enter-active {
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .adaptive-paddings {
+    padding-right: 15%;
+    padding-left: 15%;
+  }
+  .right-to-left-enter,
+  .right-to-left-enter-active,
+  .left-to-right-enter,
+  .left-to-right-enter-active {
+    width: 70%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .adaptive-paddings {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
+  .right-to-left-enter,
+  .right-to-left-enter-active,
+  .left-to-right-enter,
+  .left-to-right-enter-active {
+    width: 60%;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .adaptive-paddings {
+    padding-right: 20%;
+    padding-left: 20%;
+  }
 }

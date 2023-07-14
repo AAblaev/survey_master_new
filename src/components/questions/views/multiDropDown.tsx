@@ -44,8 +44,7 @@ export const chipCss = (isDefault: boolean) => css`
   padding: 0.5em;
   border-radius: 5px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 40%;
+  white-space: normal;
 `;
 
 export const selectCss = css`
@@ -67,7 +66,7 @@ export const menuItemCss = css`
     background-color: transparent;
   }
   &.MuiMenuItem-root {
-    white-space: wrap;
+    white-space: normal;
   }
 `;
 
