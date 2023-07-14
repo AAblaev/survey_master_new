@@ -53,6 +53,8 @@ export const extraFilter = (userAnswer: IAnswer): IAnswer => {
     values: userAnswer.values.filter(
       (option) => !extraIdsArr.includes(option.optionID)
     ),
+    isValid: userAnswer.isValid,
+    isFocused: userAnswer.isFocused,
   };
 };
 

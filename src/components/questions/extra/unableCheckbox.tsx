@@ -22,13 +22,24 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
       userAnswer.values[0].optionID === EXTRA_ANSWER.UNABLE
   );
   const handleChange = () => {
-    checked && setAnswer({ questionID: questionID, values: [] });
+    checked &&
+      setAnswer({
+        questionID: questionID,
+        values: [],
+        isValid: true,
+        isFocused: false,
+      });
     !checked &&
       setAnswer({
         questionID: questionID,
         values: [
-          { optionID: EXTRA_ANSWER.UNABLE, value: "Затрудняюсь ответить" },
+          {
+            optionID: EXTRA_ANSWER.UNABLE,
+            value: "Затрудняюсь ответить",
+          },
         ],
+        isValid: true,
+        isFocused: false,
       });
   };
   return (

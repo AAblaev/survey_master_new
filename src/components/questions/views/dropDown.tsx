@@ -62,6 +62,8 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           value: String(optionsDict[optionID].title),
         },
       ],
+      isValid: true,
+      isFocused: false,
     });
   };
 

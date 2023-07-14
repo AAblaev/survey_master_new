@@ -318,6 +318,11 @@ const Desktop: React.FC<IDesktop> = ({
           pagesCount,
           isShowPageList,
         })}
+        <div style={{}}>
+          <TestMap>
+            <div>Ghbdt</div>
+          </TestMap>
+        </div>
       </AppBar>
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">

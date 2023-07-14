@@ -49,6 +49,8 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
     setAnswer({
       questionID: docID,
       values: values,
+      isValid: true,
+      isFocused: false,
     });
   };
 

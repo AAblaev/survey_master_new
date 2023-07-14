@@ -26,6 +26,7 @@ const initialState: IState = {
   params: {},
   userAnswers: {},
   slideMoveDirection: DEFAULT_MOVE_DIRECTION,
+  visitedPageDocIDList: [],
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {

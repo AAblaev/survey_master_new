@@ -51,6 +51,8 @@ const ScaleView: React.FC<IScaleViewProps> = ({
     setAnswer({
       questionID: docID,
       values: values,
+      isValid: true,
+      isFocused: false,
     });
   };
   const colors =

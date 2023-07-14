@@ -135,9 +135,8 @@ export type IDataType =
 export type IAnswer = {
   questionID: number;
   values: { optionID: number | string; value: string }[];
-  // unable_answer: boolean;
-  // nothing_answer: boolean;
-  // other_answer: { enabled: boolean; value: string };
+  isValid: boolean;
+  isFocused: boolean;
 };
 export type IBranchRule = {};
 export type IQuoteRule = {};
@@ -179,6 +178,7 @@ export type IState = {
   userAnswers: IUserAnswer;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
+  visitedPageDocIDList: string[];
   // relocate to section
   // pageQuestionCount: number;
 };
