@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -38,6 +38,7 @@ import Survey from "./pages/Survey";
 import Section from "./pages/Section";
 import bottomBtnRender from "./common/renderBottomBtns";
 import Greeting from "./pages/Greeting";
+import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -82,6 +83,25 @@ const Desktop: React.FC<IDesktop> = ({
     completionPage,
     name,
   } = data;
+  const isLimitTimeForCompletion = true;
+  const limitTime = 3600;
+  const limitTo = useMemo(() => {
+    const date = new Date();
+    date.setSeconds(date.getSeconds() + limitTime);
+    return date;
+  }, [limitTime]);
+  const diffInHours = useMemo(() => {
+    return Math.abs(new Date().getTime() - limitTo.getTime()) / 3600000;
+  }, [limitTo]);
+  const countdownRenderMap: [
+    boolean,
+    boolean,
+    boolean,
+    boolean
+  ] = useMemo(() => {
+    return [diffInHours >= 24, diffInHours >= 1, true, true];
+  }, [diffInHours]);
+
   const pagesCount = pages.length;
   const currentPage = pages[pageIndex];
   const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
@@ -195,6 +215,30 @@ const Desktop: React.FC<IDesktop> = ({
             )}
           </>
         )}
+        {(pathName === "survey" || pathName === "section") &&
+          isLimitTimeForCompletion && (
+            <div css={{ marginLeft: "auto" }}>
+              <FlipClockCountdown
+                to={limitTo}
+                renderMap={countdownRenderMap}
+                digitBlockStyle={{
+                  width: 25,
+                  height: 40,
+                  fontSize: 20,
+                }}
+                separatorStyle={{
+                  size: 4,
+                }}
+                dividerStyle={{
+                  height: 0,
+                }}
+                showLabels={false}
+                onComplete={() => {
+                  console.log("countdown complete");
+                }}
+              />
+            </div>
+          )}
       </AppBar>
 
       <div css={contentCss}>

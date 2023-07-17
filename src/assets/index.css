@@ -1,6 +1,7 @@
 @import "~normalize.css";
 /* @import "~antd/dist/antd.css"; */
 @import "./react-perfect-scrollbar.css";
+@import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 
 :root {
   --transition-duration: 0.6s; /* CSS-переменная для длительности перехода */
