@@ -51,7 +51,7 @@ const ScaleView: React.FC<IScaleViewProps> = ({
     setAnswer({
       questionID: docID,
       values: values,
-      isValid: true,
+      isValid: values.length > 0,
       isFocused: false,
     });
   };

@@ -87,6 +87,7 @@ const mapStateToProps = (state: IState) => {
     params,
     userAnswers,
     modalVisible,
+    visitedPageDocIDList,
   } = state;
 
   return {

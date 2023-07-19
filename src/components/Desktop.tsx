@@ -22,11 +22,9 @@ import {
   gridContainerCss,
   homeButtonCss,
   modalHeaderWrapperCss,
-  onlyDesctopButtonCss,
   transitionGroupCss,
 } from "../sc";
 import Nav from "./common/Nav";
-import contentBtnRender from "./common/renderContentBtns";
 import {
   findFirstIncompleteQuestion,
   isQuestionDone,
@@ -36,9 +34,9 @@ import { TIMEOUT_VALUE } from "../consts/const";
 import InfoPage from "./pages/InfoPage";
 import Survey from "./pages/Survey";
 import Section from "./pages/Section";
-import bottomBtnRender from "./common/renderBottomBtns";
 import Greeting from "./pages/Greeting";
 import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
+import Switcher from "./connected/switcher";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -75,8 +73,6 @@ const Desktop: React.FC<IDesktop> = ({
     isShowPageList,
     pages,
     buttonStartCaption,
-    buttonNextCaption,
-    buttonBackCaption,
     buttonFinishCaption,
     isShowProgressbar,
     greetingsPage,
@@ -242,18 +238,6 @@ const Desktop: React.FC<IDesktop> = ({
       </AppBar>
 
       <div css={contentCss}>
-        {contentBtnRender({
-          location,
-          buttonStartCaption,
-          buttonNextCaption,
-          buttonBackCaption,
-          buttonFinishCaption,
-          handleClick,
-          startSurvey,
-          completeSurvey,
-          pagesCount,
-          isShowPageList,
-        })}
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           ref={perfectScrollbarRef}
@@ -305,26 +289,8 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
 
-      <AppBar direction="bottom" fixed>
-        {bottomBtnRender({
-          location,
-          buttonStartCaption,
-          buttonNextCaption,
-          buttonBackCaption,
-          buttonFinishCaption,
-          handleClick,
-          startSurvey,
-          completeSurvey,
-          pagesCount,
-          isShowPageList,
-        })}
-        <div style={{}}>
-          <TestMap>
-            <div>Ghbdt</div>
-          </TestMap>
-        </div>
-      </AppBar>
-
+      <AppBar direction="bottom" fixed></AppBar>
+      <Switcher />
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalHeader>
           <div css={modalHeaderWrapperCss}>

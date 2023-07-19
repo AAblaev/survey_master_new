@@ -108,7 +108,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
     setAnswer({
       questionID: docID,
       values: newValue,
-      isValid: true,
+      isValid: newValue.length > 0,
       isFocused: false,
     });
   };

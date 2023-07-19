@@ -3,40 +3,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import { IAnswer, IQuestion, ISimpleType, IState } from "../../../types";
+import { getTextFieldConfig } from "../../../utils/validation";
 
 type IFreeQuestionProps = {
   currentQuestionIndex: number;
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
-};
-
-const getTextFieldConfig = (simpleType?: ISimpleType) => {
-  const defaultTextFieldConfig = {
-    fullWidth: true,
-    minRows: 2,
-    regExp: "",
-    mask: "",
-  };
-
-  switch (simpleType) {
-    case "string": {
-      return defaultTextFieldConfig;
-    }
-    case "int": {
-      return defaultTextFieldConfig;
-    }
-    case "float": {
-      return defaultTextFieldConfig;
-    }
-    case "datetime": {
-      return defaultTextFieldConfig;
-    }
-
-    default: {
-      return defaultTextFieldConfig;
-    }
-  }
 };
 
 const FreeView: React.FC<IFreeQuestionProps> = ({
@@ -52,6 +25,36 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     ? (userAnswer.values as IAnswer["values"])[0].value
     : "";
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAnswer({
+      questionID: docID,
+      values: [{ value: e.target.value, optionID: String(0) }],
+      isValid: false,
+      isFocused: true,
+    });
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    setAnswer({
+      questionID: docID,
+      values: [{ value: value, optionID: String(0) }],
+      isValid: false,
+      isFocused: true,
+    });
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const isValid = textFieldConfig.regExp.test(value);
+    // console.log("isValid", isValid);
+    setAnswer({
+      questionID: docID,
+      values: [{ value: value, optionID: String(0) }],
+      // need validation
+      isValid: isValid,
+      isFocused: false,
+    });
+  };
+
   return (
     <TextField
       id="outlined-multiline-static"
@@ -64,17 +67,9 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       minRows={2}
       variant="filled"
       value={value}
-      onFocus={() => console.log("onFocus")}
-      onBlur={() => console.log("onBlur")}
-      onChange={(e) => {
-        setAnswer({
-          questionID: docID,
-          values: [{ value: e.target.value, optionID: String(0) }],
-          // need validation
-          isValid: true,
-          isFocused: true,
-        });
-      }}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onChange={handleChange}
     />
   );
 };

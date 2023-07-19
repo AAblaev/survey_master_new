@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import { IData } from "../../types";
 import { fakeData } from "../../utils/fakeData";
+import { fakeData2 } from "../../utils/fakeData2";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
 import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
@@ -43,9 +44,9 @@ function* fetchSurveyData() {
 
   try {
     yield put(setLoading(true));
-    const result: IFetchResult = yield call(() => fethData(path));
-    yield put(setNewData(result.data));
-    // yield put(setNewData(fakeData));
+    // const result: IFetchResult = yield call(() => fethData(path));
+    // yield put(setNewData(result.data));
+    yield put(setNewData(fakeData));
 
     yield put(setLoading(false));
   } catch (e) {
@@ -60,10 +61,10 @@ function* startSurvey() {
   const { surveyID } = yield select(selectSurveyID);
   const path = PATH_NAME + "start/" + surveyID;
   try {
-    yield put(setLoading(true));
-    const result: IStartResult = yield call(() => fethData(path));
-    yield put(setSurveyUid(result.data));
-    yield put(setLoading(false));
+    // yield put(setLoading(true));
+    // const result: IStartResult = yield call(() => fethData(path));
+    // yield put(setSurveyUid(result.data));
+    // yield put(setLoading(false));
     // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
