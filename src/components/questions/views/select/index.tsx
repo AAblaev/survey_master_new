@@ -28,7 +28,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const valuesArr = userAnswerExist ? (userAnswer as IAnswer).values : [];
-  const valuesIdArr: number[] = userAnswerExist
+  const valuesIdArr: (number | string)[] = userAnswerExist
     ? valuesArr.map((item) => item.optionID)
     : [];
 
@@ -46,15 +46,20 @@ const SelectView: React.FC<ISelectViewProps> = ({
             values: isChecked
               ? []
               : [{ optionID: item.docID, value: item.title }],
+            isFocused: false,
+            isValid: !isChecked,
           });
         };
 
         const handleChange2 = () => {
+          const newValue = isChecked
+            ? valuesArr.filter((v) => v.optionID !== item.docID)
+            : [...valuesArr, { optionID: item.docID, value: item.title }];
           setAnswer({
             questionID: docID,
-            values: isChecked
-              ? valuesArr.filter((v) => v.optionID !== item.docID)
-              : [...valuesArr, { optionID: item.docID, value: item.title }],
+            values: newValue,
+            isFocused: false,
+            isValid: newValue.length > 0,
           });
         };
 

@@ -23,7 +23,7 @@ const Greeting: React.FC<IGreetingProps> = ({
   buttonStartCaption,
 }) => {
   return (
-    <div>
+    <div style={{ paddingTop: "20px" }}>
       <div dangerouslySetInnerHTML={{ __html: html }}></div>
       <Button
         key="start"

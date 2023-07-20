@@ -100,7 +100,6 @@ const Desktop: React.FC<IDesktop> = ({
 
   const pagesCount = pages.length;
   const currentPage = pages[pageIndex];
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
       (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
@@ -121,16 +120,6 @@ const Desktop: React.FC<IDesktop> = ({
     isQuestionDone
   ).length;
 
-  const showFinishBtn =
-    pathName === "section" && pageIndex + 1 === pages.length;
-
-  const completeSurvey = () => {
-    if (!resultValidation) {
-      submit();
-      return;
-    }
-    openModal();
-  };
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
 
@@ -153,9 +142,6 @@ const Desktop: React.FC<IDesktop> = ({
           page={currentPage}
           pageIndex={pageIndex}
           questionCount={questionCount}
-          showFinishBtn={showFinishBtn}
-          buttonFinishCaption={buttonFinishCaption}
-          completeSurvey={completeSurvey}
         />
       );
 

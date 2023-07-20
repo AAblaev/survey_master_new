@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, IconButton } from "@material-ui/core";
@@ -25,6 +26,7 @@ import {
   sectionValidtion,
 } from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
+import { onlyDesctopButtonCss } from "../../../sc";
 
 export type ISwitcherProps = ConnectedProps<typeof connector>;
 
@@ -50,17 +52,18 @@ const Switcher: React.FC<ISwitcherProps> = ({
   }
 
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
+  const { pageIndex, pathName } = location;
   const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
   const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   const resultSectionValidation =
-    location.pathName === "section" &&
-    sectionValidtion(pages[location.pageIndex], userAnswers);
+    pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
 
-  // console.log("resultSectionValidation", resultSectionValidation);
+  const showFinishBtn =
+    pathName === "section" && pageIndex + 1 === pages.length;
 
   const rightClick = resultSectionValidation
     ? () => {
-        noticePage(String(pages[location.pageIndex].docID));
+        noticePage(String(pages[pageIndex].docID));
         handleClick({
           location: nextLocation,
           slideMoveDirection: "right-to-left",
@@ -68,10 +71,11 @@ const Switcher: React.FC<ISwitcherProps> = ({
         });
       }
     : () => {
-        noticePage(String(pages[location.pageIndex].docID));
+        noticePage(String(pages[pageIndex].docID));
       };
 
   const completeSurvey = () => {
+    noticePage(String(pages[pageIndex].docID));
     if (!resultValidation) {
       submit();
       return;
@@ -217,6 +221,20 @@ const Switcher: React.FC<ISwitcherProps> = ({
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
+          {showFinishBtn &&
+            ReactDOM.createPortal(
+              <Button
+                key="finish"
+                css={onlyDesctopButtonCss}
+                variant="contained"
+                onClick={() => {
+                  completeSurvey();
+                }}
+              >
+                {buttonFinishCaption}
+              </Button>,
+              document.getElementById("finish_btn") as HTMLElement
+            )}
         </>
       );
     }
