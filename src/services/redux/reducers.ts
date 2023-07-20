@@ -9,6 +9,7 @@ import {
   IS_LOADING,
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
+  SET_VISITED_PAGE_DOCID,
   // IS_ERROR,
 } from "./types";
 
@@ -26,6 +27,7 @@ const initialState: IState = {
   params: {},
   userAnswers: {},
   slideMoveDirection: DEFAULT_MOVE_DIRECTION,
+  visitedPageDocIDList: [],
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -75,6 +77,16 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       return {
         ...state,
         modalVisible: action.payload,
+      };
+    }
+    case SET_VISITED_PAGE_DOCID: {
+      return {
+        ...state,
+        visitedPageDocIDList: state.visitedPageDocIDList.includes(
+          action.payload
+        )
+          ? state.visitedPageDocIDList
+          : [...state.visitedPageDocIDList, action.payload],
       };
     }
 

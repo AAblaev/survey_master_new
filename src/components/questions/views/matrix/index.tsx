@@ -56,6 +56,8 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         ...newValues,
         { optionID: String(rowDocID), value: String(columnDocID) },
       ],
+      isValid: true,
+      isFocused: false,
     });
   };
 
@@ -76,6 +78,9 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
           value: value,
         },
       ],
+      ///// need validation
+      isValid: true,
+      isFocused: false,
     });
   };
 

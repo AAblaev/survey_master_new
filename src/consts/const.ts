@@ -24,3 +24,6 @@ export enum EXTRA_ANSWER {
 
 export const DEFAULT_HINT_VALUE = "";
 export const DEFAULT_COLUMNS_COUNT = 2;
+
+export const DEFAULT_IS_LIMIT_TIME = true;
+export const DEFAULT_LIMIT_TIME = 2400;

@@ -1,6 +1,6 @@
 import React from "react";
 import FormControl from "@material-ui/core/FormControl";
-import { IAnswer, IOption, IQuestion, IState } from "../../../types";
+import { IAnswer, IOption, IQuestion } from "../../../types";
 import { MenuItem, Select } from "@material-ui/core";
 import { css } from "@emotion/react";
 import { DEFAULT_HINT_VALUE } from "../../../consts/const";
@@ -62,6 +62,8 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           value: String(optionsDict[optionID].title),
         },
       ],
+      isValid: true,
+      isFocused: false,
     });
   };
 

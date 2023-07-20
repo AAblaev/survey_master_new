@@ -23,11 +23,19 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
   const value = checked ? userAnswer.values[0].value : "";
 
   const handleChange = () => {
-    checked && setAnswer({ questionID: questionID, values: [] });
+    checked &&
+      setAnswer({
+        questionID: questionID,
+        values: [],
+        isValid: true,
+        isFocused: false,
+      });
     !checked &&
       setAnswer({
         questionID: questionID,
         values: [{ optionID: EXTRA_ANSWER.OTHER, value: "" }],
+        isValid: true,
+        isFocused: false,
       });
   };
   return (
@@ -57,6 +65,8 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
           setAnswer({
             questionID: questionID,
             values: [{ optionID: EXTRA_ANSWER.OTHER, value: e.target.value }],
+            isValid: true,
+            isFocused: false,
           });
         }}
       />

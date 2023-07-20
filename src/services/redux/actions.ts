@@ -14,6 +14,7 @@ import {
   IS_LOADING,
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
+  SET_VISITED_PAGE_DOCID,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -64,5 +65,11 @@ export const setAnswer = (payload: IAnswer) =>
 export const toggleModalVoisible = (payload: boolean) =>
   <const>{
     type: TOGGLE_MODAL_VISIBLE,
+    payload,
+  };
+
+export const setVisitedPageDocID = (payload: string) =>
+  <const>{
+    type: SET_VISITED_PAGE_DOCID,
     payload,
   };

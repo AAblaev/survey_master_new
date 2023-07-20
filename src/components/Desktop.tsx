@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -22,23 +22,22 @@ import {
   gridContainerCss,
   homeButtonCss,
   modalHeaderWrapperCss,
-  onlyDesctopButtonCss,
   transitionGroupCss,
 } from "../sc";
 import Nav from "./common/Nav";
-import contentBtnRender from "./common/renderContentBtns";
-import {
-  findFirstIncompleteQuestion,
-  isQuestionDone,
-} from "../utils/questionIsDone";
+import { isQuestionDone } from "../utils/questionIsDone";
 import ProgressLinear from "./common/ProgressLinear";
-import { TIMEOUT_VALUE } from "../consts/const";
+import {
+  DEFAULT_IS_LIMIT_TIME,
+  PRIMARY_COLOR,
+  TIMEOUT_VALUE,
+} from "../consts/const";
 import InfoPage from "./pages/InfoPage";
 import Survey from "./pages/Survey";
 import Section from "./pages/Section";
-import bottomBtnRender from "./common/renderBottomBtns";
 import Greeting from "./pages/Greeting";
-import FlipClockCountdown from "@leenguyen/react-flip-clock-countdown";
+import Switcher from "./connected/switcher";
+import Timer from "./common/Timer";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -63,10 +62,8 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
-  submit,
   startSurvey,
   modalVisible,
-  openModal,
   closeModal,
 }) => {
   const { title, pathName, pageIndex } = location;
@@ -75,36 +72,20 @@ const Desktop: React.FC<IDesktop> = ({
     isShowPageList,
     pages,
     buttonStartCaption,
-    buttonNextCaption,
-    buttonBackCaption,
-    buttonFinishCaption,
     isShowProgressbar,
     greetingsPage,
     completionPage,
     name,
+    isLimitTimeForCompletion,
+    limitTime,
   } = data;
-  const isLimitTimeForCompletion = true;
-  const limitTime = 3600;
-  const limitTo = useMemo(() => {
-    const date = new Date();
-    date.setSeconds(date.getSeconds() + limitTime);
-    return date;
-  }, [limitTime]);
-  const diffInHours = useMemo(() => {
-    return Math.abs(new Date().getTime() - limitTo.getTime()) / 3600000;
-  }, [limitTo]);
-  const countdownRenderMap: [
-    boolean,
-    boolean,
-    boolean,
-    boolean
-  ] = useMemo(() => {
-    return [diffInHours >= 24, diffInHours >= 1, true, true];
-  }, [diffInHours]);
 
-  const pagesCount = pages.length;
+  // const showTimer =
+  //   (pathName === "survey" || pathName === "section") &&
+  //   isLimitTimeForCompletion;
+  const showTimer =
+    (pathName === "survey" || pathName === "section") && DEFAULT_IS_LIMIT_TIME;
   const currentPage = pages[pageIndex];
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
       (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
@@ -125,16 +106,6 @@ const Desktop: React.FC<IDesktop> = ({
     isQuestionDone
   ).length;
 
-  const showFinishBtn =
-    pathName === "section" && pageIndex + 1 === pages.length;
-
-  const completeSurvey = () => {
-    if (!resultValidation) {
-      submit();
-      return;
-    }
-    openModal();
-  };
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
 
@@ -157,9 +128,6 @@ const Desktop: React.FC<IDesktop> = ({
           page={currentPage}
           pageIndex={pageIndex}
           questionCount={questionCount}
-          showFinishBtn={showFinishBtn}
-          buttonFinishCaption={buttonFinishCaption}
-          completeSurvey={completeSurvey}
         />
       );
 
@@ -215,45 +183,10 @@ const Desktop: React.FC<IDesktop> = ({
             )}
           </>
         )}
-        {(pathName === "survey" || pathName === "section") &&
-          isLimitTimeForCompletion && (
-            <div css={{ marginLeft: "auto" }}>
-              <FlipClockCountdown
-                to={limitTo}
-                renderMap={countdownRenderMap}
-                digitBlockStyle={{
-                  width: 25,
-                  height: 40,
-                  fontSize: 20,
-                }}
-                separatorStyle={{
-                  size: 4,
-                }}
-                dividerStyle={{
-                  height: 0,
-                }}
-                showLabels={false}
-                onComplete={() => {
-                  console.log("countdown complete");
-                }}
-              />
-            </div>
-          )}
+        {showTimer && <Timer limitTime={3000} />}
       </AppBar>
 
       <div css={contentCss}>
-        {contentBtnRender({
-          location,
-          buttonStartCaption,
-          buttonNextCaption,
-          buttonBackCaption,
-          buttonFinishCaption,
-          handleClick,
-          startSurvey,
-          completeSurvey,
-          pagesCount,
-          isShowPageList,
-        })}
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
           ref={perfectScrollbarRef}
@@ -305,21 +238,8 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
 
-      <AppBar direction="bottom" fixed>
-        {bottomBtnRender({
-          location,
-          buttonStartCaption,
-          buttonNextCaption,
-          buttonBackCaption,
-          buttonFinishCaption,
-          handleClick,
-          startSurvey,
-          completeSurvey,
-          pagesCount,
-          isShowPageList,
-        })}
-      </AppBar>
-
+      <AppBar direction="bottom" fixed></AppBar>
+      <Switcher />
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalHeader>
           <div css={modalHeaderWrapperCss}>

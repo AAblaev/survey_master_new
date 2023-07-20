@@ -21,7 +21,13 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
       userAnswer.values[0].optionID === EXTRA_ANSWER.NOTHING
   );
   const handleChange = () => {
-    checked && setAnswer({ questionID: questionID, values: [] });
+    checked &&
+      setAnswer({
+        questionID: questionID,
+        values: [],
+        isValid: true,
+        isFocused: false,
+      });
     !checked &&
       setAnswer({
         questionID: questionID,
@@ -31,6 +37,8 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
             value: "ничего из вышеперечисленного",
           },
         ],
+        isValid: true,
+        isFocused: false,
       });
   };
   return (

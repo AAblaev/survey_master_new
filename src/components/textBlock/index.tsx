@@ -11,7 +11,7 @@ const TextBlock: React.FC<ITextBlockProps> = ({ question }) => {
   const { hasComment, comment, config } = question;
   return (
     <div css={cardCss(true)}>
-      <div css={titleTextCss}>
+      <div css={titleTextCss(false)}>
         {(hasComment || config.dataType === "textblock") && (
           <div
             dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}

@@ -24,6 +24,7 @@ import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
 import OtherCheckbox from "./extra/otherCheckbox";
+import { getNeedCorrect } from "../../utils/questionIsDone";
 
 export type OwnProps = {
   key: number;
@@ -53,6 +54,8 @@ export const extraFilter = (userAnswer: IAnswer): IAnswer => {
     values: userAnswer.values.filter(
       (option) => !extraIdsArr.includes(option.optionID)
     ),
+    isValid: userAnswer.isValid,
+    isFocused: userAnswer.isFocused,
   };
 };
 
@@ -61,6 +64,7 @@ const Question: React.FC<IQuestionProps> = ({
   question,
   userAnswer: answerWithExtra,
   setAnswer,
+  visitedPageDocIDList,
 }) => {
   const {
     title,
@@ -100,11 +104,33 @@ const Question: React.FC<IQuestionProps> = ({
       )
   );
 
+  const isEmpty = !userAnswer || userAnswer.values.length === 0;
+  const isFocused = !!userAnswer && userAnswer.isFocused;
+  const isValid = !!userAnswer && userAnswer.isValid;
+  const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
+
+  // console.log(question.config.dataType, "isEmpty", isEmpty);
+  // console.log(question.config.dataType, "isRequired", isRequired);
+  //
+  // console.log(question.config.dataType, "isFocused", isFocused);
+  // console.log(question.config.dataType, "isValid", isValid);
+  // console.log(question.config.dataType, "pageIsVisited", pageIsVisited);
+
+  const needCorrect = getNeedCorrect(
+    isRequired,
+    isEmpty,
+    isFocused,
+    isValid,
+    pageIsVisited
+  );
+
+  // console.log(question.config.dataType, "needCorrect", needCorrect);
+
   return (
     <div>
       <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex}.</div>
-        <div css={titleTextCss}>
+        <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
           {hasComment && (
             <div
@@ -128,6 +154,7 @@ const Question: React.FC<IQuestionProps> = ({
               question={question}
               userAnswer={userAnswer as IAnswer}
               setAnswer={setAnswer}
+              needCorrect={needCorrect}
             />
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
@@ -161,11 +188,14 @@ const Question: React.FC<IQuestionProps> = ({
 };
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
-  const { userAnswers } = state;
+  const { userAnswers, visitedPageDocIDList } = state;
   const { question } = props;
   const { docID } = question;
 
-  return { userAnswer: userAnswers[docID] ? userAnswers[docID] : null };
+  return {
+    userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
+    visitedPageDocIDList,
+  };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {

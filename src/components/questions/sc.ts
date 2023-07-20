@@ -27,6 +27,8 @@ export const formControlCss = ({
   & .MuiFilledInput-root {
     // font-size: 1.3rem;
     border: ${noBorderOnInput ? 0 : 1}px solid #e5e5e5;
+    // border: ${noBorderOnInput ? 0 : 1}px solid red;
+
     background-color: #fff;
     border-radius: 0px;
   }
@@ -62,9 +64,10 @@ export const titleCountCss = css`
   font-weight: bold;
 `;
 
-export const titleTextCss = css`
+export const titleTextCss = (needCorrect: boolean) => css`
   font-size: 1.2rem;
   font-weight: 500;
+  color: ${needCorrect ? "red" : "#000000"};
 `;
 
 export const selectQuestionCss = css`

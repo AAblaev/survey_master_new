@@ -3,28 +3,6 @@ import { IAnswer, IDataType, IPage, IQuestion, IUserAnswer } from "../types";
 export const isQuestionDone = (answer: IAnswer) => {
   return answer.values.length !== 0;
 };
-//
-// export const isQuestionViewedAndDone = (
-//   docID: number,
-//   userAnswers: IUserAnswer
-// ) => {
-//   return (
-//     userAnswers.hasOwnProperty(docID) && isQuestionDone(userAnswers[docID])
-//   );
-// };
-//
-// export const isRequiredQuestionDone = (
-//   pages: IPage[],
-//   userAnswers: IUserAnswer
-// ) => {
-//   return !Boolean(
-//     pages.find((page) =>
-//       page.questions.find(
-//         (q) => q.isRequired && !isQuestionViewedAndDone(q.docID, userAnswers)
-//       )
-//     )
-//   );
-// };
 
 export const questionValidation = (
   question: IQuestion,
@@ -52,4 +30,36 @@ export const findFirstIncompleteQuestion = (
     }
   }
   return null; // Возвращаем null, если все вопросы выполнены
+};
+
+export const getNeedCorrect = (
+  isRequired: boolean,
+  isEmpty: boolean,
+  isFocused: boolean,
+  isValid: boolean,
+  pageIsVisited: boolean
+): boolean => {
+  if (isFocused || isValid) {
+    return false;
+  }
+  if (!isRequired && isEmpty) {
+    return false;
+  }
+
+  if (isRequired && isEmpty && !pageIsVisited) {
+    return false;
+  }
+
+  return true;
+};
+
+export const sectionValidtion = (
+  page: IPage,
+  userAnswers: IUserAnswer
+): boolean => {
+  return !page.questions.some(
+    (q) =>
+      (q.isRequired && !userAnswers[q.docID]) ||
+      (q.isRequired && userAnswers[q.docID] && !userAnswers[q.docID].isValid)
+  );
 };

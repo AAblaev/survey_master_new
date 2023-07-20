@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import { IData } from "../../types";
 import { fakeData } from "../../utils/fakeData";
+import { fakeData2 } from "../../utils/fakeData2";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
 import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
