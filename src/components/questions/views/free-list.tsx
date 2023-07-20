@@ -43,6 +43,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
   const simpleType = config.simpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const textFieldConfig = getTextFieldConfig(simpleType);
+  // console.log(textFieldConfig);
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -100,7 +101,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
           Boolean(needCorrect) &&
           !textFieldConfig.regExp.test((answer && answer.value) || "");
 
-        console.log("alarm", alarm);
+        // console.log("alarm", alarm);
         return (
           <FormControl key={item.docID} css={freeListItemCss}>
             <FormLabel component="legend" css={freeListItemLabelCss}>

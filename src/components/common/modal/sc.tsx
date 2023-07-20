@@ -20,7 +20,7 @@ export const container = ({
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    z-index: 9000;
     transition: all 0.2s;
     opacity: ${shown ? 1 : 0};
   `;
@@ -31,15 +31,45 @@ const dialogLg = css`
 `;
 
 const dialogMd = css`
-  width: 50%;
   min-height: 40%;
   max-height: 80%;
+  width: 100%;
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 70%;
+  }
+
+  @media (min-width: 992px) {
+    width: 50%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 50%;
+  }
 `;
 
 const dialogSm = css`
-  width: 40%;
   min-height: 20%;
   max-height: 80%;
+  width: 100%;
+  @media (min-width: 576px) {
+    width: 90%;
+  }
+
+  @media (min-width: 768px) {
+    width: 60%;
+  }
+
+  @media (min-width: 992px) {
+    width: 40%;
+  }
+
+  @media (min-width: 1200px) {
+    width: 40%;
+  }
 `;
 
 const dialogFs = css`

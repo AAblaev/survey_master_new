@@ -109,12 +109,12 @@ const Question: React.FC<IQuestionProps> = ({
   const isValid = !!userAnswer && userAnswer.isValid;
   const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
 
-  console.log(question.config.dataType, "isEmpty", isEmpty);
-  console.log(question.config.dataType, "isRequired", isRequired);
-
-  console.log(question.config.dataType, "isFocused", isFocused);
-  console.log(question.config.dataType, "isValid", isValid);
-  console.log(question.config.dataType, "pageIsVisited", pageIsVisited);
+  // console.log(question.config.dataType, "isEmpty", isEmpty);
+  // console.log(question.config.dataType, "isRequired", isRequired);
+  //
+  // console.log(question.config.dataType, "isFocused", isFocused);
+  // console.log(question.config.dataType, "isValid", isValid);
+  // console.log(question.config.dataType, "pageIsVisited", pageIsVisited);
 
   const needCorrect = getNeedCorrect(
     isRequired,
@@ -124,7 +124,7 @@ const Question: React.FC<IQuestionProps> = ({
     pageIsVisited
   );
 
-  console.log(question.config.dataType, "needCorrect", needCorrect);
+  // console.log(question.config.dataType, "needCorrect", needCorrect);
 
   return (
     <div>

@@ -52,7 +52,7 @@ export const buttonCss = (isShow: boolean, side: "left" | "right") => css`
     bottom: 13px;
     ${side === "left" && "left: 4%;"}
     ${side === "right" && "right: 4%;"}
-    z-index: 7000;
+    z-index: 7777000;
   }
   @media (min-width: 768px) {
     &.MuiButtonBase-root {
