@@ -1,23 +1,18 @@
 import React from "react";
-import { connect, ConnectedProps } from "react-redux";
-import { IState } from "../../types";
-import { Dispatch } from "redux";
-import { css } from "@emotion/react";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Progress } from "antd";
-import Typography from "@material-ui/core/Typography";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Button from "@material-ui/core/Button";
+import { css } from "@emotion/react";
+import { IPage, IUserAnswer } from "../../types";
 import {
   DEFAULT_STROKE_COLOR,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_TRAIL_COLOR,
 } from "../../consts/const";
-import { changeCurretLocation } from "../../services/redux/actions";
-
-type ISurvey = ConnectedProps<typeof connector>;
 
 const pageCss = css`
   @media (max-width: 576px) {
@@ -39,7 +34,13 @@ export const accordionCss = css`
   }
 `;
 
-const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
+type ISurveyProps = {
+  selectPage: (index: number) => void;
+  pages: IPage[];
+  userAnswers: IUserAnswer;
+};
+
+const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
   return (
     <div css={pageCss}>
       <div>
@@ -48,7 +49,7 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
             (q) => q.config.dataType !== "textblock"
           ).length;
           const requiredQuestionsCount = page.questions.filter(
-            (q) => q.config.dataType !== "textblock"
+            (q) => q.config.dataType !== "textblock" && q.isRequired
           ).length;
           let doneQuestionCount = 0;
           page.questions.forEach((q) => {
@@ -114,33 +115,4 @@ const Survey: React.FC<ISurvey> = ({ selectPage, pages, userAnswers }) => {
   );
 };
 
-const mapStateToProps = (state: IState) => {
-  const pages = state.data ? state.data.pages : [];
-  const userAnswers = state.userAnswers;
-  return {
-    pages,
-    userAnswers,
-  };
-};
-
-const mapDispathToProps = (dispatch: Dispatch) => {
-  return {
-    selectPage: (index: number) => {
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: index,
-            pathName: "section",
-            questionIndex: 0,
-            title: "section",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
-    },
-  };
-};
-
-const connector = connect(mapStateToProps, mapDispathToProps);
-
-export default connector(Survey);
+export default Survey;

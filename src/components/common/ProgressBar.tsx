@@ -20,7 +20,7 @@ const rootCss = (position: IProgressBarPosition, background: string) => {
   `;
   return css`
     display: flex;
-    z-index: 1;
+    z-index: 1000000;
     justify-content: center;
     align-items: center;
     width: 100%;

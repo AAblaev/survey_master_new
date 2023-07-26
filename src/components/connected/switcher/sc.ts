@@ -49,10 +49,10 @@ export const buttonCss = (isShow: boolean, side: "left" | "right") => css`
   &.MuiButtonBase-root {
     display: ${isShow ? "inline-flex" : "none"};
     position: fixed;
-    bottom: 13px;
+    bottom: 10px;
     ${side === "left" && "left: 4%;"}
     ${side === "right" && "right: 4%;"}
-    z-index: 7777000;
+    z-index: 4000;
   }
   @media (min-width: 768px) {
     &.MuiButtonBase-root {

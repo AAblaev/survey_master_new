@@ -19,6 +19,7 @@ import { Modal, ModalHeader, ModalContent } from "./common/modal";
 import {
   borderCss,
   contentCss,
+  footerCss,
   gridContainerCss,
   homeButtonCss,
   modalHeaderWrapperCss,
@@ -53,6 +54,7 @@ type IDesktop = {
   startSurvey: () => void;
   openModal: () => void;
   closeModal: () => void;
+  selectPage: (index: number) => void;
   data: IData;
 };
 
@@ -65,6 +67,7 @@ const Desktop: React.FC<IDesktop> = ({
   startSurvey,
   modalVisible,
   closeModal,
+  selectPage,
 }) => {
   const { title, pathName, pageIndex } = location;
 
@@ -121,7 +124,14 @@ const Desktop: React.FC<IDesktop> = ({
         />
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
-    if (pathName === "survey") return <Survey />;
+    if (pathName === "survey")
+      return (
+        <Survey
+          pages={pages}
+          userAnswers={userAnswers}
+          selectPage={selectPage}
+        />
+      );
     if (pathName === "section")
       return (
         <Section
@@ -137,52 +147,7 @@ const Desktop: React.FC<IDesktop> = ({
   return (
     <>
       <AppBar direction="top" fixed>
-        {pathName === "section" && (
-          <>
-            {isShowPageList ? (
-              <Button
-                key="home"
-                css={homeButtonCss}
-                onClick={() =>
-                  handleClick({
-                    location: {
-                      pageIndex: 0,
-                      questionIndex: 0,
-                      pathName: "survey",
-                      title: "survey",
-                    },
-                    slideMoveDirection: "left-to-right",
-                    needSendAnswers: true,
-                  })
-                }
-              >
-                К списку страниц
-              </Button>
-            ) : (
-              <Nav
-                title={
-                  currentPage.title
-                    ? currentPage.title
-                    : `Страница ${pageIndex + 1}`
-                }
-                pages={pages}
-                currentPageIndex={pageIndex}
-                onChange={(pageIndex, slideMoveDirection) => {
-                  handleClick({
-                    location: {
-                      pageIndex: pageIndex,
-                      pathName: "section",
-                      questionIndex: 0,
-                      title: "section",
-                    },
-                    needSendAnswers: true,
-                    slideMoveDirection: slideMoveDirection,
-                  });
-                }}
-              />
-            )}
-          </>
-        )}
+        <Switcher />
         {showTimer && <Timer limitTime={3000} />}
       </AppBar>
 
@@ -238,8 +203,8 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
 
-      <AppBar direction="bottom" fixed></AppBar>
-      <Switcher />
+      <footer css={footerCss}></footer>
+
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalHeader>
           <div css={modalHeaderWrapperCss}>

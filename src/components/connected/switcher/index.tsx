@@ -26,7 +26,8 @@ import {
   sectionValidtion,
 } from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
-import { onlyDesctopButtonCss } from "../../../sc";
+import { homeButtonCss, onlyDesctopButtonCss } from "../../../sc";
+import Nav from "../../common/Nav";
 
 export type ISwitcherProps = ConnectedProps<typeof connector>;
 
@@ -82,6 +83,10 @@ const Switcher: React.FC<ISwitcherProps> = ({
     }
     openModal();
   };
+
+  const pageTitle = pages[pageIndex].title
+    ? pages[pageIndex].title
+    : `Страница ${pageIndex + 1}`;
 
   switch (location.pathName) {
     case "greeting": {
@@ -169,6 +174,45 @@ const Switcher: React.FC<ISwitcherProps> = ({
     case "section": {
       return (
         <>
+          {isShowPageList ? (
+            <Button
+              key="home"
+              css={homeButtonCss}
+              onClick={() =>
+                handleClick({
+                  location: {
+                    pageIndex: 0,
+                    questionIndex: 0,
+                    pathName: "survey",
+                    title: "survey",
+                  },
+                  slideMoveDirection: "left-to-right",
+                  needSendAnswers: true,
+                })
+              }
+            >
+              К списку страниц
+            </Button>
+          ) : (
+            <Nav
+              title={pageTitle}
+              pages={pages}
+              currentPageIndex={pageIndex}
+              onChange={(pageIndex, slideMoveDirection) => {
+                handleClick({
+                  location: {
+                    pageIndex: pageIndex,
+                    pathName: "section",
+                    questionIndex: 0,
+                    title: "section",
+                  },
+                  needSendAnswers: true,
+                  slideMoveDirection: slideMoveDirection,
+                });
+              }}
+            />
+          )}
+
           <Button
             key="1"
             css={buttonCss(true, "right")}

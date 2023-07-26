@@ -33,9 +33,16 @@ export type IStartResult = {
 function* fetchSurveyData() {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
-  const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  const path = PATH_NAME + surveyID;
+  console.log("document.location", document.location);
 
+  console.log(params);
+  console.log(surveyIDfromURL);
+
+  const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
+  const path = PATH_NAME + surveyID + "?uid=0a663acfd56a4379a9041cf9f3ccdb50";
+  // const path = PATH_NAME + surveyID;
+
+  //3d16cb65adce4bb49a0e9400d04543a9
   // console.log("fetchSurveyData path", path);
   // const paramsObj: { [key: string]: any } = {};
   // for (const [key, value] of params) {
@@ -81,7 +88,6 @@ function* sendSurveyData() {
     // yield put(setLoading(true));
     // const result: unknown = yield call(() => sendData(path, answers));
     // yield put(setLoading(false));
-    //
     // console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);

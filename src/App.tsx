@@ -32,6 +32,7 @@ const App: React.FC<IApp> = ({
   modalVisible,
   openModal,
   closeModal,
+  selectPage,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -72,6 +73,7 @@ const App: React.FC<IApp> = ({
         modalVisible={modalVisible}
         openModal={openModal}
         closeModal={closeModal}
+        selectPage={selectPage}
       />
     </div>
   );
@@ -135,6 +137,19 @@ const mapDispathToProps = (dispatch: Dispatch) => {
         })
       );
       needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+    },
+    selectPage: (index: number) => {
+      dispatch(
+        changeCurretLocation({
+          location: {
+            pageIndex: index,
+            pathName: "section",
+            questionIndex: 0,
+            title: "section",
+          },
+          slideMoveDirection: "right-to-left",
+        })
+      );
     },
   };
 };
