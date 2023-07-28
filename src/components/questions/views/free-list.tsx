@@ -114,6 +114,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
               css={borderColorCss(alarm)}
               value={(answer && answer.value) || ""}
               hiddenLabel
+              placeholder={question.hint}
               onChange={(e) => onChange(e, item)}
               onFocus={handleFocus}
               onBlur={handleBlur}

@@ -111,7 +111,6 @@ const Question: React.FC<IQuestionProps> = ({
 
   // console.log(question.config.dataType, "isEmpty", isEmpty);
   // console.log(question.config.dataType, "isRequired", isRequired);
-  //
   // console.log(question.config.dataType, "isFocused", isFocused);
   // console.log(question.config.dataType, "isValid", isValid);
   // console.log(question.config.dataType, "pageIsVisited", pageIsVisited);

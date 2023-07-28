@@ -45,6 +45,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     const isValid = textFieldConfig.regExp.test(value);
+    // cosnt isValid = validation(value, regExp)
     // console.log("isValid", isValid);
     setAnswer({
       questionID: docID,
@@ -59,8 +60,8 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     <TextField
       id="outlined-multiline-static"
       InputProps={{ disableUnderline: true }}
-      // label="Ответ"
       hiddenLabel
+      placeholder={question.hint}
       color="primary"
       fullWidth
       multiline={isMultiline}

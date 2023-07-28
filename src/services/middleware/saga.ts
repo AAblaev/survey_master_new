@@ -39,8 +39,8 @@ function* fetchSurveyData() {
   console.log(surveyIDfromURL);
 
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  const path = PATH_NAME + surveyID + "?uid=0a663acfd56a4379a9041cf9f3ccdb50";
-  // const path = PATH_NAME + surveyID;
+  // const path = PATH_NAME + surveyID + "?uid=0a663acfd56a4379a9041cf9f3ccdb50";
+  const path = PATH_NAME + surveyID;
 
   //3d16cb65adce4bb49a0e9400d04543a9
   // console.log("fetchSurveyData path", path);
