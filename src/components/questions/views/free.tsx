@@ -3,13 +3,14 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import { IAnswer, IQuestion, ISimpleType, IState } from "../../../types";
-import { getTextFieldConfig } from "../../../utils/validation";
+import { getTextFieldConfig, validation } from "../../../utils/validation";
 
 type IFreeQuestionProps = {
   currentQuestionIndex: number;
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion, optionID?: string) => void;
 };
 
 const FreeView: React.FC<IFreeQuestionProps> = ({
@@ -18,8 +19,14 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { isMultiline, simpleType } = config;
-  const textFieldConfig = getTextFieldConfig(simpleType);
+  const {
+    isMultiline,
+    simpleType,
+    isLimited,
+    isLimitedValue,
+    limit,
+    limitValue,
+  } = config;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const value = userAnswerExist
     ? (userAnswer.values as IAnswer["values"])[0].value
@@ -28,32 +35,52 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAnswer({
       questionID: docID,
-      values: [{ value: e.target.value, optionID: String(0) }],
-      isValid: false,
-      isFocused: true,
+      values: [
+        {
+          value: e.target.value,
+          optionID: String(0),
+          isFocused: true,
+          isValid: false,
+        },
+      ],
+      // isValid: false,
+      // isFocused: true,
     });
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     setAnswer({
       questionID: docID,
-      values: [{ value: value, optionID: String(0) }],
-      isValid: false,
-      isFocused: true,
+      values: [
+        { value: value, optionID: String(0), isFocused: true, isValid: false },
+      ],
     });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    const isValid = textFieldConfig.regExp.test(value);
-    // cosnt isValid = validation(value, regExp)
-    // console.log("isValid", isValid);
+    console.log("handleBlur");
+
+    const resultValidation = validation({
+      value,
+      simpleType: simpleType ?? "string",
+      isLimited,
+      isLimitedValue,
+      limit,
+      limitValue,
+    });
+
     setAnswer({
       questionID: docID,
-      values: [{ value: value, optionID: String(0) }],
-      // need validation
-      isValid: isValid,
-      isFocused: false,
+      values: [
+        {
+          value: value,
+          optionID: String(0),
+          isFocused: false,
+          isValid: resultValidation.result,
+        },
+      ],
     });
+    console.log("validation", resultValidation);
   };
 
   return (

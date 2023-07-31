@@ -25,6 +25,7 @@ type IMultiDropDownViewProps = {
   currentQuestionIndex: number;
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
+  validation: (question: IQuestion) => void;
   userAnswer: IAnswer;
 };
 
@@ -103,13 +104,13 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       .map((optionID) => ({
         optionID: Number(optionID),
         value: String(optionsDict[optionID].title),
+        isValid: true,
+        isFocused: false,
       }));
 
     setAnswer({
       questionID: docID,
       values: newValue,
-      isValid: newValue.length > 0,
-      isFocused: false,
     });
   };
 

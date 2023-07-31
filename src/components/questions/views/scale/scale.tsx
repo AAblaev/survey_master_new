@@ -22,6 +22,7 @@ type IScaleViewProps = {
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion) => void;
 };
 
 const ScaleView: React.FC<IScaleViewProps> = ({
@@ -47,12 +48,17 @@ const ScaleView: React.FC<IScaleViewProps> = ({
     const values =
       selected && selected.optionID === item.docID
         ? []
-        : [{ optionID: item.docID, value: "" }];
+        : [
+            {
+              optionID: item.docID,
+              value: "",
+              isFocused: false,
+              isValid: true,
+            },
+          ];
     setAnswer({
       questionID: docID,
       values: values,
-      isValid: values.length > 0,
-      isFocused: false,
     });
   };
   const colors =

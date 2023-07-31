@@ -4,7 +4,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import { IAnswer, IQuestion } from "../../../types";
 import { TextField } from "@material-ui/core";
 import { css } from "@emotion/react";
-import { getTextFieldConfig } from "../../../utils/validation";
+import { getTextFieldConfig, validation } from "../../../utils/validation";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -29,6 +29,7 @@ type IFreeListViewProps = {
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
   needCorrect?: boolean;
+  validation: (question: IQuestion) => void;
 };
 
 const FreeListView: React.FC<IFreeListViewProps> = ({
@@ -39,55 +40,99 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
   needCorrect,
 }) => {
   const { docID, config } = question;
+  const { simpleType, isLimited, isLimitedValue, limit, limitValue } = config;
   const options = config.options!;
-  const simpleType = config.simpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const textFieldConfig = getTextFieldConfig(simpleType);
+  const values = userAnswerExist
+    ? userAnswer.values
+    : options.map((option) => ({
+        optionID: option.docID,
+        value: "",
+        isValid: false,
+        isFocused: false,
+      }));
   // console.log(textFieldConfig);
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     item: typeof options[0]
   ) => {
-    const values = options.map((option) => ({
-      optionID: option.docID,
-      value:
-        option.docID === item.docID
-          ? e.target.value
-          : (userAnswerExist &&
-              userAnswer.values.find((el) => el.optionID === option.docID)
-                ?.value) ||
-            "",
-    }));
+    const newValue = values.map((value) => {
+      if (value.optionID === item.docID) {
+        return {
+          optionID: value.optionID,
+          value: e.target.value,
+          isValid: false,
+          isFocused: true,
+        };
+      }
+      return value;
+    });
     setAnswer({
       questionID: docID,
-      values: values,
-      isValid: false,
-      isFocused: true,
+      values: newValue,
     });
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleFocus = (
+    e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
+    item: typeof options[0]
+  ) => {
+    const newValue = values.map((value) => {
+      if (value.optionID === item.docID) {
+        return {
+          optionID: value.optionID,
+          value: value.value,
+          isValid: value.isValid,
+          isFocused: true,
+        };
+      }
+      return value;
+    });
     setAnswer({
       questionID: docID,
-      values: userAnswer?.values ?? [],
-      isValid: false,
-      isFocused: true,
+      values: newValue,
     });
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    const isValid = userAnswer.values.reduce(
-      (res: boolean, item: { optionID: string | number; value: string }) => {
-        return res && textFieldConfig.regExp.test(item.value);
-      },
-      true
-    );
+  const handleBlur = (
+    e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
+    item: typeof options[0]
+  ) => {
+    // const isValid = userAnswer.values.reduce(
+    //   (res: boolean, item: { optionID: string | number; value: string }) => {
+    //     return res && textFieldConfig.regExp.test(item.value);
+    //   },
+    //   true
+    // );
+
+    console.log("handleBlur");
+
+    const newValue = values.map((value) => {
+      if (value.optionID === item.docID) {
+        const resultValidation = validation({
+          value: value.value,
+          simpleType: simpleType ?? "string",
+          isLimited,
+          isLimitedValue,
+          limit,
+          limitValue,
+        });
+
+        return {
+          optionID: value.optionID,
+          value: value.value,
+          isValid: resultValidation.result,
+          isFocused: false,
+        };
+      }
+      return value;
+    });
+
     setAnswer({
       questionID: docID,
-      values: userAnswer.values,
-      isValid: isValid,
-      isFocused: false,
+      values: newValue,
     });
   };
 
@@ -116,8 +161,8 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
               hiddenLabel
               placeholder={question.hint}
               onChange={(e) => onChange(e, item)}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
+              onFocus={(e) => handleFocus(e, item)}
+              onBlur={(e) => handleBlur(e, item)}
             />
           </FormControl>
         );

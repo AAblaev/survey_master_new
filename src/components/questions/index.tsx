@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
-import { setAnswer } from "../../services/redux/actions";
+import { setAnswer, validation } from "../../services/redux/actions";
 import { IAnswer, IQuestion, IState } from "../../types";
 import {
   cardCss,
@@ -54,8 +54,8 @@ export const extraFilter = (userAnswer: IAnswer): IAnswer => {
     values: userAnswer.values.filter(
       (option) => !extraIdsArr.includes(option.optionID)
     ),
-    isValid: userAnswer.isValid,
-    isFocused: userAnswer.isFocused,
+    // isValid: userAnswer.isValid,
+    // isFocused: userAnswer.isFocused,
   };
 };
 
@@ -64,6 +64,7 @@ const Question: React.FC<IQuestionProps> = ({
   question,
   userAnswer: answerWithExtra,
   setAnswer,
+  validation,
   visitedPageDocIDList,
 }) => {
   const {
@@ -105,9 +106,11 @@ const Question: React.FC<IQuestionProps> = ({
   );
 
   const isEmpty = !userAnswer || userAnswer.values.length === 0;
-  const isFocused = !!userAnswer && userAnswer.isFocused;
-  const isValid = !!userAnswer && userAnswer.isValid;
+  const isFocused = !!userAnswer && userAnswer.values.some((v) => v.isFocused);
+  const isValid = !!userAnswer && !userAnswer.values.some((v) => !v.isValid);
   const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
+  console.log("userAnswer.values", userAnswer && userAnswer!.values);
+  console.log("isValid", isValid);
 
   // console.log(question.config.dataType, "isEmpty", isEmpty);
   // console.log(question.config.dataType, "isRequired", isRequired);
@@ -123,7 +126,7 @@ const Question: React.FC<IQuestionProps> = ({
     pageIsVisited
   );
 
-  // console.log(question.config.dataType, "needCorrect", needCorrect);
+  console.log(question.config.dataType, "needCorrect", needCorrect);
 
   return (
     <div>
@@ -154,6 +157,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={userAnswer as IAnswer}
               setAnswer={setAnswer}
               needCorrect={needCorrect}
+              validation={validation}
             />
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
@@ -190,6 +194,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   const { userAnswers, visitedPageDocIDList } = state;
   const { question } = props;
   const { docID } = question;
+  console.log("userAnswers", userAnswers);
 
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
@@ -200,6 +205,8 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
+    validation: (question: IQuestion, optionID?: string) =>
+      dispatch(validation({ question, optionID })),
   };
 };
 

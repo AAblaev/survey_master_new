@@ -60,6 +60,8 @@ export const sectionValidtion = (
   return !page.questions.some(
     (q) =>
       (q.isRequired && !userAnswers[q.docID]) ||
-      (q.isRequired && userAnswers[q.docID] && !userAnswers[q.docID].isValid)
+      (q.isRequired &&
+        userAnswers[q.docID] &&
+        !userAnswers[q.docID].values.some((v) => !v.isValid))
   );
 };

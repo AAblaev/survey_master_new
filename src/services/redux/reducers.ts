@@ -10,6 +10,7 @@ import {
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
   SET_VISITED_PAGE_DOCID,
+  VALIDATION,
   // IS_ERROR,
 } from "./types";
 
@@ -87,6 +88,32 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         )
           ? state.visitedPageDocIDList
           : [...state.visitedPageDocIDList, action.payload],
+      };
+    }
+
+    case VALIDATION: {
+      const { question, optionID } = action.payload;
+      const { docID: questionID, config } = question;
+      const {
+        simpleType,
+        isLimited,
+        isLimitedValue,
+        limit,
+        limitValue,
+      } = config;
+      const userAnswers = state.userAnswers;
+      const values = userAnswers[questionID].values;
+      //
+      const isValid = false;
+      return {
+        ...state,
+        userAnswers: {
+          ...userAnswers,
+          [questionID]: {
+            ...userAnswers[questionID],
+            values,
+          },
+        },
       };
     }
 

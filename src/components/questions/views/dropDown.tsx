@@ -10,6 +10,7 @@ type IDropDownViewProps = {
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion) => void;
 };
 
 export const formControlCss = css`
@@ -60,10 +61,10 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
         {
           optionID: optionID,
           value: String(optionsDict[optionID].title),
+          isValid: true,
+          isFocused: false,
         },
       ],
-      isValid: true,
-      isFocused: false,
     });
   };
 

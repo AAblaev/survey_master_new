@@ -134,9 +134,12 @@ export type IDataType =
 
 export type IAnswer = {
   questionID: number;
-  values: { optionID: number | string; value: string }[];
-  isValid: boolean;
-  isFocused: boolean;
+  values: {
+    optionID: number | string;
+    value: string;
+    isValid: boolean;
+    isFocused: boolean;
+  }[];
 };
 export type IBranchRule = {};
 export type IQuoteRule = {};

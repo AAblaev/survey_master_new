@@ -20,6 +20,7 @@ type IMatrixViewProps = {
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion) => void;
 };
 
 type IValuesDict = { [key: string]: string };
@@ -54,10 +55,13 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
       questionID: docID,
       values: [
         ...newValues,
-        { optionID: String(rowDocID), value: String(columnDocID) },
+        {
+          optionID: String(rowDocID),
+          value: String(columnDocID),
+          isValid: true,
+          isFocused: false,
+        },
       ],
-      isValid: true,
-      isFocused: false,
     });
   };
 
@@ -76,11 +80,11 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         {
           optionID: rowDocID + "col" + columnDocID,
           value: value,
+          isValid: true,
+          isFocused: false,
         },
       ],
       ///// need validation
-      isValid: true,
-      isFocused: false,
     });
   };
 

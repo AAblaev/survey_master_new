@@ -2,6 +2,7 @@ import {
   IAnswer,
   IData,
   ILocation,
+  IQuestion,
   ISlideMoveDirection,
   IState,
 } from "../../types";
@@ -15,6 +16,7 @@ import {
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
   SET_VISITED_PAGE_DOCID,
+  VALIDATION,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -71,5 +73,14 @@ export const toggleModalVoisible = (payload: boolean) =>
 export const setVisitedPageDocID = (payload: string) =>
   <const>{
     type: SET_VISITED_PAGE_DOCID,
+    payload,
+  };
+
+export const validation = (payload: {
+  question: IQuestion;
+  optionID?: string;
+}) =>
+  <const>{
+    type: VALIDATION,
     payload,
   };
