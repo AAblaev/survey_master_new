@@ -51,7 +51,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
                     optionID: item.docID,
                     value: item.title,
                     isFocused: false,
-                    isValid: true,
+                    validationResult: { isValid: true, message: "success" },
                   },
                 ],
           });
@@ -66,7 +66,7 @@ const SelectView: React.FC<ISelectViewProps> = ({
                   optionID: item.docID,
                   value: item.title,
                   isFocused: false,
-                  isValid: true,
+                  validationResult: { isValid: true, message: "success" },
                 },
               ];
           setAnswer({

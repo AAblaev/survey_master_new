@@ -27,15 +27,18 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
       setAnswer({
         questionID: questionID,
         values: [],
-        isValid: true,
-        isFocused: false,
       });
     !checked &&
       setAnswer({
         questionID: questionID,
-        values: [{ optionID: EXTRA_ANSWER.OTHER, value: "" }],
-        isValid: true,
-        isFocused: false,
+        values: [
+          {
+            optionID: EXTRA_ANSWER.OTHER,
+            value: "",
+            validationResult: { isValid: true, message: "success" },
+            isFocused: false,
+          },
+        ],
       });
   };
   return (
@@ -51,25 +54,32 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
         label="Другое"
         key={"other"}
       />
-      <TextField
-        id={"otherTextField" + questionID}
-        InputProps={{ disableUnderline: true }}
-        label=""
-        color="primary"
-        fullWidth
-        multiline
-        minRows={3}
-        variant="filled"
-        value={value}
-        onChange={(e) => {
-          setAnswer({
-            questionID: questionID,
-            values: [{ optionID: EXTRA_ANSWER.OTHER, value: e.target.value }],
-            isValid: true,
-            isFocused: false,
-          });
-        }}
-      />
+      {checked && (
+        <TextField
+          id={"otherTextField" + questionID}
+          InputProps={{ disableUnderline: true }}
+          label=""
+          color="primary"
+          fullWidth
+          multiline
+          minRows={3}
+          variant="filled"
+          value={value}
+          onChange={(e) => {
+            setAnswer({
+              questionID: questionID,
+              values: [
+                {
+                  optionID: EXTRA_ANSWER.OTHER,
+                  value: e.target.value,
+                  validationResult: { isValid: true, message: "success" },
+                  isFocused: false,
+                },
+              ],
+            });
+          }}
+        />
+      )}
     </>
   );
 };

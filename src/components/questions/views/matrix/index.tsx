@@ -58,7 +58,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         {
           optionID: String(rowDocID),
           value: String(columnDocID),
-          isValid: true,
+          validationResult: { isValid: true, message: "success" },
           isFocused: false,
         },
       ],
@@ -80,7 +80,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         {
           optionID: rowDocID + "col" + columnDocID,
           value: value,
-          isValid: true,
+          validationResult: { isValid: true, message: "success" },
           isFocused: false,
         },
       ],
@@ -122,7 +122,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                   );
                 if (
                   simpleType === "string" ||
-                  simpleType === "int" ||
+                  simpleType === "integer" ||
                   simpleType === "float"
                 )
                   return (

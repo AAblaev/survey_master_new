@@ -107,16 +107,11 @@ const Question: React.FC<IQuestionProps> = ({
 
   const isEmpty = !userAnswer || userAnswer.values.length === 0;
   const isFocused = !!userAnswer && userAnswer.values.some((v) => v.isFocused);
-  const isValid = !!userAnswer && !userAnswer.values.some((v) => !v.isValid);
+  const isValid =
+    !!userAnswer &&
+    userAnswer.values.length > 0 &&
+    !userAnswer.values.some((v) => !v.validationResult.isValid);
   const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
-  console.log("userAnswer.values", userAnswer && userAnswer!.values);
-  console.log("isValid", isValid);
-
-  // console.log(question.config.dataType, "isEmpty", isEmpty);
-  // console.log(question.config.dataType, "isRequired", isRequired);
-  // console.log(question.config.dataType, "isFocused", isFocused);
-  // console.log(question.config.dataType, "isValid", isValid);
-  // console.log(question.config.dataType, "pageIsVisited", pageIsVisited);
 
   const needCorrect = getNeedCorrect(
     isRequired,
@@ -126,27 +121,23 @@ const Question: React.FC<IQuestionProps> = ({
     pageIsVisited
   );
 
-  console.log(question.config.dataType, "needCorrect", needCorrect);
-
   return (
     <div>
       <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex}.</div>
         <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
-          {hasComment && (
-            <div
-              dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
-            ></div>
-          )}
         </div>
       </div>
-
-      <div css={cardCss(needPadding)}>
+      {hasComment && (
+        <div dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}></div>
+      )}
+      <div css={cardCss(needPadding || hasExtra)}>
         <FormControl
           css={formControlCss({
             disabled,
-            noBorderOnInput: questionType === "free",
+            noBorderOnInput: false,
+            // noBorderOnInput: questionType === "free",
           })}
           focused={false}
         >
@@ -162,15 +153,15 @@ const Question: React.FC<IQuestionProps> = ({
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
           )}
-          {hasNothingAnswer && (
-            <NothingCheckbox
+          {hasOtherAnswer && (
+            <OtherCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
             />
           )}
-          {hasOtherAnswer && (
-            <OtherCheckbox
+          {hasNothingAnswer && (
+            <NothingCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
@@ -194,7 +185,6 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   const { userAnswers, visitedPageDocIDList } = state;
   const { question } = props;
   const { docID } = question;
-  console.log("userAnswers", userAnswers);
 
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,

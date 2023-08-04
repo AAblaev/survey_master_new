@@ -3,7 +3,16 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import { IAnswer, IQuestion, ISimpleType, IState } from "../../../types";
-import { getTextFieldConfig, validation } from "../../../utils/validation";
+import {
+  getTextFieldConfig,
+  REGEXP_DICT,
+  validation,
+} from "../../../utils/validation";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import ErrorIcon from "@material-ui/icons/Error";
+import Tooltip from "@material-ui/core/Tooltip";
+import { borderColorCss } from "./free-list";
 
 type IFreeQuestionProps = {
   currentQuestionIndex: number;
@@ -28,23 +37,36 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     limitValue,
   } = config;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+  const showAlert =
+    userAnswerExist &&
+    !userAnswer.values[0].validationResult.isValid &&
+    !userAnswer.values[0].isFocused;
+
+  const validationMessage = userAnswerExist
+    ? userAnswer.values[0].validationResult.message
+    : "";
   const value = userAnswerExist
     ? (userAnswer.values as IAnswer["values"])[0].value
     : "";
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (
+      (simpleType === "integer" || simpleType === "float") &&
+      !REGEXP_DICT["float"].test(value)
+    ) {
+      return;
+    }
     setAnswer({
       questionID: docID,
       values: [
         {
-          value: e.target.value,
+          value,
           optionID: String(0),
           isFocused: true,
-          isValid: false,
+          validationResult: { isValid: false, message: "ошибка" },
         },
       ],
-      // isValid: false,
-      // isFocused: true,
     });
   };
 
@@ -52,15 +74,18 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     setAnswer({
       questionID: docID,
       values: [
-        { value: value, optionID: String(0), isFocused: true, isValid: false },
+        {
+          value: value,
+          optionID: String(0),
+          isFocused: true,
+          validationResult: { isValid: false, message: "ошибка" },
+        },
       ],
     });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    console.log("handleBlur");
-
-    const resultValidation = validation({
+    const validationResult = validation({
       value,
       simpleType: simpleType ?? "string",
       isLimited,
@@ -76,24 +101,35 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
           value: value,
           optionID: String(0),
           isFocused: false,
-          isValid: resultValidation.result,
+          validationResult,
         },
       ],
     });
-    console.log("validation", resultValidation);
   };
 
   return (
     <TextField
       id="outlined-multiline-static"
-      InputProps={{ disableUnderline: true }}
+      InputProps={{
+        disableUnderline: true,
+        endAdornment: showAlert && (
+          <InputAdornment position="end">
+            <Tooltip title={validationMessage}>
+              <IconButton>
+                <ErrorIcon />
+              </IconButton>
+            </Tooltip>
+          </InputAdornment>
+        ),
+      }}
       hiddenLabel
       placeholder={question.hint}
       color="primary"
+      variant="filled"
+      css={borderColorCss(showAlert)}
       fullWidth
       multiline={isMultiline}
       minRows={2}
-      variant="filled"
       value={value}
       onFocus={handleFocus}
       onBlur={handleBlur}

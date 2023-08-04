@@ -1,12 +1,12 @@
-import { ISimpleType } from "../types";
+import { ISimpleType, IValidationResult } from "../types";
 
 type IKeyRegExpDict = Exclude<ISimpleType, "boolean">;
 
 export const REGEXP_DICT: { [key in IKeyRegExpDict]: RegExp } = {
   string: /^.+$/,
   datetime: /^(0[1-9]|1\d|2\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$/,
-  float: /^[+-]?\d+(\.\d+)?$/,
-  int: /^-?\d+$/,
+  float: /^[-]?[0-9]*\.?[0-9]*$/,
+  integer: /^-?\d+$/,
 };
 
 export const isValidDate = (dateString: string): boolean => {
@@ -33,7 +33,7 @@ export const isDateTime = (value: string): boolean => {
 };
 
 export const isInt = (value: string): boolean => {
-  return REGEXP_DICT["int"].test(value);
+  return REGEXP_DICT["integer"].test(value);
 };
 
 export const isFloat = (value: string): boolean => {
@@ -49,11 +49,16 @@ export const validation = (payload: {
     min: number;
     max: number;
   };
-  limitValue?: {
-    min: number;
-    max: number;
-  };
-}): { result: boolean; message: string } => {
+  limitValue?:
+    | {
+        min: number;
+        max: number;
+      }
+    | {
+        min: string;
+        max: string;
+      };
+}): IValidationResult => {
   const {
     value,
     simpleType,
@@ -64,60 +69,101 @@ export const validation = (payload: {
   } = payload;
 
   // check empty value
-  if (value === "") return { result: false, message: "пусто" };
+  if (value === "") return { isValid: false, message: "пусто" };
 
   // check type
-  if (simpleType === "boolean") return { result: true, message: "success" };
+  if (simpleType === "boolean") return { isValid: true, message: "success" };
 
   if (simpleType === "datetime" && !isValidDate(value)) {
-    return { result: false, message: "допустимый формат дд.мм.гггг" };
+    return { isValid: false, message: "допустимый формат дд.мм.гггг" };
   }
 
   if (simpleType === "string" && !isValidString(value)) {
-    return { result: false, message: "пусто" };
+    return { isValid: false, message: "пусто" };
   }
 
-  if (simpleType === "int" && !isInt(value)) {
-    return { result: false, message: "ответ должен содержать целое число" };
+  if (simpleType === "integer" && !isInt(value)) {
+    return { isValid: false, message: "ответ должен содержать целое число" };
   }
 
   if (simpleType === "float" && !isFloat(value)) {
-    return { result: false, message: "ответ должен содержать число" };
+    return { isValid: false, message: "ответ должен содержать число" };
   }
 
   // check out of range
 
-  if (isLimitedValue && (simpleType === "int" || simpleType === "float")) {
+  if (isLimitedValue && (simpleType === "integer" || simpleType === "float")) {
     if (limitValue!.min > Number(value))
       return {
-        result: false,
-        message: "значение меньше допустимого диапазона",
+        isValid: false,
+        message: `значение не может быть меньше ${limitValue!.min}`,
       };
 
     if (limitValue!.max > Number(value))
       return {
-        result: false,
-        message: "значение больше допустимого диапазона",
+        isValid: false,
+        message: `значение не может быть больше ${limitValue!.max}`,
       };
   }
 
   if (isLimited && simpleType === "string") {
     if (limit!.min > value.length)
       return {
-        result: false,
-        message: "значение меньше допустимого диапазона",
+        isValid: false,
+        message: `значение не может быть меньше ${limit!.min}`,
       };
 
     if (limit!.max > value.length)
       return {
-        result: false,
-        message: "значение больше допустимого диапазона",
+        isValid: false,
+        message: `значение не может быть больше ${limit!.max}`,
       };
   }
 
   // check out of range datatime
 
-  return { result: true, message: "success" };
+  if (isLimitedValue && simpleType === "datetime") {
+    console.log("asdasd");
+    const valueDateArr = value.split(".");
+    const valueDate = new Date(
+      Number(valueDateArr[2]),
+      Number(valueDateArr[1]) - 1,
+      Number(valueDateArr[0])
+    );
+    const minDate = new Date(String(limitValue!.min));
+    const maxDate = new Date(String(limitValue!.max));
+    // console.log("valueDate", valueDate);
+    //
+    // console.log("limit!.min", limitValue!.min);
+    // console.log("limit!.max", limitValue!.max);
+    // console.log("minDate", minDate);
+    // console.log("maxDate", maxDate);
+
+    const minDateStr = minDate.toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+    const maxDateStr = maxDate.toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+
+    if (minDate > valueDate)
+      return {
+        isValid: false,
+        message: `значение не может быть меньше ${minDateStr}`,
+      };
+
+    if (maxDate < valueDate)
+      return {
+        isValid: false,
+        message: `значение не может быть больше ${maxDateStr}`,
+      };
+  }
+
+  return { isValid: true, message: "success" };
 };
 
 export const getTextFieldConfig = (simpleType?: ISimpleType) => {
@@ -132,7 +178,7 @@ export const getTextFieldConfig = (simpleType?: ISimpleType) => {
     case "string": {
       return defaultTextFieldConfig;
     }
-    case "int": {
+    case "integer": {
       return {
         fullWidth: false,
         minRows: 1,

@@ -104,7 +104,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       .map((optionID) => ({
         optionID: Number(optionID),
         value: String(optionsDict[optionID].title),
-        isValid: true,
+        validationResult: { isValid: true, message: "success" },
         isFocused: false,
       }));
 

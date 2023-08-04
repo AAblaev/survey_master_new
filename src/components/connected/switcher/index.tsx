@@ -58,7 +58,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
   const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   const resultSectionValidation =
     pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
-
+  // console.log("resultSectionValidation", resultSectionValidation);
   const showFinishBtn =
     pathName === "section" && pageIndex + 1 === pages.length;
 

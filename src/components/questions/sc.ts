@@ -51,13 +51,14 @@ export const cardCss = (needPadding: boolean) => css`
   border: 1px solid #e5e5e5;
   overflow: hidden;
 `;
+
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
-
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 `;
+
 export const titleCountCss = css`
   font-size: 1.2rem;
   color: ${PRIMARY_COLOR};

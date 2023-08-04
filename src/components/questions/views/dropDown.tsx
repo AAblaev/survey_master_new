@@ -61,7 +61,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
         {
           optionID: optionID,
           value: String(optionsDict[optionID].title),
-          isValid: true,
+          validationResult: { isValid: true, message: "success" },
           isFocused: false,
         },
       ],

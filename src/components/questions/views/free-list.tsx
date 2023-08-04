@@ -2,9 +2,17 @@ import React from "react";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { IAnswer, IQuestion } from "../../../types";
-import { TextField } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import ErrorIcon from "@material-ui/icons/Error";
+import Tooltip from "@material-ui/core/Tooltip";
 import { css } from "@emotion/react";
-import { getTextFieldConfig, validation } from "../../../utils/validation";
+import {
+  getTextFieldConfig,
+  REGEXP_DICT,
+  validation,
+} from "../../../utils/validation";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -43,13 +51,13 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
   const { simpleType, isLimited, isLimitedValue, limit, limitValue } = config;
   const options = config.options!;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
-  const textFieldConfig = getTextFieldConfig(simpleType);
+
   const values = userAnswerExist
     ? userAnswer.values
     : options.map((option) => ({
         optionID: option.docID,
         value: "",
-        isValid: false,
+        validationResult: { isValid: true, message: "ошибка" },
         isFocused: false,
       }));
   // console.log(textFieldConfig);
@@ -58,12 +66,19 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     item: typeof options[0]
   ) => {
+    if (
+      (simpleType === "integer" || simpleType === "float") &&
+      !REGEXP_DICT["float"].test(e.target.value)
+    ) {
+      return;
+    }
+
     const newValue = values.map((value) => {
       if (value.optionID === item.docID) {
         return {
           optionID: value.optionID,
           value: e.target.value,
-          isValid: false,
+          validationResult: { isValid: false, message: "ошибка" },
           isFocused: true,
         };
       }
@@ -84,7 +99,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
         return {
           optionID: value.optionID,
           value: value.value,
-          isValid: value.isValid,
+          validationResult: value.validationResult,
           isFocused: true,
         };
       }
@@ -107,11 +122,10 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
     //   true
     // );
 
-    console.log("handleBlur");
-
     const newValue = values.map((value) => {
       if (value.optionID === item.docID) {
-        const resultValidation = validation({
+        console.log("simpleType", simpleType);
+        const validationResult = validation({
           value: value.value,
           simpleType: simpleType ?? "string",
           isLimited,
@@ -123,7 +137,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
         return {
           optionID: value.optionID,
           value: value.value,
-          isValid: resultValidation.result,
+          validationResult: validationResult,
           isFocused: false,
         };
       }
@@ -142,22 +156,43 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
         const answer = userAnswer?.values.find(
           (answer) => answer.optionID === item.docID
         );
-        const alarm =
-          Boolean(needCorrect) &&
-          !textFieldConfig.regExp.test((answer && answer.value) || "");
+        const answerExist = Boolean(answer && userAnswerExist);
+        // const alarm =
+        //   Boolean(needCorrect) &&
+        //   !textFieldConfig.regExp.test((answer && answer.value) || "");
 
         // console.log("alarm", alarm);
+        const value = answer ? answer.value : "";
+        const showAlert =
+          answerExist &&
+          !answer!.validationResult.isValid &&
+          !answer!.isFocused;
+        const validationMessage = answerExist
+          ? answer!.validationResult.message
+          : "";
+
         return (
           <FormControl key={item.docID} css={freeListItemCss}>
             <FormLabel component="legend" css={freeListItemLabelCss}>
               {item.title}
             </FormLabel>
             <TextField
-              InputProps={{ disableUnderline: true }}
+              InputProps={{
+                disableUnderline: true,
+                endAdornment: showAlert && (
+                  <InputAdornment position="end">
+                    <Tooltip title={validationMessage}>
+                      <IconButton>
+                        <ErrorIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              }}
               color="primary"
               variant="filled"
-              css={borderColorCss(alarm)}
-              value={(answer && answer.value) || ""}
+              css={borderColorCss(showAlert)}
+              value={value}
               hiddenLabel
               placeholder={question.hint}
               onChange={(e) => onChange(e, item)}
