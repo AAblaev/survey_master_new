@@ -127,7 +127,6 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
 
     const newValue = values.map((value) => {
       if (value.optionID === item.docID) {
-        console.log("simpleType", simpleType);
         const validationResult = validation({
           value: value.value,
           simpleType: simpleType ?? "string",
