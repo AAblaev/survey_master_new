@@ -29,6 +29,9 @@ export const borderColorCss = (alarm: boolean) => css`
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }
+  & .MuiFilledInput-multiline {
+    padding: 5px;
+  }
 `;
 
 type IFreeListViewProps = {

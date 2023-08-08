@@ -147,14 +147,16 @@ export type IValidationResult = {
   message: string;
 };
 
+export type IValue = {
+  optionID: number | string;
+  value: string;
+  validationResult: IValidationResult;
+  isFocused: boolean;
+};
+
 export type IAnswer = {
   questionID: number;
-  values: {
-    optionID: number | string;
-    value: string;
-    validationResult: IValidationResult;
-    isFocused: boolean;
-  }[];
+  values: IValue[];
 };
 export type IBranchRule = {};
 export type IQuoteRule = {};

@@ -10,6 +10,7 @@ import {
   titleCountCss,
   titleCss,
   titleTextCss,
+  commentCss,
 } from "./sc";
 import FreeView from "./views/free";
 import FreeListView from "./views/free-list";
@@ -47,15 +48,18 @@ const viewDict = {
   matrix: MatrixView,
 };
 
-export const extraFilter = (userAnswer: IAnswer): IAnswer => {
+export const extraFilter = (
+  userAnswer: IAnswer,
+  omit?: keyof typeof EXTRA_ANSWER
+): IAnswer => {
   const extraIdsArr = Object.values(EXTRA_ANSWER);
   return {
     questionID: userAnswer.questionID,
     values: userAnswer.values.filter(
-      (option) => !extraIdsArr.includes(option.optionID)
+      (option) =>
+        !extraIdsArr.includes(option.optionID) ||
+        (omit && option.optionID === EXTRA_ANSWER[omit])
     ),
-    // isValid: userAnswer.isValid,
-    // isFocused: userAnswer.isFocused,
   };
 };
 
@@ -91,10 +95,17 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "html" ||
     questionType === "matrix" ||
     !isImplementedQuestionType;
+
+  const isInternalExtra =
+    questionType === "dropdown" || questionType === "multidropdown";
+
   const userAnswer =
     answerWithExtra && hasExtra
       ? extraFilter(answerWithExtra)
       : answerWithExtra;
+
+  const userAnswerForSelect =
+    answerWithExtra && extraFilter(answerWithExtra, "OTHER");
 
   const disabled = Boolean(
     answerWithExtra &&
@@ -105,12 +116,13 @@ const Question: React.FC<IQuestionProps> = ({
       )
   );
 
-  const isEmpty = !userAnswer || userAnswer.values.length === 0;
-  const isFocused = !!userAnswer && userAnswer.values.some((v) => v.isFocused);
+  const isEmpty = !answerWithExtra || answerWithExtra.values.length === 0;
+  const isFocused =
+    !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
   const isValid =
-    !!userAnswer &&
-    userAnswer.values.length > 0 &&
-    !userAnswer.values.some((v) => !v.validationResult.isValid);
+    !!answerWithExtra &&
+    answerWithExtra.values.length > 0 &&
+    !answerWithExtra.values.some((v) => !v.validationResult.isValid);
   const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
 
   const needCorrect = getNeedCorrect(
@@ -121,6 +133,10 @@ const Question: React.FC<IQuestionProps> = ({
     pageIsVisited
   );
 
+  const userAnswerResult = isInternalExtra
+    ? (answerWithExtra as IAnswer)
+    : (userAnswer as IAnswer);
+
   return (
     <div>
       <div css={titleCss(disabled)}>
@@ -130,7 +146,10 @@ const Question: React.FC<IQuestionProps> = ({
         </div>
       </div>
       {hasComment && (
-        <div dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}></div>
+        <div
+          css={commentCss(disabled)}
+          dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
+        ></div>
       )}
       <div css={cardCss(needPadding || hasExtra)}>
         <FormControl
@@ -145,7 +164,11 @@ const Question: React.FC<IQuestionProps> = ({
             <ViewComponent
               currentQuestionIndex={currentQuestionIndex}
               question={question}
-              userAnswer={userAnswer as IAnswer}
+              userAnswer={
+                questionType === "select" || questionType === "multiselect"
+                  ? (userAnswerForSelect as IAnswer)
+                  : (userAnswerResult as IAnswer)
+              }
               setAnswer={setAnswer}
               needCorrect={needCorrect}
               validation={validation}
@@ -153,14 +176,15 @@ const Question: React.FC<IQuestionProps> = ({
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
           )}
-          {hasOtherAnswer && (
+          {!isInternalExtra && hasOtherAnswer && (
             <OtherCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
+              singleAnswer={questionType !== "multiselect"}
             />
           )}
-          {hasNothingAnswer && (
+          {!isInternalExtra && hasNothingAnswer && (
             <NothingCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
@@ -170,7 +194,7 @@ const Question: React.FC<IQuestionProps> = ({
         </FormControl>
       </div>
 
-      {hasUnableAnswer && (
+      {!isInternalExtra && hasUnableAnswer && (
         <UnableCheckbox
           userAnswer={answerWithExtra as IAnswer}
           setAnswer={setAnswer}

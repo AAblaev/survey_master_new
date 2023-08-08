@@ -68,6 +68,8 @@ export const validation = (payload: {
     limitValue,
   } = payload;
 
+  console.log("value", value);
+
   // check empty value
   if (value === "") return { isValid: false, message: "пусто" };
 
@@ -78,7 +80,7 @@ export const validation = (payload: {
     return { isValid: false, message: "допустимый формат дд.мм.гггг" };
   }
 
-  if (simpleType === "string" && !isValidString(value)) {
+  if (simpleType === "string" && false) {
     return { isValid: false, message: "пусто" };
   }
 
