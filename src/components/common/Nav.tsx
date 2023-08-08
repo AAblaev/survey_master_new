@@ -48,9 +48,10 @@ const Nav: React.FC<INavProps> = ({
   onChange,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const showList = currentPageIndex > 1;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    showList && setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -68,23 +69,30 @@ const Nav: React.FC<INavProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {pages.map((page, pageIndex) => (
-          <MenuItem
-            key={pageIndex}
-            css={menuItemCss}
-            onClick={() => {
-              onChange(
-                pageIndex,
-                currentPageIndex < pageIndex ? "right-to-left" : "left-to-right"
-              );
-              handleClose();
-            }}
-          >
-            <ListItemText
-              primary={page.title ? page.title : `Страница ${pageIndex + 1}`}
-            />
-          </MenuItem>
-        ))}
+        {pages.map((page, pageIndex) => {
+          if (currentPageIndex > pageIndex)
+            return (
+              <MenuItem
+                key={pageIndex}
+                css={menuItemCss}
+                onClick={() => {
+                  onChange(
+                    pageIndex,
+                    currentPageIndex < pageIndex
+                      ? "right-to-left"
+                      : "left-to-right"
+                  );
+                  handleClose();
+                }}
+              >
+                <ListItemText
+                  primary={
+                    page.title ? page.title : `Страница ${pageIndex + 1}`
+                  }
+                />
+              </MenuItem>
+            );
+        })}
       </StyledMenu>
     </div>
   );

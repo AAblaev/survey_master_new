@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { DEFAULT_BACKGROUND_COLOR } from "./consts/const";
+import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "./consts/const";
 
 export const desctopCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
@@ -85,4 +85,19 @@ export const gridContainerCss = css`
 export const borderCss = css`
   background-color: ${DEFAULT_BACKGROUND_COLOR};
   z-index: 20;
+`;
+
+export const footerCss = css`
+  width: 100%;
+  height: 56px;
+  background-color: ${PRIMARY_COLOR};
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  z-index: 3000;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;

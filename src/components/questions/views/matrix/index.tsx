@@ -1,7 +1,13 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import GreenRadio from "../../../common/GreenRadio";
-import { IAnswer, IOption, IQuestion, ISimpleType } from "../../../../types";
+import {
+  IAnswer,
+  IOption,
+  IQuestion,
+  ISimpleType,
+  IValue,
+} from "../../../../types";
 import {
   tableCss,
   tbodyCss,
@@ -14,15 +20,18 @@ import {
 } from "./sc";
 import BoolCell from "./BoolCell";
 import TextFieldCell from "./TextCell";
+import { validation } from "../../../../utils/validation";
 
 type IMatrixViewProps = {
   currentQuestionIndex: number;
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion) => void;
 };
 
 type IValuesDict = { [key: string]: string };
+type IValuesDict2 = { [key: string]: IValue };
 
 const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
@@ -30,12 +39,18 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
+  const { isLimited, isLimitedValue, limit, limitValue } = config;
   const simpleType = config.simpleType as ISimpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
 
-  const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
-    acc[String(item.optionID)] = item.value;
+  // const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
+  //   acc[String(item.optionID)] = item.value;
+  //   return acc;
+  // }, {});
+
+  const valuesDict2: IValuesDict2 = values.reduce((acc: IValuesDict2, item) => {
+    acc[String(item.optionID)] = item;
     return acc;
   }, {});
 
@@ -54,10 +69,13 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
       questionID: docID,
       values: [
         ...newValues,
-        { optionID: String(rowDocID), value: String(columnDocID) },
+        {
+          optionID: String(rowDocID),
+          value: String(columnDocID),
+          validationResult: { isValid: true, message: "success" },
+          isFocused: false,
+        },
       ],
-      isValid: true,
-      isFocused: false,
     });
   };
 
@@ -76,11 +94,46 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         {
           optionID: rowDocID + "col" + columnDocID,
           value: value,
+          validationResult: { isValid: true, message: "success" },
+          isFocused: false,
         },
       ],
-      ///// need validation
-      isValid: true,
-      isFocused: false,
+    });
+  };
+
+  const handleBlur = (rowDocID: number, columnDocID: number, value: string) => {
+    const newValues = values.filter(
+      (value) => value.optionID !== rowDocID + "col" + columnDocID
+    );
+
+    if (value.trim() === "") {
+      setAnswer({
+        questionID: docID,
+        values: [...newValues],
+      });
+      return;
+    }
+
+    const validationResult = validation({
+      value,
+      simpleType: simpleType ?? "string",
+      isLimited,
+      isLimitedValue,
+      limit,
+      limitValue,
+    });
+    // console.log("validationResult", validationResult.isValid);
+    setAnswer({
+      questionID: docID,
+      values: [
+        ...newValues,
+        {
+          optionID: rowDocID + "col" + columnDocID,
+          value: value,
+          validationResult: validationResult,
+          isFocused: false,
+        },
+      ],
     });
   };
 
@@ -105,20 +158,33 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
             <tr key={rhIndex} css={trCss}>
               <th css={thRowCss}>{rh.title}</th>
               {columns.map((option, chIndex) => {
-                if (simpleType === "boolean")
+                if (simpleType === "boolean") {
+                  // console.log(valuesDict);
+                  // console.log(valuesDict2);
+                  // console.log(
+                  //   Boolean(
+                  //     valuesDict2[rh.docID] &&
+                  //       valuesDict2[rh.docID].value === String(option.docID)
+                  //   )
+                  // );
+
                   return (
                     <BoolCell
                       key={rhIndex + "td" + chIndex}
                       rowDocID={rh.docID}
                       columnDocID={option.docID}
-                      isChecked={valuesDict[rh.docID] === String(option.docID)}
+                      isChecked={Boolean(
+                        valuesDict2[rh.docID] &&
+                          valuesDict2[rh.docID].value === String(option.docID)
+                      )}
                       handleClick={handleClick}
                       title={option.title}
                     />
                   );
+                }
                 if (
                   simpleType === "string" ||
-                  simpleType === "int" ||
+                  simpleType === "integer" ||
                   simpleType === "float"
                 )
                   return (
@@ -127,8 +193,10 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                       rowDocID={rh.docID}
                       columnDocID={option.docID}
                       handleChange={handleChange}
-                      value={valuesDict[rh.docID + "col" + option.docID]}
+                      handleBlur={handleBlur}
+                      value={valuesDict2[rh.docID + "col" + option.docID]}
                       title={option.title}
+                      config={config}
                     />
                   );
 

@@ -3,13 +3,23 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import { IAnswer, IQuestion, ISimpleType, IState } from "../../../types";
-import { getTextFieldConfig } from "../../../utils/validation";
+import {
+  getTextFieldConfig,
+  REGEXP_DICT,
+  validation,
+} from "../../../utils/validation";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
+import ErrorIcon from "@material-ui/icons/Error";
+import Tooltip from "@material-ui/core/Tooltip";
+import { borderColorCss } from "./free-list";
 
 type IFreeQuestionProps = {
   currentQuestionIndex: number;
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion, optionID?: string) => void;
 };
 
 const FreeView: React.FC<IFreeQuestionProps> = ({
@@ -18,54 +28,108 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { isMultiline, simpleType } = config;
-  const textFieldConfig = getTextFieldConfig(simpleType);
+  const {
+    isMultiline,
+    simpleType,
+    isLimited,
+    isLimitedValue,
+    limit,
+    limitValue,
+  } = config;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+  const showAlert =
+    userAnswerExist &&
+    !userAnswer.values[0].validationResult.isValid &&
+    !userAnswer.values[0].isFocused;
+
+  const validationMessage = userAnswerExist
+    ? userAnswer.values[0].validationResult.message
+    : "";
   const value = userAnswerExist
     ? (userAnswer.values as IAnswer["values"])[0].value
     : "";
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (
+      (simpleType === "integer" || simpleType === "float") &&
+      !REGEXP_DICT["float"].test(value)
+    ) {
+      return;
+    }
     setAnswer({
       questionID: docID,
-      values: [{ value: e.target.value, optionID: String(0) }],
-      isValid: false,
-      isFocused: true,
+      values: [
+        {
+          value,
+          optionID: String(0),
+          isFocused: true,
+          validationResult: { isValid: false, message: "ошибка" },
+        },
+      ],
     });
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     setAnswer({
       questionID: docID,
-      values: [{ value: value, optionID: String(0) }],
-      isValid: false,
-      isFocused: true,
+      values: [
+        {
+          value: value,
+          optionID: String(0),
+          isFocused: true,
+          validationResult: { isValid: false, message: "ошибка" },
+        },
+      ],
     });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    const isValid = textFieldConfig.regExp.test(value);
-    // console.log("isValid", isValid);
+    const validationResult = validation({
+      value,
+      simpleType: simpleType ?? "string",
+      isLimited,
+      isLimitedValue,
+      limit,
+      limitValue,
+    });
+
     setAnswer({
       questionID: docID,
-      values: [{ value: value, optionID: String(0) }],
-      // need validation
-      isValid: isValid,
-      isFocused: false,
+      values: [
+        {
+          value: value,
+          optionID: String(0),
+          isFocused: false,
+          validationResult,
+        },
+      ],
     });
   };
 
   return (
     <TextField
       id="outlined-multiline-static"
-      InputProps={{ disableUnderline: true }}
-      // label="Ответ"
+      InputProps={{
+        disableUnderline: true,
+        endAdornment: showAlert && (
+          <InputAdornment position="end">
+            <Tooltip title={validationMessage}>
+              <IconButton>
+                <ErrorIcon />
+              </IconButton>
+            </Tooltip>
+          </InputAdornment>
+        ),
+      }}
       hiddenLabel
+      placeholder={question.hint}
       color="primary"
+      variant="filled"
+      css={borderColorCss(showAlert)}
       fullWidth
       multiline={isMultiline}
       minRows={2}
-      variant="filled"
       value={value}
       onFocus={handleFocus}
       onBlur={handleBlur}

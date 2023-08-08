@@ -12,6 +12,7 @@ type ISelectViewProps = {
   question: IQuestion;
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
+  validation: (question: IQuestion) => void;
 };
 
 const SelectView: React.FC<ISelectViewProps> = ({
@@ -45,21 +46,32 @@ const SelectView: React.FC<ISelectViewProps> = ({
             questionID: docID,
             values: isChecked
               ? []
-              : [{ optionID: item.docID, value: item.title }],
-            isFocused: false,
-            isValid: !isChecked,
+              : [
+                  {
+                    optionID: item.docID,
+                    value: item.title,
+                    isFocused: false,
+                    validationResult: { isValid: true, message: "success" },
+                  },
+                ],
           });
         };
 
         const handleChange2 = () => {
           const newValue = isChecked
             ? valuesArr.filter((v) => v.optionID !== item.docID)
-            : [...valuesArr, { optionID: item.docID, value: item.title }];
+            : [
+                ...valuesArr,
+                {
+                  optionID: item.docID,
+                  value: item.title,
+                  isFocused: false,
+                  validationResult: { isValid: true, message: "success" },
+                },
+              ];
           setAnswer({
             questionID: docID,
             values: newValue,
-            isFocused: false,
-            isValid: newValue.length > 0,
           });
         };
 

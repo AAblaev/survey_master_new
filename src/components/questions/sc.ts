@@ -51,13 +51,22 @@ export const cardCss = (needPadding: boolean) => css`
   border: 1px solid #e5e5e5;
   overflow: hidden;
 `;
+
+export const commentCss = (disabled: boolean) => css`
+  ${disabled && `pointer-events: none !important;`}
+  ${disabled && `filter:grayscale(100%);`}
+  & > * {
+    ${disabled && `pointer-events: none !important;`}
+  }
+`;
+
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
-
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 `;
+
 export const titleCountCss = css`
   font-size: 1.2rem;
   color: ${PRIMARY_COLOR};
@@ -68,12 +77,4 @@ export const titleTextCss = (needCorrect: boolean) => css`
   font-size: 1.2rem;
   font-weight: 500;
   color: ${needCorrect ? "red" : "#000000"};
-`;
-
-export const selectQuestionCss = css`
-  & .MuiFormLabel-root {
-    color: #000000;
-    font-size: 1.3rem;
-    font-weight: 300;
-  }
 `;

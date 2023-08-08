@@ -101,10 +101,15 @@ export type IConfig = {
     min: number;
     max: number;
   };
-  limitValue?: {
-    min: number;
-    max: number;
-  };
+  limitValue?:
+    | {
+        min: number;
+        max: number;
+      }
+    | {
+        min: string;
+        max: string;
+      };
   //
   dateType?: unknown;
   scaleType?: unknown;
@@ -112,7 +117,12 @@ export type IConfig = {
   isChooseManyInrow?: boolean;
   isChooseManyIncol?: boolean;
 };
-export type ISimpleType = "boolean" | "string" | "int" | "float" | "datetime"; //number, float, date
+export type ISimpleType =
+  | "boolean"
+  | "string"
+  | "integer"
+  | "float"
+  | "datetime"; //number, float, date
 export type IDataType =
   | "select"
   | "dropdown"
@@ -132,11 +142,21 @@ export type IDataType =
   | "textblock"
   | "default";
 
+export type IValidationResult = {
+  isValid: boolean;
+  message: string;
+};
+
+export type IValue = {
+  optionID: number | string;
+  value: string;
+  validationResult: IValidationResult;
+  isFocused: boolean;
+};
+
 export type IAnswer = {
   questionID: number;
-  values: { optionID: number | string; value: string }[];
-  isValid: boolean;
-  isFocused: boolean;
+  values: IValue[];
 };
 export type IBranchRule = {};
 export type IQuoteRule = {};

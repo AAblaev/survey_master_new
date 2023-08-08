@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
-import { setAnswer } from "../../services/redux/actions";
+import { setAnswer, validation } from "../../services/redux/actions";
 import { IAnswer, IQuestion, IState } from "../../types";
 import {
   cardCss,
@@ -10,6 +10,7 @@ import {
   titleCountCss,
   titleCss,
   titleTextCss,
+  commentCss,
 } from "./sc";
 import FreeView from "./views/free";
 import FreeListView from "./views/free-list";
@@ -47,15 +48,18 @@ const viewDict = {
   matrix: MatrixView,
 };
 
-export const extraFilter = (userAnswer: IAnswer): IAnswer => {
+export const extraFilter = (
+  userAnswer: IAnswer,
+  omit?: keyof typeof EXTRA_ANSWER
+): IAnswer => {
   const extraIdsArr = Object.values(EXTRA_ANSWER);
   return {
     questionID: userAnswer.questionID,
     values: userAnswer.values.filter(
-      (option) => !extraIdsArr.includes(option.optionID)
+      (option) =>
+        !extraIdsArr.includes(option.optionID) ||
+        (omit && option.optionID === EXTRA_ANSWER[omit])
     ),
-    isValid: userAnswer.isValid,
-    isFocused: userAnswer.isFocused,
   };
 };
 
@@ -64,6 +68,7 @@ const Question: React.FC<IQuestionProps> = ({
   question,
   userAnswer: answerWithExtra,
   setAnswer,
+  validation,
   visitedPageDocIDList,
 }) => {
   const {
@@ -90,10 +95,17 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "html" ||
     questionType === "matrix" ||
     !isImplementedQuestionType;
+
+  const isInternalExtra =
+    questionType === "dropdown" || questionType === "multidropdown";
+
   const userAnswer =
     answerWithExtra && hasExtra
       ? extraFilter(answerWithExtra)
       : answerWithExtra;
+
+  const userAnswerForSelect =
+    answerWithExtra && extraFilter(answerWithExtra, "OTHER");
 
   const disabled = Boolean(
     answerWithExtra &&
@@ -104,17 +116,14 @@ const Question: React.FC<IQuestionProps> = ({
       )
   );
 
-  const isEmpty = !userAnswer || userAnswer.values.length === 0;
-  const isFocused = !!userAnswer && userAnswer.isFocused;
-  const isValid = !!userAnswer && userAnswer.isValid;
+  const isEmpty = !answerWithExtra || answerWithExtra.values.length === 0;
+  const isFocused =
+    !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
+  const isValid =
+    !!answerWithExtra &&
+    answerWithExtra.values.length > 0 &&
+    !answerWithExtra.values.some((v) => !v.validationResult.isValid);
   const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
-
-  // console.log(question.config.dataType, "isEmpty", isEmpty);
-  // console.log(question.config.dataType, "isRequired", isRequired);
-  //
-  // console.log(question.config.dataType, "isFocused", isFocused);
-  // console.log(question.config.dataType, "isValid", isValid);
-  // console.log(question.config.dataType, "pageIsVisited", pageIsVisited);
 
   const needCorrect = getNeedCorrect(
     isRequired,
@@ -124,7 +133,9 @@ const Question: React.FC<IQuestionProps> = ({
     pageIsVisited
   );
 
-  // console.log(question.config.dataType, "needCorrect", needCorrect);
+  const userAnswerResult = isInternalExtra
+    ? (answerWithExtra as IAnswer)
+    : (userAnswer as IAnswer);
 
   return (
     <div>
@@ -132,19 +143,20 @@ const Question: React.FC<IQuestionProps> = ({
         <div css={titleCountCss}>{currentQuestionIndex}.</div>
         <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
-          {hasComment && (
-            <div
-              dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
-            ></div>
-          )}
         </div>
       </div>
-
-      <div css={cardCss(needPadding)}>
+      {hasComment && (
+        <div
+          css={commentCss(disabled)}
+          dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
+        ></div>
+      )}
+      <div css={cardCss(needPadding || hasExtra)}>
         <FormControl
           css={formControlCss({
             disabled,
-            noBorderOnInput: questionType === "free",
+            noBorderOnInput: false,
+            // noBorderOnInput: questionType === "free",
           })}
           focused={false}
         >
@@ -152,22 +164,28 @@ const Question: React.FC<IQuestionProps> = ({
             <ViewComponent
               currentQuestionIndex={currentQuestionIndex}
               question={question}
-              userAnswer={userAnswer as IAnswer}
+              userAnswer={
+                questionType === "select" || questionType === "multiselect"
+                  ? (userAnswerForSelect as IAnswer)
+                  : (userAnswerResult as IAnswer)
+              }
               setAnswer={setAnswer}
               needCorrect={needCorrect}
+              validation={validation}
             />
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
           )}
-          {hasNothingAnswer && (
-            <NothingCheckbox
+          {!isInternalExtra && hasOtherAnswer && (
+            <OtherCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
+              singleAnswer={questionType !== "multiselect"}
             />
           )}
-          {hasOtherAnswer && (
-            <OtherCheckbox
+          {!isInternalExtra && hasNothingAnswer && (
+            <NothingCheckbox
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
@@ -176,7 +194,7 @@ const Question: React.FC<IQuestionProps> = ({
         </FormControl>
       </div>
 
-      {hasUnableAnswer && (
+      {!isInternalExtra && hasUnableAnswer && (
         <UnableCheckbox
           userAnswer={answerWithExtra as IAnswer}
           setAnswer={setAnswer}
@@ -201,6 +219,8 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
+    validation: (question: IQuestion, optionID?: string) =>
+      dispatch(validation({ question, optionID })),
   };
 };
 
