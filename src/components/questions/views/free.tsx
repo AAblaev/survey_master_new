@@ -85,6 +85,15 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    console.log("e.target.value", e.target.value);
+    if (e.target.value.trim() === "") {
+      setAnswer({
+        questionID: docID,
+        values: [],
+      });
+      return;
+    }
+
     const validationResult = validation({
       value,
       simpleType: simpleType ?? "string",

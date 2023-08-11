@@ -305,6 +305,8 @@ const mapStateToProps = (state: IState) => {
   const pages = data?.pages || [];
   const pagesCount = pages.length;
 
+  console.log("pages", pages);
+
   return {
     isEmptyData,
     userAnswers,

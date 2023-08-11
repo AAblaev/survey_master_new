@@ -134,6 +134,8 @@ export const thRowDesctopCss = css`
   width: 30%;
   min-width: 300px;
   font-weight: normal;
+  display: flex;
+  align-items: stretch;
 `;
 
 export const thRowCss = css`
@@ -229,9 +231,8 @@ export const wrapperCss = css`
 
 export const textFieldCellCss = css`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   padding: 5px;
-  // min-width: 100px;
 
   @media (min-width: 576px) {
     display: flex;

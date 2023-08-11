@@ -32,6 +32,9 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
+  console.log("action", action);
+  console.log("state", state);
+
   switch (action.type) {
     case SET_NEW_DATA: {
       return { ...state, data: action.payload };

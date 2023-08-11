@@ -44,11 +44,6 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
 
-  // const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
-  //   acc[String(item.optionID)] = item.value;
-  //   return acc;
-  // }, {});
-
   const valuesDict2: IValuesDict2 = values.reduce((acc: IValuesDict2, item) => {
     acc[String(item.optionID)] = item;
     return acc;
@@ -159,15 +154,6 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
               <th css={thRowCss}>{rh.title}</th>
               {columns.map((option, chIndex) => {
                 if (simpleType === "boolean") {
-                  // console.log(valuesDict);
-                  // console.log(valuesDict2);
-                  // console.log(
-                  //   Boolean(
-                  //     valuesDict2[rh.docID] &&
-                  //       valuesDict2[rh.docID].value === String(option.docID)
-                  //   )
-                  // );
-
                   return (
                     <BoolCell
                       key={rhIndex + "td" + chIndex}

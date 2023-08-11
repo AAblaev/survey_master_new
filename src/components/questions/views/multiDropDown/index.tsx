@@ -62,15 +62,15 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       width: 0,
     });
 
-  hasUnableAnswer &&
-    selectItems.push({
-      docID: -1,
-      height: 0,
-      order: 0,
-      photoID: 0,
-      title: "затрудняюсь ответить",
-      width: 0,
-    });
+  // hasUnableAnswer &&
+  //   selectItems.push({
+  //     docID: -1,
+  //     height: 0,
+  //     order: 0,
+  //     photoID: 0,
+  //     title: "затрудняюсь ответить",
+  //     width: 0,
+  //   });
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
     {
@@ -155,10 +155,15 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
           renderValue={(items) => {
             const ids = items as string[];
             const options = ids.map((id: string) => optionsDict[id]);
-            if (ids.length === 1 && ids[0] === "default")
+
+            if (
+              (ids.length === 1 && ids[0] === "default") ||
+              (ids.length === 1 &&
+                String(ids[0]) === String(EXTRA_ANSWER.UNABLE))
+            )
               return (
                 <div key={docID} css={chipCss(true)}>
-                  {options[0].title}
+                  {optionsDict["default"].title}
                 </div>
               );
             return (

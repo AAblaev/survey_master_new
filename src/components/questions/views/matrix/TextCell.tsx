@@ -37,6 +37,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
       <div css={titleTextFieldCellCss}>{title}</div>
       <TextField
         InputProps={{
+          style: { height: "100%" },
           disableUnderline: true,
           endAdornment: !isValid && (
             <InputAdornment position="end">
@@ -51,6 +52,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
         hiddenLabel
         fullWidth
         multiline={isMultiline}
+        maxRows={4}
         color="primary"
         variant="filled"
         css={borderColorCss(!isValid)}
