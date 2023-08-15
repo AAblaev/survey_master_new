@@ -131,8 +131,8 @@ export const thRowMobileCss = css`
 `;
 export const thRowDesctopCss = css`
   padding: 10px 20px;
-  width: 30%;
-  min-width: 300px;
+  // width: 30%;
+  // min-width: 300px;
   font-weight: normal;
   display: flex;
   align-items: stretch;
@@ -170,11 +170,21 @@ export const thColumnCss = css`
   overflow-wrap: anywhere;
 `;
 
+export const headerColumnCss = css`
+  // font-size: 1.2rem;
+  font-weight: normal;
+  padding: 0px 10px;
+  text-align: start;
+  overflow-wrap: anywhere;
+`;
+
 export const tdMobileCss = (isSelected: boolean, content: string) => css`
   display: flex;
   cursor: pointer;
   padding: 0.5rem;
   border: 1px solid #e5e5e5;
+  width: 100%;
+
 
   ${isSelected && "background-color: #e5e5e5;"}
   & > .MuiButtonBase-root {
@@ -190,8 +200,10 @@ export const tdMobileCss = (isSelected: boolean, content: string) => css`
 
 export const tdDesctopCss = css`
   background-color: white;
-  display: table-cell;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   & > .MuiButtonBase-root {
     display: inline-block;
   }
@@ -232,6 +244,8 @@ export const wrapperCss = css`
 export const textFieldCellCss = css`
   display: flex;
   align-items: stretch;
+  // align-items: center;
+
   padding: 5px;
 
   @media (min-width: 576px) {
@@ -244,9 +258,17 @@ export const textFieldCellCss = css`
   }
 `;
 
+export const gridTextFieldCellCss = css`
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  // padding: 5px 0;
+`;
+
 export const titleTextFieldCellCss = css`
   display: block;
   width: 30%;
+  margin-right: 5px;
   @media (min-width: 576px) {
     display: block;
     width: 30%;
@@ -255,4 +277,84 @@ export const titleTextFieldCellCss = css`
   @media (min-width: 768px) {
     display: none;
   }
+`;
+
+export const gridCss = css`
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
+`;
+
+export const rowCss = css`
+  display: grid;
+
+  @media (min-width: 576px) {
+    grid-template-columns: 1fr;
+    grid-gap: 4px;
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: 250px repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0px;
+  }
+
+  @media (min-width: 992px) {
+    display: grid;
+    grid-template-columns: 250px repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0px;
+  }
+
+  @media (min-width: 1200px) {
+    display: grid;
+    grid-template-columns: 250px repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0px;
+  }
+
+  @media (min-width: 1400px) {
+    grid-template-columns: 250px repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0px;
+  }
+`;
+
+export const headerCss = css`
+  display: none;
+  font-weight: bold;
+  grid-template-columns: 250px repeat(auto-fit, minmax(50px, 1fr));
+  grid-gap: 4px;
+
+  @media (min-width: 576px) {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    display: grid;
+  }
+
+  @media (min-width: 992px) {
+    display: grid;
+  }
+
+  @media (min-width: 1200px) {
+    display: grid;
+  }
+
+  @media (min-width: 1400px) {
+    display: grid;
+  }
+`;
+
+export const cellCss = css`
+  display: flex;
+  align-items: stretch;
+`;
+
+export const borderColorMatrixCss = (alarm: boolean) => css`
+  & .MuiFilledInput-root {
+    ${alarm && `border-color:red`}
+  }
+  & .MuiFilledInput-multiline {
+    padding: 5px;
+  }
+  // & > .MuiInputBase-root{
+  //   display: block
+  // }
 `;

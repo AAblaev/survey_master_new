@@ -51,7 +51,7 @@ export const fakeData: IData = {
             simpleType: "string",
             mobileTabularView: false,
             isChooseManyInrow: false,
-            isChooseManyIncol: true,
+            isChooseManyIncol: false,
             title: "",
             isEnable: true,
             dataType: "matrix",
@@ -136,6 +136,8 @@ export const fakeData: IData = {
                 width: 0,
                 height: 0,
               },
+
+              //////
               {
                 docID: 1793,
                 title: "коснулось лично меня",

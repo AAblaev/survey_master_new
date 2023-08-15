@@ -17,13 +17,17 @@ const BoolCell: React.FC<IBoolCellProps> = ({
   columnDocID,
   title,
 }) => {
+  //<td
+  //   css={tdCss(isChecked, title)}
+  //   onClick={() => handleClick(rowDocID, columnDocID)}
+  // >
   return (
-    <td
+    <div
       css={tdCss(isChecked, title)}
       onClick={() => handleClick(rowDocID, columnDocID)}
     >
       <GreenRadio checked={isChecked} />
-    </td>
+    </div>
   );
 };
 
