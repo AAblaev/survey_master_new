@@ -115,35 +115,28 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
   return (
     <div css={gridTextFieldCellCss}>
       <div css={titleTextFieldCellCss}>{title}</div>
-      <TextField
-        InputProps={{
-          style: { height: "100%" },
-          disableUnderline: true,
-          endAdornment: !isValid && (
-            <InputAdornment position="end">
-              <Tooltip title={validationMessage}>
-                <IconButton>
-                  <ErrorIcon />
-                </IconButton>
-              </Tooltip>
-            </InputAdornment>
-          ),
-        }}
-        hiddenLabel
-        fullWidth
-        multiline={isMultiline}
-        maxRows={4}
-        color="primary"
-        variant="filled"
-        css={borderColorMatrixCss(!isValid)}
-        value={textValue}
-        onChange={(e) => {
-          setTextValue(e.target.value);
-        }}
-        onBlur={(e) => {
-          handleBlur(rowDocID, columnDocID, e.target.value);
-        }}
-      />
+      <Tooltip title={!isValid ? validationMessage : ""}>
+        <TextField
+          InputProps={{
+            style: { height: "100%" },
+            disableUnderline: true,
+          }}
+          hiddenLabel
+          fullWidth
+          multiline={isMultiline}
+          maxRows={4}
+          color="primary"
+          variant="filled"
+          css={borderColorMatrixCss(!isValid)}
+          value={textValue}
+          onChange={(e) => {
+            setTextValue(e.target.value);
+          }}
+          onBlur={(e) => {
+            handleBlur(rowDocID, columnDocID, e.target.value);
+          }}
+        />
+      </Tooltip>
     </div>
   );
 };

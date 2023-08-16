@@ -51,21 +51,21 @@ function* fetchSurveyData() {
   // }
 
   try {
-    // yield put(setLoading(true));
-    // const result: IFetchResult = yield call(() => fethData(path));
-    // yield put(setNewData(result.data));
-    yield put(setNewData(fakeData));
-    yield put(
-      changeCurretLocation({
-        location: {
-          pageIndex: 0,
-          pathName: "section",
-          questionIndex: 0,
-          title: "section",
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
+    yield put(setLoading(true));
+    const result: IFetchResult = yield call(() => fethData(path));
+    yield put(setNewData(result.data));
+    // yield put(setNewData(fakeData));
+    // yield put(
+    //   changeCurretLocation({
+    //     location: {
+    //       pageIndex: 0,
+    //       pathName: "section",
+    //       questionIndex: 0,
+    //       title: "section",
+    //     },
+    //     slideMoveDirection: "right-to-left",
+    //   })
+    // );
 
     yield put(setLoading(false));
   } catch (e) {
@@ -80,11 +80,11 @@ function* startSurvey() {
   const { surveyID } = yield select(selectSurveyID);
   const path = PATH_NAME + "start/" + surveyID;
   try {
-    // yield put(setLoading(true));
-    // const result: IStartResult = yield call(() => fethData(path));
-    // yield put(setSurveyUid(result.data));
-    // yield put(setLoading(false));
-    // console.log("startSurvey success", result);
+    yield put(setLoading(true));
+    const result: IStartResult = yield call(() => fethData(path));
+    yield put(setSurveyUid(result.data));
+    yield put(setLoading(false));
+    console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
   }

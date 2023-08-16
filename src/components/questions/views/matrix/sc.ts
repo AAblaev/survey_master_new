@@ -281,7 +281,8 @@ export const titleTextFieldCellCss = css`
 
 export const gridCss = css`
   display: grid;
-  grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
+  // grid-template-rows: repeat(auto-fit, minmax(150px, 1fr));
+  grid-auto-rows: minmax(50px, auto);
 `;
 
 export const rowCss = css`
@@ -351,10 +352,13 @@ export const borderColorMatrixCss = (alarm: boolean) => css`
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }
+
   & .MuiFilledInput-multiline {
-    padding: 5px;
+    padding: 0px;
   }
-  // & > .MuiInputBase-root{
-  //   display: block
-  // }
+
+  & > .MuiInputBase-root {
+    display: flex;
+    align-items: flex-start;
+  }
 `;

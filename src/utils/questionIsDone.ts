@@ -57,25 +57,16 @@ export const sectionValidtion = (
   page: IPage,
   userAnswers: IUserAnswer
 ): boolean => {
-  // console.log(userAnswers);
-  // page.questions.forEach((q, index) => {
-  // console.log("--------------------------");
-  // console.log(index);
-  // console.log(
-  //   "q.isRequired && !userAnswers[q.docID]",
-  //   q.isRequired && !userAnswers[q.docID]
-  // );
-  // const r =
-  //   userAnswers[q.docID] &&
-  //   !userAnswers[q.docID].values.some((v) => !v.validationResult.isValid);
-  // console.log("validationResult", q.isRequired && userAnswers[q.docID] && r);
-  // });
-
-  return !page.questions.some(
+  const result = !page.questions.some(
     (q) =>
       (q.isRequired && !userAnswers[q.docID]) ||
       (q.isRequired &&
         userAnswers[q.docID] &&
+        userAnswers[q.docID].values.length === 0) ||
+      (q.isRequired &&
+        userAnswers[q.docID] &&
         userAnswers[q.docID].values.some((v) => !v.validationResult.isValid))
   );
+
+  return result;
 };

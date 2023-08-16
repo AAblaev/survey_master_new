@@ -221,3 +221,13 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
 };
 
 export default FreeListView;
+//
+// endAdornment: showAlert && (
+//   <InputAdornment position="end">
+//     <Tooltip title={validationMessage}>
+//       <IconButton>
+//         <ErrorIcon />
+//       </IconButton>
+//     </Tooltip>
+//   </InputAdornment>
+// ),

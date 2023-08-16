@@ -48,7 +48,7 @@ export const fakeData: IData = {
           comment: null,
           hasComment: false,
           config: {
-            simpleType: "string",
+            simpleType: "integer",
             mobileTabularView: false,
             isChooseManyInrow: false,
             isChooseManyIncol: false,

@@ -83,11 +83,11 @@ export const validation = (payload: {
   }
 
   if (simpleType === "integer" && !isInt(value)) {
-    return { isValid: false, message: "ответ должен содержать целое число" };
+    return { isValid: false, message: "ответ должен быть целым числом" };
   }
 
   if (simpleType === "float" && !isFloat(value)) {
-    return { isValid: false, message: "ответ должен содержать число" };
+    return { isValid: false, message: "ответ должен быть числом" };
   }
 
   // check out of range
@@ -123,7 +123,6 @@ export const validation = (payload: {
   // check out of range datatime
 
   if (isLimitedValue && simpleType === "datetime") {
-    console.log("asdasd");
     const valueDateArr = value.split(".");
     const valueDate = new Date(
       Number(valueDateArr[2]),
@@ -132,12 +131,6 @@ export const validation = (payload: {
     );
     const minDate = new Date(String(limitValue!.min));
     const maxDate = new Date(String(limitValue!.max));
-    // console.log("valueDate", valueDate);
-    //
-    // console.log("limit!.min", limitValue!.min);
-    // console.log("limit!.max", limitValue!.max);
-    // console.log("minDate", minDate);
-    // console.log("maxDate", maxDate);
 
     const minDateStr = minDate.toLocaleString("ru-RU", {
       year: "numeric",
