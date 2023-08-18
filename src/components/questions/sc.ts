@@ -35,7 +35,7 @@ export const formControlCss = ({
   & .MuiFilledInput-root.Mui-focused {
     background-color: #fff;
     box-shadow: #46acaf;
-    // border-color: #46acaf;
+    border-color: #e5e5e5;
   }
   & .MuiFilledInput-root:hover {
     background-color: transparent;

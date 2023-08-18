@@ -1,25 +1,16 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import GreenRadio from "../../../common/GreenRadio";
+import MatrixCell from "./MatrixCell";
+import { IAnswer, IQuestion, ISimpleType, IValue } from "../../../../types";
 import {
-  IAnswer,
-  IOption,
-  IQuestion,
-  ISimpleType,
-  IValue,
-} from "../../../../types";
-import {
-  tableCss,
-  tbodyCss,
-  tdCss,
-  thColumnCss,
-  theadCss,
+  cellCss,
+  gridCss,
+  headerCss,
+  rowCss,
   thRowCss,
-  trCss,
   wrapperCss,
+  headerColumnCss,
 } from "./sc";
-import BoolCell from "./BoolCell";
-import TextFieldCell from "./TextCell";
 import { validation } from "../../../../utils/validation";
 
 type IMatrixViewProps = {
@@ -30,8 +21,7 @@ type IMatrixViewProps = {
   validation: (question: IQuestion) => void;
 };
 
-type IValuesDict = { [key: string]: string };
-type IValuesDict2 = { [key: string]: IValue };
+type IValuesDict = { [key: string]: IValue };
 
 const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
@@ -39,18 +29,21 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { isLimited, isLimitedValue, limit, limitValue } = config;
+  const {
+    isLimited,
+    isLimitedValue,
+    limit,
+    limitValue,
+    isChooseManyInrow,
+    isChooseManyIncol,
+  } = config;
+
   const simpleType = config.simpleType as ISimpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
 
-  // const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
-  //   acc[String(item.optionID)] = item.value;
-  //   return acc;
-  // }, {});
-
-  const valuesDict2: IValuesDict2 = values.reduce((acc: IValuesDict2, item) => {
-    acc[String(item.optionID)] = item;
+  const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
+    acc[`d0_${item.dimension0}_d1_${item.dimension1}`] = item;
     return acc;
   }, {});
 
@@ -62,39 +55,45 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   );
 
   const handleClick = (rowDocID: number, columnDocID: number) => {
-    const newValues = values.filter(
-      (value) => Number(value.optionID) !== rowDocID
-    );
-    setAnswer({
-      questionID: docID,
-      values: [
-        ...newValues,
-        {
-          optionID: String(rowDocID),
-          value: String(columnDocID),
-          validationResult: { isValid: true, message: "success" },
-          isFocused: false,
-        },
-      ],
-    });
-  };
+    const newV: IValue[] = [];
+    values.forEach((v) => {
+      if (
+        Number(v.dimension0) === rowDocID &&
+        Number(v.dimension1) === columnDocID
+      ) {
+        return;
+      }
 
-  const handleChange = (
-    rowDocID: number,
-    columnDocID: number,
-    value: string
-  ) => {
-    const newValues = values.filter(
-      (value) => value.optionID !== rowDocID + "col" + columnDocID
+      if (!isChooseManyInrow && rowDocID === Number(v.dimension0)) {
+        return;
+      }
+      if (!isChooseManyIncol && columnDocID === Number(v.dimension1)) {
+        return;
+      }
+      newV.push(v);
+    });
+
+    const isAlreadyChecked = Boolean(
+      valuesDict[`d0_${rowDocID}_d1_${columnDocID}`]
     );
+    if (isAlreadyChecked) {
+      setAnswer({
+        questionID: docID,
+        values: [...newV],
+      });
+      return;
+    }
+
     setAnswer({
       questionID: docID,
       values: [
-        ...newValues,
+        ...newV,
         {
-          optionID: rowDocID + "col" + columnDocID,
-          value: value,
+          optionID: 0,
+          value: String(1),
           validationResult: { isValid: true, message: "success" },
+          dimension0: String(rowDocID),
+          dimension1: String(columnDocID),
           isFocused: false,
         },
       ],
@@ -103,7 +102,11 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
 
   const handleBlur = (rowDocID: number, columnDocID: number, value: string) => {
     const newValues = values.filter(
-      (value) => value.optionID !== rowDocID + "col" + columnDocID
+      (value) =>
+        !(
+          Number(value.dimension0) === rowDocID &&
+          Number(value.dimension1) === columnDocID
+        )
     );
 
     if (value.trim() === "") {
@@ -122,13 +125,14 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
       limit,
       limitValue,
     });
-    // console.log("validationResult", validationResult.isValid);
     setAnswer({
       questionID: docID,
       values: [
         ...newValues,
         {
-          optionID: rowDocID + "col" + columnDocID,
+          optionID: 0,
+          dimension0: String(rowDocID),
+          dimension1: String(columnDocID),
           value: value,
           validationResult: validationResult,
           isFocused: false,
@@ -138,75 +142,50 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   };
 
   return (
-    <PerfectScrollbar
-      options={{ suppressScrollX: false, suppressScrollY: true }}
-      css={wrapperCss}
-    >
-      <table css={tableCss}>
-        <thead css={theadCss}>
-          <tr>
-            <th key="empty"></th>
-            {columns.map((ch: IOption, index) => (
-              <th key={index} css={thColumnCss}>
-                {ch.title}
-              </th>
+    <>
+      <PerfectScrollbar
+        options={{ suppressScrollX: false, suppressScrollY: true }}
+        css={wrapperCss}
+      >
+        <div css={gridCss}>
+          <div css={headerCss}>
+            <div className="empty-cell"></div>
+            {columns.map((option) => (
+              <div
+                key={option.docID}
+                css={headerColumnCss}
+                className="table-header-cell"
+              >
+                {option.title}
+              </div>
             ))}
-          </tr>
-        </thead>
-        <tbody css={tbodyCss}>
-          {rows.map((rh, rhIndex) => (
-            <tr key={rhIndex} css={trCss}>
-              <th css={thRowCss}>{rh.title}</th>
-              {columns.map((option, chIndex) => {
-                if (simpleType === "boolean") {
-                  // console.log(valuesDict);
-                  // console.log(valuesDict2);
-                  // console.log(
-                  //   Boolean(
-                  //     valuesDict2[rh.docID] &&
-                  //       valuesDict2[rh.docID].value === String(option.docID)
-                  //   )
-                  // );
+          </div>
 
-                  return (
-                    <BoolCell
-                      key={rhIndex + "td" + chIndex}
-                      rowDocID={rh.docID}
-                      columnDocID={option.docID}
-                      isChecked={Boolean(
-                        valuesDict2[rh.docID] &&
-                          valuesDict2[rh.docID].value === String(option.docID)
-                      )}
-                      handleClick={handleClick}
-                      title={option.title}
-                    />
-                  );
-                }
-                if (
-                  simpleType === "string" ||
-                  simpleType === "integer" ||
-                  simpleType === "float"
-                )
-                  return (
-                    <TextFieldCell
-                      key={rhIndex + "td" + chIndex}
-                      rowDocID={rh.docID}
-                      columnDocID={option.docID}
-                      handleChange={handleChange}
-                      handleBlur={handleBlur}
-                      value={valuesDict2[rh.docID + "col" + option.docID]}
-                      title={option.title}
-                      config={config}
-                    />
-                  );
-
-                return null;
-              })}
-            </tr>
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} css={rowCss}>
+              <div css={thRowCss} className="table-row-header">
+                {rows[rowIndex].title}
+              </div>
+              {columns.map((col, colIndex) => (
+                <div key={colIndex} css={cellCss}>
+                  <MatrixCell
+                    key={rowIndex + "td" + colIndex}
+                    title={col.title}
+                    simpleType={simpleType}
+                    rowDocID={row.docID}
+                    columnDocID={col.docID}
+                    value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
+                    isMultiline={config.isMultiline}
+                    handleClick={handleClick}
+                    handleBlur={handleBlur}
+                  />
+                </div>
+              ))}
+            </div>
           ))}
-        </tbody>
-      </table>
-    </PerfectScrollbar>
+        </div>
+      </PerfectScrollbar>
+    </>
   );
 };
 

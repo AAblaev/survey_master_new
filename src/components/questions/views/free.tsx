@@ -41,6 +41,16 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     userAnswerExist &&
     !userAnswer.values[0].validationResult.isValid &&
     !userAnswer.values[0].isFocused;
+  // console.log("userAnswerExist", userAnswerExist);
+  // console.log(
+  //   "!userAnswer.values[0].validationResult.isValid",
+  //   userAnswerExist && !userAnswer.values[0].validationResult.isValid
+  // );
+  // console.log(
+  //   "!userAnswer.values[0].isFocused",
+  //   userAnswerExist && !userAnswer.values[0].isFocused
+  // );
+  // console.log("showAlert", showAlert);
 
   const validationMessage = userAnswerExist
     ? userAnswer.values[0].validationResult.message
@@ -85,6 +95,15 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    console.log("e.target.value", e.target.value);
+    if (e.target.value.trim() === "") {
+      setAnswer({
+        questionID: docID,
+        values: [],
+      });
+      return;
+    }
+
     const validationResult = validation({
       value,
       simpleType: simpleType ?? "string",

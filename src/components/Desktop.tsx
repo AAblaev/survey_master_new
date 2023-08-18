@@ -134,11 +134,13 @@ const Desktop: React.FC<IDesktop> = ({
       );
     if (pathName === "section")
       return (
-        <Section
-          page={currentPage}
-          pageIndex={pageIndex}
-          questionCount={questionCount}
-        />
+        <>
+          <Section
+            page={currentPage}
+            pageIndex={pageIndex}
+            questionCount={questionCount}
+          />
+        </>
       );
 
     return null;
@@ -202,7 +204,6 @@ const Desktop: React.FC<IDesktop> = ({
           </div>
         </PerfectScrollbar>
       </div>
-
       <footer css={footerCss}></footer>
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">

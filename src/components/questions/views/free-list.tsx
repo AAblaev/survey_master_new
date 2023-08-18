@@ -51,19 +51,18 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
   needCorrect,
 }) => {
   const { docID, config } = question;
-  const { simpleType, isLimited, isLimitedValue, limit, limitValue } = config;
+  const {
+    simpleType,
+    isLimited,
+    isLimitedValue,
+    limit,
+    limitValue,
+    isMultiline,
+  } = config;
   const options = config.options!;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
 
-  const values = userAnswerExist
-    ? userAnswer.values
-    : options.map((option) => ({
-        optionID: option.docID,
-        value: "",
-        validationResult: { isValid: true, message: "ошибка" },
-        isFocused: false,
-      }));
-  // console.log(textFieldConfig);
+  const values = userAnswerExist ? userAnswer.values : [];
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -97,17 +96,29 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
     e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
     item: typeof options[0]
   ) => {
-    const newValue = values.map((value) => {
-      if (value.optionID === item.docID) {
-        return {
-          optionID: value.optionID,
-          value: value.value,
-          validationResult: value.validationResult,
-          isFocused: true,
-        };
-      }
-      return value;
-    });
+    const isFieldEmpty = !values.some((v) => v.optionID === item.docID);
+
+    const newValue = isFieldEmpty
+      ? [
+          ...values,
+          {
+            optionID: item.docID,
+            value: "",
+            validationResult: { isValid: false, message: "пусто" },
+            isFocused: true,
+          },
+        ]
+      : values.map((value) => {
+          if (value.optionID === item.docID) {
+            return {
+              optionID: value.optionID,
+              value: value.value,
+              validationResult: value.validationResult,
+              isFocused: true,
+            };
+          }
+          return value;
+        });
     setAnswer({
       questionID: docID,
       values: newValue,
@@ -118,12 +129,16 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
     e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
     item: typeof options[0]
   ) => {
-    // const isValid = userAnswer.values.reduce(
-    //   (res: boolean, item: { optionID: string | number; value: string }) => {
-    //     return res && textFieldConfig.regExp.test(item.value);
-    //   },
-    //   true
-    // );
+    const currentValue = e.target.value;
+    if (currentValue.trim() === "") {
+      const prevValue = values.filter((v) => v.optionID !== item.docID);
+
+      setAnswer({
+        questionID: docID,
+        values: prevValue,
+      });
+      return;
+    }
 
     const newValue = values.map((value) => {
       if (value.optionID === item.docID) {
@@ -159,16 +174,12 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
           (answer) => answer.optionID === item.docID
         );
         const answerExist = Boolean(answer && userAnswerExist);
-        // const alarm =
-        //   Boolean(needCorrect) &&
-        //   !textFieldConfig.regExp.test((answer && answer.value) || "");
-
-        // console.log("alarm", alarm);
         const value = answer ? answer.value : "";
         const showAlert =
           answerExist &&
           !answer!.validationResult.isValid &&
           !answer!.isFocused;
+
         const validationMessage = answerExist
           ? answer!.validationResult.message
           : "";
@@ -196,6 +207,7 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
               css={borderColorCss(showAlert)}
               value={value}
               hiddenLabel
+              multiline={isMultiline}
               placeholder={question.hint}
               onChange={(e) => onChange(e, item)}
               onFocus={(e) => handleFocus(e, item)}
@@ -209,3 +221,13 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
 };
 
 export default FreeListView;
+//
+// endAdornment: showAlert && (
+//   <InputAdornment position="end">
+//     <Tooltip title={validationMessage}>
+//       <IconButton>
+//         <ErrorIcon />
+//       </IconButton>
+//     </Tooltip>
+//   </InputAdornment>
+// ),

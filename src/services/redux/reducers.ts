@@ -1,5 +1,6 @@
 import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
 import { IState } from "../../types";
+import { answersParsed } from "../../utils/validation";
 import { IAction } from "./actions.types";
 import {
   CHANGE_CURRENT_LOCATION,
@@ -11,6 +12,7 @@ import {
   TOGGLE_MODAL_VISIBLE,
   SET_VISITED_PAGE_DOCID,
   VALIDATION,
+  DELETE_USER_ANSWERS,
   // IS_ERROR,
 } from "./types";
 
@@ -32,9 +34,14 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
+  // console.log("action", action);
+  // console.log("state", state);
+
   switch (action.type) {
     case SET_NEW_DATA: {
-      return { ...state, data: action.payload };
+      const data = action.payload;
+      const userAnswers = answersParsed(data.answers);
+      return { ...state, data, userAnswers };
     }
 
     case IS_LOADING: {
@@ -91,29 +98,10 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       };
     }
 
-    case VALIDATION: {
-      const { question, optionID } = action.payload;
-      const { docID: questionID, config } = question;
-      const {
-        simpleType,
-        isLimited,
-        isLimitedValue,
-        limit,
-        limitValue,
-      } = config;
-      const userAnswers = state.userAnswers;
-      const values = userAnswers[questionID].values;
-      //
-      const isValid = false;
+    case DELETE_USER_ANSWERS: {
       return {
         ...state,
-        userAnswers: {
-          ...userAnswers,
-          [questionID]: {
-            ...userAnswers[questionID],
-            values,
-          },
-        },
+        userAnswers: {},
       };
     }
 

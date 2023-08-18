@@ -81,6 +81,8 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
+
+  // console.log("answerWithExtra", answerWithExtra);
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   }</div>`;
@@ -116,7 +118,11 @@ const Question: React.FC<IQuestionProps> = ({
       )
   );
 
-  const isEmpty = !answerWithExtra || answerWithExtra.values.length === 0;
+  const isEmpty =
+    !answerWithExtra ||
+    answerWithExtra.values.length === 0 ||
+    (questionType === "freelist" &&
+      !answerWithExtra.values.some((v) => v.value !== ""));
   const isFocused =
     !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
   const isValid =
@@ -194,7 +200,7 @@ const Question: React.FC<IQuestionProps> = ({
         </FormControl>
       </div>
 
-      {!isInternalExtra && hasUnableAnswer && (
+      {hasUnableAnswer && (
         <UnableCheckbox
           userAnswer={answerWithExtra as IAnswer}
           setAnswer={setAnswer}

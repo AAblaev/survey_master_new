@@ -17,6 +17,7 @@ import {
   TOGGLE_MODAL_VISIBLE,
   SET_VISITED_PAGE_DOCID,
   VALIDATION,
+  DELETE_USER_ANSWERS,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -84,3 +85,5 @@ export const validation = (payload: {
     type: VALIDATION,
     payload,
   };
+
+export const deleteUserAnswers = () => <const>{ type: DELETE_USER_ANSWERS };

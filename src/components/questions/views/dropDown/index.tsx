@@ -14,9 +14,6 @@ type IDropDownViewProps = {
   validation: (question: IQuestion) => void;
 };
 
-export const chipWrapperCss = css``;
-export const chipCss = css``;
-
 const DropDownView: React.FC<IDropDownViewProps> = ({
   question,
   setAnswer,
@@ -53,15 +50,15 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       width: 0,
     });
 
-  hasUnableAnswer &&
-    selectItems.push({
-      docID: -1,
-      height: 0,
-      order: 0,
-      photoID: 0,
-      title: "затрудняюсь ответить",
-      width: 0,
-    });
+  // hasUnableAnswer &&
+  //   selectItems.push({
+  //     docID: -1,
+  //     height: 0,
+  //     order: 0,
+  //     photoID: 0,
+  //     title: "затрудняюсь ответить",
+  //     width: 0,
+  //   });
 
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
@@ -147,7 +144,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           renderValue={(value: any) => {
             return (
               <span css={renderValueCss(value === "")}>
-                {value === ""
+                {value === "" || value === EXTRA_ANSWER.UNABLE
                   ? optionsDict["default"].title
                   : optionsDict[value].title}
               </span>
