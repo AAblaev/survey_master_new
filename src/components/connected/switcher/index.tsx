@@ -59,8 +59,6 @@ const Switcher: React.FC<ISwitcherProps> = ({
   const resultSectionValidation =
     pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
   // console.log("resultSectionValidation", resultSectionValidation);
-  const showFinishBtn =
-    pathName === "section" && pageIndex + 1 === pages.length;
 
   const rightClick = resultSectionValidation
     ? () => {
@@ -265,25 +263,10 @@ const Switcher: React.FC<ISwitcherProps> = ({
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
-          {showFinishBtn &&
-            ReactDOM.createPortal(
-              <Button
-                key="finish"
-                css={onlyDesctopButtonCss}
-                variant="contained"
-                onClick={() => {
-                  completeSurvey();
-                }}
-              >
-                {buttonFinishCaption}
-              </Button>,
-              document.getElementById("finish_btn") as HTMLElement
-            )}
         </>
       );
     }
   }
-
   return <></>;
 };
 

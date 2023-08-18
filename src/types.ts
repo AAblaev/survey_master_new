@@ -28,6 +28,7 @@ export type IData = {
   buttonFinishCaption: string;
   buttonNextCaption: string;
   buttonStartCaption: string;
+  answers: IBackendAnswer[];
 };
 
 export type IPage = {
@@ -155,6 +156,11 @@ export type IValue = {
   dimension2?: string;
   validationResult: IValidationResult;
   isFocused: boolean;
+};
+
+export type IBackendAnswer = {
+  questionID: number;
+  values: Omit<IValue, "validationResult" | "isFocused">[];
 };
 
 export type IAnswer = {

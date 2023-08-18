@@ -1,4 +1,4 @@
-import { IAnswer, IDataType, IPage, IQuestion, IUserAnswer } from "../types";
+import { IAnswer, IPage, IQuestion, IUserAnswer } from "../types";
 
 export const isQuestionDone = (answer: IAnswer) => {
   return answer.values.length !== 0;
@@ -18,6 +18,9 @@ export const findFirstIncompleteQuestion = (
   pages: IPage[],
   userAnswers: IUserAnswer
 ): { pageIndex: number; questionIndex: number } | null => {
+  // console.log("pages", pages);
+  // console.log("userAnswers", userAnswers);
+
   for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
     for (let j = 0; j < page.questions.length; j++) {

@@ -1,4 +1,10 @@
-import { ISimpleType, IValidationResult } from "../types";
+import {
+  IBackendAnswer,
+  ISimpleType,
+  IUserAnswer,
+  IValidationResult,
+  IValue,
+} from "../types";
 
 type IKeyRegExpDict = Exclude<ISimpleType, "boolean">;
 
@@ -203,4 +209,24 @@ export const getTextFieldConfig = (simpleType?: ISimpleType) => {
       return defaultTextFieldConfig;
     }
   }
+};
+
+export const answersParsed = (
+  backendAnswers: IBackendAnswer[]
+): IUserAnswer => {
+  const result: IUserAnswer = {};
+  backendAnswers.forEach((backendAnswer) => {
+    const values: IValue[] = backendAnswer.values.map((v) => ({
+      ...v,
+      isFocused: false,
+      validationResult: { isValid: true, message: "success" },
+    }));
+
+    result[backendAnswer.questionID] = {
+      questionID: backendAnswer.questionID,
+      values: values,
+    };
+  });
+
+  return result;
 };
