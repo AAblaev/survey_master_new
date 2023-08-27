@@ -1,15 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, IconButton } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import {
-  ILocation,
-  IParsedData,
-  ISlideMoveDirection,
-  IState,
-} from "../../../types";
+import { ILocation, ISlideMoveDirection, IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,

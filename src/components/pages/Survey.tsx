@@ -6,33 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Progress } from "antd";
-import { css } from "@emotion/react";
 import { IPage, IUserAnswer } from "../../types";
-import {
-  DEFAULT_STROKE_COLOR,
-  DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_TRAIL_COLOR,
-} from "../../consts/const";
-
-const pageCss = css`
-  @media (max-width: 576px) {
-    padding-right: 0%;
-    padding-left: 0%;
-  }
-`;
-
-export const accordionCss = css`
-  width: 100%;
-  & .MuiAccordionSummary-content {
-    align-items: center;
-    gap: 20px;
-  }
-
-  & .MuiAccordionDetails-root {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
+import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
+import { accordionCss, pageCss } from "./sc";
 
 type ISurveyProps = {
   selectPage: (index: number) => void;

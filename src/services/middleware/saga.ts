@@ -41,7 +41,7 @@ function* fetchSurveyData() {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-
+  console.log("document.location", document.location);
   const storedData = localStorage.getItem("surveyParams");
   const surveyParams: IStoredData | null = storedData && JSON.parse(storedData);
   const prevUid = surveyParams ? surveyParams.uid : "";
@@ -144,7 +144,6 @@ function* completeSurvey() {
     yield put(setLoading(true));
     const result1: unknown = yield call(() => sendData(pathSendData, answers));
     const result2: unknown = yield call(() => complete(pathComplete, {}));
-
     yield put(setLoading(false));
 
     // console.log("completeSurvey send success", result1);

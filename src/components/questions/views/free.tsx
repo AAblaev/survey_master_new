@@ -1,13 +1,7 @@
 import React from "react";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
-import { IAnswer, IQuestion, ISimpleType, IState } from "../../../types";
-import {
-  getTextFieldConfig,
-  REGEXP_DICT,
-  validation,
-} from "../../../utils/validation";
+import { IAnswer, IQuestion } from "../../../types";
+import { REGEXP_DICT, validation } from "../../../utils/validation";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import ErrorIcon from "@material-ui/icons/Error";
@@ -95,7 +89,6 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    console.log("e.target.value", e.target.value);
     if (e.target.value.trim() === "") {
       setAnswer({
         questionID: docID,
@@ -148,7 +141,8 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       css={borderColorCss(showAlert)}
       fullWidth
       multiline={isMultiline}
-      minRows={2}
+      minRows={4}
+      maxRows={4}
       value={value}
       onFocus={handleFocus}
       onBlur={handleBlur}

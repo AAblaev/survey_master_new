@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
-import { setAnswer, validation } from "../../services/redux/actions";
+import {
+  setAnswer,
+  setNeedScrolling,
+  validation,
+} from "../../services/redux/actions";
 import { IAnswer, IQuestion, IState } from "../../types";
+import FreeView from "./views/free";
+import FreeListView from "./views/free-list";
+import DropDownView from "./views/dropDown";
+import MultiDropDownView from "./views/multiDropDown";
+import ScaleView from "./views/scale/scale";
+import SelectView from "./views/select";
+import MatrixView from "./views/matrix";
+import { EXTRA_ANSWER, TIMEOUT_VALUE } from "../../consts/const";
+import Html from "./views/html";
+import NothingCheckbox from "./extra/nothingCheckbox";
+import UnableCheckbox from "./extra/unableCheckbox";
+import OtherCheckbox from "./extra/otherCheckbox";
+import { getNeedCorrect } from "../../utils/questionIsDone";
 import {
   cardCss,
   formControlCss,
@@ -12,26 +29,14 @@ import {
   titleTextCss,
   commentCss,
 } from "./sc";
-import FreeView from "./views/free";
-import FreeListView from "./views/free-list";
-import DropDownView from "./views/dropDown";
-import MultiDropDownView from "./views/multiDropDown";
-import ScaleView from "./views/scale/scale";
-import SelectView from "./views/select";
-import MatrixView from "./views/matrix";
-
-import { EXTRA_ANSWER } from "../../consts/const";
-import Html from "./views/html";
-import NothingCheckbox from "./extra/nothingCheckbox";
-import UnableCheckbox from "./extra/unableCheckbox";
-import OtherCheckbox from "./extra/otherCheckbox";
-import { getNeedCorrect } from "../../utils/questionIsDone";
 
 export type OwnProps = {
   key: number;
+  index: number;
   currentQuestionIndex: number;
   question: IQuestion;
 };
+
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispathToProps>;
 type IQuestionProps = StateProps & OwnProps & DispatchProps;
@@ -70,6 +75,8 @@ const Question: React.FC<IQuestionProps> = ({
   setAnswer,
   validation,
   visitedPageDocIDList,
+  selectedQuestion,
+  setScrolling,
 }) => {
   const {
     title,
@@ -82,10 +89,10 @@ const Question: React.FC<IQuestionProps> = ({
     isRequired,
   } = question;
 
-  // console.log("answerWithExtra", answerWithExtra);
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   }</div>`;
+  const elementRef = useRef<any>(null);
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
@@ -143,8 +150,16 @@ const Question: React.FC<IQuestionProps> = ({
     ? (answerWithExtra as IAnswer)
     : (userAnswer as IAnswer);
 
+  useEffect(() => {
+    if (selectedQuestion && elementRef.current) {
+      setTimeout(() => {
+        elementRef.current.scrollIntoView();
+        setScrolling(false);
+      }, TIMEOUT_VALUE);
+    }
+  }, [selectedQuestion]);
   return (
-    <div>
+    <div ref={selectedQuestion ? elementRef : null}>
       <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex}.</div>
         <div css={titleTextCss(needCorrect)}>
@@ -162,7 +177,6 @@ const Question: React.FC<IQuestionProps> = ({
           css={formControlCss({
             disabled,
             noBorderOnInput: false,
-            // noBorderOnInput: questionType === "free",
           })}
           focused={false}
         >
@@ -212,18 +226,21 @@ const Question: React.FC<IQuestionProps> = ({
 };
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
-  const { userAnswers, visitedPageDocIDList } = state;
+  const { userAnswers, visitedPageDocIDList, location, needScrolling } = state;
   const { question } = props;
   const { docID } = question;
+  const { questionIndex } = location;
 
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
+    selectedQuestion: needScrolling && questionIndex === props.index,
   };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
+    setScrolling: (value: boolean) => dispatch(setNeedScrolling(value)),
     setAnswer: (answer: IAnswer) => dispatch(setAnswer(answer)),
     validation: (question: IQuestion, optionID?: string) =>
       dispatch(validation({ question, optionID })),

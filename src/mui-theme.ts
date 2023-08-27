@@ -1,6 +1,12 @@
 import { createTheme } from "@material-ui/core/styles";
+import { PRIMARY_COLOR } from "./consts/const";
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: PRIMARY_COLOR,
+    },
+  },
   typography: {
     fontFamily: [
       "-apple-system",
@@ -48,11 +54,11 @@ const theme = createTheme({
     },
     MuiButton: {
       contained: {
-        backgroundColor: "#46acaf",
+        backgroundColor: PRIMARY_COLOR,
         borderRadius: 0,
         color: "#fff",
         "&:hover": {
-          backgroundColor: "#46acaf",
+          backgroundColor: PRIMARY_COLOR,
           color: "#fff",
         },
       },

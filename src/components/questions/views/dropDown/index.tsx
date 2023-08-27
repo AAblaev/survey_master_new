@@ -2,7 +2,6 @@ import React from "react";
 import FormControl from "@material-ui/core/FormControl";
 import { IAnswer, IOption, IQuestion } from "../../../../types";
 import { MenuItem, Select, TextField } from "@material-ui/core";
-import { css } from "@emotion/react";
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import { formControlCss, renderValueCss } from "./sc";
 

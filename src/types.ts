@@ -208,6 +208,7 @@ export type IState = {
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
   visitedPageDocIDList: string[];
+  needScrolling: boolean;
   // relocate to section
   // pageQuestionCount: number;
 };

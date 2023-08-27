@@ -83,11 +83,9 @@ const Desktop: React.FC<IDesktop> = ({
     limitTime,
   } = data;
 
-  // const showTimer =
-  //   (pathName === "survey" || pathName === "section") &&
-  //   isLimitTimeForCompletion;
   const showTimer =
-    (pathName === "survey" || pathName === "section") && DEFAULT_IS_LIMIT_TIME;
+    (pathName === "survey" || pathName === "section") &&
+    isLimitTimeForCompletion;
   const currentPage = pages[pageIndex];
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
@@ -133,15 +131,7 @@ const Desktop: React.FC<IDesktop> = ({
         />
       );
     if (pathName === "section")
-      return (
-        <>
-          <Section
-            page={currentPage}
-            pageIndex={pageIndex}
-            questionCount={questionCount}
-          />
-        </>
-      );
+      return <Section page={currentPage} questionCount={questionCount} />;
 
     return null;
   };
@@ -150,7 +140,7 @@ const Desktop: React.FC<IDesktop> = ({
     <>
       <AppBar direction="top" fixed>
         <Switcher />
-        {showTimer && <Timer limitTime={3000} />}
+        {showTimer && <Timer limitTime={limitTime} />}
       </AppBar>
 
       <div css={contentCss}>
