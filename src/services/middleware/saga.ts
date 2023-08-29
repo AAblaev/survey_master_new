@@ -41,7 +41,7 @@ function* fetchSurveyData() {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  console.log("document.location", document.location);
+  // console.log("document.location", document.location);
   const storedData = localStorage.getItem("surveyParams");
   const surveyParams: IStoredData | null = storedData && JSON.parse(storedData);
   const prevUid = surveyParams ? surveyParams.uid : "";
@@ -89,7 +89,7 @@ function* fetchSurveyData() {
 function* startSurvey() {
   const { surveyID } = yield select(selectSurveyID);
   const path = PATH_NAME + "start/" + surveyID;
-  console.log("startSurvey");
+  // console.log("startSurvey");
 
   try {
     yield put(setLoading(true));
@@ -100,7 +100,7 @@ function* startSurvey() {
       JSON.stringify({ uid: result.data, surveyID: surveyID })
     );
     yield put(setLoading(false));
-    console.log("startSurvey success", result);
+    // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
   }
@@ -116,7 +116,7 @@ function* sendSurveyData() {
     yield put(setLoading(true));
     const result: unknown = yield call(() => sendData(path, answers));
     yield put(setLoading(false));
-    console.log("sendSurveyData success", result);
+    // console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);
   }

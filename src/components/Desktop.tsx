@@ -86,8 +86,6 @@ const Desktop: React.FC<IDesktop> = ({
     limitTime,
   } = data;
 
-  console.log("needScrolling", needScrolling);
-
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
