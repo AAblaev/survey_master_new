@@ -14,9 +14,15 @@ type ISurveyProps = {
   selectPage: (index: number) => void;
   pages: IPage[];
   userAnswers: IUserAnswer;
+  isShowQuestionsCount: boolean;
 };
 
-const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
+const Survey: React.FC<ISurveyProps> = ({
+  selectPage,
+  pages,
+  userAnswers,
+  isShowQuestionsCount,
+}) => {
   return (
     <div css={pageCss}>
       <div>
@@ -37,13 +43,15 @@ const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
           return (
             <Accordion
               key={index}
-              // defaultExpanded={true}
+              defaultExpanded={isShowQuestionsCount ? false : true}
               disabled={false}
               css={accordionCss}
               elevation={0}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={
+                  isShowQuestionsCount ? <ExpandMoreIcon /> : <div></div>
+                }
                 aria-controls={String(page.docID)}
                 id={String(page.docID)}
               >
@@ -58,31 +66,44 @@ const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
                 />
 
                 <Typography>страница {index + 1}</Typography>
+                {!isShowQuestionsCount && (
+                  <Button
+                    style={{ marginLeft: "auto" }}
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      selectPage(index);
+                    }}
+                  >
+                    Перейти
+                  </Button>
+                )}
               </AccordionSummary>
-              <AccordionDetails>
-                <div>
-                  <div className="questionSize">
-                    <div className="question">Всего вопросов: </div>
-                    <div className="questionNumber">{allQuestionCount}</div>
-                  </div>
-                  <div className="questionSize">
-                    <div className="question">Обязательных вопросов: </div>
-                    <div className="questionNumber">
-                      {requiredQuestionsCount}
+              {isShowQuestionsCount && (
+                <AccordionDetails>
+                  <div>
+                    <div className="questionSize">
+                      <div className="question">Всего вопросов: </div>
+                      <div className="questionNumber">{allQuestionCount}</div>
+                    </div>
+                    <div className="questionSize">
+                      <div className="question">Обязательных вопросов: </div>
+                      <div className="questionNumber">
+                        {requiredQuestionsCount}
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => {
-                    selectPage(index);
-                  }}
-                >
-                  Перейти
-                </Button>
-              </AccordionDetails>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      selectPage(index);
+                    }}
+                  >
+                    Перейти
+                  </Button>
+                </AccordionDetails>
+              )}
             </Accordion>
           );
         })}

@@ -84,6 +84,7 @@ const Desktop: React.FC<IDesktop> = ({
     name,
     isLimitTimeForCompletion,
     limitTime,
+    isShowQuestionsCount,
   } = data;
 
   const showTimer =
@@ -131,6 +132,7 @@ const Desktop: React.FC<IDesktop> = ({
           pages={pages}
           userAnswers={userAnswers}
           selectPage={selectPage}
+          isShowQuestionsCount={isShowQuestionsCount}
         />
       );
     if (pathName === "section")
