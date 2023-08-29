@@ -36,7 +36,7 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  // console.log("action", action);
+  console.log("action", action);
   // console.log("state", state);
 
   switch (action.type) {

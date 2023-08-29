@@ -60,17 +60,6 @@ function* fetchSurveyData() {
       yield put(setSurveyUid(prevUid));
     }
     // yield put(setNewData(fakeData));
-    // yield put(
-    //   changeCurretLocation({
-    //     location: {
-    //       pageIndex: 0,
-    //       pathName: "section",
-    //       questionIndex: 0,
-    //       title: "section",
-    //     },
-    //     slideMoveDirection: "right-to-left",
-    //   })
-    // );
 
     yield put(setLoading(false));
   } catch (e) {

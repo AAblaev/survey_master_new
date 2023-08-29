@@ -79,6 +79,7 @@ const Question: React.FC<IQuestionProps> = ({
   setScrolling,
 }) => {
   const {
+    docID,
     title,
     config,
     hasNothingAnswer,
@@ -153,13 +154,16 @@ const Question: React.FC<IQuestionProps> = ({
   useEffect(() => {
     if (selectedQuestion && elementRef.current) {
       setTimeout(() => {
-        elementRef.current.scrollIntoView();
+        elementRef.current.scrollIntoView({
+          block: "start",
+          behavior: "auto",
+        });
         setScrolling(false);
-      }, TIMEOUT_VALUE);
+      }, 0);
     }
   }, [selectedQuestion]);
   return (
-    <div ref={selectedQuestion ? elementRef : null}>
+    <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
       <div css={titleCss(disabled)}>
         <div css={titleCountCss}>{currentQuestionIndex}.</div>
         <div css={titleTextCss(needCorrect)}>

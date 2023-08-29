@@ -52,10 +52,10 @@ const Section: React.FC<IOwnSectionProps> = ({
     }
     openModal();
   };
+  // <Typography css={titleCss}>{title}</Typography>
 
   return (
     <div>
-      <Typography css={titleCss}>{title}</Typography>
       <div css={questionListCss}>
         {questions.map((q, index) => {
           if (q.config.dataType === "textblock") {
