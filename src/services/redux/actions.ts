@@ -18,6 +18,7 @@ import {
   SET_VISITED_PAGE_DOCID,
   VALIDATION,
   DELETE_USER_ANSWERS,
+  SET_NEED_SCROLLING,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -87,3 +88,9 @@ export const validation = (payload: {
   };
 
 export const deleteUserAnswers = () => <const>{ type: DELETE_USER_ANSWERS };
+
+export const setNeedScrolling = (payload: boolean) =>
+  <const>{
+    type: SET_NEED_SCROLLING,
+    payload,
+  };

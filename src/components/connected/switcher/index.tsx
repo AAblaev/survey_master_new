@@ -1,15 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, IconButton } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import {
-  ILocation,
-  IParsedData,
-  ISlideMoveDirection,
-  IState,
-} from "../../../types";
+import { ILocation, ISlideMoveDirection, IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
@@ -18,7 +12,11 @@ import {
   START_SURVEY,
   TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
-import { changeCurretLocation } from "../../../services/redux/actions";
+import {
+  changeCurretLocation,
+  deleteUserAnswers,
+  setNeedScrolling,
+} from "../../../services/redux/actions";
 import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
 
 import {
@@ -47,6 +45,9 @@ const Switcher: React.FC<ISwitcherProps> = ({
   noticePage,
   userAnswers,
   pages,
+  uid,
+  deleteAnswers,
+  setScrolling,
 }) => {
   if (isEmptyData) {
     return null;
@@ -55,7 +56,12 @@ const Switcher: React.FC<ISwitcherProps> = ({
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
   const { pageIndex, pathName } = location;
   const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
+  const firstIncompleteQuestion = findFirstIncompleteQuestion(
+    pages,
+    userAnswers
+  );
+  const notFirstEntering = Boolean(firstIncompleteQuestion);
+
   const resultSectionValidation =
     pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
   // console.log("resultSectionValidation", resultSectionValidation);
@@ -75,7 +81,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
 
   const completeSurvey = () => {
     noticePage(String(pages[pageIndex].docID));
-    if (!resultValidation) {
+    if (!firstIncompleteQuestion) {
       submit();
       return;
     }
@@ -104,11 +110,46 @@ const Switcher: React.FC<ISwitcherProps> = ({
                 slideMoveDirection: "right-to-left",
                 needSendAnswers: false,
               });
+              deleteAnswers();
               startSurvey();
             }}
           >
-            {buttonStartCaption}
+            {uid ? "начать заново" : buttonStartCaption}
           </Button>
+
+          {uid && (
+            <Button
+              key="2"
+              css={buttonCss(true, "left")}
+              onClick={() => {
+                setScrolling(true);
+                handleClick({
+                  location: {
+                    pageIndex: notFirstEntering
+                      ? firstIncompleteQuestion!.pageIndex
+                      : 0,
+                    questionIndex: notFirstEntering
+                      ? firstIncompleteQuestion!.questionIndex
+                      : 0,
+                    pathName: notFirstEntering
+                      ? "section"
+                      : isShowPageList
+                      ? "survey"
+                      : "section",
+                    title: notFirstEntering
+                      ? "section"
+                      : isShowPageList
+                      ? "survey"
+                      : "section",
+                  },
+                  slideMoveDirection: "right-to-left",
+                  needSendAnswers: false,
+                });
+              }}
+            >
+              Продолжить
+            </Button>
+          )}
         </>
       );
     }
@@ -172,44 +213,24 @@ const Switcher: React.FC<ISwitcherProps> = ({
     case "section": {
       return (
         <>
-          {isShowPageList ? (
-            <Button
-              key="home"
-              css={homeButtonCss}
-              onClick={() =>
-                handleClick({
-                  location: {
-                    pageIndex: 0,
-                    questionIndex: 0,
-                    pathName: "survey",
-                    title: "survey",
-                  },
-                  slideMoveDirection: "left-to-right",
-                  needSendAnswers: true,
-                })
-              }
-            >
-              К списку страниц
-            </Button>
-          ) : (
-            <Nav
-              title={pageTitle}
-              pages={pages}
-              currentPageIndex={pageIndex}
-              onChange={(pageIndex, slideMoveDirection) => {
-                handleClick({
-                  location: {
-                    pageIndex: pageIndex,
-                    pathName: "section",
-                    questionIndex: 0,
-                    title: "section",
-                  },
-                  needSendAnswers: true,
-                  slideMoveDirection: slideMoveDirection,
-                });
-              }}
-            />
-          )}
+          <Nav
+            title={pageTitle}
+            pages={pages}
+            currentPageIndex={pageIndex}
+            isShowPageList={isShowPageList}
+            onChange={(pageIndex, slideMoveDirection) => {
+              handleClick({
+                location: {
+                  pageIndex: pageIndex,
+                  pathName: "section",
+                  questionIndex: 0,
+                  title: "section",
+                },
+                needSendAnswers: true,
+                slideMoveDirection: slideMoveDirection,
+              });
+            }}
+          />
 
           <Button
             key="1"
@@ -277,6 +298,7 @@ const mapStateToProps = (state: IState) => {
     userAnswers,
     modalVisible,
     data,
+    params,
   } = state;
 
   const isEmptyData = !Boolean(data);
@@ -287,8 +309,7 @@ const mapStateToProps = (state: IState) => {
   const isShowPageList = data?.isShowPageList || false;
   const pages = data?.pages || [];
   const pagesCount = pages.length;
-
-  // console.log("pages", pages);
+  const uid = isEmptyData ? "" : params?.uid;
 
   return {
     isEmptyData,
@@ -303,6 +324,7 @@ const mapStateToProps = (state: IState) => {
     isShowPageList,
     pages,
     pagesCount,
+    uid,
   };
 };
 
@@ -342,6 +364,12 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     },
     noticePage: (docID: string) => {
       dispatch({ type: SET_VISITED_PAGE_DOCID, payload: docID });
+    },
+    deleteAnswers: () => {
+      dispatch(deleteUserAnswers());
+    },
+    setScrolling: (value: boolean) => {
+      dispatch(setNeedScrolling(value));
     },
   };
 };

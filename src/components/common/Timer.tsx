@@ -37,9 +37,9 @@ const Timer: React.FC<ITimerProps> = ({ limitTime }) => {
         to={limitTo}
         renderMap={countdownRenderMap}
         digitBlockStyle={{
-          width: 25,
-          height: 40,
-          fontSize: 20,
+          width: 20,
+          height: 30,
+          fontSize: 15,
           color: PRIMARY_COLOR,
           backgroundColor: "white",
         }}

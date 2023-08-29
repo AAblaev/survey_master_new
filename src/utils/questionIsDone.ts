@@ -18,9 +18,6 @@ export const findFirstIncompleteQuestion = (
   pages: IPage[],
   userAnswers: IUserAnswer
 ): { pageIndex: number; questionIndex: number } | null => {
-  // console.log("pages", pages);
-  // console.log("userAnswers", userAnswers);
-
   for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
     for (let j = 0; j < page.questions.length; j++) {

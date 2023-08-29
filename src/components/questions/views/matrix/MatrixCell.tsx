@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
-
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import Tooltip from "@material-ui/core/Tooltip";
-import ErrorIcon from "@material-ui/icons/Error";
 import { ISimpleType, IValue } from "../../../../types";
 import GreenRadio from "../../../common/GreenRadio";
 import {
@@ -13,13 +9,11 @@ import {
   tdCss,
   titleTextFieldCellCss,
 } from "./sc";
-import { borderColorCss } from "../free-list";
 
 type IMatixCellProps = {
   rowDocID: number; // dimension0
   columnDocID: number; // dimension1
   value?: IValue;
-
   handleBlur: (rowDocID: number, columnDocID: number, value: string) => void;
   handleClick: (rowDocID: number, columnDocID: number) => void;
   title: string;

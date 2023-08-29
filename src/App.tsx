@@ -3,7 +3,10 @@ import { connect, ConnectedProps } from "react-redux";
 import "./assets/index.css";
 import { ILocation, ISlideMoveDirection, IState } from "./types";
 import { Dispatch } from "redux";
-import { changeCurretLocation } from "./services/redux/actions";
+import {
+  changeCurretLocation,
+  setNeedScrolling,
+} from "./services/redux/actions";
 import AppBar from "./components/common/AppBar";
 import ProgressBar from "./components/common/ProgressBar";
 import Desktop from "./components/Desktop";
@@ -33,6 +36,8 @@ const App: React.FC<IApp> = ({
   openModal,
   closeModal,
   selectPage,
+  setScrolling,
+  needScrolling,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -74,6 +79,8 @@ const App: React.FC<IApp> = ({
         openModal={openModal}
         closeModal={closeModal}
         selectPage={selectPage}
+        setScrolling={setScrolling}
+        needScrolling={needScrolling}
       />
     </div>
   );
@@ -90,6 +97,7 @@ const mapStateToProps = (state: IState) => {
     userAnswers,
     modalVisible,
     visitedPageDocIDList,
+    needScrolling,
   } = state;
 
   return {
@@ -101,6 +109,7 @@ const mapStateToProps = (state: IState) => {
     params,
     modalVisible,
     data,
+    needScrolling,
   };
 };
 
@@ -151,6 +160,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
         })
       );
     },
+    setScrolling: (value: boolean) => dispatch(setNeedScrolling(value)),
   };
 };
 

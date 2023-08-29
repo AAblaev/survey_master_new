@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useRef, useEffect, useLayoutEffect } from "react";
 import { Button, Typography } from "@material-ui/core";
-import { css } from "@emotion/react";
 import Question from "../questions";
 import { ILocation, IPage, ISlideMoveDirection, IState } from "../../types";
-import { PRIMARY_COLOR } from "../../consts/const";
 import TextBlock from "../textBlock";
 import { Dispatch } from "redux";
 import {
@@ -17,38 +15,20 @@ import {
 import { changeCurretLocation } from "../../services/redux/actions";
 import { connect, ConnectedProps } from "react-redux";
 import { onlyDesctopButtonCss } from "../../sc";
-import {
-  findFirstIncompleteQuestion,
-  sectionValidtion,
-} from "../../utils/questionIsDone";
+import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
+import { questionListCss, titleCss } from "./sc";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
 export type ISectionProps = {
   page: IPage;
-  pageIndex: number;
+  // pageIndex: number;
   questionCount: number;
 };
-
-export const questionListCss = css`
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  margin-bottom: 40px;
-`;
-
-export const titleCss = css`
-  &.MuiTypography-body1 {
-    font-size: 1.2rem;
-    color: ${PRIMARY_COLOR};
-    font-weight: bold;
-  }
-`;
 
 const Section: React.FC<IOwnSectionProps> = ({
   page,
   pages,
-  pageIndex,
   questionCount,
   showFinishBtn,
   buttonFinishCaption,
@@ -56,6 +36,7 @@ const Section: React.FC<IOwnSectionProps> = ({
   submit,
   openModal,
   userAnswers,
+  pageIndex,
 }) => {
   const questions = page.questions ? page.questions : [];
   const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
@@ -71,10 +52,10 @@ const Section: React.FC<IOwnSectionProps> = ({
     }
     openModal();
   };
+  // <Typography css={titleCss}>{title}</Typography>
 
   return (
     <div>
-      <Typography css={titleCss}>{title}</Typography>
       <div css={questionListCss}>
         {questions.map((q, index) => {
           if (q.config.dataType === "textblock") {
@@ -84,6 +65,7 @@ const Section: React.FC<IOwnSectionProps> = ({
           return (
             <Question
               key={index}
+              index={index}
               currentQuestionIndex={questionCount + counter}
               question={q}
             />
@@ -114,7 +96,7 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
   } = state;
-  const { pathName, pageIndex } = location;
+  const { pathName, pageIndex, questionIndex } = location;
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
@@ -126,7 +108,6 @@ const mapStateToProps = (state: IState) => {
   const pagesCount = pages.length;
   const showFinishBtn =
     pathName === "section" && pageIndex + 1 === pages.length;
-  // console.log("pages", pages);
 
   return {
     isEmptyData,
@@ -142,6 +123,8 @@ const mapStateToProps = (state: IState) => {
     pages,
     pagesCount,
     showFinishBtn,
+    questionIndex,
+    pageIndex,
   };
 };
 

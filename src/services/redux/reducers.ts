@@ -13,6 +13,7 @@ import {
   SET_VISITED_PAGE_DOCID,
   VALIDATION,
   DELETE_USER_ANSWERS,
+  SET_NEED_SCROLLING,
   // IS_ERROR,
 } from "./types";
 
@@ -31,12 +32,10 @@ const initialState: IState = {
   userAnswers: {},
   slideMoveDirection: DEFAULT_MOVE_DIRECTION,
   visitedPageDocIDList: [],
+  needScrolling: false,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  // console.log("action", action);
-  // console.log("state", state);
-
   switch (action.type) {
     case SET_NEW_DATA: {
       const data = action.payload;
@@ -102,6 +101,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       return {
         ...state,
         userAnswers: {},
+      };
+    }
+
+    case SET_NEED_SCROLLING: {
+      return {
+        ...state,
+        needScrolling: action.payload,
       };
     }
 

@@ -8,11 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ErrorIcon from "@material-ui/icons/Error";
 import Tooltip from "@material-ui/core/Tooltip";
 import { css } from "@emotion/react";
-import {
-  getTextFieldConfig,
-  REGEXP_DICT,
-  validation,
-} from "../../../utils/validation";
+import { REGEXP_DICT, validation } from "../../../utils/validation";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -208,6 +204,8 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
               value={value}
               hiddenLabel
               multiline={isMultiline}
+              minRows={4}
+              maxRows={4}
               placeholder={question.hint}
               onChange={(e) => onChange(e, item)}
               onFocus={(e) => handleFocus(e, item)}

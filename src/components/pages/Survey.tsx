@@ -6,41 +6,23 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Progress } from "antd";
-import { css } from "@emotion/react";
 import { IPage, IUserAnswer } from "../../types";
-import {
-  DEFAULT_STROKE_COLOR,
-  DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_TRAIL_COLOR,
-} from "../../consts/const";
-
-const pageCss = css`
-  @media (max-width: 576px) {
-    padding-right: 0%;
-    padding-left: 0%;
-  }
-`;
-
-export const accordionCss = css`
-  width: 100%;
-  & .MuiAccordionSummary-content {
-    align-items: center;
-    gap: 20px;
-  }
-
-  & .MuiAccordionDetails-root {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
+import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
+import { accordionCss, pageCss } from "./sc";
 
 type ISurveyProps = {
   selectPage: (index: number) => void;
   pages: IPage[];
   userAnswers: IUserAnswer;
+  isShowQuestionsCount: boolean;
 };
 
-const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
+const Survey: React.FC<ISurveyProps> = ({
+  selectPage,
+  pages,
+  userAnswers,
+  isShowQuestionsCount,
+}) => {
   return (
     <div css={pageCss}>
       <div>
@@ -61,13 +43,15 @@ const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
           return (
             <Accordion
               key={index}
-              // defaultExpanded={true}
+              defaultExpanded={isShowQuestionsCount ? false : true}
               disabled={false}
               css={accordionCss}
               elevation={0}
             >
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+                expandIcon={
+                  isShowQuestionsCount ? <ExpandMoreIcon /> : <div></div>
+                }
                 aria-controls={String(page.docID)}
                 id={String(page.docID)}
               >
@@ -82,31 +66,44 @@ const Survey: React.FC<ISurveyProps> = ({ selectPage, pages, userAnswers }) => {
                 />
 
                 <Typography>страница {index + 1}</Typography>
+                {!isShowQuestionsCount && (
+                  <Button
+                    style={{ marginLeft: "auto" }}
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      selectPage(index);
+                    }}
+                  >
+                    Перейти
+                  </Button>
+                )}
               </AccordionSummary>
-              <AccordionDetails>
-                <div>
-                  <div className="questionSize">
-                    <div className="question">Всего вопросов: </div>
-                    <div className="questionNumber">{allQuestionCount}</div>
-                  </div>
-                  <div className="questionSize">
-                    <div className="question">Обязательных вопросов: </div>
-                    <div className="questionNumber">
-                      {requiredQuestionsCount}
+              {isShowQuestionsCount && (
+                <AccordionDetails>
+                  <div>
+                    <div className="questionSize">
+                      <div className="question">Всего вопросов: </div>
+                      <div className="questionNumber">{allQuestionCount}</div>
+                    </div>
+                    <div className="questionSize">
+                      <div className="question">Обязательных вопросов: </div>
+                      <div className="questionNumber">
+                        {requiredQuestionsCount}
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => {
-                    selectPage(index);
-                  }}
-                >
-                  Перейти
-                </Button>
-              </AccordionDetails>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => {
+                      selectPage(index);
+                    }}
+                  >
+                    Перейти
+                  </Button>
+                </AccordionDetails>
+              )}
             </Accordion>
           );
         })}

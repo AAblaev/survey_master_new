@@ -29,7 +29,10 @@ export const contentCss = css`
 export const homeButtonCss = css`
   background-color: #3b424a;
   &.MuiButton-root {
+    display: flex;
+    justify-content: space-between;
     color: #fff;
+    // min-width: 80px;
   }
 `;
 

@@ -1,10 +1,20 @@
 import React from "react";
-import { ILocation, ISlideMoveDirection, IState } from "../../types";
+import {
+  ILocation,
+  IParsedData,
+  ISlideMoveDirection,
+  IState,
+} from "../../types";
 import { onlyDesctopButtonCss } from "../../sc";
 import { Button } from "@material-ui/core";
 import { connect, ConnectedProps } from "react-redux";
 import { Dispatch } from "redux";
-import { deleteUserAnswers } from "../../services/redux/actions";
+import {
+  deleteUserAnswers,
+  setNeedScrolling,
+} from "../../services/redux/actions";
+import { buttonsWrapperCss, greatingPageCss } from "./sc";
+import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
 
 type IGreetingProps = {
   html: string;
@@ -29,22 +39,20 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
   buttonStartCaption,
   uid,
   deleteAnswers,
+  firstIncompleteQuestion,
+  setScrolling,
 }) => {
+  const notFirstEntering = Boolean(firstIncompleteQuestion);
+
   return (
-    <div style={{ paddingTop: "20px" }}>
+    <div css={greatingPageCss}>
       <div dangerouslySetInnerHTML={{ __html: html }}></div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          alignItems: "flex-start",
-        }}
-      >
+      <div css={buttonsWrapperCss}>
         <Button
           key="start"
-          variant="contained"
+          variant={uid ? "outlined" : "contained"}
           css={onlyDesctopButtonCss}
+          color={uid ? "primary" : undefined}
           onClick={() => {
             handleClick({
               location: {
@@ -68,12 +76,25 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
             variant="contained"
             css={onlyDesctopButtonCss}
             onClick={() => {
+              setScrolling(true);
               handleClick({
                 location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: isShowPageList ? "survey" : "section",
-                  title: isShowPageList ? "survey" : "section",
+                  pageIndex: notFirstEntering
+                    ? firstIncompleteQuestion!.pageIndex
+                    : 0,
+                  questionIndex: notFirstEntering
+                    ? firstIncompleteQuestion!.questionIndex
+                    : 0,
+                  pathName: notFirstEntering
+                    ? "section"
+                    : isShowPageList
+                    ? "survey"
+                    : "section",
+                  title: notFirstEntering
+                    ? "section"
+                    : isShowPageList
+                    ? "survey"
+                    : "section",
                 },
                 slideMoveDirection: "right-to-left",
                 needSendAnswers: false,
@@ -89,16 +110,26 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
 };
 
 const mapStateToProps = (state: IState) => {
-  const { params } = state;
+  const { params, userAnswers, data: notNullData } = state;
   const { uid } = params;
-  return { uid };
+  const data = notNullData as IParsedData;
+  const { pages } = data;
+  const firstIncompleteQuestion = findFirstIncompleteQuestion(
+    pages,
+    userAnswers
+  );
+
+  return { uid, firstIncompleteQuestion };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   const deleteAnswers = () => {
     dispatch(deleteUserAnswers());
   };
-  return { deleteAnswers };
+  const setScrolling = (value: boolean) => {
+    dispatch(setNeedScrolling(value));
+  };
+  return { deleteAnswers, setScrolling };
 };
 
 const connector = connect(mapStateToProps, mapDispathToProps);
