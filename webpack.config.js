@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -6,7 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = ({ mode } = { mode: "production" }) => {
   console.log(`mode is: ${mode}`);
-
+  var isProd = mode !== "development";
   return {
     mode,
     entry: "./src/index.tsx",
@@ -64,12 +65,15 @@ module.exports = ({ mode } = { mode: "production" }) => {
         patterns: [
           {
             from: path.resolve(__dirname, "public/favicon.ico"),
-            to: path.resolve(__dirname, "dist"),
+            to: path.resolve(__dirname, "build"),
           },
         ],
       }),
       new MiniCssExtractPlugin({
         filename: `[name].[contenthash].css`,
+      }),
+      new webpack.DefinePlugin({
+        __IS_PROD_BUNDLE_MODE__: isProd,
       }),
     ],
   };

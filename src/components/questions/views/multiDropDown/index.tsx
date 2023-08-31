@@ -34,7 +34,6 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
     hasOtherAnswer,
     hasUnableAnswer,
   } = question;
-
   const hasOtherInUserAnswer =
     userAnswer &&
     userAnswer.values.length > 0 &&

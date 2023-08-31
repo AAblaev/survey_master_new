@@ -104,6 +104,8 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
+    // questionType === "dropdown" ||
+    // questionType === "multidropdown" ||
     !isImplementedQuestionType;
 
   const isInternalExtra =

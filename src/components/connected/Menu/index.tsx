@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
-import Menu, { MenuProps } from "@material-ui/core/Menu";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
-import { Button, IconButton, ListItemText, MenuItem } from "@material-ui/core";
+import Menu, { MenuProps } from "@material-ui/core/Menu";
+import CloseIcon from "@material-ui/icons/Close";
+import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
+
+import { IconButton, ListItemText, MenuItem } from "@material-ui/core";
+import Link, { LinkProps } from "@material-ui/core/Link";
+
 import SettingsIcon from "@material-ui/icons/Settings";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { ILocation, ISlideMoveDirection, IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
@@ -17,15 +22,9 @@ import {
   TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
 import { changeCurretLocation } from "../../../services/redux/actions";
-import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
-
-import {
-  findFirstIncompleteQuestion,
-  sectionValidtion,
-} from "../../../utils/questionIsDone";
-import { buttonCss, iconBtnCss } from "./sc";
-import { homeButtonCss, onlyDesctopButtonCss } from "../../../sc";
-import Nav from "../../common/Nav";
+import { Modal, ModalContent, ModalHeader } from "../../common/modal";
+import { modalHeaderWrapperCss } from "../../../sc";
+import { PATH_NAME } from "../../../services/api/const";
 
 const StyledMenu = withStyles({
   paper: {
@@ -47,14 +46,27 @@ const StyledMenu = withStyles({
   />
 ));
 
+const StyledLink = withStyles({
+  root: {
+    whiteSpace: "nowrap", // Запрещаем перенос текста на новую строку
+    // overflowX: "auto", // Добавляем горизонтальный скролл при переполнении
+    textOverflow: "elipsis",
+    maxWidth: "100%", // Ограничиваем максимальную ширину
+    // height: "100%",
+    display: "block",
+  },
+})((props: LinkProps) => <Link {...props} />);
+
 export type IMenuProps = ConnectedProps<typeof connector>;
 
 const AppBarMenu: React.FC<IMenuProps> = ({
   location,
   isShowPageList,
   isEmptyData,
-  openModal,
   handleClick,
+  sendData,
+  surveyID,
+  uid,
 }) => {
   if (
     isEmptyData ||
@@ -63,8 +75,10 @@ const AppBarMenu: React.FC<IMenuProps> = ({
   ) {
     return null;
   }
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => setModalVisible(false);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { pageIndex, pathName } = location;
 
   const menuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -74,6 +88,20 @@ const AppBarMenu: React.FC<IMenuProps> = ({
     setAnchorEl(null);
   };
 
+  const preventDefault = (event: React.SyntheticEvent) =>
+    event.preventDefault();
+
+  const linkValue =
+    document.location.origin + "/?surveyID=" + surveyID + "&uid=" + uid;
+
+  const copyToClipboard = () => {
+    const textField = document.createElement("textarea");
+    textField.innerText = linkValue;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand("copy");
+    textField.remove();
+  };
   return (
     <div style={{ marginLeft: "10px" }}>
       <IconButton onClick={menuOpen}>
@@ -109,197 +137,52 @@ const AppBarMenu: React.FC<IMenuProps> = ({
         <MenuItem
           key="save"
           onClick={() => {
-            // openModal();
+            setModalVisible(true);
+            sendData();
             menuClose();
           }}
         >
           <ListItemText primary="Продолжить на другом устройстве" />
         </MenuItem>
       </StyledMenu>
+
+      <Modal visible={modalVisible} onClosed={closeModal} size="sm">
+        <ModalHeader>
+          <div css={modalHeaderWrapperCss}>
+            <span>Ссылка</span>
+            <IconButton onClick={() => closeModal()}>
+              <CloseIcon />
+            </IconButton>
+          </div>
+        </ModalHeader>
+        <ModalContent>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "start",
+              gap: "10px",
+            }}
+          >
+            <PerfectScrollbar options={{ suppressScrollY: true }}>
+              <div style={{ padding: "15px 10px 25px 0px" }}>
+                <StyledLink onClick={preventDefault}>{linkValue}</StyledLink>
+              </div>
+            </PerfectScrollbar>
+            <IconButton
+              onClick={() => {
+                copyToClipboard();
+              }}
+            >
+              <FileCopyOutlinedIcon />
+            </IconButton>
+          </div>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
-
-// switch (location.pathName) {
-//     return (
-//       <>
-//         <Button
-//           key="1"
-//           css={buttonCss(true, "right")}
-//           onClick={() => {
-//             handleClick({
-//               location: {
-//                 pageIndex: 0,
-//                 questionIndex: 0,
-//                 pathName: isShowPageList ? "survey" : "section",
-//                 title: isShowPageList ? "survey" : "section",
-//               },
-//               slideMoveDirection: "right-to-left",
-//               needSendAnswers: false,
-//             });
-//             startSurvey();
-//           }}
-//         >
-//           {buttonStartCaption}
-//         </Button>
-//       </>
-//     );
-//   }
-//   case "survey": {
-//     return (
-//       <>
-//         <Button
-//           key="1"
-//           css={buttonCss(true, "right")}
-//           onClick={() =>
-//             handleClick({
-//               location: {
-//                 pageIndex: 0,
-//                 questionIndex: 0,
-//                 pathName: "section",
-//                 title: "section",
-//               },
-//               slideMoveDirection: "right-to-left",
-//               needSendAnswers: false,
-//             })
-//           }
-//         >
-//           {buttonNextCaption}
-//         </Button>
-//
-//         <IconButton
-//           key="IconButton1"
-//           css={iconBtnCss("right")}
-//           onClick={() =>
-//             handleClick({
-//               location: {
-//                 pageIndex: 0,
-//                 questionIndex: 0,
-//                 pathName: "section",
-//                 title: "section",
-//               },
-//               slideMoveDirection: "right-to-left",
-//               needSendAnswers: false,
-//             })
-//           }
-//         >
-//           <ChevronRightIcon fontSize="large" />
-//         </IconButton>
-//         <IconButton
-//           key="IconButton2"
-//           css={iconBtnCss("left")}
-//           disabled
-//           onClick={() =>
-//             handleClick({
-//               location: prevLocation,
-//               slideMoveDirection: "left-to-right",
-//               needSendAnswers: true,
-//             })
-//           }
-//         >
-//           <ChevronRightIcon fontSize="large" />
-//         </IconButton>
-//       </>
-//     );
-//   }
-//   case "section": {
-//     return (
-//       <>
-//         {isShowPageList ? (
-//           <Button
-//             key="home"
-//             css={homeButtonCss}
-//             onClick={() =>
-//               handleClick({
-//                 location: {
-//                   pageIndex: 0,
-//                   questionIndex: 0,
-//                   pathName: "survey",
-//                   title: "survey",
-//                 },
-//                 slideMoveDirection: "left-to-right",
-//                 needSendAnswers: true,
-//               })
-//             }
-//           >
-//             К списку страниц
-//           </Button>
-//         ) : (
-//           <Nav
-//             title={pageTitle}
-//             pages={pages}
-//             currentPageIndex={pageIndex}
-//             onChange={(pageIndex, slideMoveDirection) => {
-//               handleClick({
-//                 location: {
-//                   pageIndex: pageIndex,
-//                   pathName: "section",
-//                   questionIndex: 0,
-//                   title: "section",
-//                 },
-//                 needSendAnswers: true,
-//                 slideMoveDirection: slideMoveDirection,
-//               });
-//             }}
-//           />
-//         )}
-//
-//         <Button
-//           key="1"
-//           css={buttonCss(true, "right")}
-//           onClick={() => {
-//             nextLocation.pageIndex === pagesCount
-//               ? completeSurvey()
-//               : rightClick();
-//           }}
-//         >
-//           {nextLocation.pageIndex === pagesCount
-//             ? buttonFinishCaption
-//             : buttonNextCaption}
-//         </Button>
-//
-//         <Button
-//           key="2"
-//           css={buttonCss(showBackBtn, "left")}
-//           onClick={() =>
-//             handleClick({
-//               location: prevLocation,
-//               slideMoveDirection: "left-to-right",
-//               needSendAnswers: true,
-//             })
-//           }
-//         >
-//           {buttonBackCaption}
-//         </Button>
-//
-//         <IconButton
-//           key="IconButton1"
-//           css={iconBtnCss("right")}
-//           disabled={nextLocation.pageIndex === pagesCount}
-//           onClick={() => {
-//             rightClick();
-//           }}
-//         >
-//           <ChevronRightIcon fontSize="large" />
-//         </IconButton>
-//         <IconButton
-//           key="IconButton2"
-//           css={iconBtnCss("left")}
-//           disabled={!isShowPageList && prevLocation.pathName === "survey"}
-//           onClick={() =>
-//             handleClick({
-//               location: prevLocation,
-//               slideMoveDirection: "left-to-right",
-//               needSendAnswers: true,
-//             })
-//           }
-//         >
-//           <ChevronRightIcon fontSize="large" />
-//         </IconButton>
-//       </>
-//     );
-//   }
-// }
 
 const mapStateToProps = (state: IState) => {
   const {
@@ -308,6 +191,7 @@ const mapStateToProps = (state: IState) => {
     userAnswers,
     modalVisible,
     data,
+    params,
   } = state;
 
   const isEmptyData = !Boolean(data);
@@ -318,8 +202,8 @@ const mapStateToProps = (state: IState) => {
   const isShowPageList = data?.isShowPageList || false;
   const pages = data?.pages || [];
   const pagesCount = pages.length;
-
-  // console.log("pages", pages);
+  const surveyID = data?.docID;
+  const uid = params.uid;
 
   return {
     isEmptyData,
@@ -334,29 +218,13 @@ const mapStateToProps = (state: IState) => {
     isShowPageList,
     pages,
     pagesCount,
+    surveyID,
+    uid,
   };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
-    openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
-    closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
-    submit: () => {
-      dispatch({ type: COMPLETE_SURVEY });
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: 0,
-            questionIndex: 0,
-            pathName: "completion",
-            title: "completion",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
-    },
     handleClick: (payload: {
       location: ILocation;
       slideMoveDirection: ISlideMoveDirection;
@@ -374,6 +242,8 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     noticePage: (docID: string) => {
       dispatch({ type: SET_VISITED_PAGE_DOCID, payload: docID });
     },
+
+    sendData: () => dispatch({ type: SEND_SURVEY_DATA }),
   };
 };
 

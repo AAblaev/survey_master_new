@@ -5,9 +5,8 @@ import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
-import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
+import { PATH_NAME, DEFAULT_SURVEY_ID, getPathName } from "../api/const";
 import {
-  changeCurretLocation,
   setError,
   setLoading,
   setNewData,
@@ -40,25 +39,38 @@ export type IStoredData = {
 function* fetchSurveyData() {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
+  const uidFromURL = params.get("uid");
+
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  // console.log("document.location", document.location);
+
   const storedData = localStorage.getItem("surveyParams");
   const surveyParams: IStoredData | null = storedData && JSON.parse(storedData);
   const prevUid = surveyParams ? surveyParams.uid : "";
   const prevSurveyID = surveyParams ? surveyParams.surveyID : "";
   const isRetryingFetch = String(prevSurveyID) === String(surveyID);
 
-  const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
-  const path = PATH_NAME + surveyID + uid;
+  // const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
+  // const path = PATH_NAME + surveyID + uid;
+  const path = getPathName({
+    basePath: PATH_NAME,
+    surveyIDfromURL,
+    uidFromURL,
+    prevSurveyID,
+    prevUid,
+  });
 
+  // http://192.168.0.133:5004/api/survey/9?uid=f05015a6ef744ced87fca5e7190316f9
   try {
     yield put(setLoading(true));
     const result: IFetchResult = yield call(() => fethData(path));
     // console.log("result", result);
     yield put(setNewData(result.data));
-    if (isRetryingFetch) {
+    if (uidFromURL) {
+      yield put(setSurveyUid(uidFromURL));
+    } else if (isRetryingFetch) {
       yield put(setSurveyUid(prevUid));
     }
+
     // yield put(setNewData(fakeData));
 
     yield put(setLoading(false));
