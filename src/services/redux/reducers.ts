@@ -5,7 +5,7 @@ import { IAction } from "./actions.types";
 import {
   CHANGE_CURRENT_LOCATION,
   SET_NEW_DATA,
-  SET_SURVEY_UID,
+  SET_UID,
   SET_USER_ANSWER,
   IS_LOADING,
   IS_ERROR,
@@ -14,6 +14,8 @@ import {
   VALIDATION,
   DELETE_USER_ANSWERS,
   SET_NEED_SCROLLING,
+  SET_PATH,
+  SET_SURVEY_ID,
   // IS_ERROR,
 } from "./types";
 
@@ -51,12 +53,32 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       return { ...state, error: action.payload };
     }
 
-    case SET_SURVEY_UID: {
+    case SET_UID: {
       return {
         ...state,
         params: {
           ...state.params,
           uid: action.payload,
+        },
+      };
+    }
+
+    case SET_SURVEY_ID: {
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          surveyID: action.payload,
+        },
+      };
+    }
+
+    case SET_PATH: {
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          path: action.payload,
         },
       };
     }

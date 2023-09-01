@@ -3,7 +3,8 @@ import FormControl from "@material-ui/core/FormControl";
 import { IAnswer, IOption, IQuestion } from "../../../../types";
 import { MenuItem, Select, TextField } from "@material-ui/core";
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
-import { formControlCss, renderValueCss } from "./sc";
+import { formControlCss, renderValueCss, textFieldCss } from "./sc";
+import { selectCss } from "../multiDropDown/sc";
 
 type IDropDownViewProps = {
   currentQuestionIndex: number;
@@ -119,15 +120,12 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       ],
     });
   };
-
   return (
     <>
-      <FormControl variant="standard" css={formControlCss}>
+      <FormControl variant="outlined" css={formControlCss}>
         <Select
           value={value}
           onChange={handleChange}
-          defaultValue=""
-          disableUnderline
           MenuProps={{
             anchorOrigin: {
               vertical: "bottom",
@@ -149,6 +147,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
               </span>
             );
           }}
+          css={selectCss}
         >
           {selectItems.map((item) => (
             <MenuItem key={item.docID} value={item.docID}>
@@ -160,6 +159,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       {value === EXTRA_ANSWER.OTHER && (
         <TextField
           id={"otherTextField" + docID}
+          css={textFieldCss}
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
           label=""

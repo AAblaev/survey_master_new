@@ -11,6 +11,7 @@ import {
   iconCss,
   menuItemCss,
   selectCss,
+  textFieldCss,
 } from "./sc";
 
 type IMultiDropDownViewProps = {
@@ -145,12 +146,11 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
 
   return (
     <>
-      <FormControl variant="standard" css={formControlCss}>
+      <FormControl variant="outlined" css={formControlCss}>
         <Select
           multiple
           value={value}
           onChange={handleChange}
-          disableUnderline
           renderValue={(items) => {
             const ids = items as string[];
             const options = ids.map((id: string) => optionsDict[id]);
@@ -203,6 +203,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       {Boolean(hasOtherInUserAnswer) && (
         <TextField
           id={"otherTextField" + docID}
+          css={textFieldCss}
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
           label=""

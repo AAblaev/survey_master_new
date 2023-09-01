@@ -3,6 +3,7 @@ import { FormControlLabel, TextField } from "@material-ui/core";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer, IValue } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
+import { textFieldCss } from "../views/dropDown/sc";
 
 export type IOtherCheckbox = {
   userAnswer: IAnswer;
@@ -70,8 +71,10 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
       {checked && (
         <TextField
           id={"otherTextField" + questionID}
+          css={textFieldCss}
           InputProps={{ disableUnderline: true }}
           label=""
+          placeholder="напишите свой вариант"
           color="primary"
           fullWidth
           multiline

@@ -202,7 +202,7 @@ const mapStateToProps = (state: IState) => {
   const isShowPageList = data?.isShowPageList || false;
   const pages = data?.pages || [];
   const pagesCount = pages.length;
-  const surveyID = data?.docID;
+  const surveyID = params.surveyID;
   const uid = params.uid;
 
   return {

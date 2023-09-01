@@ -9,7 +9,6 @@ export const chipWrapperCss = css`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
-  padding-left: 0.5em;
 `;
 export const chipCss = (isDefault: boolean) => css`
   color: ${isDefault ? "#555" : "inherit"};
@@ -21,8 +20,18 @@ export const chipCss = (isDefault: boolean) => css`
 `;
 
 export const selectCss = css`
+  & .MuiOutlinedInput-input{
+    padding:5px;
+  }
+
   & .MuiSelect-selectMenu {
-    min-height: 2em;
+    min-height: 2.2em;
+    display: flex;
+    align-items: center;
+    // background-color: ${PRIMARY_COLOR + 80};
+  }
+  & .PrivateNotchedOutline-root-7{
+    border-radius:0;
   }
 `;
 
@@ -40,5 +49,14 @@ export const menuItemCss = css`
   }
   &.MuiMenuItem-root {
     white-space: normal;
+  }
+`;
+
+export const textFieldCss = css`
+  &.MuiFormControl-root {
+    margin-top: 15px;
+  }
+  & .MuiFilledInput-multiline {
+    padding: 10px;
   }
 `;
