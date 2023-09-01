@@ -40,6 +40,8 @@ const Survey: React.FC<ISurveyProps> = ({
               doneQuestionCount++;
           });
 
+          const title = page.title ? page.title : `страница ${index + 1}`;
+
           return (
             <Accordion
               key={index}
@@ -65,7 +67,7 @@ const Survey: React.FC<ISurveyProps> = ({
                   )}
                 />
 
-                <Typography>страница {index + 1}</Typography>
+                <Typography>{title}</Typography>
                 {!isShowQuestionsCount && (
                   <Button
                     style={{ marginLeft: "auto" }}

@@ -95,6 +95,10 @@ const Question: React.FC<IQuestionProps> = ({
   }</div>`;
   const elementRef = useRef<any>(null);
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
+  const otherInAnswer = answerWithExtra?.values.some(
+    (v) => v.optionID === EXTRA_ANSWER.OTHER
+  );
+
   const questionType = config.dataType as keyof typeof viewDict;
   const ViewComponent = viewDict[questionType];
   const isImplementedQuestionType = viewDict.hasOwnProperty(questionType);
@@ -104,6 +108,8 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
+    // questionType === "dropdown" ||
+    // questionType === "multidropdown" ||
     !isImplementedQuestionType;
 
   const isInternalExtra =
@@ -176,7 +182,7 @@ const Question: React.FC<IQuestionProps> = ({
           dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
         ></div>
       )}
-      <div css={cardCss(needPadding || hasExtra)}>
+      <div css={cardCss(needPadding || Boolean(otherInAnswer))}>
         <FormControl
           css={formControlCss({
             disabled,

@@ -11,7 +11,7 @@ import {
   SET_NEW_STATE,
   CHANGE_CURRENT_LOCATION,
   SET_USER_ANSWER,
-  SET_SURVEY_UID,
+  SET_UID,
   IS_LOADING,
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
@@ -19,6 +19,8 @@ import {
   VALIDATION,
   DELETE_USER_ANSWERS,
   SET_NEED_SCROLLING,
+  SET_PATH,
+  SET_SURVEY_ID,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -47,7 +49,19 @@ export const setError = (payload: { status: boolean; message: string }) =>
 
 export const setSurveyUid = (payload: string) =>
   <const>{
-    type: SET_SURVEY_UID,
+    type: SET_UID,
+    payload,
+  };
+
+export const setSurveyID = (payload: string) =>
+  <const>{
+    type: SET_SURVEY_ID,
+    payload,
+  };
+
+export const setPath = (payload: string) =>
+  <const>{
+    type: SET_PATH,
     payload,
   };
 

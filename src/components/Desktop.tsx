@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import Button from "@material-ui/core/Button";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -137,41 +137,8 @@ const Desktop: React.FC<IDesktop> = ({
       );
     if (pathName === "section")
       return <Section page={currentPage} questionCount={questionCount} />;
-
     return null;
   };
-  //
-  // useEffect(() => {
-  //   if (needScrolling) {
-  //     const currentQuestion = currentPage.questions[questionIndex];
-  //     const element = perfectScrollbarContainerRef.current.querySelector(
-  //       `#docID${currentQuestion.docID}`
-  //     );
-  //
-  //     if (element && perfectScrollbarContainerRef.current) {
-  //       // perfectScrollbarContainerRef.current.style.scrollBehavior = "smooth";
-  //
-  //       element.scrollIntoView();
-  //       // console.log("Прокрутка с плавным скроллом", perfectScrollbarRef);
-  //       //
-  //       // const containerTop = perfectScrollbarContainerRef.current.getBoundingClientRect()
-  //       //   .top;
-  //       // const elementTop = element.getBoundingClientRect().top;
-  //       // const offset = elementTop - containerTop;
-  //       // console.log("Прокрутка с плавным скроллом", offset);
-  //       // console.log("Прокрутка с плавным скроллом", perfectScrollbarRef);
-  //       //
-  //       // // Прокрутка с плавным скроллом
-  //       // perfectScrollbarContainerRef.current.style.scrollBehavior = "smooth";
-  //       // perfectScrollbarContainerRef.current.scrollTop += offset;
-  //
-  //       // Возвращаем стандартное поведение после прокрутки
-  //       setTimeout(() => {
-  //         perfectScrollbarContainerRef.current.style.scrollBehavior = "auto";
-  //       }, 500); // Может потребоваться настроить задержку
-  //     }
-  //   }
-  // }, [needScrolling]);
 
   return (
     <>

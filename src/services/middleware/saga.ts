@@ -5,15 +5,26 @@ import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
-import { PATH_NAME, DEFAULT_SURVEY_ID } from "../api/const";
 import {
-  changeCurretLocation,
+  PATH_NAME,
+  PATH_NAME_II,
+  DEFAULT_SURVEY_ID,
+  getPathName,
+} from "../api/const";
+import {
   setError,
   setLoading,
   setNewData,
+  setPath,
+  setSurveyID,
   setSurveyUid,
 } from "../redux/actions";
-import { selectAnswers, selectSurveyID, selectUid } from "../redux/selectors";
+import {
+  selectAnswers,
+  selectPathName,
+  selectSurveyID,
+  selectUid,
+} from "../redux/selectors";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
@@ -40,25 +51,51 @@ export type IStoredData = {
 function* fetchSurveyData() {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
+  const uidFromURL = params.get("uid");
+
+  // console.log("typeof(surveyIDfromURL)", typeof surveyIDfromURL);
+  // console.log("isNaN", Number.isNaN(Number(surveyIDfromURL)));
+
+  const isNewAPI = Number.isNaN(Number(surveyIDfromURL));
+
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  // console.log("document.location", document.location);
+  // console.log("surveyID", surveyID);
+
   const storedData = localStorage.getItem("surveyParams");
   const surveyParams: IStoredData | null = storedData && JSON.parse(storedData);
   const prevUid = surveyParams ? surveyParams.uid : "";
   const prevSurveyID = surveyParams ? surveyParams.surveyID : "";
   const isRetryingFetch = String(prevSurveyID) === String(surveyID);
+  // console.log("isRetryingFetch", isRetryingFetch);
 
-  const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
-  const path = PATH_NAME + surveyID + uid;
-
+  // const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
+  // const path = PATH_NAME + surveyID + uid;
+  const path = getPathName({
+    basePath: isNewAPI ? `${PATH_NAME_II}bylink/` : PATH_NAME,
+    surveyIDfromURL,
+    uidFromURL,
+    prevSurveyID,
+    prevUid,
+    isNewAPI,
+  });
+  // http://192.168.0.133:5004/api/survey/9?uid=f05015a6ef744ced87fca5e7190316f9   api/link/{lnk}
+  // const testPath = `http://192.168.0.133:5004/api/link/testnew`;
+  // console.log("PATH_NAME", PATH_NAME);
   try {
     yield put(setLoading(true));
+    yield put(setSurveyID(surveyID));
+    yield put(setPath(isNewAPI ? PATH_NAME_II : PATH_NAME));
     const result: IFetchResult = yield call(() => fethData(path));
-    // console.log("result", result);
+    // const result2: IFetchResult = yield call(() => fethData(testPath));
+
+    // console.log("result2", result2);
     yield put(setNewData(result.data));
-    if (isRetryingFetch) {
+    if (uidFromURL) {
+      yield put(setSurveyUid(uidFromURL));
+    } else if (isRetryingFetch) {
       yield put(setSurveyUid(prevUid));
     }
+
     // yield put(setNewData(fakeData));
 
     yield put(setLoading(false));
@@ -87,9 +124,20 @@ function* fetchSurveyData() {
 // }
 
 function* startSurvey() {
+  const { pathName } = yield select(selectPathName);
   const { surveyID } = yield select(selectSurveyID);
-  const path = PATH_NAME + "start/" + surveyID;
-  // console.log("startSurvey");
+  const isNewAPI = Number.isNaN(Number(surveyID));
+
+  // console.log("PATH_NAME_II", PATH_NAME_II);
+  // console.log("PATH_NAME", PATH_NAME);
+  // console.log("pathName", pathName);
+  // console.log("surveyID", surveyID);
+  // console.log("isNewAPI", isNewAPI);
+
+  const path = isNewAPI
+    ? `${PATH_NAME_II}start2/${surveyID}`
+    : `${PATH_NAME}start/${surveyID}`;
+  console.log("startSurvey path", path);
 
   try {
     yield put(setLoading(true));
