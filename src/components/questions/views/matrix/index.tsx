@@ -37,7 +37,6 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
     isChooseManyInrow,
     isChooseManyIncol,
   } = config;
-
   const simpleType = config.simpleType as ISimpleType;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];

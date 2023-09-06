@@ -57,15 +57,17 @@ const Survey: React.FC<ISurveyProps> = ({
                 aria-controls={String(page.docID)}
                 id={String(page.docID)}
               >
-                <Progress
-                  type="circle"
-                  size={50}
-                  strokeColor={DEFAULT_STROKE_COLOR}
-                  trailColor={DEFAULT_TRAIL_COLOR}
-                  percent={Math.floor(
-                    (doneQuestionCount / allQuestionCount) * 100
-                  )}
-                />
+                {isShowQuestionsCount && (
+                  <Progress
+                    type="circle"
+                    size={50}
+                    strokeColor={DEFAULT_STROKE_COLOR}
+                    trailColor={DEFAULT_TRAIL_COLOR}
+                    percent={Math.floor(
+                      (doneQuestionCount / allQuestionCount) * 100
+                    )}
+                  />
+                )}
 
                 <Typography>{title}</Typography>
                 {!isShowQuestionsCount && (
