@@ -20,7 +20,7 @@ import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
 import OtherCheckbox from "./extra/otherCheckbox";
-import { getNeedCorrect } from "../../utils/questionIsDone";
+import { getNeedCorrect, visibleChecking } from "../../utils/questionIsDone";
 import {
   cardCss,
   formControlCss,
@@ -28,12 +28,14 @@ import {
   titleCss,
   titleTextCss,
   commentCss,
+  testCss,
 } from "./sc";
 
 export type OwnProps = {
-  key: number;
   index: number;
+  pageID: number;
   currentQuestionIndex: number;
+  questionCount: number;
   question: IQuestion;
 };
 
@@ -77,6 +79,9 @@ const Question: React.FC<IQuestionProps> = ({
   visitedPageDocIDList,
   selectedQuestion,
   setScrolling,
+  pageID,
+  isVisible,
+  questionCount,
 }) => {
   const {
     docID,
@@ -89,7 +94,8 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
-
+  console.log("docID", docID);
+  // console.log("isVisible", isVisible);
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   }</div>`;
@@ -143,7 +149,8 @@ const Question: React.FC<IQuestionProps> = ({
     !!answerWithExtra &&
     answerWithExtra.values.length > 0 &&
     !answerWithExtra.values.some((v) => !v.validationResult.isValid);
-  const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
+
+  const pageIsVisited = visitedPageDocIDList.includes(String(pageID));
 
   const needCorrect = getNeedCorrect(
     isRequired,
@@ -168,10 +175,11 @@ const Question: React.FC<IQuestionProps> = ({
       }, 0);
     }
   }, [selectedQuestion]);
+  if (!isVisible) return null;
   return (
     <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
       <div css={titleCss(disabled)}>
-        <div css={titleCountCss}>{currentQuestionIndex}.</div>
+        <div css={titleCountCss}></div>
         <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
         </div>
@@ -236,15 +244,26 @@ const Question: React.FC<IQuestionProps> = ({
 };
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
-  const { userAnswers, visitedPageDocIDList, location, needScrolling } = state;
+  const {
+    userAnswers,
+    visitedPageDocIDList,
+    location,
+    needScrolling,
+    visibleRuleDict,
+  } = state;
   const { question } = props;
   const { docID } = question;
   const { questionIndex } = location;
-
+  console.log("mapStateToProps", docID);
+  const isVisilbe = visibleChecking(
+    userAnswers,
+    visibleRuleDict[String(docID)]
+  );
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
     selectedQuestion: needScrolling && questionIndex === props.index,
+    isVisible: isVisilbe,
   };
 };
 

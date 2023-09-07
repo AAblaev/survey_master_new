@@ -60,6 +60,13 @@ export const commentCss = (disabled: boolean) => css`
   }
 `;
 
+export const testCss = css`
+  &::before {
+    counter-increment: section; /* Increment the value of section counter by 1 */
+    content: "Section " counter(section) ": "; /* Display counter value in default style (decimal) */
+  }
+`;
+
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
   display: flex;
@@ -71,6 +78,10 @@ export const titleCountCss = css`
   font-size: 1.2rem;
   color: ${PRIMARY_COLOR};
   font-weight: bold;
+  &::before {
+    counter-increment: section; /* Increment the value of section counter by 1 */
+    content: "" counter(section) "."; /* Display counter value in default style (decimal) */
+  }
 `;
 
 export const titleTextCss = (needCorrect: boolean) => css`

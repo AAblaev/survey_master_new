@@ -22,6 +22,7 @@ export type IData = {
   buttonNextCaption: string;
   buttonStartCaption: string;
   answers: IBackendAnswer[];
+  rules: IRule[];
 };
 
 export type IPage = {
@@ -202,7 +203,7 @@ export type IEventType =
 
 export interface IBaseEvent {
   docID: number;
-  questionID: number;
+  // questionID: number;
   eventOperator: "AND" | "OR" | null;
   type: IEventType;
 }
@@ -218,12 +219,15 @@ export type IEvent =
 
 export interface IAnsweredQuestionEvent extends IBaseEvent {
   type: "answeredQuestion";
+  questionID: number;
 }
 export interface ISkippedQuestionEvent extends IBaseEvent {
   type: "skippedQuestion";
+  questionID: number;
 }
 export interface ISelectedOptionEvent extends IBaseEvent {
   type: "selectedOption";
+  questionID: number;
   optionID: number; // для selectedOptionEvent
   dimention0: number; // для selectedOptionEvent
   dimention1: number; // для selectedOptionEvent
@@ -231,6 +235,7 @@ export interface ISelectedOptionEvent extends IBaseEvent {
 }
 export interface IStruggledToAnswerEvent extends IBaseEvent {
   type: "struggledToAnswer";
+  questionID: number;
 }
 export interface IFormulaEvent extends IBaseEvent {
   type: "formula";
@@ -293,6 +298,10 @@ export type IRule =
   | IVisibilityQuestionRule
   | ILogicalValidityCheckRule;
 
+export type IVisibleRuleDict = {
+  [key: string]: IVisibilityQuestionRule;
+};
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -304,4 +313,5 @@ export type IState = {
   modalVisible: boolean;
   visitedPageDocIDList: string[];
   needScrolling: boolean;
+  visibleRuleDict: IVisibleRuleDict;
 };

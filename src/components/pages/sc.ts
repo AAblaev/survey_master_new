@@ -13,11 +13,12 @@ export const buttonsWrapperCss = css`
   gap: 20px;
 `;
 
-export const questionListCss = css`
+export const questionListCss = (questionCount: number) => css`
   display: flex;
   flex-direction: column;
   gap: 40px;
   margin-bottom: 40px;
+  counter-reset: section ${questionCount};
 `;
 
 export const titleCss = css`

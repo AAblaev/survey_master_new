@@ -1,5 +1,6 @@
 import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
 import { IState } from "../../types";
+import { ruleParser } from "../../utils/ruleParser";
 import { answersParsed } from "../../utils/validation";
 import { IAction } from "./actions.types";
 import {
@@ -35,14 +36,17 @@ const initialState: IState = {
   slideMoveDirection: DEFAULT_MOVE_DIRECTION,
   visitedPageDocIDList: [],
   needScrolling: false,
+  visibleRuleDict: {},
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
+  // console.log(action.type);
   switch (action.type) {
     case SET_NEW_DATA: {
       const data = action.payload;
       const userAnswers = answersParsed(data.answers);
-      return { ...state, data, userAnswers };
+      const visibleRuleDict = ruleParser(data.rules);
+      return { ...state, data, userAnswers, visibleRuleDict };
     }
 
     case IS_LOADING: {

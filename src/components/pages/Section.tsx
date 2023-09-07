@@ -28,21 +28,17 @@ export type ISectionProps = {
 
 const Section: React.FC<IOwnSectionProps> = ({
   page,
-  pages,
   questionCount,
   showFinishBtn,
   buttonFinishCaption,
   noticePage,
   submit,
   openModal,
-  userAnswers,
-  pageIndex,
+  resultValidation,
 }) => {
+  console.log("Section", questionCount);
   const questions = page.questions ? page.questions : [];
-  const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
   let counter = 0;
-
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
 
   const completeSurvey = () => {
     noticePage(String(page.docID));
@@ -52,11 +48,10 @@ const Section: React.FC<IOwnSectionProps> = ({
     }
     openModal();
   };
-  // <Typography css={titleCss}>{title}</Typography>
 
   return (
     <div>
-      <div css={questionListCss}>
+      <div css={questionListCss(questionCount)}>
         {questions.map((q, index) => {
           if (q.config.dataType === "textblock") {
             return <TextBlock key={index} question={q} />;
@@ -64,10 +59,12 @@ const Section: React.FC<IOwnSectionProps> = ({
           counter++;
           return (
             <Question
-              key={index}
+              key={q.docID}
               index={index}
               currentQuestionIndex={questionCount + counter}
+              questionCount={questionCount}
               question={q}
+              pageID={page.docID}
             />
           );
         })}
@@ -108,10 +105,10 @@ const mapStateToProps = (state: IState) => {
   const pagesCount = pages.length;
   const showFinishBtn =
     pathName === "section" && pageIndex + 1 === pages.length;
-
+  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   return {
     isEmptyData,
-    userAnswers,
+    resultValidation,
     location,
     slideMoveDirection,
     modalVisible,
@@ -120,11 +117,9 @@ const mapStateToProps = (state: IState) => {
     buttonBackCaption,
     buttonFinishCaption,
     isShowPageList,
-    pages,
     pagesCount,
     showFinishBtn,
     questionIndex,
-    pageIndex,
   };
 };
 
