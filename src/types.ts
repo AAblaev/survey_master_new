@@ -253,10 +253,10 @@ export type IVariable = {
   code: string;
   value: {
     questionID: number;
-    optionID: number;
-    dimention0: number;
-    dimention1: number;
-    dimention2: number;
+    optionID?: number;
+    dimention0?: number;
+    dimention1?: number;
+    dimention2?: number;
   };
 };
 
@@ -302,6 +302,10 @@ export type IVisibleRuleDict = {
   [key: string]: IVisibilityQuestionRule;
 };
 
+export type IPageTransitionRuleDict = {
+  [key: string]: IPageTransitionRule[];
+};
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -313,5 +317,5 @@ export type IState = {
   modalVisible: boolean;
   visitedPageDocIDList: string[];
   needScrolling: boolean;
-  visibleRuleDict: IVisibleRuleDict;
+  visiblityRulesDict: IVisibleRuleDict;
 };

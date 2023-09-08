@@ -1,13 +1,4 @@
-import { EXTRA_ANSWER } from "../consts/const";
-import {
-  IAnswer,
-  IEvent,
-  IPage,
-  IQuestion,
-  IRule,
-  IUserAnswer,
-  IVisibilityQuestionRule,
-} from "../types";
+import { IAnswer, IPage, IQuestion, IUserAnswer } from "../types";
 
 export const isQuestionDone = (answer: IAnswer) => {
   return answer.values.length !== 0;
@@ -78,50 +69,4 @@ export const sectionValidtion = (
   );
 
   return result;
-};
-
-const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
-  if (event.type === "answeredQuestion") {
-    return (
-      !!userAnswers[event.questionID] &&
-      userAnswers[event.questionID].values.length !== 0
-    );
-  }
-  if (event.type === "skippedQuestion") {
-    return !userAnswers[event.questionID];
-  }
-  if (event.type === "struggledToAnswer") {
-    return (
-      !!userAnswers[event.questionID] &&
-      userAnswers[event.questionID].values.some(
-        (v) => v.optionID === EXTRA_ANSWER.UNABLE
-      )
-    );
-  }
-  /////
-  if (event.type === "selectedOption") {
-    return true;
-  }
-  if (event.type === "formula") {
-    return true;
-  }
-  return true;
-};
-
-export const visibleChecking = (
-  userAnswers: IUserAnswer,
-  rule?: IVisibilityQuestionRule
-) => {
-  console.log("visiblle checking", userAnswers);
-  if (!rule) return true;
-
-  const { events } = rule;
-  const operator = events[0].eventOperator;
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => {
-      return eventChecking(event, userAnswers);
-    });
-  }
-
-  return true;
 };

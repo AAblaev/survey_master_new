@@ -105,7 +105,7 @@ export const validation = (payload: {
         message: `значение не может быть меньше ${limitValue!.min}`,
       };
 
-    if (limitValue!.max > Number(value))
+    if (limitValue!.max < Number(value))
       return {
         isValid: false,
         message: `значение не может быть больше ${limitValue!.max}`,
@@ -119,7 +119,7 @@ export const validation = (payload: {
         message: `значение не может быть меньше ${limit!.min}`,
       };
 
-    if (limit!.max > value.length)
+    if (limit!.max < value.length)
       return {
         isValid: false,
         message: `значение не может быть больше ${limit!.max}`,

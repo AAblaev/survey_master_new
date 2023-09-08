@@ -66,10 +66,6 @@ function* fetchSurveyData() {
   const prevUid = surveyParams ? surveyParams.uid : "";
   const prevSurveyID = surveyParams ? surveyParams.surveyID : "";
   const isRetryingFetch = String(prevSurveyID) === String(surveyID);
-  // console.log("isRetryingFetch", isRetryingFetch);
-
-  // const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
-  // const path = PATH_NAME + surveyID + uid;
   const path = getPathName({
     basePath: isNewAPI ? `${PATH_NAME_II}bylink/` : PATH_NAME,
     surveyIDfromURL,
@@ -78,25 +74,20 @@ function* fetchSurveyData() {
     prevUid,
     isNewAPI,
   });
-  // http://192.168.0.133:5004/api/survey/9?uid=f05015a6ef744ced87fca5e7190316f9   api/link/{lnk}
-  // const testPath = `http://192.168.0.133:5004/api/link/testnew`;
-  // console.log("PATH_NAME", PATH_NAME);
   try {
     yield put(setLoading(true));
-    yield put(setSurveyID(surveyID));
-    yield put(setPath(isNewAPI ? PATH_NAME_II : PATH_NAME));
-    const result: IFetchResult = yield call(() => fethData(path));
-    // const result2: IFetchResult = yield call(() => fethData(testPath));
 
-    // console.log("result2", result2);
-    yield put(setNewData(result.data));
-    if (uidFromURL) {
-      yield put(setSurveyUid(uidFromURL));
-    } else if (isRetryingFetch) {
-      yield put(setSurveyUid(prevUid));
-    }
+    // yield put(setSurveyID(surveyID));
+    // yield put(setPath(isNewAPI ? PATH_NAME_II : PATH_NAME));
+    // const result: IFetchResult = yield call(() => fethData(path));
+    // yield put(setNewData(result.data));
+    // if (uidFromURL) {
+    //   yield put(setSurveyUid(uidFromURL));
+    // } else if (isRetryingFetch) {
+    //   yield put(setSurveyUid(prevUid));
+    // }
 
-    // yield put(setNewData(fakeData));
+    yield put(setNewData(fakeData));
 
     yield put(setLoading(false));
   } catch (e) {
@@ -106,22 +97,6 @@ function* fetchSurveyData() {
     yield put(setError({ status: true, message: error.message }));
   }
 }
-
-// console.log("surveyParams", surveyParams);
-// console.log("prevSurveyID", prevSurveyID);
-// console.log("surveyID", surveyID);
-// console.log("isRetryingFetch", isRetryingFetch);
-// const path = PATH_NAME + surveyID;
-// console.log("document.location", document.location);
-// console.log(params);
-// console.log(surveyIDfromURL);
-// const path = PATH_NAME + surveyID + "?uid=0a663acfd56a4379a9041cf9f3ccdb50";
-// 3d16cb65adce4bb49a0e9400d04543a9
-// console.log("fetchSurveyData path", path);
-// const paramsObj: { [key: string]: any } = {};
-// for (const [key, value] of params) {
-// 	paramsObj[String(key)] = value;
-// }
 
 function* startSurvey() {
   const { pathName } = yield select(selectPathName);
@@ -140,14 +115,14 @@ function* startSurvey() {
   console.log("startSurvey path", path);
 
   try {
-    yield put(setLoading(true));
-    const result: IStartResult = yield call(() => fethData(path));
-    yield put(setSurveyUid(result.data));
-    localStorage.setItem(
-      "surveyParams",
-      JSON.stringify({ uid: result.data, surveyID: surveyID })
-    );
-    yield put(setLoading(false));
+    // yield put(setLoading(true));
+    // const result: IStartResult = yield call(() => fethData(path));
+    // yield put(setSurveyUid(result.data));
+    // localStorage.setItem(
+    //   "surveyParams",
+    //   JSON.stringify({ uid: result.data, surveyID: surveyID })
+    // );
+    // yield put(setLoading(false));
     // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
@@ -161,9 +136,9 @@ function* sendSurveyData() {
   const path = PATH_NAME + "answers/?uid=" + uid;
 
   try {
-    yield put(setLoading(true));
-    const result: unknown = yield call(() => sendData(path, answers));
-    yield put(setLoading(false));
+    // yield put(setLoading(true));
+    // const result: unknown = yield call(() => sendData(path, answers));
+    // yield put(setLoading(false));
     // console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);

@@ -20,7 +20,7 @@ import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
 import OtherCheckbox from "./extra/otherCheckbox";
-import { getNeedCorrect, visibleChecking } from "../../utils/questionIsDone";
+import { getNeedCorrect } from "../../utils/questionIsDone";
 import {
   cardCss,
   formControlCss,
@@ -28,8 +28,8 @@ import {
   titleCss,
   titleTextCss,
   commentCss,
-  testCss,
 } from "./sc";
+import { visibleChecking } from "../../utils/rule-utils";
 
 export type OwnProps = {
   index: number;
@@ -94,7 +94,7 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
-  console.log("docID", docID);
+  // console.log("docID", docID);
   // console.log("isVisible", isVisible);
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
@@ -163,6 +163,12 @@ const Question: React.FC<IQuestionProps> = ({
   const userAnswerResult = isInternalExtra
     ? (answerWithExtra as IAnswer)
     : (userAnswer as IAnswer);
+
+  useEffect(() => {
+    if (!isVisible && !isEmpty) {
+      setAnswer({ questionID: docID, values: [] });
+    }
+  }, [isVisible]);
 
   useEffect(() => {
     if (selectedQuestion && elementRef.current) {
@@ -249,15 +255,15 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     visitedPageDocIDList,
     location,
     needScrolling,
-    visibleRuleDict,
+    visiblityRulesDict,
   } = state;
   const { question } = props;
   const { docID } = question;
   const { questionIndex } = location;
-  console.log("mapStateToProps", docID);
+  // console.log("mapStateToProps", docID);
   const isVisilbe = visibleChecking(
     userAnswers,
-    visibleRuleDict[String(docID)]
+    visiblityRulesDict[String(docID)]
   );
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
