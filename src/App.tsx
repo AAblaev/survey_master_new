@@ -15,7 +15,7 @@ import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
-  START_SURVEY,
+  START_SURVEY_OLD,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
 
@@ -116,7 +116,7 @@ const mapStateToProps = (state: IState) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
+    startSurvey: () => dispatch({ type: START_SURVEY_OLD }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {

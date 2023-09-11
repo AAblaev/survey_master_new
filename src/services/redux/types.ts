@@ -6,7 +6,11 @@ export const SET_PATH = "SET_PATH";
 export const SET_SURVEY_ID = "SET_SURVEY_ID";
 export const SET_UID = "SET_UID";
 export const FETCH_SURVEY_DATA = "FETCH_SURVEY_DATA";
+export const START_SURVEY_OLD = "START_SURVEY_OLD";
 export const START_SURVEY = "START_SURVEY";
+export const SET_DATA_AND_PARAMS = "SET_DATA_AND_PARAMS";
+export const SET_DATA_AND_START_SURVEY = "SET_DATA_AND_START_SURVEY";
+
 export const SEND_SURVEY_DATA = "SEND_SURVEY_DATA";
 export const IS_LOADING = "IS_LOADING";
 export const IS_ERROR = "IS_ERROR";

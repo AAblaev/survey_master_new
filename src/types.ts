@@ -178,7 +178,12 @@ export type IParams = {
 
 export type IParsedData = IData;
 export type IPageName = string;
-export type IPathName = "greeting" | "survey" | "section" | "completion";
+export type IPathName =
+  | "greeting"
+  | "survey"
+  | "section"
+  | "completion"
+  | "disqualification";
 
 export type ILocation = {
   pathName: IPathName;
@@ -318,4 +323,5 @@ export type IState = {
   visitedPageDocIDList: string[];
   needScrolling: boolean;
   visiblityRulesDict: IVisibleRuleDict;
+  pageTransitionRuleDict: IPageTransitionRuleDict;
 };

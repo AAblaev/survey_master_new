@@ -16,3 +16,15 @@ export const selectPathName = (state: IState) => ({
 export const selectAnswers = (state: IState) => ({
   userAnswers: state.userAnswers,
 });
+
+export const selectPages = (state: IState) => ({
+  pages: state.data?.pages,
+});
+
+export const selectCurrentLocation = (state: IState) => ({
+  location: state.location,
+});
+
+export const showPageList = (state: IState) => ({
+  isShowPageList: state.data?.isShowPageList,
+});

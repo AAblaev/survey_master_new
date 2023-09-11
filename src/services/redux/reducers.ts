@@ -12,11 +12,11 @@ import {
   IS_ERROR,
   TOGGLE_MODAL_VISIBLE,
   SET_VISITED_PAGE_DOCID,
-  VALIDATION,
   DELETE_USER_ANSWERS,
   SET_NEED_SCROLLING,
   SET_PATH,
   SET_SURVEY_ID,
+  SET_DATA_AND_PARAMS,
   // IS_ERROR,
 } from "./types";
 
@@ -37,16 +37,44 @@ const initialState: IState = {
   visitedPageDocIDList: [],
   needScrolling: false,
   visiblityRulesDict: {},
+  pageTransitionRuleDict: {},
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
   // console.log(action.type);
+  // console.log(state);
+
   switch (action.type) {
     case SET_NEW_DATA: {
       const data = action.payload;
       const userAnswers = answersParsed(data.answers);
-      const visiblityRulesDict = ruleParser(data.rules);
-      return { ...state, data, userAnswers, visiblityRulesDict };
+      const { visiblityRulesDict, pageTransitionRuleDict } = ruleParser(
+        data.rules ? data.rules : []
+      );
+      return {
+        ...state,
+        data,
+        userAnswers,
+        visiblityRulesDict,
+        pageTransitionRuleDict,
+      };
+    }
+
+    case SET_DATA_AND_PARAMS: {
+      const { data, params } = action.payload;
+      const userAnswers = answersParsed(data.answers);
+      const { visiblityRulesDict, pageTransitionRuleDict } = ruleParser(
+        data.rules ? data.rules : []
+      );
+
+      return {
+        ...state,
+        params,
+        data,
+        userAnswers,
+        visiblityRulesDict,
+        pageTransitionRuleDict,
+      };
     }
 
     case IS_LOADING: {

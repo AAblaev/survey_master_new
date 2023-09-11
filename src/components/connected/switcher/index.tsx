@@ -12,11 +12,7 @@ import {
   START_SURVEY,
   TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
-import {
-  changeCurretLocation,
-  deleteUserAnswers,
-  setNeedScrolling,
-} from "../../../services/redux/actions";
+import { changeCurretLocation } from "../../../services/redux/actions";
 import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
 
 import {
@@ -24,7 +20,6 @@ import {
   sectionValidtion,
 } from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
-import { homeButtonCss, onlyDesctopButtonCss } from "../../../sc";
 import Nav from "../../common/Nav";
 
 export type ISwitcherProps = ConnectedProps<typeof connector>;
@@ -46,8 +41,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
   userAnswers,
   pages,
   uid,
-  deleteAnswers,
-  setScrolling,
+  continueSurvey,
 }) => {
   if (isEmptyData) {
     return null;
@@ -60,7 +54,6 @@ const Switcher: React.FC<ISwitcherProps> = ({
     pages,
     userAnswers
   );
-  const notFirstEntering = Boolean(firstIncompleteQuestion);
 
   const resultSectionValidation =
     pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
@@ -96,24 +89,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
     case "greeting": {
       return (
         <>
-          <Button
-            key="1"
-            css={buttonCss(true, "right")}
-            onClick={() => {
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: isShowPageList ? "survey" : "section",
-                  title: isShowPageList ? "survey" : "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              });
-              deleteAnswers();
-              startSurvey();
-            }}
-          >
+          <Button key="1" css={buttonCss(true, "right")} onClick={startSurvey}>
             {uid ? "начать заново" : buttonStartCaption}
           </Button>
 
@@ -121,31 +97,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             <Button
               key="2"
               css={buttonCss(true, "left")}
-              onClick={() => {
-                setScrolling(true);
-                handleClick({
-                  location: {
-                    pageIndex: notFirstEntering
-                      ? firstIncompleteQuestion!.pageIndex
-                      : 0,
-                    questionIndex: notFirstEntering
-                      ? firstIncompleteQuestion!.questionIndex
-                      : 0,
-                    pathName: notFirstEntering
-                      ? "section"
-                      : isShowPageList
-                      ? "survey"
-                      : "section",
-                    title: notFirstEntering
-                      ? "section"
-                      : isShowPageList
-                      ? "survey"
-                      : "section",
-                  },
-                  slideMoveDirection: "right-to-left",
-                  needSendAnswers: false,
-                });
-              }}
+              onClick={continueSurvey}
             >
               Продолжить
             </Button>
@@ -193,18 +145,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
-          <IconButton
-            key="IconButton2"
-            css={iconBtnCss("left")}
-            disabled
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
-          >
+          <IconButton key="IconButton2" css={iconBtnCss("left")} disabled>
             <ChevronRightIcon fontSize="large" />
           </IconButton>
         </>
@@ -331,7 +272,8 @@ const mapStateToProps = (state: IState) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
+    startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
+    continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {
@@ -354,6 +296,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
       needSendAnswers: boolean;
     }) => {
       const { location, slideMoveDirection, needSendAnswers } = payload;
+      // dispatch({ type: CHANGE_CURRENT_PAGE, direction: slideMoveDirection });
       dispatch(
         changeCurretLocation({
           location: location,
@@ -364,12 +307,6 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     },
     noticePage: (docID: string) => {
       dispatch({ type: SET_VISITED_PAGE_DOCID, payload: docID });
-    },
-    deleteAnswers: () => {
-      dispatch(deleteUserAnswers());
-    },
-    setScrolling: (value: boolean) => {
-      dispatch(setNeedScrolling(value));
     },
   };
 };

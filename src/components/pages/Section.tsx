@@ -9,7 +9,7 @@ import {
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   SET_VISITED_PAGE_DOCID,
-  START_SURVEY,
+  START_SURVEY_OLD,
   TOGGLE_MODAL_VISIBLE,
 } from "../../services/redux/types";
 import { changeCurretLocation } from "../../services/redux/actions";
@@ -126,7 +126,7 @@ const mapStateToProps = (state: IState) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
+    startSurvey: () => dispatch({ type: START_SURVEY_OLD }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {

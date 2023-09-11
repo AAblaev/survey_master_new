@@ -2,19 +2,68 @@ import { EXTRA_ANSWER } from "../consts/const";
 import {
   IEvent,
   IFormula,
+  IPageTransitionRuleDict,
   IRule,
   IUserAnswer,
   IVisibilityQuestionRule,
   IVisibleRuleDict,
 } from "../types";
 
-export const ruleParser = (rules: IRule[]): IVisibleRuleDict => {
-  return rules.reduce((res, rule) => {
-    if (rule.type === "visibilityQuestionRule") {
-      return { ...res, [String(rule.questionID)]: rule };
+export const ruleParser = (
+  rules: IRule[]
+): {
+  visiblityRulesDict: IVisibleRuleDict;
+  pageTransitionRuleDict: IPageTransitionRuleDict;
+} => {
+  return rules.reduce(
+    (
+      res: {
+        visiblityRulesDict: IVisibleRuleDict;
+        pageTransitionRuleDict: IPageTransitionRuleDict;
+      },
+      rule: IRule
+    ) => {
+      if (rule.type === "visibilityQuestionRule") {
+        return {
+          ...res,
+          visiblityRulesDict: {
+            ...res.visiblityRulesDict,
+            [String(rule.questionID)]: rule,
+          },
+        };
+      }
+      if (rule.type === "pageTransitionRule") {
+        const alreadyHasRuleForPage = res.pageTransitionRuleDict.hasOwnProperty(
+          rule.pageID
+        );
+        if (!alreadyHasRuleForPage) {
+          return {
+            ...res,
+            pageTransitionRuleDict: {
+              ...res.pageTransitionRuleDict,
+              [String(rule.pageID)]: [rule],
+            },
+          };
+        } else {
+          return {
+            ...res,
+            pageTransitionRuleDict: {
+              ...res.pageTransitionRuleDict,
+              [String(rule.pageID)]: [
+                ...res.pageTransitionRuleDict[String(rule.pageID)],
+                rule,
+              ],
+            },
+          };
+        }
+      }
+      return res;
+    },
+    {
+      visiblityRulesDict: {},
+      pageTransitionRuleDict: {},
     }
-    return res;
-  }, {});
+  );
 };
 
 const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
@@ -79,7 +128,7 @@ export const visibleChecking = (
   userAnswers: IUserAnswer,
   rule?: IVisibilityQuestionRule
 ) => {
-  console.log("visiblle checking", userAnswers);
+  // console.log("visiblle checking", userAnswers);
   if (!rule) return true;
 
   const { events } = rule;

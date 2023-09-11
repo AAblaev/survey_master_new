@@ -73,6 +73,7 @@ const Desktop: React.FC<IDesktop> = ({
   selectPage,
   needScrolling,
 }) => {
+  console.log("render");
   const { title, pathName, pageIndex, questionIndex } = location;
   const {
     isShowPageList,
@@ -81,6 +82,7 @@ const Desktop: React.FC<IDesktop> = ({
     isShowProgressbar,
     greetingsPage,
     completionPage,
+    disqualificationPage,
     name,
     isLimitTimeForCompletion,
     limitTime,
@@ -126,6 +128,9 @@ const Desktop: React.FC<IDesktop> = ({
         />
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "disqualification")
+      return <InfoPage html={disqualificationPage} />;
+
     if (pathName === "survey")
       return (
         <Survey

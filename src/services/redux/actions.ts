@@ -2,6 +2,7 @@ import {
   IAnswer,
   IData,
   ILocation,
+  IParams,
   IQuestion,
   ISlideMoveDirection,
   IState,
@@ -21,6 +22,8 @@ import {
   SET_NEED_SCROLLING,
   SET_PATH,
   SET_SURVEY_ID,
+  SET_DATA_AND_START_SURVEY,
+  SET_DATA_AND_PARAMS,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -34,6 +37,19 @@ export const setNewData = (payload: IData) =>
     type: SET_NEW_DATA,
     payload,
   };
+
+export const setDataAndParams = (payload: { data: IData; params: IParams }) =>
+  <const>{
+    type: SET_DATA_AND_PARAMS,
+    payload,
+  };
+
+//
+// export const setDataAndStartSurvey = (payload: {data:IData,}) =>
+//   <const>{
+//     type: SET_DATA_AND_START_SURVEY,
+//     payload,
+//   };
 
 export const setLoading = (payload: boolean) =>
   <const>{
