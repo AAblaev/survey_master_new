@@ -12,7 +12,11 @@ import {
   START_SURVEY,
   TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
-import { changeCurretLocation } from "../../../services/redux/actions";
+import {
+  changeCurretLocation,
+  goToTheNextPage,
+  goToThePrevPage,
+} from "../../../services/redux/actions";
 import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
 
 import {
@@ -42,6 +46,8 @@ const Switcher: React.FC<ISwitcherProps> = ({
   pages,
   uid,
   continueSurvey,
+  setNextPage,
+  setPrevPage,
 }) => {
   if (isEmptyData) {
     return null;
@@ -55,22 +61,11 @@ const Switcher: React.FC<ISwitcherProps> = ({
     userAnswers
   );
 
-  const resultSectionValidation =
-    pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
+  // const resultSectionValidation =
+  //   pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
   // console.log("resultSectionValidation", resultSectionValidation);
 
-  const rightClick = resultSectionValidation
-    ? () => {
-        noticePage(String(pages[pageIndex].docID));
-        handleClick({
-          location: nextLocation,
-          slideMoveDirection: "right-to-left",
-          needSendAnswers: true,
-        });
-      }
-    : () => {
-        noticePage(String(pages[pageIndex].docID));
-      };
+  const rightClick = setNextPage;
 
   const completeSurvey = () => {
     noticePage(String(pages[pageIndex].docID));
@@ -190,13 +185,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Button
             key="2"
             css={buttonCss(showBackBtn, "left")}
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
+            onClick={() => setPrevPage()}
           >
             {buttonBackCaption}
           </Button>
@@ -215,13 +204,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             key="IconButton2"
             css={iconBtnCss("left")}
             disabled={!isShowPageList && prevLocation.pathName === "survey"}
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
+            onClick={() => setPrevPage()}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
@@ -240,7 +223,11 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
     params,
+    pageMovementLogs,
+    visitedPageDocIDList,
   } = state;
+  console.log("pageMovementLogs", pageMovementLogs);
+  console.log("visitedPageDocIDList", visitedPageDocIDList);
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
@@ -275,6 +262,9 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
+    setNextPage: () => dispatch(goToTheNextPage()),
+    setPrevPage: () => dispatch(goToThePrevPage()),
+
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {
       dispatch({ type: COMPLETE_SURVEY });

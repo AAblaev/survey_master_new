@@ -65,16 +65,13 @@ const Desktop: React.FC<IDesktop> = ({
   userAnswers,
   location,
   slideMoveDirection,
-  handleClick,
   modalVisible,
   closeModal,
   selectPage,
-  needScrolling,
 }) => {
-  console.log("render", location);
-  const { title, pathName, pageIndex, questionIndex } = location;
+  // console.log("render", location);
+  const { title, pathName, pageIndex } = location;
   const {
-    isShowPageList,
     pages,
     buttonStartCaption,
     isShowProgressbar,
@@ -90,9 +87,6 @@ const Desktop: React.FC<IDesktop> = ({
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
-
-  console.log("pages", pages);
-  console.log("pageIndex", pageIndex);
 
   const currentPage = pages[pageIndex];
   const allQuestionCount = pages.reduce(
@@ -143,8 +137,6 @@ const Desktop: React.FC<IDesktop> = ({
       return <Section page={currentPage} questionCount={questionCount} />;
     return null;
   };
-
-  console.log("currentPage", currentPage);
 
   return (
     <>

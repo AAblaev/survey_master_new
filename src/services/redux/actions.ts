@@ -24,6 +24,9 @@ import {
   SET_DATA_AND_PARAMS,
   CONTINUE_PREV_SURVEY,
   START_NEW_SURVEY,
+  CHANGE_CURRENT_PAGE,
+  GO_TO_THE_NEXT_PAGE,
+  GO_TO_THE_PREVIOUS_PAGE,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -123,3 +126,10 @@ export const startNewSurvey = (payload: string) =>
   <const>{ type: START_NEW_SURVEY, payload };
 
 export const continuePrevSurvey = () => <const>{ type: CONTINUE_PREV_SURVEY };
+
+export const setCurrentPage = (payload: {
+  slideMoveDirection: ISlideMoveDirection;
+}) => <const>{ type: CHANGE_CURRENT_PAGE, payload };
+
+export const goToTheNextPage = () => <const>{ type: GO_TO_THE_NEXT_PAGE };
+export const goToThePrevPage = () => <const>{ type: GO_TO_THE_PREVIOUS_PAGE };

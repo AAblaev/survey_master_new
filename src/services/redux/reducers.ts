@@ -1,7 +1,12 @@
 import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
 import { ILocation, IState } from "../../types";
 import { pagesParser } from "../../utils/pagesParser";
-import { getPrevLastLocation, ruleParser } from "../../utils/rule-utils";
+import { sectionValidtion } from "../../utils/questionIsDone";
+import {
+  getNextLocation,
+  getPrevLastLocation,
+  ruleParser,
+} from "../../utils/rule-utils";
 import { answersParsed } from "../../utils/validation";
 import { IAction } from "./actions.types";
 import {
@@ -19,6 +24,9 @@ import {
   SET_DATA_AND_PARAMS,
   CONTINUE_PREV_SURVEY,
   START_NEW_SURVEY,
+  CHANGE_CURRENT_PAGE,
+  GO_TO_THE_NEXT_PAGE,
+  GO_TO_THE_PREVIOUS_PAGE,
   // IS_ERROR,
 } from "./types";
 
@@ -120,6 +128,87 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         slideMoveDirection: "right-to-left",
         needScrolling: true,
         pageMovementLogs,
+      };
+    }
+
+    case GO_TO_THE_NEXT_PAGE: {
+      const {
+        location,
+        data,
+        visitedPageDocIDList,
+        userAnswers,
+        pagesDict,
+        pageTransitionRuleDict,
+      } = state;
+      const { pageIndex } = location;
+      const { pages } = data!;
+      const currentPage = pages[pageIndex];
+      const currentPageDocID = String(currentPage.docID);
+      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+        currentPageDocID
+      )
+        ? visitedPageDocIDList
+        : [...visitedPageDocIDList, currentPageDocID];
+
+      const resultSectionValidation = sectionValidtion(
+        currentPage,
+        userAnswers
+      );
+      if (resultSectionValidation) {
+        const nextLocation = getNextLocation({
+          currentLocation: location,
+          pageCount: pages.length,
+          pageTransitionRules: pageTransitionRuleDict[currentPageDocID],
+          userAnswers,
+          pagesDict,
+        });
+        const newPageMovementItem = String(pages[nextLocation.pageIndex].docID);
+
+        return {
+          ...state,
+          location: nextLocation,
+          slideMoveDirection: "right-to-left",
+          visitedPageDocIDList: newVisitedPageDocIDList,
+          pageMovementLogs: [...state.pageMovementLogs, newPageMovementItem],
+        };
+      }
+
+      return { ...state, visitedPageDocIDList: newVisitedPageDocIDList };
+    }
+
+    case GO_TO_THE_PREVIOUS_PAGE: {
+      const {
+        location,
+        data,
+        visitedPageDocIDList,
+        pagesDict,
+        pageMovementLogs,
+      } = state;
+      const { pageIndex } = location;
+      const { pages } = data!;
+      const currentPage = pages[pageIndex];
+      const currentPageDocID = String(currentPage.docID);
+      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+        currentPageDocID
+      )
+        ? visitedPageDocIDList
+        : [...visitedPageDocIDList, currentPageDocID];
+      const prevPageDocID =
+        pageMovementLogs[pageMovementLogs.indexOf(currentPageDocID) - 1];
+      const prevLocation = {
+        ...location,
+        pageIndex: pagesDict[prevPageDocID].order,
+      };
+      const newPageMovementLogs = state.pageMovementLogs.filter(
+        (_v, i, arr) => i !== arr.length - 1
+      );
+      return {
+        ...state,
+        location: prevLocation,
+        slideMoveDirection: "left-to-right",
+
+        visitedPageDocIDList: newVisitedPageDocIDList,
+        pageMovementLogs: newPageMovementLogs,
       };
     }
 

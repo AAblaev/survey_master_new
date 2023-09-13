@@ -28,6 +28,9 @@ import {
   setDataAndParams,
   continuePrevSurvey,
   startNewSurvey,
+  setCurrentPage,
+  goToTheNextPage,
+  goToThePrevPage,
 } from "../redux/actions";
 import {
   selectAnswers,
@@ -39,10 +42,10 @@ import {
   showPageList,
 } from "../redux/selectors";
 import {
-  CHANGE_CURRENT_PAGE,
   COMPLETE_SURVEY,
   CONTINUE_PREV_SURVEY,
   FETCH_SURVEY_DATA,
+  SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   START_SURVEY,
 } from "../redux/types";
@@ -99,36 +102,9 @@ function* startSurvey({
   type: typeof START_SURVEY;
   isContinue: boolean;
 }) {
-  // const { pathName } = yield select(selectPathName);
   const { surveyID } = yield select(selectSurveyID);
-  // const { userAnswers } = yield select(selectAnswers);
-  // const { pages } = yield select(selectPages);
-  // const { isShowPageList } = yield select(showPageList);
-
-  // const firstIncompleteQuestion = findFirstIncompleteQuestion(
-  //   pages,
-  //   userAnswers
-  // );
-  // const notFirstEntering = Boolean(firstIncompleteQuestion);
-
   if (isContinue) {
-    // CONTINUE_PREV_SURVEY
-
     yield put(continuePrevSurvey());
-    // yield put(setNeedScrolling(true));
-    // yield put(
-    //   changeCurretLocation({
-    //     location: {
-    //       pathName: "section",
-    //       title: "section",
-    //       pageIndex: notFirstEntering ? firstIncompleteQuestion!.pageIndex : 0,
-    //       questionIndex: notFirstEntering
-    //         ? firstIncompleteQuestion!.questionIndex
-    //         : 0,
-    //     },
-    //     slideMoveDirection: "right-to-left",
-    //   })
-    // );
     return;
   }
 
@@ -153,37 +129,6 @@ function* startSurvey({
     console.log("error", err);
   }
 }
-
-// function* startSurveyOld() {
-//   const { pathName } = yield select(selectPathName);
-//   const { surveyID } = yield select(selectSurveyID);
-//   const isNewAPI = Number.isNaN(Number(surveyID));
-//
-//   // console.log("PATH_NAME_II", PATH_NAME_II);
-//   // console.log("PATH_NAME", PATH_NAME);
-//   // console.log("pathName", pathName);
-//   // console.log("surveyID", surveyID);
-//   // console.log("isNewAPI", isNewAPI);
-//
-//   const path = isNewAPI
-//     ? `${PATH_NAME_II}start2/${surveyID}`
-//     : `${PATH_NAME}start/${surveyID}`;
-//   console.log("startSurvey path", path);
-//
-//   try {
-//     // yield put(setLoading(true));
-//     // const result: IStartResult = yield call(() => fethData(path));
-//     // yield put(setSurveyUid(result.data));
-//     // localStorage.setItem(
-//     //   "surveyParams",
-//     //   JSON.stringify({ uid: result.data, surveyID: surveyID })
-//     // );
-//     // yield put(setLoading(false));
-//     // console.log("startSurvey success", result);
-//   } catch (err) {
-//     console.log("error", err);
-//   }
-// }
 
 function* sendSurveyData() {
   const { uid } = yield select(selectUid);
@@ -226,10 +171,42 @@ function* completeSurvey() {
 function* changeCurrentPage({
   direction,
 }: {
-  type: typeof CHANGE_CURRENT_PAGE;
+  type: typeof SAGA_CHANGE_CURRENT_PAGE;
   direction: ISlideMoveDirection;
 }) {
-  const { location } = yield select(selectCurrentLocation);
+  const { uid } = yield select(selectUid);
+  const { userAnswers } = yield select(selectAnswers);
+  const answers = userAnswerParses(userAnswers);
+  const path = PATH_NAME + "answers/?uid=" + uid;
+
+  try {
+    yield put(setLoading(true));
+    const result: unknown = yield call(() => sendData(path, answers));
+    if (direction === "right-to-left") {
+      yield put(goToTheNextPage());
+    } else {
+      yield put(goToThePrevPage());
+    }
+    yield put(setLoading(false));
+    console.log("sendSurveyData success", result);
+  } catch (err) {
+    console.log("error", err);
+  }
+
+  // const { location,pageMovementLogs } = yield select(selectCurrentLocation);
+  // const {pages} = yield select(selectPages)
+  // const currentPage = pages[location.pageIndex]
+
+  // отправить на сервер+
+
+  // сохранить в visitedPageDocIDList+
+  // влево? ->  перейти и обновить pageMovementLogs
+
+  // вправо? -> провести валидацию страницы
+  // да? - перейти и обновить pageMovementLogs
+
+  // pageMovementLogs
+
   console.log("direction", location);
 }
 
@@ -238,7 +215,7 @@ function* mySaga() {
   yield takeEvery(START_SURVEY, startSurvey);
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
   yield takeEvery(COMPLETE_SURVEY, completeSurvey);
-  yield takeEvery(CHANGE_CURRENT_PAGE, changeCurrentPage);
+  yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
 }
 
 export default mySaga;

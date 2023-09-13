@@ -18,11 +18,12 @@ export const selectAnswers = (state: IState) => ({
 });
 
 export const selectPages = (state: IState) => ({
-  pages: state.data?.pages,
+  pages: state.data!.pages,
 });
 
 export const selectCurrentLocation = (state: IState) => ({
   location: state.location,
+  pageMovementLogs: state.pageMovementLogs,
 });
 
 export const showPageList = (state: IState) => ({

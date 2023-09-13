@@ -35,7 +35,7 @@ const Section: React.FC<IOwnSectionProps> = ({
   openModal,
   resultValidation,
 }) => {
-  console.log("Section", questionCount);
+  // console.log("Section", questionCount);
   const questions = page.questions ? page.questions : [];
   let counter = 0;
 

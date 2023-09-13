@@ -308,26 +308,24 @@ export const completionLocation: ILocation = {
 
 export type IGetNextLocation = (payload: {
   currentLocation: ILocation;
-  // pages: IPage[];
   pageCount: number;
-  rules: IPageTransitionRule[];
+  pageTransitionRules: IPageTransitionRule[];
   userAnswers: IUserAnswer;
   pagesDict: IPagesDict;
-  // pageMovementLogs: string[];
 }) => ILocation;
 
 export const getNextLocation: IGetNextLocation = ({
   currentLocation,
   pageCount,
-  rules,
+  pageTransitionRules = [],
   userAnswers,
   pagesDict,
 }) => {
   // правила перехода? -> переход по правилу
 
-  console.log("rules", rules);
+  // console.log("rules", rules);
 
-  const firstRuleWithSuccessResult = rules.find((rule) =>
+  const firstRuleWithSuccessResult = pageTransitionRules.find((rule) =>
     pageTransitionRuleChecking(userAnswers, rule)
   );
 
@@ -443,7 +441,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     currentLocation: currentLocation,
     pageCount: pages.length,
     pagesDict,
-    rules: pageTransitionRuleDict[currentPage.docID] ?? [],
+    pageTransitionRules: pageTransitionRuleDict[currentPage.docID] ?? [],
     userAnswers,
   });
 
