@@ -1,11 +1,11 @@
 import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
-import { IState } from "../../types";
-import { ruleParser } from "../../utils/rule-utils";
+import { ILocation, IState } from "../../types";
+import { pagesParser } from "../../utils/pagesParser";
+import { getPrevLastLocation, ruleParser } from "../../utils/rule-utils";
 import { answersParsed } from "../../utils/validation";
 import { IAction } from "./actions.types";
 import {
   CHANGE_CURRENT_LOCATION,
-  SET_NEW_DATA,
   SET_UID,
   SET_USER_ANSWER,
   IS_LOADING,
@@ -17,6 +17,8 @@ import {
   SET_PATH,
   SET_SURVEY_ID,
   SET_DATA_AND_PARAMS,
+  CONTINUE_PREV_SURVEY,
+  START_NEW_SURVEY,
   // IS_ERROR,
 } from "./types";
 
@@ -38,6 +40,10 @@ const initialState: IState = {
   needScrolling: false,
   visiblityRulesDict: {},
   pageTransitionRuleDict: {},
+  disqualificationRuleArr: [],
+  surveyCompletionRuleArr: [],
+  pagesDict: {},
+  pageMovementLogs: [],
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -45,24 +51,10 @@ export const reducer = (state: IState = initialState, action: IAction) => {
   // console.log(state);
 
   switch (action.type) {
-    case SET_NEW_DATA: {
-      const data = action.payload;
-      const userAnswers = answersParsed(data.answers);
-      const { visiblityRulesDict, pageTransitionRuleDict } = ruleParser(
-        data.rules ? data.rules : []
-      );
-      return {
-        ...state,
-        data,
-        userAnswers,
-        visiblityRulesDict,
-        pageTransitionRuleDict,
-      };
-    }
-
     case SET_DATA_AND_PARAMS: {
       const { data, params } = action.payload;
       const userAnswers = answersParsed(data.answers);
+      const pagesDict = pagesParser(data.pages);
       const { visiblityRulesDict, pageTransitionRuleDict } = ruleParser(
         data.rules ? data.rules : []
       );
@@ -74,6 +66,60 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         userAnswers,
         visiblityRulesDict,
         pageTransitionRuleDict,
+        pagesDict,
+      };
+    }
+
+    case START_NEW_SURVEY: {
+      const isShowPageList = state.data!.isShowPageList;
+      const nextLocation: ILocation = {
+        pathName: isShowPageList ? "survey" : "section",
+        title: isShowPageList ? "survey" : "section",
+        pageIndex: 0,
+        questionIndex: 0,
+      };
+
+      const newPageMovementLogs = isShowPageList
+        ? []
+        : [String(state.data!.pages[0].docID)];
+      return {
+        ...state,
+        params: {
+          ...state.params,
+          uid: action.payload,
+        },
+        userAnswers: [],
+        location: nextLocation,
+        slideMoveDirection: "right-to-left",
+        pageMovementLogs: newPageMovementLogs,
+      };
+    }
+
+    case CONTINUE_PREV_SURVEY: {
+      const {
+        disqualificationRuleArr,
+        surveyCompletionRuleArr,
+        userAnswers,
+        pagesDict,
+        pageTransitionRuleDict,
+        data,
+      } = state;
+      const pages = data ? data.pages : [];
+      const { location, pageMovementLogs } = getPrevLastLocation({
+        disqualificationRuleArr,
+        surveyCompletionRuleArr,
+        userAnswers,
+        pagesDict,
+        pageTransitionRuleDict,
+        pages,
+      });
+
+      return {
+        ...state,
+        location: location,
+        slideMoveDirection: "right-to-left",
+        needScrolling: true,
+        pageMovementLogs,
       };
     }
 

@@ -214,7 +214,7 @@ export const getTextFieldConfig = (simpleType?: ISimpleType) => {
 export const answersParsed = (
   backendAnswers: IBackendAnswer[]
 ): IUserAnswer => {
-  console.log("backendAnswers", backendAnswers);
+  // console.log("backendAnswers", backendAnswers);
   const result: IUserAnswer = {};
   backendAnswers.forEach((backendAnswer) => {
     const values: IValue[] = backendAnswer.values.map((v) => ({

@@ -52,7 +52,6 @@ type IDesktop = {
     needSendAnswers: boolean;
   }) => void;
   submit: () => void;
-  startSurvey: () => void;
   openModal: () => void;
   closeModal: () => void;
   selectPage: (index: number) => void;
@@ -67,13 +66,12 @@ const Desktop: React.FC<IDesktop> = ({
   location,
   slideMoveDirection,
   handleClick,
-  startSurvey,
   modalVisible,
   closeModal,
   selectPage,
   needScrolling,
 }) => {
-  console.log("render");
+  console.log("render", location);
   const { title, pathName, pageIndex, questionIndex } = location;
   const {
     isShowPageList,
@@ -92,6 +90,10 @@ const Desktop: React.FC<IDesktop> = ({
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
+
+  console.log("pages", pages);
+  console.log("pageIndex", pageIndex);
+
   const currentPage = pages[pageIndex];
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
@@ -122,9 +124,6 @@ const Desktop: React.FC<IDesktop> = ({
         <Greeting
           html={greetingsPage}
           buttonStartCaption={buttonStartCaption}
-          handleClick={handleClick}
-          isShowPageList={isShowPageList}
-          startSurvey={startSurvey}
         />
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
@@ -144,6 +143,8 @@ const Desktop: React.FC<IDesktop> = ({
       return <Section page={currentPage} questionCount={questionCount} />;
     return null;
   };
+
+  console.log("currentPage", currentPage);
 
   return (
     <>

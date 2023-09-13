@@ -1,25 +1,39 @@
 import { EXTRA_ANSWER } from "../consts/const";
 import {
+  IDisqualificationRule,
   IEvent,
   IFormula,
+  ILocation,
+  ILogicalValidityCheckRule,
+  IPage,
+  IPagesDict,
+  IPageTransitionRule,
   IPageTransitionRuleDict,
   IRule,
+  ISurveyCompletionRule,
   IUserAnswer,
   IVisibilityQuestionRule,
   IVisibleRuleDict,
 } from "../types";
+import { questionValidation } from "./questionIsDone";
 
 export const ruleParser = (
   rules: IRule[]
 ): {
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  surveyCompletionRuleArr: ISurveyCompletionRule[];
+  disqualificationRuleArr: IDisqualificationRule[];
+  logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
 } => {
   return rules.reduce(
     (
       res: {
         visiblityRulesDict: IVisibleRuleDict;
         pageTransitionRuleDict: IPageTransitionRuleDict;
+        surveyCompletionRuleArr: ISurveyCompletionRule[];
+        disqualificationRuleArr: IDisqualificationRule[];
+        logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
       },
       rule: IRule
     ) => {
@@ -57,11 +71,39 @@ export const ruleParser = (
           };
         }
       }
+
+      if (rule.type === "disqualificationRule") {
+        return {
+          ...res,
+          disqualificationRuleArr: [...res.disqualificationRuleArr, rule],
+        };
+      }
+
+      if (rule.type === "surveyCompletionRule") {
+        return {
+          ...res,
+          surveyCompletionRuleArr: [...res.surveyCompletionRuleArr, rule],
+        };
+      }
+
+      if (rule.type === "logicalValidityCheckRule") {
+        return {
+          ...res,
+          logicalValidityCheckRuleArr: [
+            ...res.logicalValidityCheckRuleArr,
+            rule,
+          ],
+        };
+      }
+
       return res;
     },
     {
       visiblityRulesDict: {},
       pageTransitionRuleDict: {},
+      surveyCompletionRuleArr: [],
+      disqualificationRuleArr: [],
+      logicalValidityCheckRuleArr: [],
     }
   );
 };
@@ -127,7 +169,7 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
 export const visibleChecking = (
   userAnswers: IUserAnswer,
   rule?: IVisibilityQuestionRule
-) => {
+): boolean => {
   // console.log("visiblle checking", userAnswers);
   if (!rule) return true;
 
@@ -190,4 +232,234 @@ const replaceVariables = (
     }
   }
   return expression;
+};
+
+export const pageTransitionRuleChecking = (
+  userAnswers: IUserAnswer,
+  rule: IPageTransitionRule
+): boolean => {
+  const { events, title } = rule;
+  const operator = events[0].eventOperator;
+
+  if (operator === "AND" || operator === null) {
+    return events.every((event) => eventChecking(event, userAnswers));
+  }
+  if (operator === "OR") {
+    return events.some((event) => eventChecking(event, userAnswers));
+  }
+
+  return false;
+};
+
+export const disqualificationRuleChecking = (
+  userAnswers: IUserAnswer,
+  rule: IDisqualificationRule
+): boolean => {
+  const { events, title } = rule;
+  const operator = events[0].eventOperator;
+
+  if (operator === "AND" || operator === null) {
+    return events.every((event) => eventChecking(event, userAnswers));
+  }
+  if (operator === "OR") {
+    return events.some((event) => eventChecking(event, userAnswers));
+  }
+
+  return false;
+};
+
+export const surveyCompletionChecking = (
+  userAnswers: IUserAnswer,
+  rule: ISurveyCompletionRule
+): boolean => {
+  const { events, title } = rule;
+  const operator = events[0].eventOperator;
+
+  if (operator === "AND" || operator === null) {
+    return events.every((event) => eventChecking(event, userAnswers));
+  }
+  if (operator === "OR") {
+    return events.some((event) => eventChecking(event, userAnswers));
+  }
+
+  return false;
+};
+
+export const firstPageLocation: ILocation = {
+  pathName: "section",
+  title: "section",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const disqualificationLocation: ILocation = {
+  pathName: "disqualification",
+  title: "disqualification",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const completionLocation: ILocation = {
+  pathName: "completion",
+  title: "completion",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export type IGetNextLocation = (payload: {
+  currentLocation: ILocation;
+  // pages: IPage[];
+  pageCount: number;
+  rules: IPageTransitionRule[];
+  userAnswers: IUserAnswer;
+  pagesDict: IPagesDict;
+  // pageMovementLogs: string[];
+}) => ILocation;
+
+export const getNextLocation: IGetNextLocation = ({
+  currentLocation,
+  pageCount,
+  rules,
+  userAnswers,
+  pagesDict,
+}) => {
+  // правила перехода? -> переход по правилу
+
+  console.log("rules", rules);
+
+  const firstRuleWithSuccessResult = rules.find((rule) =>
+    pageTransitionRuleChecking(userAnswers, rule)
+  );
+
+  if (firstRuleWithSuccessResult) {
+    const pageIndex = pagesDict[firstRuleWithSuccessResult.targetPageID].order;
+    return {
+      pathName: "section",
+      title: "section",
+      pageIndex: pageIndex,
+      questionIndex: 0,
+    };
+  }
+  // последняя страница? -> страница завершения конец
+
+  if (currentLocation.pageIndex + 1 === pageCount) {
+    return completionLocation;
+  }
+
+  // переход к следующему index+1
+
+  return {
+    pathName: "section",
+    title: "section",
+    pageIndex: currentLocation.pageIndex + 1,
+    questionIndex: 0,
+  };
+};
+
+export type IGetPrevLastLocation = (payload: {
+  pages: IPage[];
+  pagesDict: IPagesDict;
+  userAnswers: IUserAnswer;
+  pageTransitionRuleDict: IPageTransitionRuleDict;
+  disqualificationRuleArr: IDisqualificationRule[];
+  surveyCompletionRuleArr: ISurveyCompletionRule[];
+}) => { location: ILocation; pageMovementLogs: string[] };
+
+export const getPrevLastLocation: IGetPrevLastLocation = ({
+  disqualificationRuleArr,
+  surveyCompletionRuleArr,
+  userAnswers,
+  pages,
+  pagesDict,
+  pageTransitionRuleDict,
+}) => {
+  const pageMovementLogs: string[] = [];
+  const location: ILocation = firstPageLocation;
+
+  // дисквалификация? -> дисквалификация конец
+  if (
+    disqualificationRuleArr.some((rule) =>
+      disqualificationRuleChecking(userAnswers, rule)
+    )
+  ) {
+    return {
+      location: disqualificationLocation,
+      pageMovementLogs: pageMovementLogs,
+    };
+  }
+
+  // complete? -> страница завершения конец
+  if (
+    surveyCompletionRuleArr.some((rule) =>
+      surveyCompletionChecking(userAnswers, rule)
+    )
+  ) {
+    return {
+      location: completionLocation,
+      pageMovementLogs: pageMovementLogs,
+    };
+  }
+  // есть обязательный без ответа? -> отмена перехода конец
+  return findFirstIncompleteQuestionInNextPage({
+    currentLocation: location,
+    pageMovementLogs,
+    pages,
+    pagesDict,
+    pageTransitionRuleDict,
+    userAnswers,
+  });
+};
+
+type IFindFirstIncompleteQuestionInNextPage = (payload: {
+  currentLocation: ILocation;
+  pages: IPage[];
+  pagesDict: IPagesDict;
+  userAnswers: IUserAnswer;
+  pageMovementLogs: string[];
+  pageTransitionRuleDict: IPageTransitionRuleDict;
+}) => { location: ILocation; pageMovementLogs: string[] };
+
+export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestionInNextPage = ({
+  currentLocation,
+  pages,
+  pagesDict,
+  userAnswers,
+  pageMovementLogs,
+  pageTransitionRuleDict,
+}) => {
+  const currentPage = pages[currentLocation.pageIndex];
+  pageMovementLogs.push(String(currentPage.docID));
+  const firstIncompleteQuestion = currentPage.questions.find(
+    (q) => q.isRequired && !questionValidation(q, userAnswers)
+  );
+  if (firstIncompleteQuestion) {
+    return {
+      location: currentLocation,
+      pageMovementLogs: pageMovementLogs,
+    };
+  }
+
+  const nextLocation = getNextLocation({
+    currentLocation: currentLocation,
+    pageCount: pages.length,
+    pagesDict,
+    rules: pageTransitionRuleDict[currentPage.docID] ?? [],
+    userAnswers,
+  });
+
+  if (nextLocation.pathName === "completion") {
+    return {
+      location: completionLocation,
+      pageMovementLogs: pageMovementLogs,
+    };
+  }
+
+  return findFirstIncompleteQuestionInNextPage({
+    currentLocation: nextLocation,
+    pageMovementLogs,
+    pages,
+    pagesDict,
+    pageTransitionRuleDict,
+    userAnswers,
+  });
 };

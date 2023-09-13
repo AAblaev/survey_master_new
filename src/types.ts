@@ -196,6 +196,10 @@ export type IUserAnswer = {
   [key: string]: IAnswer;
 };
 
+export type IPagesDict = {
+  [key: string]: { page: IPage; order: number };
+};
+
 export type ISlideMoveDirection = "left-to-right" | "right-to-left";
 
 // rules and events
@@ -324,4 +328,8 @@ export type IState = {
   needScrolling: boolean;
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  disqualificationRuleArr: IDisqualificationRule[];
+  surveyCompletionRuleArr: ISurveyCompletionRule[];
+  pagesDict: IPagesDict;
+  pageMovementLogs: string[];
 };

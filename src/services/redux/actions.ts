@@ -8,7 +8,6 @@ import {
   IState,
 } from "../../types";
 import {
-  SET_NEW_DATA,
   SET_NEW_STATE,
   CHANGE_CURRENT_LOCATION,
   SET_USER_ANSWER,
@@ -22,19 +21,14 @@ import {
   SET_NEED_SCROLLING,
   SET_PATH,
   SET_SURVEY_ID,
-  SET_DATA_AND_START_SURVEY,
   SET_DATA_AND_PARAMS,
+  CONTINUE_PREV_SURVEY,
+  START_NEW_SURVEY,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
   <const>{
     type: SET_NEW_STATE,
-    payload,
-  };
-
-export const setNewData = (payload: IData) =>
-  <const>{
-    type: SET_NEW_DATA,
     payload,
   };
 
@@ -124,3 +118,8 @@ export const setNeedScrolling = (payload: boolean) =>
     type: SET_NEED_SCROLLING,
     payload,
   };
+
+export const startNewSurvey = (payload: string) =>
+  <const>{ type: START_NEW_SURVEY, payload };
+
+export const continuePrevSurvey = () => <const>{ type: CONTINUE_PREV_SURVEY };

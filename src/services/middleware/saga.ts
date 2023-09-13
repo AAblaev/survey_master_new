@@ -24,11 +24,10 @@ import {
   setError,
   setLoading,
   setNeedScrolling,
-  setNewData,
-  setPath,
-  setSurveyID,
   setSurveyUid,
   setDataAndParams,
+  continuePrevSurvey,
+  startNewSurvey,
 } from "../redux/actions";
 import {
   selectAnswers,
@@ -42,10 +41,10 @@ import {
 import {
   CHANGE_CURRENT_PAGE,
   COMPLETE_SURVEY,
+  CONTINUE_PREV_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   START_SURVEY,
-  START_SURVEY_OLD,
 } from "../redux/types";
 import { getParams } from "./utils";
 
@@ -100,68 +99,53 @@ function* startSurvey({
   type: typeof START_SURVEY;
   isContinue: boolean;
 }) {
-  const { pathName } = yield select(selectPathName);
+  // const { pathName } = yield select(selectPathName);
   const { surveyID } = yield select(selectSurveyID);
-  const { userAnswers } = yield select(selectAnswers);
-  const { pages } = yield select(selectPages);
-  const { isShowPageList } = yield select(showPageList);
+  // const { userAnswers } = yield select(selectAnswers);
+  // const { pages } = yield select(selectPages);
+  // const { isShowPageList } = yield select(showPageList);
 
-  const firstIncompleteQuestion = findFirstIncompleteQuestion(
-    pages,
-    userAnswers
-  );
-  const notFirstEntering = Boolean(firstIncompleteQuestion);
+  // const firstIncompleteQuestion = findFirstIncompleteQuestion(
+  //   pages,
+  //   userAnswers
+  // );
+  // const notFirstEntering = Boolean(firstIncompleteQuestion);
 
   if (isContinue) {
-    yield put(setNeedScrolling(true));
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: "section",
-          title: "section",
-          pageIndex: notFirstEntering ? firstIncompleteQuestion!.pageIndex : 0,
-          questionIndex: notFirstEntering
-            ? firstIncompleteQuestion!.questionIndex
-            : 0,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
+    // CONTINUE_PREV_SURVEY
+
+    yield put(continuePrevSurvey());
+    // yield put(setNeedScrolling(true));
+    // yield put(
+    //   changeCurretLocation({
+    //     location: {
+    //       pathName: "section",
+    //       title: "section",
+    //       pageIndex: notFirstEntering ? firstIncompleteQuestion!.pageIndex : 0,
+    //       questionIndex: notFirstEntering
+    //         ? firstIncompleteQuestion!.questionIndex
+    //         : 0,
+    //     },
+    //     slideMoveDirection: "right-to-left",
+    //   })
+    // );
     return;
   }
 
   const isNewAPI = Number.isNaN(Number(surveyID));
-  // console.log("PATH_NAME_II", PATH_NAME_II);
-  // console.log("PATH_NAME", PATH_NAME);
-  // console.log("pathName", pathName);
-  // console.log("surveyID", surveyID);
-  // console.log("isNewAPI", isNewAPI);
 
   const path = isNewAPI
-    ? `${PATH_NAME_II}start2/${surveyID}`
+    ? `${PATH_NAME}start2/${surveyID}`
     : `${PATH_NAME}start/${surveyID}`;
-  // console.log("startSurvey path", path);
 
   try {
     yield put(setLoading(true));
     const result: IStartResult = yield call(() => fethData(path));
-    yield put(setSurveyUid(result.data));
-    yield put(deleteUserAnswers());
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: isShowPageList ? "survey" : "section",
-          title: isShowPageList ? "survey" : "section",
-          pageIndex: 0,
-          questionIndex: 0,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
-
+    const newUid = result.data;
+    yield put(startNewSurvey(newUid));
     localStorage.setItem(
       "surveyParams",
-      JSON.stringify({ uid: result.data, surveyID: surveyID })
+      JSON.stringify({ uid: newUid, surveyID: surveyID })
     );
     yield put(setLoading(false));
     console.log("startSurvey success", result);
