@@ -22,6 +22,7 @@ export const ruleParser = (
 ): {
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  targetPageTransitionRuleArr: string[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   disqualificationRuleArr: IDisqualificationRule[];
   logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
@@ -31,6 +32,7 @@ export const ruleParser = (
       res: {
         visiblityRulesDict: IVisibleRuleDict;
         pageTransitionRuleDict: IPageTransitionRuleDict;
+        targetPageTransitionRuleArr: string[];
         surveyCompletionRuleArr: ISurveyCompletionRule[];
         disqualificationRuleArr: IDisqualificationRule[];
         logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
@@ -57,10 +59,18 @@ export const ruleParser = (
               ...res.pageTransitionRuleDict,
               [String(rule.pageID)]: [rule],
             },
+            targetPageTransitionRuleArr: [
+              ...res.targetPageTransitionRuleArr,
+              String(rule.targetPageID),
+            ],
           };
         } else {
           return {
             ...res,
+            targetPageTransitionRuleArr: [
+              ...res.targetPageTransitionRuleArr,
+              String(rule.targetPageID),
+            ],
             pageTransitionRuleDict: {
               ...res.pageTransitionRuleDict,
               [String(rule.pageID)]: [
@@ -101,6 +111,7 @@ export const ruleParser = (
     {
       visiblityRulesDict: {},
       pageTransitionRuleDict: {},
+      targetPageTransitionRuleArr: [],
       surveyCompletionRuleArr: [],
       disqualificationRuleArr: [],
       logicalValidityCheckRuleArr: [],
@@ -308,10 +319,13 @@ export const completionLocation: ILocation = {
 
 export type IGetNextLocation = (payload: {
   currentLocation: ILocation;
+  pages: IPage[];
   pageCount: number;
   pageTransitionRules: IPageTransitionRule[];
   userAnswers: IUserAnswer;
   pagesDict: IPagesDict;
+  targetPageTransitionRuleArr: string[];
+  pageMovementLogs: string[];
 }) => ILocation;
 
 export const getNextLocation: IGetNextLocation = ({
@@ -320,6 +334,9 @@ export const getNextLocation: IGetNextLocation = ({
   pageTransitionRules = [],
   userAnswers,
   pagesDict,
+  pages,
+  pageMovementLogs,
+  targetPageTransitionRuleArr,
 }) => {
   // правила перехода? -> переход по правилу
 
@@ -344,12 +361,27 @@ export const getNextLocation: IGetNextLocation = ({
     return completionLocation;
   }
 
+  // проверить что след страница отсутствует в pageMovementLogs
+  // проверить что след страница отсутствует в targetPageTransitionRuleArr
+  const nextPage = pages.find(
+    (page, index) =>
+      currentLocation.pageIndex < index &&
+      !pageMovementLogs.includes(String(page.docID)) &&
+      !targetPageTransitionRuleArr.includes(String(page.docID))
+  );
+
+  if (!nextPage) {
+    return completionLocation;
+  }
+
+  const pageIndex = pagesDict[String(nextPage.docID)].order;
+
   // переход к следующему index+1
 
   return {
     pathName: "section",
     title: "section",
-    pageIndex: currentLocation.pageIndex + 1,
+    pageIndex: pageIndex,
     questionIndex: 0,
   };
 };
@@ -361,6 +393,7 @@ export type IGetPrevLastLocation = (payload: {
   pageTransitionRuleDict: IPageTransitionRuleDict;
   disqualificationRuleArr: IDisqualificationRule[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
+  targetPageTransitionRuleArr: string[];
 }) => { location: ILocation; pageMovementLogs: string[] };
 
 export const getPrevLastLocation: IGetPrevLastLocation = ({
@@ -370,6 +403,7 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
   pages,
   pagesDict,
   pageTransitionRuleDict,
+  targetPageTransitionRuleArr,
 }) => {
   const pageMovementLogs: string[] = [];
   const location: ILocation = firstPageLocation;
@@ -386,17 +420,19 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
     };
   }
 
-  // complete? -> страница завершения конец
-  if (
-    surveyCompletionRuleArr.some((rule) =>
-      surveyCompletionChecking(userAnswers, rule)
-    )
-  ) {
-    return {
-      location: completionLocation,
-      pageMovementLogs: pageMovementLogs,
-    };
-  }
+  // complete? -> страница завершения конец??????
+
+  // if (
+  //   surveyCompletionRuleArr.some((rule) =>
+  //     surveyCompletionChecking(userAnswers, rule)
+  //   )
+  // ) {
+  //   return {
+  //     location: completionLocation,
+  //     pageMovementLogs: pageMovementLogs,
+  //   };
+  // }
+
   // есть обязательный без ответа? -> отмена перехода конец
   return findFirstIncompleteQuestionInNextPage({
     currentLocation: location,
@@ -405,6 +441,7 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
     pagesDict,
     pageTransitionRuleDict,
     userAnswers,
+    targetPageTransitionRuleArr,
   });
 };
 
@@ -415,6 +452,7 @@ type IFindFirstIncompleteQuestionInNextPage = (payload: {
   userAnswers: IUserAnswer;
   pageMovementLogs: string[];
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  targetPageTransitionRuleArr: string[];
 }) => { location: ILocation; pageMovementLogs: string[] };
 
 export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestionInNextPage = ({
@@ -424,6 +462,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
   userAnswers,
   pageMovementLogs,
   pageTransitionRuleDict,
+  targetPageTransitionRuleArr,
 }) => {
   const currentPage = pages[currentLocation.pageIndex];
   pageMovementLogs.push(String(currentPage.docID));
@@ -439,15 +478,19 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
 
   const nextLocation = getNextLocation({
     currentLocation: currentLocation,
+    pages,
     pageCount: pages.length,
     pagesDict,
     pageTransitionRules: pageTransitionRuleDict[currentPage.docID] ?? [],
     userAnswers,
+    targetPageTransitionRuleArr,
+    pageMovementLogs,
   });
 
   if (nextLocation.pathName === "completion") {
     return {
-      location: completionLocation,
+      // исправлено: было completionLocation. для случая если пользователь ответил на все вопросы, но решил продолжить на другом устройстве
+      location: currentLocation,
       pageMovementLogs: pageMovementLogs,
     };
   }
@@ -459,5 +502,6 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     pagesDict,
     pageTransitionRuleDict,
     userAnswers,
+    targetPageTransitionRuleArr,
   });
 };

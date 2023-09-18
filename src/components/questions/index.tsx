@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
@@ -260,7 +260,6 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   const { question } = props;
   const { docID } = question;
   const { questionIndex } = location;
-  // console.log("mapStateToProps", docID);
   const isVisilbe = visibleChecking(
     userAnswers,
     visiblityRulesDict[String(docID)]

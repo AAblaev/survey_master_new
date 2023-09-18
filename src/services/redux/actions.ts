@@ -129,6 +129,9 @@ export const continuePrevSurvey = () => <const>{ type: CONTINUE_PREV_SURVEY };
 
 export const setCurrentPage = (payload: {
   slideMoveDirection: ISlideMoveDirection;
+  location: ILocation;
+  pageMovementLogs: string[];
+  visitedPageDocIDList: string[];
 }) => <const>{ type: CHANGE_CURRENT_PAGE, payload };
 
 export const goToTheNextPage = () => <const>{ type: GO_TO_THE_NEXT_PAGE };

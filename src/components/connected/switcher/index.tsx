@@ -7,6 +7,7 @@ import { ILocation, ISlideMoveDirection, IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
+  SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   SET_VISITED_PAGE_DOCID,
   START_SURVEY,
@@ -19,10 +20,7 @@ import {
 } from "../../../services/redux/actions";
 import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
 
-import {
-  findFirstIncompleteQuestion,
-  sectionValidtion,
-} from "../../../utils/questionIsDone";
+import { findFirstIncompleteQuestion } from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
 import Nav from "../../common/Nav";
 
@@ -54,18 +52,12 @@ const Switcher: React.FC<ISwitcherProps> = ({
   }
 
   const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
-  const { pageIndex, pathName } = location;
+  const { pageIndex } = location;
   const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
     pages,
     userAnswers
   );
-
-  // const resultSectionValidation =
-  //   pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
-  // console.log("resultSectionValidation", resultSectionValidation);
-
-  const rightClick = setNextPage;
 
   const completeSurvey = () => {
     noticePage(String(pages[pageIndex].docID));
@@ -174,7 +166,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             onClick={() => {
               nextLocation.pageIndex === pagesCount
                 ? completeSurvey()
-                : rightClick();
+                : setNextPage();
             }}
           >
             {nextLocation.pageIndex === pagesCount
@@ -195,7 +187,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             css={iconBtnCss("right")}
             disabled={nextLocation.pageIndex === pagesCount}
             onClick={() => {
-              rightClick();
+              setNextPage();
             }}
           >
             <ChevronRightIcon fontSize="large" />
@@ -258,14 +250,14 @@ const mapStateToProps = (state: IState) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
-    setNextPage: () => dispatch(goToTheNextPage()),
-    setPrevPage: () => dispatch(goToThePrevPage()),
+    setNextPage: () =>
+      dispatch({ type: SAGA_CHANGE_CURRENT_PAGE, direction: "right-to-left" }),
+    setPrevPage: () =>
+      dispatch({ type: SAGA_CHANGE_CURRENT_PAGE, direction: "left-to-right" }),
 
-    closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {
       dispatch({ type: COMPLETE_SURVEY });
       dispatch(

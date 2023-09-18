@@ -9,6 +9,7 @@ import {
 } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
+import { getNewLocationProps } from "../../utils/getNewLocationProps";
 import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
@@ -31,9 +32,11 @@ import {
   setCurrentPage,
   goToTheNextPage,
   goToThePrevPage,
+  toggleModalVoisible,
 } from "../redux/actions";
 import {
   selectAnswers,
+  selectChangePageProps,
   selectCurrentLocation,
   selectPages,
   selectPathName,
@@ -45,6 +48,7 @@ import {
   COMPLETE_SURVEY,
   CONTINUE_PREV_SURVEY,
   FETCH_SURVEY_DATA,
+  GO_TO_THE_NEXT_PAGE,
   SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   START_SURVEY,
@@ -174,19 +178,58 @@ function* changeCurrentPage({
   type: typeof SAGA_CHANGE_CURRENT_PAGE;
   direction: ISlideMoveDirection;
 }) {
-  const { uid } = yield select(selectUid);
-  const { userAnswers } = yield select(selectAnswers);
+  const {
+    uid,
+    userAnswers,
+    location,
+    pages,
+    visitedPageDocIDList,
+    pageTransitionRuleDict,
+    pageMovementLogs,
+    pagesDict,
+    surveyCompletionRuleArr,
+    targetPageTransitionRuleArr,
+  } = yield select(selectChangePageProps);
+
   const answers = userAnswerParses(userAnswers);
   const path = PATH_NAME + "answers/?uid=" + uid;
+
+  const {
+    location: newLocation,
+    pageMovementLogs: newPageMovementLogs,
+    visitedPageDocIDList: newVisitedPageDocIDList,
+  } = getNewLocationProps({
+    location,
+    pageMovementLogs,
+    pages,
+    pagesDict,
+    pageTransitionRuleDict,
+    surveyCompletionRuleArr,
+    userAnswers,
+    visitedPageDocIDList,
+    slideMoveDirection: direction,
+    targetPageTransitionRuleArr,
+  });
 
   try {
     yield put(setLoading(true));
     const result: unknown = yield call(() => sendData(path, answers));
-    if (direction === "right-to-left") {
-      yield put(goToTheNextPage());
-    } else {
-      yield put(goToThePrevPage());
+
+    if (newLocation.pathName === "completion") {
+      yield put(toggleModalVoisible(true));
+      yield put(setLoading(false));
+      return;
     }
+
+    yield put(
+      setCurrentPage({
+        slideMoveDirection: direction,
+        location: newLocation,
+        pageMovementLogs: newPageMovementLogs,
+        visitedPageDocIDList: newVisitedPageDocIDList,
+      })
+    );
+
     yield put(setLoading(false));
     console.log("sendSurveyData success", result);
   } catch (err) {
@@ -206,8 +249,6 @@ function* changeCurrentPage({
   // да? - перейти и обновить pageMovementLogs
 
   // pageMovementLogs
-
-  console.log("direction", location);
 }
 
 function* mySaga() {

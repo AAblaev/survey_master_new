@@ -326,8 +326,10 @@ export type IState = {
   modalVisible: boolean;
   visitedPageDocIDList: string[];
   needScrolling: boolean;
+  // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  targetPageTransitionRuleArr: string[];
   disqualificationRuleArr: IDisqualificationRule[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   pagesDict: IPagesDict;

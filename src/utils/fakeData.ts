@@ -1,4 +1,4 @@
-import { IData } from "../types";
+import { IData, IPageTransitionRule, IRule } from "../types";
 
 export const fakeData: IData = {
   docID: 5,
@@ -1328,6 +1328,64 @@ export const fakeData: IData = {
     },
   ],
 };
+
+export const fakeRules: IRule[] = [
+  {
+    docID: 1,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 429,
+    events: [
+      {
+        docID: 1,
+        questionID: 428,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2040,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 1,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 430,
+    events: [
+      {
+        docID: 1,
+        questionID: 428,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2041,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+];
+
+export const fakePageTransitionRules: IPageTransitionRule[] = [
+  {
+    docID: 1,
+    type: "pageTransitionRule",
+    pageID: 1,
+    targetPageID: 3,
+    title: "переход",
+    events: [
+      {
+        docID: 1,
+        type: "answeredQuestion",
+        questionID: 1,
+        eventOperator: "AND",
+      },
+    ],
+  },
+];
+
 //
 // const newFakeData = {
 //   docID: 9,

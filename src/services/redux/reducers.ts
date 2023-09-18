@@ -1,5 +1,6 @@
 import { DEFAULT_MOVE_DIRECTION } from "../../consts/const";
 import { ILocation, IState } from "../../types";
+import { fakePageTransitionRules, fakeRules } from "../../utils/fakeData";
 import { pagesParser } from "../../utils/pagesParser";
 import { sectionValidtion } from "../../utils/questionIsDone";
 import {
@@ -48,6 +49,7 @@ const initialState: IState = {
   needScrolling: false,
   visiblityRulesDict: {},
   pageTransitionRuleDict: {},
+  targetPageTransitionRuleArr: [],
   disqualificationRuleArr: [],
   surveyCompletionRuleArr: [],
   pagesDict: {},
@@ -63,9 +65,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       const { data, params } = action.payload;
       const userAnswers = answersParsed(data.answers);
       const pagesDict = pagesParser(data.pages);
-      const { visiblityRulesDict, pageTransitionRuleDict } = ruleParser(
-        data.rules ? data.rules : []
-      );
+      const {
+        visiblityRulesDict,
+        pageTransitionRuleDict,
+        disqualificationRuleArr,
+        logicalValidityCheckRuleArr,
+        surveyCompletionRuleArr,
+      } = ruleParser(data.rules ? data.rules : fakeRules);
 
       return {
         ...state,
@@ -74,6 +80,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         userAnswers,
         visiblityRulesDict,
         pageTransitionRuleDict,
+        disqualificationRuleArr,
+        logicalValidityCheckRuleArr,
+        surveyCompletionRuleArr,
         pagesDict,
       };
     }
@@ -110,6 +119,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         userAnswers,
         pagesDict,
         pageTransitionRuleDict,
+        targetPageTransitionRuleArr,
         data,
       } = state;
       const pages = data ? data.pages : [];
@@ -120,6 +130,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         pagesDict,
         pageTransitionRuleDict,
         pages,
+        targetPageTransitionRuleArr,
       });
 
       return {
@@ -132,84 +143,15 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     }
 
     case GO_TO_THE_NEXT_PAGE: {
-      const {
-        location,
-        data,
-        visitedPageDocIDList,
-        userAnswers,
-        pagesDict,
-        pageTransitionRuleDict,
-      } = state;
-      const { pageIndex } = location;
-      const { pages } = data!;
-      const currentPage = pages[pageIndex];
-      const currentPageDocID = String(currentPage.docID);
-      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
-        currentPageDocID
-      )
-        ? visitedPageDocIDList
-        : [...visitedPageDocIDList, currentPageDocID];
-
-      const resultSectionValidation = sectionValidtion(
-        currentPage,
-        userAnswers
-      );
-      if (resultSectionValidation) {
-        const nextLocation = getNextLocation({
-          currentLocation: location,
-          pageCount: pages.length,
-          pageTransitionRules: pageTransitionRuleDict[currentPageDocID],
-          userAnswers,
-          pagesDict,
-        });
-        const newPageMovementItem = String(pages[nextLocation.pageIndex].docID);
-
-        return {
-          ...state,
-          location: nextLocation,
-          slideMoveDirection: "right-to-left",
-          visitedPageDocIDList: newVisitedPageDocIDList,
-          pageMovementLogs: [...state.pageMovementLogs, newPageMovementItem],
-        };
-      }
-
-      return { ...state, visitedPageDocIDList: newVisitedPageDocIDList };
+      return { ...state };
     }
 
     case GO_TO_THE_PREVIOUS_PAGE: {
-      const {
-        location,
-        data,
-        visitedPageDocIDList,
-        pagesDict,
-        pageMovementLogs,
-      } = state;
-      const { pageIndex } = location;
-      const { pages } = data!;
-      const currentPage = pages[pageIndex];
-      const currentPageDocID = String(currentPage.docID);
-      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
-        currentPageDocID
-      )
-        ? visitedPageDocIDList
-        : [...visitedPageDocIDList, currentPageDocID];
-      const prevPageDocID =
-        pageMovementLogs[pageMovementLogs.indexOf(currentPageDocID) - 1];
-      const prevLocation = {
-        ...location,
-        pageIndex: pagesDict[prevPageDocID].order,
-      };
-      const newPageMovementLogs = state.pageMovementLogs.filter(
-        (_v, i, arr) => i !== arr.length - 1
-      );
-      return {
-        ...state,
-        location: prevLocation,
-        slideMoveDirection: "left-to-right",
+      return { ...state };
+    }
 
-        visitedPageDocIDList: newVisitedPageDocIDList,
-        pageMovementLogs: newPageMovementLogs,
-      };
+    case CHANGE_CURRENT_PAGE: {
+      return { ...state, ...action.payload };
     }
 
     case IS_LOADING: {
@@ -305,3 +247,92 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     }
   }
 };
+
+//
+//
+// case GO_TO_THE_NEXT_PAGE: {
+//   console.log("GO_TO_THE_NEXT_PAGE");
+//   const {
+//     location,
+//     data,
+//     visitedPageDocIDList,
+//     userAnswers,
+//     pagesDict,
+//     pageTransitionRuleDict,
+//   } = state;
+//   const { pageIndex } = location;
+//   const { pages } = data!;
+//   const currentPage = pages[pageIndex];
+//
+//   const currentPageDocID = String(currentPage.docID);
+//   const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+//     currentPageDocID
+//   )
+//     ? visitedPageDocIDList
+//     : [...visitedPageDocIDList, currentPageDocID];
+//
+//   const resultSectionValidation = sectionValidtion(
+//     currentPage,
+//     userAnswers
+//   );
+//   if (resultSectionValidation) {
+//     const nextLocation = getNextLocation({
+//       currentLocation: location,
+//       pageCount: pages.length,
+//       pageTransitionRules: pageTransitionRuleDict[currentPageDocID],
+//       userAnswers,
+//       pagesDict,
+//     });
+//     const newPageMovementItem = String(pages[nextLocation.pageIndex].docID);
+//
+//     return {
+//       ...state,
+//       location: nextLocation,
+//       slideMoveDirection: "right-to-left",
+//       visitedPageDocIDList: newVisitedPageDocIDList,
+//       pageMovementLogs: [...state.pageMovementLogs, newPageMovementItem],
+//     };
+//   }
+//
+//   return { ...state, visitedPageDocIDList: newVisitedPageDocIDList };
+// }
+//
+// case GO_TO_THE_PREVIOUS_PAGE: {
+//   const {
+//     location,
+//     data,
+//     visitedPageDocIDList,
+//     pagesDict,
+//     pageMovementLogs,
+//   } = state;
+//   const { pageIndex } = location;
+//   const { pages } = data!;
+//   const currentPage = pages[pageIndex];
+//   const currentPageDocID = String(currentPage.docID);
+//   const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+//     currentPageDocID
+//   )
+//     ? visitedPageDocIDList
+//     : [...visitedPageDocIDList, currentPageDocID];
+//   const prevPageDocID =
+//     pageMovementLogs[pageMovementLogs.indexOf(currentPageDocID) - 1];
+//   const prevLocation = {
+//     ...location,
+//     pageIndex: pagesDict[prevPageDocID].order,
+//   };
+//   const newPageMovementLogs = state.pageMovementLogs.filter(
+//     (_v, i, arr) => i !== arr.length - 1
+//   );
+//
+//   console.log("newVisitedPageDocIDList", newVisitedPageDocIDList);
+//   console.log("newPageMovementLogs", newPageMovementLogs);
+//
+//   return {
+//     ...state,
+//     location: prevLocation,
+//     slideMoveDirection: "left-to-right",
+//
+//     visitedPageDocIDList: newVisitedPageDocIDList,
+//     pageMovementLogs: newPageMovementLogs,
+//   };
+// }

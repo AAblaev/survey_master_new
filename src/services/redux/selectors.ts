@@ -29,3 +29,18 @@ export const selectCurrentLocation = (state: IState) => ({
 export const showPageList = (state: IState) => ({
   isShowPageList: state.data?.isShowPageList,
 });
+
+export const selectChangePageProps = (state: IState) => {
+  return {
+    uid: state.params.uid,
+    userAnswers: state.userAnswers,
+    location: state.location,
+    pages: state.data!.pages,
+    visitedPageDocIDList: state.visitedPageDocIDList,
+    pageTransitionRuleDict: state.pageTransitionRuleDict,
+    pageMovementLogs: state.pageMovementLogs,
+    pagesDict: state.pagesDict,
+    surveyCompletionRuleArr: state.surveyCompletionRuleArr,
+    targetPageTransitionRuleArr: state.targetPageTransitionRuleArr,
+  };
+};
