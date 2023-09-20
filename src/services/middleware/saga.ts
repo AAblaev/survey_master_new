@@ -4,13 +4,22 @@ import {
   IAnswer,
   IBackendAnswer,
   IData,
+  IDisqualificationRule,
   ILocation,
   ISlideMoveDirection,
+  ISurveyCompletionRule,
 } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
 import { getNewLocationProps } from "../../utils/getNewLocationProps";
-import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
+import {
+  findFirstIncompleteQuestion,
+  requiredQuestionsChecking,
+} from "../../utils/questionIsDone";
+import {
+  disqualificationRuleChecking,
+  surveyCompletionChecking,
+} from "../../utils/rule-utils";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
 import {
@@ -33,6 +42,7 @@ import {
   goToTheNextPage,
   goToThePrevPage,
   toggleModalVoisible,
+  setVisitedPageDocID,
 } from "../redux/actions";
 import {
   selectAnswers,
@@ -52,6 +62,7 @@ import {
   SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   START_SURVEY,
+  TOGGLE_MODAL_VISIBLE,
 } from "../redux/types";
 import { getParams } from "./utils";
 
@@ -139,8 +150,8 @@ function* sendSurveyData() {
   const { userAnswers } = yield select(selectAnswers);
   const answers = userAnswerParses(userAnswers);
   const path = PATH_NAME + "answers/?uid=" + uid;
-  console.log("path", path);
-  console.log("answers", answers);
+  // console.log("path", path);
+  // console.log("answers", answers);
 
   try {
     yield put(setLoading(true));
@@ -174,67 +185,120 @@ function* completeSurvey() {
 
 function* changeCurrentPage({
   direction,
+  targetPageID,
 }: {
   type: typeof SAGA_CHANGE_CURRENT_PAGE;
   direction: ISlideMoveDirection;
+  targetPageID?: string;
 }) {
+  // если пользователь решил перейти на однц из предыдущих страниц
+  // проверки на дисквалификацию и завершение, а так же валидация ответов не вызываются
+
   const {
     uid,
     userAnswers,
     location,
     pages,
-    visitedPageDocIDList,
-    pageTransitionRuleDict,
-    pageMovementLogs,
-    pagesDict,
     surveyCompletionRuleArr,
-    targetPageTransitionRuleArr,
+    disqualificationRuleArr,
   } = yield select(selectChangePageProps);
 
   const answers = userAnswerParses(userAnswers);
   const path = PATH_NAME + "answers/?uid=" + uid;
+  if (direction === "left-to-right") {
+    try {
+      yield put(setLoading(true));
+      const result: unknown = yield call(() => sendData(path, answers));
+      yield put(setLoading(false));
+      console.log("sendSurveyData success", result);
+    } catch (err) {
+      console.log("error", err);
+    }
 
-  const {
-    location: newLocation,
-    pageMovementLogs: newPageMovementLogs,
-    visitedPageDocIDList: newVisitedPageDocIDList,
-  } = getNewLocationProps({
-    location,
-    pageMovementLogs,
-    pages,
-    pagesDict,
-    pageTransitionRuleDict,
-    surveyCompletionRuleArr,
-    userAnswers,
-    visitedPageDocIDList,
-    slideMoveDirection: direction,
-    targetPageTransitionRuleArr,
-  });
+    yield put(goToThePrevPage({ direction, targetPageID }));
+    return;
+  }
+
+  const currentPage = pages[location.pageIndex];
+
+  // валидация страницы
+  const pageValidationResult = !requiredQuestionsChecking(
+    currentPage,
+    userAnswers
+  );
+
+  if (!pageValidationResult) {
+    yield put(setVisitedPageDocID(String(currentPage.docID)));
+    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+    return;
+  }
+
+  // проверка на дисквалификацию
+  const isDisqualificated = disqualificationRuleArr.some(
+    (rule: IDisqualificationRule) =>
+      disqualificationRuleChecking(userAnswers, rule)
+  );
+  if (isDisqualificated) {
+    yield put(setVisitedPageDocID(String(currentPage.docID)));
+    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+  }
+
+  // проверка на complete rule
+  const isComplete = surveyCompletionRuleArr.some(
+    (rule: ISurveyCompletionRule) => surveyCompletionChecking(userAnswers, rule)
+  );
+  if (isComplete) {
+    yield put(setVisitedPageDocID(String(currentPage.docID)));
+    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+  }
+
+  // отправить ответы
+  // const answers = userAnswerParses(userAnswers);
+  // const path = PATH_NAME + "answers/?uid=" + uid;
 
   try {
     yield put(setLoading(true));
     const result: unknown = yield call(() => sendData(path, answers));
-
-    if (newLocation.pathName === "completion") {
-      yield put(toggleModalVoisible(true));
-      yield put(setLoading(false));
-      return;
-    }
-
-    yield put(
-      setCurrentPage({
-        slideMoveDirection: direction,
-        location: newLocation,
-        pageMovementLogs: newPageMovementLogs,
-        visitedPageDocIDList: newVisitedPageDocIDList,
-      })
-    );
-
     yield put(setLoading(false));
     console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);
   }
+
+  if (isComplete || isDisqualificated) {
+    return;
+  }
+
+  yield put(goToTheNextPage({ direction, targetPageID }));
+
+  // const strictModeNavigation = Object.keys(pageTransitionRuleDict).length > 0;
+  // сменить страницу
+  // strictModeNavigation
+  //
+  // const {
+  //   location: newLocation,
+  //   pageMovementLogs: newPageMovementLogs,
+  //   visitedPageDocIDList: newVisitedPageDocIDList,
+  // } = getNewLocationProps({
+  //   location,
+  //   pageMovementLogs,
+  //   pages,
+  //   pagesDict,
+  //   pageTransitionRuleDict,
+  //   userAnswers,
+  //   visitedPageDocIDList,
+  //   slideMoveDirection: direction,
+  //   targetPageTransitionRuleArr,
+  // });
+  //
+  // yield put(
+  //   setCurrentPage({
+  //     slideMoveDirection: direction,
+  //     location: newLocation,
+  //     pageMovementLogs: newPageMovementLogs,
+  //     visitedPageDocIDList: newVisitedPageDocIDList,
+  //   })
+  // );
 
   // const { location,pageMovementLogs } = yield select(selectCurrentLocation);
   // const {pages} = yield select(selectPages)

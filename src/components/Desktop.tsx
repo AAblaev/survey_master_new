@@ -69,7 +69,7 @@ const Desktop: React.FC<IDesktop> = ({
   closeModal,
   selectPage,
 }) => {
-  // console.log("render", location);
+  console.log("render", location);
   const { title, pathName, pageIndex } = location;
   const {
     pages,

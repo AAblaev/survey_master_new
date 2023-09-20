@@ -41,6 +41,7 @@ export const selectChangePageProps = (state: IState) => {
     pageMovementLogs: state.pageMovementLogs,
     pagesDict: state.pagesDict,
     surveyCompletionRuleArr: state.surveyCompletionRuleArr,
+    disqualificationRuleArr: state.disqualificationRuleArr,
     targetPageTransitionRuleArr: state.targetPageTransitionRuleArr,
   };
 };

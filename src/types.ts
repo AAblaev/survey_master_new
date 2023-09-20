@@ -334,4 +334,5 @@ export type IState = {
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   pagesDict: IPagesDict;
   pageMovementLogs: string[];
+  strictModeNavigation: boolean;
 };

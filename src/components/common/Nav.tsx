@@ -5,7 +5,7 @@ import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { IPage, ISlideMoveDirection } from "../../types";
+import { IPage, IPagesDict, ISlideMoveDirection } from "../../types";
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR } from "../../consts/const";
 import { homeButtonCss } from "../../sc";
@@ -34,24 +34,19 @@ const menuItemCss = css``;
 
 type INavProps = {
   title: string;
-  currentPageIndex: number;
-  pages: IPage[];
-  isShowPageList: boolean;
-  onChange: (
-    pageIndex: number,
-    slideMoveDirection: ISlideMoveDirection
-  ) => void;
+  pageList: IPage[];
+  showList: boolean;
+  selectPage: (pageDocID: string) => void;
+  // isShowPageList: boolean;
 };
 
 const Nav: React.FC<INavProps> = ({
   title,
-  currentPageIndex,
-  pages,
-  onChange,
-  isShowPageList,
+  pageList,
+  selectPage,
+  showList,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const showList = isShowPageList || currentPageIndex > 1;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     showList && setAnchorEl(event.currentTarget);
@@ -73,19 +68,14 @@ const Nav: React.FC<INavProps> = ({
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {pages.map((page, pageIndex) => {
-          if (currentPageIndex > pageIndex || isShowPageList)
+        {pageList.map((page, pageIndex) => {
+          if (showList)
             return (
               <MenuItem
                 key={pageIndex}
                 css={menuItemCss}
                 onClick={() => {
-                  onChange(
-                    pageIndex,
-                    currentPageIndex < pageIndex
-                      ? "right-to-left"
-                      : "left-to-right"
-                  );
+                  selectPage(String(page.docID));
                   handleClose();
                 }}
               >

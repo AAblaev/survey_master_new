@@ -32,41 +32,44 @@ const Switcher: React.FC<ISwitcherProps> = ({
   buttonNextCaption,
   buttonBackCaption,
   buttonFinishCaption,
-  pagesCount,
   isShowPageList,
-  handleClick,
   startSurvey,
   isEmptyData,
-  submit,
-  openModal,
-  noticePage,
+  completeSurvey,
   userAnswers,
   pages,
   uid,
   continueSurvey,
   setNextPage,
   setPrevPage,
+  selectPage,
+  showFinishBtn,
+  strictModeNavigation,
+  pageList,
+  setFirstPage,
 }) => {
   if (isEmptyData) {
     return null;
   }
 
-  const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
   const { pageIndex } = location;
-  const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
+  const showBackBtn = !(!isShowPageList && pageIndex === 0);
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
     pages,
     userAnswers
   );
 
-  const completeSurvey = () => {
-    noticePage(String(pages[pageIndex].docID));
-    if (!firstIncompleteQuestion) {
-      submit();
-      return;
-    }
-    openModal();
-  };
+  const firstPageDocID = String(pages[0].docID);
+
+  // saga action
+  // const completeSurvey = () => {
+  //   noticePage(String(pages[pageIndex].docID));
+  //   if (!firstIncompleteQuestion) {
+  //     submit();
+  //     return;
+  //   }
+  //   openModal();
+  // };
 
   const pageTitle = pages[pageIndex].title
     ? pages[pageIndex].title
@@ -98,18 +101,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Button
             key="1"
             css={buttonCss(true, "right")}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "section",
-                  title: "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
+            onClick={() => setFirstPage(firstPageDocID)}
           >
             {buttonNextCaption}
           </Button>
@@ -117,21 +109,11 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton1"
             css={iconBtnCss("right")}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "section",
-                  title: "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
+            onClick={() => setFirstPage(firstPageDocID)}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
+
           <IconButton key="IconButton2" css={iconBtnCss("left")} disabled>
             <ChevronRightIcon fontSize="large" />
           </IconButton>
@@ -143,35 +125,19 @@ const Switcher: React.FC<ISwitcherProps> = ({
         <>
           <Nav
             title={pageTitle}
-            pages={pages}
-            currentPageIndex={pageIndex}
-            isShowPageList={isShowPageList}
-            onChange={(pageIndex, slideMoveDirection) => {
-              handleClick({
-                location: {
-                  pageIndex: pageIndex,
-                  pathName: "section",
-                  questionIndex: 0,
-                  title: "section",
-                },
-                needSendAnswers: true,
-                slideMoveDirection: slideMoveDirection,
-              });
-            }}
+            pageList={pageList}
+            showList={isShowPageList}
+            selectPage={selectPage}
           />
 
           <Button
             key="1"
             css={buttonCss(true, "right")}
             onClick={() => {
-              nextLocation.pageIndex === pagesCount
-                ? completeSurvey()
-                : setNextPage();
+              showFinishBtn ? completeSurvey() : setNextPage();
             }}
           >
-            {nextLocation.pageIndex === pagesCount
-              ? buttonFinishCaption
-              : buttonNextCaption}
+            {showFinishBtn ? buttonFinishCaption : buttonNextCaption}
           </Button>
 
           <Button
@@ -185,17 +151,18 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton1"
             css={iconBtnCss("right")}
-            disabled={nextLocation.pageIndex === pagesCount}
+            disabled={showFinishBtn}
             onClick={() => {
               setNextPage();
             }}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
+
           <IconButton
             key="IconButton2"
             css={iconBtnCss("left")}
-            disabled={!isShowPageList && prevLocation.pathName === "survey"}
+            disabled={strictModeNavigation && location.pageIndex === 0}
             onClick={() => setPrevPage()}
           >
             <ChevronRightIcon fontSize="large" />
@@ -217,9 +184,12 @@ const mapStateToProps = (state: IState) => {
     params,
     pageMovementLogs,
     visitedPageDocIDList,
+    pageTransitionRuleDict,
+    strictModeNavigation,
+    pagesDict,
   } = state;
-  console.log("pageMovementLogs", pageMovementLogs);
-  console.log("visitedPageDocIDList", visitedPageDocIDList);
+  // console.log("pageMovementLogs", pageMovementLogs);
+  // console.log("visitedPageDocIDList", visitedPageDocIDList);
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
@@ -230,7 +200,13 @@ const mapStateToProps = (state: IState) => {
   const pages = data?.pages || [];
   const pagesCount = pages.length;
   const uid = isEmptyData ? "" : params?.uid;
-
+  const currentPage = pages[location.pageIndex];
+  const pageTransitionRules = pageTransitionRuleDict[String(currentPage.docID)];
+  const showFinishBtn =
+    location.pageIndex + 1 === pagesCount && !pageTransitionRules;
+  const pageList = strictModeNavigation
+    ? pageMovementLogs.map((pageDocID) => pagesDict[pageDocID].page)
+    : pages;
   return {
     isEmptyData,
     userAnswers,
@@ -245,6 +221,9 @@ const mapStateToProps = (state: IState) => {
     pages,
     pagesCount,
     uid,
+    showFinishBtn,
+    strictModeNavigation,
+    pageList,
   };
 };
 
@@ -252,44 +231,65 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
-    openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
-    setNextPage: () =>
-      dispatch({ type: SAGA_CHANGE_CURRENT_PAGE, direction: "right-to-left" }),
-    setPrevPage: () =>
-      dispatch({ type: SAGA_CHANGE_CURRENT_PAGE, direction: "left-to-right" }),
+    setNextPage: (docID?: string) =>
+      dispatch({
+        type: SAGA_CHANGE_CURRENT_PAGE,
+        direction: "right-to-left",
+        targetPageID: docID,
+      }),
+    setPrevPage: (docID?: string) =>
+      dispatch({
+        type: SAGA_CHANGE_CURRENT_PAGE,
+        direction: "left-to-right",
+        targetPageID: docID,
+      }),
 
-    submit: () => {
+    setFirstPage: (targetPageID: string) => {
+      dispatch(goToTheNextPage({ direction: "right-to-left", targetPageID }));
+    },
+
+    // setSurveyPage:()=>dispatch(changeCurretLocation({
+    //   location: {
+    //     pageIndex: 0,
+    //     questionIndex: 0,
+    //     pathName: "survey",
+    //     title: "survey",
+    //   },
+    //   slideMoveDirection: "left-to-right",
+    // })),
+
+    selectPage: (pageDocID: string) => {},
+
+    completeSurvey: () => {
       dispatch({ type: COMPLETE_SURVEY });
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: 0,
-            questionIndex: 0,
-            pathName: "completion",
-            title: "completion",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
+      // dispatch(
+      //   changeCurretLocation({
+      //     location: {
+      //       pageIndex: 0,
+      //       questionIndex: 0,
+      //       pathName: "completion",
+      //       title: "completion",
+      //     },
+      //     slideMoveDirection: "right-to-left",
+      //   })
+      // );
     },
-    handleClick: (payload: {
-      location: ILocation;
-      slideMoveDirection: ISlideMoveDirection;
-      needSendAnswers: boolean;
-    }) => {
-      const { location, slideMoveDirection, needSendAnswers } = payload;
-      // dispatch({ type: CHANGE_CURRENT_PAGE, direction: slideMoveDirection });
-      dispatch(
-        changeCurretLocation({
-          location: location,
-          slideMoveDirection: slideMoveDirection,
-        })
-      );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
-    },
-    noticePage: (docID: string) => {
-      dispatch({ type: SET_VISITED_PAGE_DOCID, payload: docID });
-    },
+
+    // handleClick: (payload: {
+    //   location: ILocation;
+    //   slideMoveDirection: ISlideMoveDirection;
+    //   needSendAnswers: boolean;
+    // }) => {
+    //   const { location, slideMoveDirection, needSendAnswers } = payload;
+    //   // dispatch({ type: CHANGE_CURRENT_PAGE, direction: slideMoveDirection });
+    //   dispatch(
+    //     changeCurretLocation({
+    //       location: location,
+    //       slideMoveDirection: slideMoveDirection,
+    //     })
+    //   );
+    //   needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
+    // },
   };
 };
 

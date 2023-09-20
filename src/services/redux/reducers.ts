@@ -54,10 +54,11 @@ const initialState: IState = {
   surveyCompletionRuleArr: [],
   pagesDict: {},
   pageMovementLogs: [],
+  strictModeNavigation: false,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  // console.log(action.type);
+  console.log(action.type);
   // console.log(state);
 
   switch (action.type) {
@@ -72,7 +73,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         logicalValidityCheckRuleArr,
         surveyCompletionRuleArr,
       } = ruleParser(data.rules ? data.rules : fakeRules);
-
+      const strictModeNavigation =
+        !data.isShowPageList || Object.keys(pageTransitionRuleDict).length > 0;
       return {
         ...state,
         params,
@@ -84,6 +86,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         logicalValidityCheckRuleArr,
         surveyCompletionRuleArr,
         pagesDict,
+        strictModeNavigation,
       };
     }
 
@@ -143,11 +146,140 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     }
 
     case GO_TO_THE_NEXT_PAGE: {
-      return { ...state };
+      const {
+        location,
+        pageTransitionRuleDict,
+        data,
+        pageMovementLogs,
+        pagesDict,
+        userAnswers,
+        targetPageTransitionRuleArr,
+        visitedPageDocIDList,
+        strictModeNavigation,
+      } = state;
+      const { direction, targetPageID } = action.payload;
+
+      if (!strictModeNavigation) {
+        const nextPageIndex = targetPageID
+          ? pagesDict[targetPageID].order
+          : location.pageIndex + 1;
+        const nextLocation: ILocation = {
+          pathName: "section",
+          title: "section",
+          pageIndex: nextPageIndex,
+          questionIndex: 0,
+        };
+        return {
+          ...state,
+          location: nextLocation,
+          slideMoveDirection: direction,
+        };
+      }
+
+      const pages = data!.pages;
+      const { pageIndex } = location;
+      const currentPage = pages[pageIndex];
+      const currentPageDocID = String(currentPage.docID);
+
+      const nextLocation = getNextLocation({
+        currentLocation: location,
+        pageCount: pages.length,
+        pageTransitionRules: pageTransitionRuleDict[currentPageDocID],
+        userAnswers,
+        pagesDict,
+        pageMovementLogs,
+        pages,
+        targetPageTransitionRuleArr,
+      });
+
+      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+        currentPageDocID
+      )
+        ? visitedPageDocIDList
+        : [...visitedPageDocIDList, currentPageDocID];
+
+      if (nextLocation.pathName === "completion") {
+        return {
+          ...state,
+          visitedPageDocIDList: newVisitedPageDocIDList,
+          modalVisible: true,
+        };
+      }
+
+      const newPageMovementLogs = [
+        ...pageMovementLogs,
+        String(pages[nextLocation.pageIndex].docID),
+      ];
+
+      return {
+        ...state,
+        location: nextLocation,
+        pageMovementLogs: newPageMovementLogs,
+        visitedPageDocIDList: newVisitedPageDocIDList,
+        slideMoveDirection: direction,
+      };
     }
 
     case GO_TO_THE_PREVIOUS_PAGE: {
-      return { ...state };
+      const {
+        location,
+        data,
+        pageMovementLogs,
+        pagesDict,
+        strictModeNavigation,
+      } = state;
+      const { targetPageID, direction } = action.payload;
+      if (!strictModeNavigation) {
+        const prevPageIndex = targetPageID
+          ? pagesDict[targetPageID].order
+          : location.pageIndex - 1;
+
+        const pathName = prevPageIndex < 0 ? "survey" : "section";
+        const title = prevPageIndex < 0 ? "survey" : "section";
+
+        const prevLocation: ILocation = {
+          pathName: pathName,
+          title: title,
+          pageIndex: prevPageIndex < 0 ? 0 : prevPageIndex,
+          questionIndex: 0,
+        };
+
+        console.log("prevLocation", prevLocation);
+        return {
+          ...state,
+          location: prevLocation,
+          slideMoveDirection: direction,
+        };
+      }
+
+      const pages = data!.pages;
+      const { pageIndex } = location;
+      const currentPage = pages[pageIndex];
+      const currentPageDocID = String(currentPage.docID);
+
+      const prevPageDocID = targetPageID
+        ? targetPageID
+        : pageMovementLogs[pageMovementLogs.indexOf(currentPageDocID) - 1];
+
+      const prevLocation = {
+        pathName: "section",
+        title: "section",
+        slideMoveDirection: direction,
+        pageIndex: pagesDict[prevPageDocID].order,
+        questionIndex: 0,
+      };
+
+      const prevIndexInLogs = pageMovementLogs.indexOf(prevPageDocID);
+      const newPageMovementLogs = pageMovementLogs.filter(
+        (_v, i) => !(i > prevIndexInLogs)
+      );
+
+      return {
+        ...state,
+        location: prevLocation,
+        slideMoveDirection: direction,
+        pageMovementLogs: newPageMovementLogs,
+      };
     }
 
     case CHANGE_CURRENT_PAGE: {

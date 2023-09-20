@@ -134,5 +134,12 @@ export const setCurrentPage = (payload: {
   visitedPageDocIDList: string[];
 }) => <const>{ type: CHANGE_CURRENT_PAGE, payload };
 
-export const goToTheNextPage = () => <const>{ type: GO_TO_THE_NEXT_PAGE };
-export const goToThePrevPage = () => <const>{ type: GO_TO_THE_PREVIOUS_PAGE };
+export const goToTheNextPage = (payload: {
+  direction: ISlideMoveDirection;
+  targetPageID: string | undefined;
+}) => <const>{ type: GO_TO_THE_NEXT_PAGE, payload };
+
+export const goToThePrevPage = (payload: {
+  direction: ISlideMoveDirection;
+  targetPageID: string | undefined;
+}) => <const>{ type: GO_TO_THE_PREVIOUS_PAGE, payload };

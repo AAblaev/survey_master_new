@@ -19,7 +19,6 @@ type IGetNewLocationProps = (payload: {
   pages: IPage[];
   pagesDict: IPagesDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
-  surveyCompletionRuleArr: ISurveyCompletionRule[];
   slideMoveDirection: ISlideMoveDirection;
 }) => {
   location: ILocation;
@@ -33,28 +32,27 @@ export const getNewLocationProps: IGetNewLocationProps = ({
   pages,
   pagesDict,
   pageTransitionRuleDict,
-  surveyCompletionRuleArr,
   userAnswers,
   visitedPageDocIDList,
   slideMoveDirection,
   targetPageTransitionRuleArr,
 }) => {
-  if (
-    surveyCompletionRuleArr.some((rule) =>
-      surveyCompletionChecking(userAnswers, rule)
-    )
-  ) {
-    return {
-      location: {
-        pathName: "completion",
-        title: "completion",
-        pageIndex: 0,
-        questionIndex: 0,
-      },
-      pageMovementLogs,
-      visitedPageDocIDList,
-    };
-  }
+  // if (
+  //   surveyCompletionRuleArr.some((rule) =>
+  //     surveyCompletionChecking(userAnswers, rule)
+  //   )
+  // ) {
+  //   return {
+  //     location: {
+  //       pathName: "completion",
+  //       title: "completion",
+  //       pageIndex: 0,
+  //       questionIndex: 0,
+  //     },
+  //     pageMovementLogs,
+  //     visitedPageDocIDList,
+  //   };
+  // }
 
   const { pageIndex } = location;
   const currentPage = pages[pageIndex];

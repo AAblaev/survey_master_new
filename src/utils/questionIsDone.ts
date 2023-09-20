@@ -32,6 +32,15 @@ export const findFirstIncompleteQuestion = (
   return null; // Возвращаем null, если все вопросы выполнены
 };
 
+export const requiredQuestionsChecking = (
+  page: IPage,
+  userAnswers: IUserAnswer
+) => {
+  return page.questions.some(
+    (q) => q.isRequired && !questionValidation(q, userAnswers)
+  );
+};
+
 export const getNeedCorrect = (
   isRequired: boolean,
   isEmpty: boolean,
