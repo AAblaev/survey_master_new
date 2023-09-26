@@ -47,6 +47,7 @@ import {
 import {
   selectAnswers,
   selectChangePageProps,
+  selectCompleteSurveyProps,
   selectCurrentLocation,
   selectPages,
   selectPathName,
@@ -164,8 +165,25 @@ function* sendSurveyData() {
 }
 
 function* completeSurvey() {
-  const { uid } = yield select(selectUid);
-  const { userAnswers } = yield select(selectAnswers);
+  const {
+    uid,
+    userAnswers,
+    location,
+    pages,
+    pageMovementLogs,
+    pagesDict,
+    strictModeNavigation,
+  } = yield select(selectCompleteSurveyProps);
+  const currentPage = pages[location.pageIndex];
+
+  // const validationResult = true;
+  //
+  // if (!validationResult) {
+  //   yield put(setVisitedPageDocID(String(currentPage.docID)));
+  //   yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+  //   return;
+  // }
+
   const answers = userAnswerParses(userAnswers);
   const pathSendData = PATH_NAME + "answers/?uid=" + uid;
   const pathComplete = PATH_NAME + "complete/" + uid;

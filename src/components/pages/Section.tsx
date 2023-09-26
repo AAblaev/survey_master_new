@@ -25,28 +25,10 @@ export type ISectionProps = {
   questionCount: number;
 };
 
-const Section: React.FC<IOwnSectionProps> = ({
-  page,
-  questionCount,
-  showFinishBtn,
-  buttonFinishCaption,
-  noticePage,
-  submit,
-  openModal,
-  resultValidation,
-}) => {
+const Section: React.FC<IOwnSectionProps> = ({ page, questionCount }) => {
   // console.log("Section", questionCount);
   const questions = page.questions ? page.questions : [];
   let counter = 0;
-
-  const completeSurvey = () => {
-    noticePage(String(page.docID));
-    if (!resultValidation) {
-      submit();
-      return;
-    }
-    openModal();
-  };
 
   return (
     <div>
@@ -68,21 +50,23 @@ const Section: React.FC<IOwnSectionProps> = ({
           );
         })}
       </div>
-      {showFinishBtn && (
-        <Button
-          key="finish"
-          css={onlyDesctopButtonCss}
-          variant="contained"
-          onClick={() => {
-            completeSurvey();
-          }}
-        >
-          {buttonFinishCaption}
-        </Button>
-      )}
     </div>
   );
 };
+
+//
+// {showFinishBtn && (
+//   <Button
+//     key="finish"
+//     css={onlyDesctopButtonCss}
+//     variant="contained"
+//     onClick={() => {
+//       completeSurvey();
+//     }}
+//   >
+//     {buttonFinishCaption}
+//   </Button>
+// )}
 
 const mapStateToProps = (state: IState) => {
   const {

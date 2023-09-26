@@ -1384,6 +1384,81 @@ export const fakePageTransitionRules: IPageTransitionRule[] = [
       },
     ],
   },
+  {
+    docID: 2,
+    type: "pageTransitionRule",
+    pageID: 3,
+    targetPageID: 2,
+    title: "переход",
+    events: [
+      {
+        docID: 2,
+        type: "answeredQuestion",
+        questionID: 3,
+        eventOperator: "AND",
+      },
+    ],
+  },
+
+  {
+    docID: 3,
+    type: "pageTransitionRule",
+    pageID: 4,
+    targetPageID: 5,
+    title: "переход",
+    events: [
+      {
+        docID: 6,
+        type: "selectedOption",
+        questionID: 4,
+        eventOperator: "AND",
+        optionID: 81,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 4,
+    type: "pageTransitionRule",
+    pageID: 4,
+    targetPageID: 6,
+    title: "переход",
+    events: [
+      {
+        docID: 7,
+        type: "selectedOption",
+        questionID: 4,
+        eventOperator: "AND",
+        optionID: 82,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 5,
+    type: "pageTransitionRule",
+    pageID: 4,
+    targetPageID: 7,
+    title: "переход",
+    events: [
+      {
+        docID: 8,
+        type: "selectedOption",
+        questionID: 4,
+        eventOperator: "AND",
+        optionID: 83,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
 ];
 
 //

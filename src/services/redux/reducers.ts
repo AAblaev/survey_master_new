@@ -58,7 +58,7 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  console.log(action.type);
+  // console.log(action.type);
   // console.log(state);
 
   switch (action.type) {
@@ -72,7 +72,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         disqualificationRuleArr,
         logicalValidityCheckRuleArr,
         surveyCompletionRuleArr,
-      } = ruleParser(data.rules ? data.rules : fakeRules);
+        targetPageTransitionRuleArr,
+      } = ruleParser(data.rules ? data.rules : fakePageTransitionRules);
       const strictModeNavigation =
         !data.isShowPageList || Object.keys(pageTransitionRuleDict).length > 0;
       return {
@@ -87,6 +88,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         surveyCompletionRuleArr,
         pagesDict,
         strictModeNavigation,
+        targetPageTransitionRuleArr,
       };
     }
 
@@ -158,7 +160,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         strictModeNavigation,
       } = state;
       const { direction, targetPageID } = action.payload;
-
+      console.log("strictModeNavigation", strictModeNavigation);
       if (!strictModeNavigation) {
         const nextPageIndex = targetPageID
           ? pagesDict[targetPageID].order
