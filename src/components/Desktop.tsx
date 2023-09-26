@@ -38,6 +38,8 @@ import Survey from "./pages/Survey";
 import Section from "./pages/Section";
 import Greeting from "./pages/Greeting";
 import Menu from "./connected/Menu";
+import ModalContentComponent from "./connected/ModalContentsComponent";
+
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 
@@ -201,17 +203,7 @@ const Desktop: React.FC<IDesktop> = ({
       <footer css={footerCss}></footer>
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
-        <ModalHeader>
-          <div css={modalHeaderWrapperCss}>
-            <span>Отмена</span>
-            <IconButton onClick={() => closeModal()}>
-              <CloseIcon />
-            </IconButton>
-          </div>
-        </ModalHeader>
-        <ModalContent>
-          <div>Пожауйста, ответьте на обязательные вопросы</div>
-        </ModalContent>
+        <ModalContentComponent closeModal={closeModal} />
       </Modal>
     </>
   );

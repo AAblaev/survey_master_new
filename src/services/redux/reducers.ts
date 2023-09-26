@@ -35,6 +35,7 @@ const initialState: IState = {
   loading: false,
   error: { message: "", status: false },
   modalVisible: false,
+  modalMessageType: "greeting",
   data: null,
   location: {
     pathName: "greeting",

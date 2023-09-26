@@ -345,7 +345,7 @@ export const getNextLocation: IGetNextLocation = ({
   const firstRuleWithSuccessResult = pageTransitionRules.find((rule) =>
     pageTransitionRuleChecking(userAnswers, rule)
   );
-  console.log("firstRuleWithSuccessResult", firstRuleWithSuccessResult);
+  // console.log("firstRuleWithSuccessResult", firstRuleWithSuccessResult);
 
   if (firstRuleWithSuccessResult) {
     const pageIndex = pagesDict[firstRuleWithSuccessResult.targetPageID].order;
@@ -359,14 +359,14 @@ export const getNextLocation: IGetNextLocation = ({
   // последняя страница? -> страница завершения конец
 
   if (currentLocation.pageIndex + 1 === pageCount) {
-    console.log("completionLocation");
+    // console.log("completionLocation");
     return completionLocation;
   }
 
   // проверить что след страница отсутствует в pageMovementLogs
   // проверить что след страница отсутствует в targetPageTransitionRuleArr
 
-  console.log("targetPageTransitionRuleArr", targetPageTransitionRuleArr);
+  // console.log("targetPageTransitionRuleArr", targetPageTransitionRuleArr);
 
   const nextPage = pages.find(
     (page, index) =>

@@ -315,6 +315,8 @@ export type IPageTransitionRuleDict = {
   [key: string]: IPageTransitionRule[];
 };
 
+export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -324,6 +326,8 @@ export type IState = {
   userAnswers: IUserAnswer;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
+  modalMessageType: IModalMessageType;
+
   visitedPageDocIDList: string[];
   needScrolling: boolean;
   // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
