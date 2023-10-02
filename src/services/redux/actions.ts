@@ -27,6 +27,9 @@ import {
   CHANGE_CURRENT_PAGE,
   GO_TO_THE_NEXT_PAGE,
   GO_TO_THE_PREVIOUS_PAGE,
+  CANCEL_TRANSITION,
+  SURVEY_COMPLETION_RULE_ACTIVE,
+  SELECT_SECTION,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -35,7 +38,11 @@ export const setNewState = (payload: IState) =>
     payload,
   };
 
-export const setDataAndParams = (payload: { data: IData; params: IParams }) =>
+export const setDataAndParams = (payload: {
+  data: IData;
+  params: IParams;
+  notTheFirstTime: boolean;
+}) =>
   <const>{
     type: SET_DATA_AND_PARAMS,
     payload,
@@ -143,3 +150,13 @@ export const goToThePrevPage = (payload: {
   direction: ISlideMoveDirection;
   targetPageID: string | undefined;
 }) => <const>{ type: GO_TO_THE_PREVIOUS_PAGE, payload };
+
+export const cancelTransition = (payload: { currentPageDocID: string }) =>
+  <const>{ type: CANCEL_TRANSITION, payload };
+
+export const surveyCompletionRuleActive = (payload: {
+  currentPageDocID: string;
+}) => <const>{ type: SURVEY_COMPLETION_RULE_ACTIVE, payload };
+
+export const selectSection = (payload: { pageDocID: string }) =>
+  <const>{ type: SELECT_SECTION, payload };

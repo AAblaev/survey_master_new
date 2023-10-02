@@ -402,8 +402,6 @@ export type IGetPrevLastLocation = (payload: {
 }) => { location: ILocation; pageMovementLogs: string[] };
 
 export const getPrevLastLocation: IGetPrevLastLocation = ({
-  disqualificationRuleArr,
-  surveyCompletionRuleArr,
   userAnswers,
   pages,
   pagesDict,
@@ -414,16 +412,16 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
   const location: ILocation = firstPageLocation;
 
   // дисквалификация? -> дисквалификация конец
-  if (
-    disqualificationRuleArr.some((rule) =>
-      disqualificationRuleChecking(userAnswers, rule)
-    )
-  ) {
-    return {
-      location: disqualificationLocation,
-      pageMovementLogs: pageMovementLogs,
-    };
-  }
+  // if (
+  //   disqualificationRuleArr.some((rule) =>
+  //     disqualificationRuleChecking(userAnswers, rule)
+  //   )
+  // ) {
+  //   return {
+  //     location: disqualificationLocation,
+  //     pageMovementLogs: pageMovementLogs,
+  //   };
+  // }
 
   // complete? -> страница завершения конец??????
 
@@ -492,7 +490,14 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     pageMovementLogs,
   });
 
-  if (nextLocation.pathName === "completion") {
+  const hasAnsweredQuestionInNextPage = pages[
+    nextLocation.pageIndex
+  ].questions.some((q) => userAnswers.hasOwnProperty(String(q.docID)));
+
+  if (
+    nextLocation.pathName === "completion" ||
+    !hasAnsweredQuestionInNextPage
+  ) {
     return {
       // исправлено: было completionLocation. для случая если пользователь ответил на все вопросы, но решил продолжить на другом устройстве
       location: currentLocation,

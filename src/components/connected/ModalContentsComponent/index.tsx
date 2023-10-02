@@ -1,14 +1,13 @@
 import React from "react";
-import { Button, IconButton } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-
-import { connect, ConnectedProps } from "react-redux";
 import { Dispatch } from "redux";
+import { Button, IconButton, Typography } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import { connect, ConnectedProps } from "react-redux";
+import { ModalContent, ModalHeader } from "../../common/modal";
 import { modalHeaderWrapperCss, onlyDesctopButtonCss } from "../../../sc";
 import { buttonsWrapperCss } from "../../pages/sc";
 import { IState } from "../../../types";
 import { COMPLETE_SURVEY, START_SURVEY } from "../../../services/redux/types";
-import { ModalContent, ModalHeader } from "../../common/modal";
 
 type IModalContentComponentProps = {
   closeModal: () => void;
@@ -37,7 +36,7 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
             </div>
           </ModalHeader>
           <ModalContent>
-            <div>Хотите ли вы продолжить?</div>
+            <Typography variant="h6">Хотите ли вы продолжить?</Typography>
             <div css={buttonsWrapperCss}>
               <Button
                 key="start"
@@ -80,7 +79,9 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
             </div>
           </ModalHeader>
           <ModalContent>
-            <div>Пожауйста, ответьте на обязательные вопросы</div>
+            <Typography variant="h6">
+              Пожауйста, ответьте на обязательные вопросы
+            </Typography>
           </ModalContent>
         </>
       );
@@ -91,28 +92,34 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
         <>
           <ModalHeader>
             <div css={modalHeaderWrapperCss}>
-              <span>Отмена</span>
+              <span>Поздравляем!</span>
               <IconButton onClick={() => closeModal()}>
                 <CloseIcon />
               </IconButton>
             </div>
           </ModalHeader>
           <ModalContent>
-            <div>
-              Поздравляем, вы ответили необходимое количество обязательных
-              вопросов
+            <Typography variant="h6">
+              Вы успешно завершили этот опрос. Мы ценим ваше участие и ваши
+              ответы помогут нам собрать ценные данные.
+            </Typography>
+            <Typography variant="h6">
+              Спасибо, что уделили время для нас!
+            </Typography>
+
+            <div css={buttonsWrapperCss}>
+              <Button
+                key="continue"
+                variant="contained"
+                css={onlyDesctopButtonCss}
+                onClick={() => {
+                  completeSurvey();
+                  closeModal();
+                }}
+              >
+                Завершить
+              </Button>
             </div>
-            <Button
-              key="continue"
-              variant="contained"
-              css={onlyDesctopButtonCss}
-              onClick={() => {
-                completeSurvey();
-                closeModal();
-              }}
-            >
-              Завершить
-            </Button>
           </ModalContent>
         </>
       );

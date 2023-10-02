@@ -3,26 +3,18 @@ import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, IconButton } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { ILocation, ISlideMoveDirection, IState } from "../../../types";
+import Nav from "../../common/Nav";
+import { IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
-  FETCH_SURVEY_DATA,
   SAGA_CHANGE_CURRENT_PAGE,
-  SEND_SURVEY_DATA,
-  SET_VISITED_PAGE_DOCID,
   START_SURVEY,
-  TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
 import {
-  changeCurretLocation,
   goToTheNextPage,
-  goToThePrevPage,
+  selectSection,
 } from "../../../services/redux/actions";
-import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
-
-import { findFirstIncompleteQuestion } from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
-import Nav from "../../common/Nav";
 
 export type ISwitcherProps = ConnectedProps<typeof connector>;
 
@@ -31,22 +23,19 @@ const Switcher: React.FC<ISwitcherProps> = ({
   buttonStartCaption,
   buttonNextCaption,
   buttonBackCaption,
-  buttonFinishCaption,
   isShowPageList,
   startSurvey,
   isEmptyData,
-  completeSurvey,
-  userAnswers,
   pages,
   uid,
   continueSurvey,
   setNextPage,
   setPrevPage,
   selectPage,
-  showFinishBtn,
   strictModeNavigation,
   pageList,
   setFirstPage,
+  pageTitle,
 }) => {
   if (isEmptyData) {
     return null;
@@ -54,26 +43,8 @@ const Switcher: React.FC<ISwitcherProps> = ({
 
   const { pageIndex } = location;
   const showBackBtn = !(!isShowPageList && pageIndex === 0);
-  const firstIncompleteQuestion = findFirstIncompleteQuestion(
-    pages,
-    userAnswers
-  );
 
   const firstPageDocID = String(pages[0].docID);
-
-  // saga action
-  // const completeSurvey = () => {
-  //   noticePage(String(pages[pageIndex].docID));
-  //   if (!firstIncompleteQuestion) {
-  //     submit();
-  //     return;
-  //   }
-  //   openModal();
-  // };
-
-  const pageTitle = pages[pageIndex].title
-    ? pages[pageIndex].title
-    : `Страница ${pageIndex + 1}`;
 
   switch (location.pathName) {
     case "greeting": {
@@ -126,18 +97,16 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Nav
             title={pageTitle}
             pageList={pageList}
-            showList={isShowPageList}
+            showList={true}
             selectPage={selectPage}
           />
 
           <Button
             key="1"
             css={buttonCss(true, "right")}
-            onClick={() => {
-              showFinishBtn ? completeSurvey() : setNextPage();
-            }}
+            onClick={() => setNextPage()}
           >
-            {showFinishBtn ? buttonFinishCaption : buttonNextCaption}
+            {buttonNextCaption}
           </Button>
 
           <Button
@@ -151,7 +120,6 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton1"
             css={iconBtnCss("right")}
-            disabled={showFinishBtn}
             onClick={() => {
               setNextPage();
             }}
@@ -183,13 +151,13 @@ const mapStateToProps = (state: IState) => {
     data,
     params,
     pageMovementLogs,
-    visitedPageDocIDList,
     pageTransitionRuleDict,
     strictModeNavigation,
     pagesDict,
   } = state;
   // console.log("pageMovementLogs", pageMovementLogs);
   // console.log("visitedPageDocIDList", visitedPageDocIDList);
+  // console.log("pagesDict", pagesDict);
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
@@ -207,6 +175,13 @@ const mapStateToProps = (state: IState) => {
   const pageList = strictModeNavigation
     ? pageMovementLogs.map((pageDocID) => pagesDict[pageDocID].page)
     : pages;
+
+  const { pageIndex } = location;
+
+  const pageTitle = pages[pageIndex].title
+    ? pages[pageIndex].title
+    : `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`;
+
   return {
     isEmptyData,
     userAnswers,
@@ -224,6 +199,7 @@ const mapStateToProps = (state: IState) => {
     showFinishBtn,
     strictModeNavigation,
     pageList,
+    pageTitle,
   };
 };
 
@@ -248,48 +224,11 @@ const mapDispathToProps = (dispatch: Dispatch) => {
       dispatch(goToTheNextPage({ direction: "right-to-left", targetPageID }));
     },
 
-    // setSurveyPage:()=>dispatch(changeCurretLocation({
-    //   location: {
-    //     pageIndex: 0,
-    //     questionIndex: 0,
-    //     pathName: "survey",
-    //     title: "survey",
-    //   },
-    //   slideMoveDirection: "left-to-right",
-    // })),
-
-    selectPage: (pageDocID: string) => {},
+    selectPage: (pageDocID: string) => dispatch(selectSection({ pageDocID })),
 
     completeSurvey: () => {
       dispatch({ type: COMPLETE_SURVEY });
-      // dispatch(
-      //   changeCurretLocation({
-      //     location: {
-      //       pageIndex: 0,
-      //       questionIndex: 0,
-      //       pathName: "completion",
-      //       title: "completion",
-      //     },
-      //     slideMoveDirection: "right-to-left",
-      //   })
-      // );
     },
-
-    // handleClick: (payload: {
-    //   location: ILocation;
-    //   slideMoveDirection: ISlideMoveDirection;
-    //   needSendAnswers: boolean;
-    // }) => {
-    //   const { location, slideMoveDirection, needSendAnswers } = payload;
-    //   // dispatch({ type: CHANGE_CURRENT_PAGE, direction: slideMoveDirection });
-    //   dispatch(
-    //     changeCurretLocation({
-    //       location: location,
-    //       slideMoveDirection: slideMoveDirection,
-    //     })
-    //   );
-    //   needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
-    // },
   };
 };
 

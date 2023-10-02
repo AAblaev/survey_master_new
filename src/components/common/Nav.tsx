@@ -5,9 +5,8 @@ import Menu, { MenuProps } from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { IPage, IPagesDict, ISlideMoveDirection } from "../../types";
+import { IPage } from "../../types";
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR } from "../../consts/const";
 import { homeButtonCss } from "../../sc";
 
 const StyledMenu = withStyles({
@@ -40,14 +39,9 @@ type INavProps = {
   // isShowPageList: boolean;
 };
 
-const Nav: React.FC<INavProps> = ({
-  title,
-  pageList,
-  selectPage,
-  showList,
-}) => {
+const Nav: React.FC<INavProps> = ({ title, pageList, selectPage }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  const showList = pageList.length > 1;
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     showList && setAnchorEl(event.currentTarget);
   };
@@ -69,23 +63,20 @@ const Nav: React.FC<INavProps> = ({
         onClose={handleClose}
       >
         {pageList.map((page, pageIndex) => {
-          if (showList)
-            return (
-              <MenuItem
-                key={pageIndex}
-                css={menuItemCss}
-                onClick={() => {
-                  selectPage(String(page.docID));
-                  handleClose();
-                }}
-              >
-                <ListItemText
-                  primary={
-                    page.title ? page.title : `Страница ${pageIndex + 1}`
-                  }
-                />
-              </MenuItem>
-            );
+          return (
+            <MenuItem
+              key={pageIndex}
+              css={menuItemCss}
+              onClick={() => {
+                selectPage(String(page.docID));
+                handleClose();
+              }}
+            >
+              <ListItemText
+                primary={page.title ? page.title : `Страница ${pageIndex + 1}`}
+              />
+            </MenuItem>
+          );
         })}
       </StyledMenu>
     </div>

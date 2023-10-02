@@ -1,4 +1,10 @@
-import { IData, IPageTransitionRule, IRule } from "../types";
+import {
+  IData,
+  IPageTransitionRule,
+  IRule,
+  IDisqualificationRule,
+  ISurveyCompletionRule,
+} from "../types";
 
 export const fakeData: IData = {
   docID: 5,
@@ -1368,18 +1374,36 @@ export const fakeRules: IRule[] = [
   },
 ];
 
-export const fakePageTransitionRules: IPageTransitionRule[] = [
+type IOwnRuleType =
+  | IPageTransitionRule
+  | IDisqualificationRule
+  | ISurveyCompletionRule;
+
+export const fakePageTransitionRules: IOwnRuleType[] = [
+  // {
+  //   docID: 1,
+  //   type: "surveyCompletionRule",
+  //   title: "переход",
+  //   events: [
+  //     {
+  //       docID: 1,
+  //       type: "answeredQuestion",
+  //       questionID: 1,
+  //       eventOperator: "AND",
+  //     },
+  //   ],
+  // },
   {
     docID: 1,
     type: "pageTransitionRule",
     pageID: 1,
-    targetPageID: 3,
+    targetPageID: 326,
     title: "переход",
     events: [
       {
         docID: 1,
-        type: "answeredQuestion",
-        questionID: 1,
+        type: "skippedQuestion",
+        questionID: 2,
         eventOperator: "AND",
       },
     ],
@@ -1387,14 +1411,14 @@ export const fakePageTransitionRules: IPageTransitionRule[] = [
   {
     docID: 2,
     type: "pageTransitionRule",
-    pageID: 3,
-    targetPageID: 2,
+    pageID: 326,
+    targetPageID: 324,
     title: "переход",
     events: [
       {
         docID: 2,
-        type: "answeredQuestion",
-        questionID: 3,
+        type: "skippedQuestion",
+        questionID: 2,
         eventOperator: "AND",
       },
     ],

@@ -31,11 +31,13 @@ export const getParams = () => {
 
   const uid = uidFromURL ? uidFromURL : isRetryingFetch ? prevUid : "";
   const path = PATH_NAME;
+  const notTheFirstTime = Boolean(isRetryingFetch || uidFromURL);
 
   return {
     fetchPath,
     path,
     uid,
     surveyID,
+    notTheFirstTime,
   };
 };

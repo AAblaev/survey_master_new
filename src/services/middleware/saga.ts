@@ -11,59 +11,40 @@ import {
 } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
-import { getNewLocationProps } from "../../utils/getNewLocationProps";
-import {
-  findFirstIncompleteQuestion,
-  requiredQuestionsChecking,
-} from "../../utils/questionIsDone";
+import { requiredQuestionsChecking } from "../../utils/questionIsDone";
 import {
   disqualificationRuleChecking,
   surveyCompletionChecking,
 } from "../../utils/rule-utils";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
-import {
-  PATH_NAME,
-  PATH_NAME_II,
-  DEFAULT_SURVEY_ID,
-  getPathName,
-} from "../api/const";
+import { PATH_NAME } from "../api/const";
 import {
   changeCurretLocation,
-  deleteUserAnswers,
   setError,
   setLoading,
-  setNeedScrolling,
-  setSurveyUid,
   setDataAndParams,
   continuePrevSurvey,
   startNewSurvey,
-  setCurrentPage,
   goToTheNextPage,
   goToThePrevPage,
-  toggleModalVoisible,
   setVisitedPageDocID,
+  cancelTransition,
+  surveyCompletionRuleActive,
 } from "../redux/actions";
 import {
   selectAnswers,
   selectChangePageProps,
   selectCompleteSurveyProps,
-  selectCurrentLocation,
-  selectPages,
-  selectPathName,
   selectSurveyID,
   selectUid,
-  showPageList,
 } from "../redux/selectors";
 import {
   COMPLETE_SURVEY,
-  CONTINUE_PREV_SURVEY,
   FETCH_SURVEY_DATA,
-  GO_TO_THE_NEXT_PAGE,
   SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   START_SURVEY,
-  TOGGLE_MODAL_VISIBLE,
 } from "../redux/types";
 import { getParams } from "./utils";
 
@@ -84,7 +65,7 @@ export type IStoredData = {
 };
 
 function* fetchSurveyData() {
-  const { fetchPath, path, uid, surveyID } = getParams();
+  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams();
   const params = {
     surveyID,
     uid,
@@ -99,11 +80,19 @@ function* fetchSurveyData() {
       setDataAndParams({
         data,
         params,
+        notTheFirstTime,
       })
     );
 
-    // yield put(setNewData(fakeData));
+    const { isShowGreetingsPage, isShowPageList } = data;
+
+    const needEmediatlyStartSurvey =
+      !isShowGreetingsPage && !isShowPageList && !notTheFirstTime;
+
     yield put(setLoading(false));
+    if (needEmediatlyStartSurvey) {
+      yield put({ type: START_SURVEY, isContinue: false });
+    }
   } catch (e) {
     console.log("Error fetchSurveyData");
     yield put(setLoading(false));
@@ -140,7 +129,7 @@ function* startSurvey({
       JSON.stringify({ uid: newUid, surveyID: surveyID })
     );
     yield put(setLoading(false));
-    console.log("startSurvey success", result);
+    // console.log("startSurvey success", result);
   } catch (err) {
     console.log("error", err);
   }
@@ -158,31 +147,16 @@ function* sendSurveyData() {
     yield put(setLoading(true));
     const result: unknown = yield call(() => sendData(path, answers));
     yield put(setLoading(false));
-    console.log("sendSurveyData success", result);
+    // console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);
   }
 }
 
 function* completeSurvey() {
-  const {
-    uid,
-    userAnswers,
-    location,
-    pages,
-    pageMovementLogs,
-    pagesDict,
-    strictModeNavigation,
-  } = yield select(selectCompleteSurveyProps);
-  const currentPage = pages[location.pageIndex];
-
-  // const validationResult = true;
-  //
-  // if (!validationResult) {
-  //   yield put(setVisitedPageDocID(String(currentPage.docID)));
-  //   yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
-  //   return;
-  // }
+  const { uid, userAnswers, location, pages } = yield select(
+    selectCompleteSurveyProps
+  );
 
   const answers = userAnswerParses(userAnswers);
   const pathSendData = PATH_NAME + "answers/?uid=" + uid;
@@ -192,6 +166,19 @@ function* completeSurvey() {
     yield put(setLoading(true));
     const result1: unknown = yield call(() => sendData(pathSendData, answers));
     const result2: unknown = yield call(() => complete(pathComplete, {}));
+
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "completion",
+          title: "completion",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
+
     yield put(setLoading(false));
 
     // console.log("completeSurvey send success", result1);
@@ -228,7 +215,7 @@ function* changeCurrentPage({
       yield put(setLoading(true));
       const result: unknown = yield call(() => sendData(path, answers));
       yield put(setLoading(false));
-      console.log("sendSurveyData success", result);
+      // console.log("sendSurveyData success", result);
     } catch (err) {
       console.log("error", err);
     }
@@ -246,8 +233,9 @@ function* changeCurrentPage({
   );
 
   if (!pageValidationResult) {
-    yield put(setVisitedPageDocID(String(currentPage.docID)));
-    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+    yield put(
+      cancelTransition({ currentPageDocID: String(currentPage.docID) })
+    );
     return;
   }
 
@@ -258,7 +246,17 @@ function* changeCurrentPage({
   );
   if (isDisqualificated) {
     yield put(setVisitedPageDocID(String(currentPage.docID)));
-    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "disqualification",
+          title: "disqualification",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
   }
 
   // проверка на complete rule
@@ -266,8 +264,11 @@ function* changeCurrentPage({
     (rule: ISurveyCompletionRule) => surveyCompletionChecking(userAnswers, rule)
   );
   if (isComplete) {
-    yield put(setVisitedPageDocID(String(currentPage.docID)));
-    yield put({ type: TOGGLE_MODAL_VISIBLE, payload: true });
+    yield put(
+      surveyCompletionRuleActive({
+        currentPageDocID: String(currentPage.docID),
+      })
+    );
   }
 
   // отправить ответы
@@ -278,7 +279,6 @@ function* changeCurrentPage({
     yield put(setLoading(true));
     const result: unknown = yield call(() => sendData(path, answers));
     yield put(setLoading(false));
-    console.log("sendSurveyData success", result);
   } catch (err) {
     console.log("error", err);
   }
@@ -288,49 +288,6 @@ function* changeCurrentPage({
   }
 
   yield put(goToTheNextPage({ direction, targetPageID }));
-
-  // const strictModeNavigation = Object.keys(pageTransitionRuleDict).length > 0;
-  // сменить страницу
-  // strictModeNavigation
-  //
-  // const {
-  //   location: newLocation,
-  //   pageMovementLogs: newPageMovementLogs,
-  //   visitedPageDocIDList: newVisitedPageDocIDList,
-  // } = getNewLocationProps({
-  //   location,
-  //   pageMovementLogs,
-  //   pages,
-  //   pagesDict,
-  //   pageTransitionRuleDict,
-  //   userAnswers,
-  //   visitedPageDocIDList,
-  //   slideMoveDirection: direction,
-  //   targetPageTransitionRuleArr,
-  // });
-  //
-  // yield put(
-  //   setCurrentPage({
-  //     slideMoveDirection: direction,
-  //     location: newLocation,
-  //     pageMovementLogs: newPageMovementLogs,
-  //     visitedPageDocIDList: newVisitedPageDocIDList,
-  //   })
-  // );
-
-  // const { location,pageMovementLogs } = yield select(selectCurrentLocation);
-  // const {pages} = yield select(selectPages)
-  // const currentPage = pages[location.pageIndex]
-
-  // отправить на сервер+
-
-  // сохранить в visitedPageDocIDList+
-  // влево? ->  перейти и обновить pageMovementLogs
-
-  // вправо? -> провести валидацию страницы
-  // да? - перейти и обновить pageMovementLogs
-
-  // pageMovementLogs
 }
 
 function* mySaga() {

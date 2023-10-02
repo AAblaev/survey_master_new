@@ -1,7 +1,42 @@
-import { ISlideMoveDirection } from "../types";
+import { ILocation, ISlideMoveDirection } from "../types";
 
 export const DEFAULT_QUESTION_INDEX = 0;
 export const DEFAULT_PAGE_INDEX = 0;
+
+export const GREETING_PAGE_LOCATION: ILocation = {
+  pathName: "greeting",
+  title: "greeting",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const PAGE_LIST_LOCATION: ILocation = {
+  pathName: "survey",
+  title: "survey",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const FIRST_PAGE_LOCATION: ILocation = {
+  pathName: "section",
+  title: "section",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const DISQUALIFICATION_PAGE_LOCATION: ILocation = {
+  pathName: "disqualification",
+  title: "disqualification",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
+export const COMPLETION_PAGE_LOCATION: ILocation = {
+  pathName: "completion",
+  title: "completion",
+  pageIndex: 0,
+  questionIndex: 0,
+};
 
 export const DEFAULT_MOVE_DIRECTION: ISlideMoveDirection = "left-to-right";
 export const TIMEOUT_VALUE = 600;

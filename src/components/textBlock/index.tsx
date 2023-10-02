@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { IQuestion, IState } from "../../types";
 import { visibleChecking } from "../../utils/rule-utils";
 import { cardCss, titleTextCss } from "../questions/sc";
@@ -38,7 +37,6 @@ const mapStateToProps = (state: IState, props: ITextBlockProps) => {
     userAnswers,
     visiblityRulesDict[String(docID)]
   );
-  console.log("isVisilbe", isVisilbe);
   return {
     isVisible: isVisilbe,
   };
