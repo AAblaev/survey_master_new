@@ -74,8 +74,6 @@ export const validation = (payload: {
     limitValue,
   } = payload;
 
-  console.log("validation");
-
   // check empty value
   if (value === "") return { isValid: false, message: "пусто" };
 

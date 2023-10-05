@@ -350,15 +350,15 @@ export const getNextLocation: IGetNextLocation = ({
   // console.log("firstRuleWithSuccessResult", firstRuleWithSuccessResult);
 
   if (firstRuleWithSuccessResult) {
-    console.log("pagesDict", pagesDict);
-    console.log(
-      "firstRuleWithSuccessResult.targetPageID",
-      firstRuleWithSuccessResult.targetPageID
-    );
-    console.log(
-      "firstRuleWithSuccessResult.targetPageID",
-      pagesDict[String(firstRuleWithSuccessResult.targetPageID)]
-    );
+    // console.log("pagesDict", pagesDict);
+    // console.log(
+    //   "firstRuleWithSuccessResult.targetPageID",
+    //   firstRuleWithSuccessResult.targetPageID
+    // );
+    // console.log(
+    //   "firstRuleWithSuccessResult.targetPageID",
+    //   pagesDict[String(firstRuleWithSuccessResult.targetPageID)]
+    // );
 
     const pageIndex =
       pagesDict[String(firstRuleWithSuccessResult.targetPageID)].order;
