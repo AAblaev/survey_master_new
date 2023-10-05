@@ -10,7 +10,8 @@ export const questionValidation = (
 ) => {
   return (
     userAnswers.hasOwnProperty(question.docID) &&
-    userAnswers[question.docID].values.length > 0
+    userAnswers[question.docID].values.length > 0 &&
+    !userAnswers[question.docID].values.some((v) => !v.validationResult.isValid)
   );
 };
 

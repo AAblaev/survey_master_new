@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import FormControl from "@material-ui/core/FormControl";
 import { IAnswer, IOption, IQuestion } from "../../../../types";
 import { MenuItem, Select, TextField } from "@material-ui/core";
@@ -19,14 +19,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const {
-    docID,
-    config,
-    hint,
-    hasNothingAnswer,
-    hasOtherAnswer,
-    hasUnableAnswer,
-  } = question;
+  const { docID, config, hint, hasNothingAnswer, hasOtherAnswer } = question;
 
   const options = config.options!;
   const selectItems = [...options];
@@ -49,16 +42,6 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       title: "ничего из вышеперечисленного",
       width: 0,
     });
-
-  // hasUnableAnswer &&
-  //   selectItems.push({
-  //     docID: -1,
-  //     height: 0,
-  //     order: 0,
-  //     photoID: 0,
-  //     title: "затрудняюсь ответить",
-  //     width: 0,
-  //   });
 
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
@@ -103,8 +86,11 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
     ? optionsDict[(userAnswer.values as IAnswer["values"])[0].optionID].docID
     : "";
 
+  const autoFocus = userAnswerExist && userAnswer.values[0].value === "";
+
   const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
     const optionID = e.target.value as number;
+    const isValid = optionID !== EXTRA_ANSWER.OTHER;
     setAnswer({
       questionID: docID,
       values: [
@@ -114,12 +100,13 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
             optionID === EXTRA_ANSWER.OTHER
               ? ""
               : String(optionsDict[optionID].title),
-          validationResult: { isValid: true, message: "success" },
+          validationResult: { isValid: isValid, message: "success" },
           isFocused: false,
         },
       ],
     });
   };
+
   return (
     <>
       <FormControl variant="outlined" css={formControlCss}>
@@ -160,6 +147,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
         <TextField
           id={"otherTextField" + docID}
           css={textFieldCss}
+          autoFocus={autoFocus}
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
           label=""
@@ -169,15 +157,28 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
           minRows={3}
           variant="filled"
           value={userAnswer.values[0].value}
+          onFocus={(e) => {
+            setAnswer({
+              questionID: docID,
+              values: [{ ...userAnswer.values[0], isFocused: true }],
+            });
+          }}
+          onBlur={(e) => {
+            setAnswer({
+              questionID: docID,
+              values: [{ ...userAnswer.values[0], isFocused: false }],
+            });
+          }}
           onChange={(e) => {
+            const isValid = e.target.value === "" ? false : true;
             setAnswer({
               questionID: docID,
               values: [
                 {
                   optionID: EXTRA_ANSWER.OTHER,
                   value: e.target.value,
-                  validationResult: { isValid: true, message: "success" },
-                  isFocused: false,
+                  validationResult: { isValid: isValid, message: "success" },
+                  isFocused: true,
                 },
               ],
             });

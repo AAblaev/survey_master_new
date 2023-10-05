@@ -1338,9 +1338,8 @@ export const fakeData: IData = {
 export const fakeRules: IRule[] = [
   {
     docID: 1,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 429,
+    type: "disqualificationRule",
+    title: "disqualificationRule",
     events: [
       {
         docID: 1,
@@ -1355,10 +1354,9 @@ export const fakeRules: IRule[] = [
     ],
   },
   {
-    docID: 1,
-    type: "visibilityQuestionRule",
+    docID: 2,
+    type: "surveyCompletionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 430,
     events: [
       {
         docID: 1,
@@ -1366,6 +1364,277 @@ export const fakeRules: IRule[] = [
         eventOperator: "AND",
         type: "selectedOption",
         optionID: 2041,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 3,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 460,
+    events: [
+      {
+        docID: 1,
+        questionID: 428,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2116,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 4,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 461,
+    events: [
+      {
+        docID: 1,
+        questionID: 460,
+        eventOperator: "AND",
+        type: "answeredQuestion",
+      },
+    ],
+  },
+  {
+    docID: 5,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 462,
+    events: [
+      {
+        docID: 1,
+        questionID: 461,
+        eventOperator: "AND",
+        type: "answeredQuestion",
+      },
+    ],
+  },
+
+  {
+    docID: 5,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 463,
+    events: [
+      {
+        docID: 1,
+        eventOperator: "AND",
+        type: "formula",
+        formula: {
+          expressionFirst: "A+B",
+          expressionSecond: "C",
+          operator: "=",
+          variables: [
+            {
+              code: "A",
+              value: {
+                questionID: 460,
+              },
+            },
+            {
+              code: "B",
+              value: {
+                questionID: 461,
+              },
+            },
+            {
+              code: "C",
+              value: {
+                questionID: 462,
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    docID: 6,
+    type: "pageTransitionRule",
+    pageID: 356,
+    targetPageID: 357,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 464,
+        eventOperator: "AND",
+        optionID: 2117,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 7,
+    type: "pageTransitionRule",
+    pageID: 356,
+    targetPageID: 382,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 464,
+        eventOperator: "AND",
+        optionID: 2118,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 8,
+    type: "pageTransitionRule",
+    pageID: 356,
+    targetPageID: 383,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 464,
+        eventOperator: "AND",
+        optionID: 2119,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 9,
+    type: "pageTransitionRule",
+    pageID: 357,
+    targetPageID: 382,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 467,
+        eventOperator: "AND",
+        optionID: 2120,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 10,
+    type: "pageTransitionRule",
+    pageID: 357,
+    targetPageID: 383,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 467,
+        eventOperator: "AND",
+        optionID: 2121,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 11,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 468,
+    events: [
+      {
+        docID: 1,
+        questionID: 467,
+        eventOperator: "AND",
+        type: "answeredQuestion",
+      },
+    ],
+  },
+
+  {
+    docID: 12,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 472,
+    events: [
+      {
+        docID: 1,
+        questionID: 470,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2123,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+      {
+        docID: 1,
+        questionID: 470,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2124,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+      {
+        docID: 1,
+        questionID: 470,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2125,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 12,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 473,
+    events: [
+      {
+        docID: 1,
+        questionID: 472,
+        eventOperator: "AND",
+        type: "skippedQuestion",
+      },
+    ],
+  },
+
+  {
+    docID: 13,
+    type: "pageTransitionRule",
+    pageID: 382,
+    targetPageID: 383,
+    title: "переход",
+    events: [
+      {
+        docID: 356,
+        type: "selectedOption",
+        questionID: 474,
+        eventOperator: "AND",
+        optionID: 2126,
         dimention0: 0,
         dimention1: 0,
         dimention2: 0,

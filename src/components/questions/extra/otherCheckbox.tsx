@@ -49,12 +49,15 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
           {
             optionID: EXTRA_ANSWER.OTHER,
             value: "",
-            validationResult: { isValid: true, message: "success" },
+            validationResult: { isValid: false, message: "success" },
             isFocused: false,
           },
         ],
       });
   };
+
+  const autoFocus = value === "";
+
   return (
     <>
       <FormControlLabel
@@ -72,6 +75,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
         <TextField
           id={"otherTextField" + questionID}
           css={textFieldCss}
+          autoFocus={autoFocus}
           InputProps={{ disableUnderline: true }}
           label=""
           placeholder="напишите свой вариант"
@@ -81,15 +85,50 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
           minRows={3}
           variant="filled"
           value={value}
+          onFocus={(e) => {
+            const newValues = values.map((v) => {
+              if (v.optionID === EXTRA_ANSWER.OTHER) {
+                return {
+                  optionID: EXTRA_ANSWER.OTHER,
+                  value: v.value,
+                  validationResult: v.validationResult,
+                  isFocused: true,
+                };
+              }
+              return v;
+            });
+            setAnswer({
+              questionID: questionID,
+              values: newValues,
+            });
+          }}
+          onBlur={(e) => {
+            const newValues = values.map((v) => {
+              if (v.optionID === EXTRA_ANSWER.OTHER) {
+                return {
+                  optionID: EXTRA_ANSWER.OTHER,
+                  value: v.value,
+                  validationResult: v.validationResult,
+                  isFocused: false,
+                };
+              }
+              return v;
+            });
+            setAnswer({
+              questionID: questionID,
+              values: newValues,
+            });
+          }}
           onChange={(e) => {
+            const isValid = e.target.value === "" ? false : true;
             setAnswer({
               questionID: questionID,
               values: [
                 {
                   optionID: EXTRA_ANSWER.OTHER,
                   value: e.target.value,
-                  validationResult: { isValid: true, message: "success" },
-                  isFocused: false,
+                  validationResult: { isValid: isValid, message: "success" },
+                  isFocused: true,
                 },
               ],
             });

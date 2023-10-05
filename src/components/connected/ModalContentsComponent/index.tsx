@@ -41,7 +41,6 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
               <Button
                 key="start"
                 variant="outlined"
-                css={onlyDesctopButtonCss}
                 color="primary"
                 onClick={() => {
                   startSurvey();
@@ -54,7 +53,6 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
               <Button
                 key="continue"
                 variant="contained"
-                css={onlyDesctopButtonCss}
                 onClick={() => {
                   continueSurvey();
                   closeModal();
@@ -111,7 +109,6 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
               <Button
                 key="continue"
                 variant="contained"
-                css={onlyDesctopButtonCss}
                 onClick={() => {
                   completeSurvey();
                   closeModal();

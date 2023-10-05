@@ -41,7 +41,7 @@ export const formControlCss = ({
     background-color: transparent;
   }
   & .MuiFilledInput-inputHiddenLabel {
-    padding: 10px;
+    padding: 5px;
   }
 `;
 
@@ -88,4 +88,16 @@ export const titleTextCss = (needCorrect: boolean) => css`
   font-size: 1.2rem;
   font-weight: 500;
   color: ${needCorrect ? "red" : "#000000"};
+  transition: color 0.3s ease;
+`;
+
+export const limitMessageWrapperCss = css`
+  margin-top: 5px;
+  margin-bottom: 5px;
+`;
+
+export const limitMessageCss = css`
+  font-size: 1rem;
+  font-weight: 300;
+  color: gray;
 `;

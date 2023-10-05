@@ -20,6 +20,9 @@ export const chipCss = (isDefault: boolean) => css`
 `;
 
 export const selectCss = css`
+  &.MuiOutlinedInput-root{
+    border-radius:0px;
+  }
   & .MuiOutlinedInput-input{
     padding:5px;
   }

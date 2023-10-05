@@ -28,6 +28,8 @@ import {
   titleCss,
   titleTextCss,
   commentCss,
+  limitMessageCss,
+  limitMessageWrapperCss,
 } from "./sc";
 import { visibleChecking } from "../../utils/rule-utils";
 
@@ -94,6 +96,8 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
+
+  const { isLimited, isLimitedValue, limit, limitValue } = config;
   // console.log("docID", docID);
   // console.log("isVisible", isVisible);
   const questionText = `<div>${title}${
@@ -114,8 +118,6 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
-    // questionType === "dropdown" ||
-    // questionType === "multidropdown" ||
     !isImplementedQuestionType;
 
   const isInternalExtra =
@@ -145,6 +147,8 @@ const Question: React.FC<IQuestionProps> = ({
       !answerWithExtra.values.some((v) => v.value !== ""));
   const isFocused =
     !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
+  // console.log("title", title);
+  // console.log("isFocused", isFocused);
   const isValid =
     !!answerWithExtra &&
     answerWithExtra.values.length > 0 &&
@@ -190,6 +194,23 @@ const Question: React.FC<IQuestionProps> = ({
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
         </div>
       </div>
+
+      {(isLimited || isLimitedValue) && (
+        <div css={limitMessageWrapperCss}>
+          {isLimited && (
+            <span
+              css={limitMessageCss}
+            >{`Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `}</span>
+          )}
+
+          {isLimitedValue && (
+            <span css={limitMessageCss}>
+              {`Текст ответа должен быть числом. Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}.`}
+            </span>
+          )}
+        </div>
+      )}
+
       {hasComment && (
         <div
           css={commentCss(disabled)}

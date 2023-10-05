@@ -84,10 +84,9 @@ function* fetchSurveyData() {
       })
     );
 
-    const { isShowGreetingsPage, isShowPageList } = data;
+    const { isShowGreetingsPage } = data;
 
-    const needEmediatlyStartSurvey =
-      !isShowGreetingsPage && !isShowPageList && !notTheFirstTime;
+    const needEmediatlyStartSurvey = !isShowGreetingsPage && !notTheFirstTime;
 
     yield put(setLoading(false));
     if (needEmediatlyStartSurvey) {

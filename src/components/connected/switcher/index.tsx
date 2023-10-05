@@ -180,7 +180,9 @@ const mapStateToProps = (state: IState) => {
 
   const pageTitle = pages[pageIndex].title
     ? pages[pageIndex].title
-    : `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`;
+    : strictModeNavigation
+    ? `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`
+    : `Страница ${location.pageIndex + 1}`;
 
   return {
     isEmptyData,

@@ -124,6 +124,8 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
     return (
       !!userAnswers[event.questionID] &&
       userAnswers[event.questionID].values.length !== 0 &&
+      userAnswers[event.questionID].values[0].value !== "" &&
+      !userAnswers[event.questionID].values[0].isFocused &&
       userAnswers[event.questionID].values[0].optionID !== EXTRA_ANSWER.UNABLE
     );
   }
@@ -168,7 +170,7 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
             userAnswers[v.value.questionID].values[0].isFocused)
       )
     ) {
-      console.log("не все значения");
+      // console.log("не все значения");
       return false;
     }
 
@@ -348,7 +350,18 @@ export const getNextLocation: IGetNextLocation = ({
   // console.log("firstRuleWithSuccessResult", firstRuleWithSuccessResult);
 
   if (firstRuleWithSuccessResult) {
-    const pageIndex = pagesDict[firstRuleWithSuccessResult.targetPageID].order;
+    console.log("pagesDict", pagesDict);
+    console.log(
+      "firstRuleWithSuccessResult.targetPageID",
+      firstRuleWithSuccessResult.targetPageID
+    );
+    console.log(
+      "firstRuleWithSuccessResult.targetPageID",
+      pagesDict[String(firstRuleWithSuccessResult.targetPageID)]
+    );
+
+    const pageIndex =
+      pagesDict[String(firstRuleWithSuccessResult.targetPageID)].order;
     return {
       pathName: "section",
       title: "section",

@@ -76,14 +76,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       } = data;
       const userAnswers = answersParsed(answers);
       const pagesDict = pagesParser(pages);
-      // const {
-      //   visiblityRulesDict,
-      //   pageTransitionRuleDict,
-      //   disqualificationRuleArr,
-      //   logicalValidityCheckRuleArr,
-      //   surveyCompletionRuleArr,
-      //   targetPageTransitionRuleArr,
-      // } = ruleParser(rules ? rules : fakePageTransitionRules);
+
       const {
         visiblityRulesDict,
         pageTransitionRuleDict,
@@ -91,7 +84,16 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         logicalValidityCheckRuleArr,
         surveyCompletionRuleArr,
         targetPageTransitionRuleArr,
-      } = ruleParser(rules ? rules : []);
+      } = ruleParser(params.surveyID === "12" ? fakeRules : []);
+
+      // const {
+      //   visiblityRulesDict,
+      //   pageTransitionRuleDict,
+      //   disqualificationRuleArr,
+      //   logicalValidityCheckRuleArr,
+      //   surveyCompletionRuleArr,
+      //   targetPageTransitionRuleArr,
+      // } = ruleParser(rules ? rules : []);
 
       //////////////////////////////////////////
 
