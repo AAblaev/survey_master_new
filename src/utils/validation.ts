@@ -116,13 +116,17 @@ export const validation = (payload: {
     if (limit!.min > value.length)
       return {
         isValid: false,
-        message: `значение не может быть меньше ${limit!.min}`,
+        message: `количесво символов в ответе не может быть меньше ${
+          limit!.min
+        }`,
       };
 
     if (limit!.max < value.length)
       return {
         isValid: false,
-        message: `значение не может быть больше ${limit!.max}`,
+        message: `количесво символов в ответе не может быть больше ${
+          limit!.max
+        }`,
       };
   }
 

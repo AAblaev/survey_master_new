@@ -96,14 +96,13 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
+  const elementRef = useRef<any>(null);
 
   const { isLimited, isLimitedValue, limit, limitValue } = config;
-  // console.log("docID", docID);
-  // console.log("isVisible", isVisible);
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   }</div>`;
-  const elementRef = useRef<any>(null);
+
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const otherInAnswer = answerWithExtra?.values.some(
     (v) => v.optionID === EXTRA_ANSWER.OTHER
@@ -145,6 +144,7 @@ const Question: React.FC<IQuestionProps> = ({
     answerWithExtra.values.length === 0 ||
     (questionType === "freelist" &&
       !answerWithExtra.values.some((v) => v.value !== ""));
+
   const isFocused =
     !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
   // console.log("title", title);

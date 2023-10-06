@@ -212,7 +212,6 @@ export type IEventType =
 
 export interface IBaseEvent {
   docID: number;
-  // questionID: number;
   eventOperator: "AND" | "OR" | null;
   type: IEventType;
 }
@@ -298,6 +297,7 @@ export interface IVisibilityQuestionRule extends IBaseRule {
 }
 export interface ILogicalValidityCheckRule extends IBaseRule {
   type: "logicalValidityCheckRule";
+  pageID: number;
 }
 
 export type IRule =
