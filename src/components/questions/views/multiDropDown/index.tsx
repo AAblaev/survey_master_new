@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CheckIcon from "@material-ui/icons/Check";
 import FormControl from "@material-ui/core/FormControl";
 import { IAnswer, IOption, IQuestion, IState } from "../../../../types";
@@ -27,14 +27,9 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const {
-    docID,
-    hint,
-    config,
-    hasNothingAnswer,
-    hasOtherAnswer,
-    hasUnableAnswer,
-  } = question;
+  const [open, setOpen] = useState(false);
+
+  const { docID, hint, config, hasNothingAnswer, hasOtherAnswer } = question;
   const hasOtherInUserAnswer =
     userAnswer &&
     userAnswer.values.length > 0 &&
@@ -62,15 +57,6 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       width: 0,
     });
 
-  // hasUnableAnswer &&
-  //   selectItems.push({
-  //     docID: -1,
-  //     height: 0,
-  //     order: 0,
-  //     photoID: 0,
-  //     title: "затрудняюсь ответить",
-  //     width: 0,
-  //   });
   const optionsDict = options.reduce(
     (res, option) => ({ ...res, [`${option.docID}`]: option }),
     {
@@ -132,12 +118,33 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         ]
       : optionIDs
           .filter((optionID) => optionID !== "default")
-          .map((optionID) => ({
-            optionID: Number(optionID),
-            value: String(optionsDict[optionID].title),
-            validationResult: { isValid: true, message: "success" },
-            isFocused: false,
-          }));
+          .map((optionID) => {
+            if (optionID === EXTRA_ANSWER.OTHER) {
+              const value = hasOtherInUserAnswer
+                ? hasOtherInUserAnswer.value
+                : "";
+
+              return {
+                optionID: Number(optionID),
+                value: value,
+                validationResult: {
+                  isValid: value === "" ? false : true,
+                  message: "success",
+                },
+                isFocused: hasOtherInUserAnswer ? false : true,
+              };
+            }
+            return {
+              optionID: Number(optionID),
+              value: String(optionsDict[optionID].title),
+              validationResult: { isValid: true, message: "success" },
+              isFocused: false,
+            };
+          });
+
+    if (currentValue === EXTRA_ANSWER.OTHER && !hasOtherInUserAnswer) {
+      setOpen(false);
+    }
     setAnswer({
       questionID: docID,
       values: newValue,
@@ -150,6 +157,9 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         <Select
           multiple
           value={value}
+          open={open}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           onChange={handleChange}
           renderValue={(items) => {
             const ids = items as string[];
@@ -204,6 +214,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         <TextField
           id={"otherTextField" + docID}
           css={textFieldCss}
+          autoFocus
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
           label=""
@@ -213,15 +224,56 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
           minRows={3}
           variant="filled"
           value={hasOtherInUserAnswer ? hasOtherInUserAnswer.value : ""}
+          onFocus={(e) => {
+            const values = userAnswer.values;
+            const newValues = values.map((value) => {
+              if (value.optionID === EXTRA_ANSWER.OTHER) {
+                const isValid = e.target.value !== "";
+                return {
+                  optionID: EXTRA_ANSWER.OTHER,
+                  value: e.target.value,
+                  validationResult: { isValid: isValid, message: "success" },
+                  isFocused: true,
+                };
+              }
+
+              return value;
+            });
+            setAnswer({
+              questionID: docID,
+              values: newValues,
+            });
+          }}
+          onBlur={(e) => {
+            const values = userAnswer.values;
+            const newValues = values.map((value) => {
+              if (value.optionID === EXTRA_ANSWER.OTHER) {
+                const isValid = e.target.value !== "";
+                return {
+                  optionID: EXTRA_ANSWER.OTHER,
+                  value: e.target.value,
+                  validationResult: { isValid: isValid, message: "success" },
+                  isFocused: false,
+                };
+              }
+
+              return value;
+            });
+            setAnswer({
+              questionID: docID,
+              values: newValues,
+            });
+          }}
           onChange={(e) => {
             const values = userAnswer.values;
             const newValues = values.map((value) => {
               if (value.optionID === EXTRA_ANSWER.OTHER) {
+                const isValid = e.target.value !== "";
                 return {
                   optionID: EXTRA_ANSWER.OTHER,
                   value: e.target.value,
-                  validationResult: { isValid: true, message: "success" },
-                  isFocused: false,
+                  validationResult: { isValid: isValid, message: "success" },
+                  isFocused: true,
                 };
               }
 

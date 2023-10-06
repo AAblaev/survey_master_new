@@ -1,10 +1,6 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import Button from "@material-ui/core/Button";
+import React, { useRef } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-
 import {
   ILocation,
   IUserAnswer,
@@ -14,30 +10,25 @@ import {
   IPathName,
 } from "../types";
 import AppBar from "./common/AppBar";
-import { Modal, ModalHeader, ModalContent } from "./common/modal";
+import { Modal } from "./common/modal";
 
 import {
   borderCss,
   contentCss,
   footerCss,
   gridContainerCss,
-  homeButtonCss,
-  modalHeaderWrapperCss,
   transitionGroupCss,
 } from "../sc";
-import Nav from "./common/Nav";
 import { isQuestionDone } from "../utils/questionIsDone";
 import ProgressLinear from "./common/ProgressLinear";
-import {
-  DEFAULT_IS_LIMIT_TIME,
-  PRIMARY_COLOR,
-  TIMEOUT_VALUE,
-} from "../consts/const";
+import { TIMEOUT_VALUE } from "../consts/const";
 import InfoPage from "./pages/InfoPage";
 import Survey from "./pages/Survey";
 import Section from "./pages/Section";
 import Greeting from "./pages/Greeting";
 import Menu from "./connected/Menu";
+import ModalContentComponent from "./connected/ModalContentsComponent";
+
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 
@@ -52,7 +43,6 @@ type IDesktop = {
     needSendAnswers: boolean;
   }) => void;
   submit: () => void;
-  startSurvey: () => void;
   openModal: () => void;
   closeModal: () => void;
   selectPage: (index: number) => void;
@@ -66,21 +56,18 @@ const Desktop: React.FC<IDesktop> = ({
   userAnswers,
   location,
   slideMoveDirection,
-  handleClick,
-  startSurvey,
   modalVisible,
   closeModal,
   selectPage,
-  needScrolling,
 }) => {
-  const { title, pathName, pageIndex, questionIndex } = location;
+  const { title, pathName, pageIndex } = location;
   const {
-    isShowPageList,
     pages,
     buttonStartCaption,
     isShowProgressbar,
     greetingsPage,
     completionPage,
+    disqualificationPage,
     name,
     isLimitTimeForCompletion,
     limitTime,
@@ -90,6 +77,7 @@ const Desktop: React.FC<IDesktop> = ({
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
+
   const currentPage = pages[pageIndex];
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
@@ -120,12 +108,12 @@ const Desktop: React.FC<IDesktop> = ({
         <Greeting
           html={greetingsPage}
           buttonStartCaption={buttonStartCaption}
-          handleClick={handleClick}
-          isShowPageList={isShowPageList}
-          startSurvey={startSurvey}
         />
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "disqualification")
+      return <InfoPage html={disqualificationPage} />;
+
     if (pathName === "survey")
       return (
         <Survey
@@ -203,17 +191,7 @@ const Desktop: React.FC<IDesktop> = ({
       <footer css={footerCss}></footer>
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
-        <ModalHeader>
-          <div css={modalHeaderWrapperCss}>
-            <span>Отмена</span>
-            <IconButton onClick={() => closeModal()}>
-              <CloseIcon />
-            </IconButton>
-          </div>
-        </ModalHeader>
-        <ModalContent>
-          <div>Пожауйста, ответьте на обязательные вопросы</div>
-        </ModalContent>
+        <ModalContentComponent closeModal={closeModal} />
       </Modal>
     </>
   );

@@ -1,31 +1,15 @@
 import React from "react";
-import {
-  ILocation,
-  IParsedData,
-  ISlideMoveDirection,
-  IState,
-} from "../../types";
+import { IState } from "../../types";
 import { onlyDesctopButtonCss } from "../../sc";
 import { Button } from "@material-ui/core";
 import { connect, ConnectedProps } from "react-redux";
 import { Dispatch } from "redux";
-import {
-  deleteUserAnswers,
-  setNeedScrolling,
-} from "../../services/redux/actions";
 import { buttonsWrapperCss, greatingPageCss } from "./sc";
-import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
+import { START_SURVEY } from "../../services/redux/types";
 
 type IGreetingProps = {
   html: string;
-  startSurvey: () => void;
-  isShowPageList: boolean;
   buttonStartCaption: string;
-  handleClick: (payload: {
-    location: ILocation;
-    slideMoveDirection: ISlideMoveDirection;
-    needSendAnswers: boolean;
-  }) => void;
 };
 
 export type IOwnGreetingProps = IGreetingProps &
@@ -33,17 +17,11 @@ export type IOwnGreetingProps = IGreetingProps &
 
 const Greeting: React.FC<IOwnGreetingProps> = ({
   html,
-  handleClick,
-  isShowPageList,
-  startSurvey,
   buttonStartCaption,
   uid,
-  deleteAnswers,
-  firstIncompleteQuestion,
-  setScrolling,
+  startSurvey,
+  continueSurvey,
 }) => {
-  const notFirstEntering = Boolean(firstIncompleteQuestion);
-
   return (
     <div css={greatingPageCss}>
       <div dangerouslySetInnerHTML={{ __html: html }}></div>
@@ -53,20 +31,7 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
           variant={uid ? "outlined" : "contained"}
           css={onlyDesctopButtonCss}
           color={uid ? "primary" : undefined}
-          onClick={() => {
-            handleClick({
-              location: {
-                pageIndex: 0,
-                questionIndex: 0,
-                pathName: isShowPageList ? "survey" : "section",
-                title: isShowPageList ? "survey" : "section",
-              },
-              slideMoveDirection: "right-to-left",
-              needSendAnswers: false,
-            });
-            deleteAnswers();
-            startSurvey();
-          }}
+          onClick={startSurvey}
         >
           {uid ? "начать заново" : buttonStartCaption}
         </Button>
@@ -75,31 +40,7 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
             key="continue"
             variant="contained"
             css={onlyDesctopButtonCss}
-            onClick={() => {
-              setScrolling(true);
-              handleClick({
-                location: {
-                  pageIndex: notFirstEntering
-                    ? firstIncompleteQuestion!.pageIndex
-                    : 0,
-                  questionIndex: notFirstEntering
-                    ? firstIncompleteQuestion!.questionIndex
-                    : 0,
-                  pathName: notFirstEntering
-                    ? "section"
-                    : isShowPageList
-                    ? "survey"
-                    : "section",
-                  title: notFirstEntering
-                    ? "section"
-                    : isShowPageList
-                    ? "survey"
-                    : "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              });
-            }}
+            onClick={continueSurvey}
           >
             Продолжить
           </Button>
@@ -110,26 +51,16 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
 };
 
 const mapStateToProps = (state: IState) => {
-  const { params, userAnswers, data: notNullData } = state;
+  const { params } = state;
   const { uid } = params;
-  const data = notNullData as IParsedData;
-  const { pages } = data;
-  const firstIncompleteQuestion = findFirstIncompleteQuestion(
-    pages,
-    userAnswers
-  );
-
-  return { uid, firstIncompleteQuestion };
+  return { uid };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
-  const deleteAnswers = () => {
-    dispatch(deleteUserAnswers());
+  return {
+    startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
+    continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
   };
-  const setScrolling = (value: boolean) => {
-    dispatch(setNeedScrolling(value));
-  };
-  return { deleteAnswers, setScrolling };
 };
 
 const connector = connect(mapStateToProps, mapDispathToProps);

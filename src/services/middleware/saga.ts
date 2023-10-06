@@ -1,36 +1,52 @@
 import { AxiosError } from "axios";
 import { call, put, select, takeEvery } from "redux-saga/effects";
-import { IAnswer, IBackendAnswer, IData } from "../../types";
+import {
+  IAnswer,
+  IBackendAnswer,
+  IData,
+  IDisqualificationRule,
+  ILocation,
+  ISlideMoveDirection,
+  ISurveyCompletionRule,
+} from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
+import { requiredQuestionsChecking } from "../../utils/questionIsDone";
+import {
+  disqualificationRuleChecking,
+  surveyCompletionChecking,
+} from "../../utils/rule-utils";
 import { userAnswerParses } from "../../utils/userAnswerParser";
 import { complete, fethData, sendData } from "../api";
+import { PATH_NAME } from "../api/const";
 import {
-  PATH_NAME,
-  PATH_NAME_II,
-  DEFAULT_SURVEY_ID,
-  getPathName,
-} from "../api/const";
-import {
+  changeCurretLocation,
   setError,
   setLoading,
-  setNewData,
-  setPath,
-  setSurveyID,
-  setSurveyUid,
+  setDataAndParams,
+  continuePrevSurvey,
+  startNewSurvey,
+  goToTheNextPage,
+  goToThePrevPage,
+  setVisitedPageDocID,
+  cancelTransition,
+  surveyCompletionRuleActive,
 } from "../redux/actions";
 import {
   selectAnswers,
-  selectPathName,
+  selectChangePageProps,
+  selectCompleteSurveyProps,
   selectSurveyID,
   selectUid,
 } from "../redux/selectors";
 import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
+  SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
   START_SURVEY,
 } from "../redux/types";
+import { getParams } from "./utils";
 
 export type IFetchResult = {
   data: IData;
@@ -49,56 +65,33 @@ export type IStoredData = {
 };
 
 function* fetchSurveyData() {
-  const params = new URLSearchParams(document.location.search);
-  const surveyIDfromURL = params.get("surveyID");
-  const uidFromURL = params.get("uid");
-
-  // console.log("typeof(surveyIDfromURL)", typeof surveyIDfromURL);
-  // console.log("isNaN", Number.isNaN(Number(surveyIDfromURL)));
-
-  const isNewAPI = Number.isNaN(Number(surveyIDfromURL));
-
-  const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
-  // console.log("surveyID", surveyID);
-
-  const storedData = localStorage.getItem("surveyParams");
-  const surveyParams: IStoredData | null = storedData && JSON.parse(storedData);
-  const prevUid = surveyParams ? surveyParams.uid : "";
-  const prevSurveyID = surveyParams ? surveyParams.surveyID : "";
-  const isRetryingFetch = String(prevSurveyID) === String(surveyID);
-  // console.log("isRetryingFetch", isRetryingFetch);
-
-  // const uid = isRetryingFetch ? `?uid=${prevUid}` : "";
-  // const path = PATH_NAME + surveyID + uid;
-  const path = getPathName({
-    basePath: isNewAPI ? `${PATH_NAME_II}bylink/` : PATH_NAME,
-    surveyIDfromURL,
-    uidFromURL,
-    prevSurveyID,
-    prevUid,
-    isNewAPI,
-  });
-  // http://192.168.0.133:5004/api/survey/9?uid=f05015a6ef744ced87fca5e7190316f9   api/link/{lnk}
-  // const testPath = `http://192.168.0.133:5004/api/link/testnew`;
-  // console.log("PATH_NAME", PATH_NAME);
+  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams();
+  const params = {
+    surveyID,
+    uid,
+    path,
+  };
   try {
     yield put(setLoading(true));
-    yield put(setSurveyID(surveyID));
-    yield put(setPath(isNewAPI ? PATH_NAME_II : PATH_NAME));
-    const result: IFetchResult = yield call(() => fethData(path));
-    // const result2: IFetchResult = yield call(() => fethData(testPath));
+    const result: IFetchResult = yield call(() => fethData(fetchPath));
+    const data = result.data;
 
-    // console.log("result2", result2);
-    yield put(setNewData(result.data));
-    if (uidFromURL) {
-      yield put(setSurveyUid(uidFromURL));
-    } else if (isRetryingFetch) {
-      yield put(setSurveyUid(prevUid));
-    }
+    yield put(
+      setDataAndParams({
+        data,
+        params,
+        notTheFirstTime,
+      })
+    );
 
-    // yield put(setNewData(fakeData));
+    const { isShowGreetingsPage } = data;
+
+    const needEmediatlyStartSurvey = !isShowGreetingsPage && !notTheFirstTime;
 
     yield put(setLoading(false));
+    if (needEmediatlyStartSurvey) {
+      yield put({ type: START_SURVEY, isContinue: false });
+    }
   } catch (e) {
     console.log("Error fetchSurveyData");
     yield put(setLoading(false));
@@ -107,45 +100,32 @@ function* fetchSurveyData() {
   }
 }
 
-// console.log("surveyParams", surveyParams);
-// console.log("prevSurveyID", prevSurveyID);
-// console.log("surveyID", surveyID);
-// console.log("isRetryingFetch", isRetryingFetch);
-// const path = PATH_NAME + surveyID;
-// console.log("document.location", document.location);
-// console.log(params);
-// console.log(surveyIDfromURL);
-// const path = PATH_NAME + surveyID + "?uid=0a663acfd56a4379a9041cf9f3ccdb50";
-// 3d16cb65adce4bb49a0e9400d04543a9
-// console.log("fetchSurveyData path", path);
-// const paramsObj: { [key: string]: any } = {};
-// for (const [key, value] of params) {
-// 	paramsObj[String(key)] = value;
-// }
-
-function* startSurvey() {
-  const { pathName } = yield select(selectPathName);
+function* startSurvey({
+  isContinue,
+}: {
+  type: typeof START_SURVEY;
+  isContinue: boolean;
+}) {
   const { surveyID } = yield select(selectSurveyID);
+  if (isContinue) {
+    yield put(continuePrevSurvey());
+    return;
+  }
+
   const isNewAPI = Number.isNaN(Number(surveyID));
 
-  // console.log("PATH_NAME_II", PATH_NAME_II);
-  // console.log("PATH_NAME", PATH_NAME);
-  // console.log("pathName", pathName);
-  // console.log("surveyID", surveyID);
-  // console.log("isNewAPI", isNewAPI);
-
   const path = isNewAPI
-    ? `${PATH_NAME_II}start2/${surveyID}`
+    ? `${PATH_NAME}start2/${surveyID}`
     : `${PATH_NAME}start/${surveyID}`;
-  console.log("startSurvey path", path);
 
   try {
     yield put(setLoading(true));
     const result: IStartResult = yield call(() => fethData(path));
-    yield put(setSurveyUid(result.data));
+    const newUid = result.data;
+    yield put(startNewSurvey(newUid));
     localStorage.setItem(
       "surveyParams",
-      JSON.stringify({ uid: result.data, surveyID: surveyID })
+      JSON.stringify({ uid: newUid, surveyID: surveyID })
     );
     yield put(setLoading(false));
     // console.log("startSurvey success", result);
@@ -159,6 +139,8 @@ function* sendSurveyData() {
   const { userAnswers } = yield select(selectAnswers);
   const answers = userAnswerParses(userAnswers);
   const path = PATH_NAME + "answers/?uid=" + uid;
+  // console.log("path", path);
+  // console.log("answers", answers);
 
   try {
     yield put(setLoading(true));
@@ -171,8 +153,10 @@ function* sendSurveyData() {
 }
 
 function* completeSurvey() {
-  const { uid } = yield select(selectUid);
-  const { userAnswers } = yield select(selectAnswers);
+  const { uid, userAnswers, location, pages } = yield select(
+    selectCompleteSurveyProps
+  );
+
   const answers = userAnswerParses(userAnswers);
   const pathSendData = PATH_NAME + "answers/?uid=" + uid;
   const pathComplete = PATH_NAME + "complete/" + uid;
@@ -181,6 +165,19 @@ function* completeSurvey() {
     yield put(setLoading(true));
     const result1: unknown = yield call(() => sendData(pathSendData, answers));
     const result2: unknown = yield call(() => complete(pathComplete, {}));
+
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "completion",
+          title: "completion",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
+
     yield put(setLoading(false));
 
     // console.log("completeSurvey send success", result1);
@@ -190,11 +187,114 @@ function* completeSurvey() {
   }
 }
 
+function* changeCurrentPage({
+  direction,
+  targetPageID,
+}: {
+  type: typeof SAGA_CHANGE_CURRENT_PAGE;
+  direction: ISlideMoveDirection;
+  targetPageID?: string;
+}) {
+  // если пользователь решил перейти на однц из предыдущих страниц
+  // проверки на дисквалификацию и завершение, а так же валидация ответов не вызываются
+
+  const {
+    uid,
+    userAnswers,
+    location,
+    pages,
+    surveyCompletionRuleArr,
+    disqualificationRuleArr,
+  } = yield select(selectChangePageProps);
+
+  const answers = userAnswerParses(userAnswers);
+  const path = PATH_NAME + "answers/?uid=" + uid;
+  if (direction === "left-to-right") {
+    try {
+      yield put(setLoading(true));
+      const result: unknown = yield call(() => sendData(path, answers));
+      yield put(setLoading(false));
+      // console.log("sendSurveyData success", result);
+    } catch (err) {
+      console.log("error", err);
+    }
+
+    yield put(goToThePrevPage({ direction, targetPageID }));
+    return;
+  }
+
+  const currentPage = pages[location.pageIndex];
+
+  // валидация страницы
+  const pageValidationResult = !requiredQuestionsChecking(
+    currentPage,
+    userAnswers
+  );
+
+  if (!pageValidationResult) {
+    yield put(
+      cancelTransition({ currentPageDocID: String(currentPage.docID) })
+    );
+    return;
+  }
+
+  // проверка на дисквалификацию
+  const isDisqualificated = disqualificationRuleArr.some(
+    (rule: IDisqualificationRule) =>
+      disqualificationRuleChecking(userAnswers, rule)
+  );
+  if (isDisqualificated) {
+    yield put(setVisitedPageDocID(String(currentPage.docID)));
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "disqualification",
+          title: "disqualification",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
+  }
+
+  // проверка на complete rule
+  const isComplete = surveyCompletionRuleArr.some(
+    (rule: ISurveyCompletionRule) => surveyCompletionChecking(userAnswers, rule)
+  );
+  if (isComplete) {
+    yield put(
+      surveyCompletionRuleActive({
+        currentPageDocID: String(currentPage.docID),
+      })
+    );
+  }
+
+  // отправить ответы
+  // const answers = userAnswerParses(userAnswers);
+  // const path = PATH_NAME + "answers/?uid=" + uid;
+
+  try {
+    yield put(setLoading(true));
+    const result: unknown = yield call(() => sendData(path, answers));
+    yield put(setLoading(false));
+  } catch (err) {
+    console.log("error", err);
+  }
+
+  if (isComplete || isDisqualificated) {
+    return;
+  }
+
+  yield put(goToTheNextPage({ direction, targetPageID }));
+}
+
 function* mySaga() {
   yield takeEvery(FETCH_SURVEY_DATA, fetchSurveyData);
   yield takeEvery(START_SURVEY, startSurvey);
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
   yield takeEvery(COMPLETE_SURVEY, completeSurvey);
+  yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
 }
 
 export default mySaga;

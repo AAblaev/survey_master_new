@@ -2,12 +2,12 @@ import {
   IAnswer,
   IData,
   ILocation,
+  IParams,
   IQuestion,
   ISlideMoveDirection,
   IState,
 } from "../../types";
 import {
-  SET_NEW_DATA,
   SET_NEW_STATE,
   CHANGE_CURRENT_LOCATION,
   SET_USER_ANSWER,
@@ -21,6 +21,15 @@ import {
   SET_NEED_SCROLLING,
   SET_PATH,
   SET_SURVEY_ID,
+  SET_DATA_AND_PARAMS,
+  CONTINUE_PREV_SURVEY,
+  START_NEW_SURVEY,
+  CHANGE_CURRENT_PAGE,
+  GO_TO_THE_NEXT_PAGE,
+  GO_TO_THE_PREVIOUS_PAGE,
+  CANCEL_TRANSITION,
+  SURVEY_COMPLETION_RULE_ACTIVE,
+  SELECT_SECTION,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -29,11 +38,22 @@ export const setNewState = (payload: IState) =>
     payload,
   };
 
-export const setNewData = (payload: IData) =>
+export const setDataAndParams = (payload: {
+  data: IData;
+  params: IParams;
+  notTheFirstTime: boolean;
+}) =>
   <const>{
-    type: SET_NEW_DATA,
+    type: SET_DATA_AND_PARAMS,
     payload,
   };
+
+//
+// export const setDataAndStartSurvey = (payload: {data:IData,}) =>
+//   <const>{
+//     type: SET_DATA_AND_START_SURVEY,
+//     payload,
+//   };
 
 export const setLoading = (payload: boolean) =>
   <const>{
@@ -108,3 +128,35 @@ export const setNeedScrolling = (payload: boolean) =>
     type: SET_NEED_SCROLLING,
     payload,
   };
+
+export const startNewSurvey = (payload: string) =>
+  <const>{ type: START_NEW_SURVEY, payload };
+
+export const continuePrevSurvey = () => <const>{ type: CONTINUE_PREV_SURVEY };
+
+export const setCurrentPage = (payload: {
+  slideMoveDirection: ISlideMoveDirection;
+  location: ILocation;
+  pageMovementLogs: string[];
+  visitedPageDocIDList: string[];
+}) => <const>{ type: CHANGE_CURRENT_PAGE, payload };
+
+export const goToTheNextPage = (payload: {
+  direction: ISlideMoveDirection;
+  targetPageID: string | undefined;
+}) => <const>{ type: GO_TO_THE_NEXT_PAGE, payload };
+
+export const goToThePrevPage = (payload: {
+  direction: ISlideMoveDirection;
+  targetPageID: string | undefined;
+}) => <const>{ type: GO_TO_THE_PREVIOUS_PAGE, payload };
+
+export const cancelTransition = (payload: { currentPageDocID: string }) =>
+  <const>{ type: CANCEL_TRANSITION, payload };
+
+export const surveyCompletionRuleActive = (payload: {
+  currentPageDocID: string;
+}) => <const>{ type: SURVEY_COMPLETION_RULE_ACTIVE, payload };
+
+export const selectSection = (payload: { pageDocID: string }) =>
+  <const>{ type: SELECT_SECTION, payload };

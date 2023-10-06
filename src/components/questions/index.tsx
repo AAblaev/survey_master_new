@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@material-ui/core/FormControl";
@@ -28,12 +28,16 @@ import {
   titleCss,
   titleTextCss,
   commentCss,
+  limitMessageCss,
+  limitMessageWrapperCss,
 } from "./sc";
+import { visibleChecking } from "../../utils/rule-utils";
 
 export type OwnProps = {
-  key: number;
   index: number;
+  pageID: number;
   currentQuestionIndex: number;
+  questionCount: number;
   question: IQuestion;
 };
 
@@ -77,6 +81,9 @@ const Question: React.FC<IQuestionProps> = ({
   visitedPageDocIDList,
   selectedQuestion,
   setScrolling,
+  pageID,
+  isVisible,
+  questionCount,
 }) => {
   const {
     docID,
@@ -89,11 +96,13 @@ const Question: React.FC<IQuestionProps> = ({
     comment,
     isRequired,
   } = question;
+  const elementRef = useRef<any>(null);
 
+  const { isLimited, isLimitedValue, limit, limitValue } = config;
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   }</div>`;
-  const elementRef = useRef<any>(null);
+
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const otherInAnswer = answerWithExtra?.values.some(
     (v) => v.optionID === EXTRA_ANSWER.OTHER
@@ -108,8 +117,6 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
-    // questionType === "dropdown" ||
-    // questionType === "multidropdown" ||
     !isImplementedQuestionType;
 
   const isInternalExtra =
@@ -137,13 +144,17 @@ const Question: React.FC<IQuestionProps> = ({
     answerWithExtra.values.length === 0 ||
     (questionType === "freelist" &&
       !answerWithExtra.values.some((v) => v.value !== ""));
+
   const isFocused =
     !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
+  // console.log("title", title);
+  // console.log("isFocused", isFocused);
   const isValid =
     !!answerWithExtra &&
     answerWithExtra.values.length > 0 &&
     !answerWithExtra.values.some((v) => !v.validationResult.isValid);
-  const pageIsVisited = visitedPageDocIDList.includes(String(question.pageID));
+
+  const pageIsVisited = visitedPageDocIDList.includes(String(pageID));
 
   const needCorrect = getNeedCorrect(
     isRequired,
@@ -158,6 +169,12 @@ const Question: React.FC<IQuestionProps> = ({
     : (userAnswer as IAnswer);
 
   useEffect(() => {
+    if (!isVisible && !isEmpty) {
+      setAnswer({ questionID: docID, values: [] });
+    }
+  }, [isVisible]);
+
+  useEffect(() => {
     if (selectedQuestion && elementRef.current) {
       setTimeout(() => {
         elementRef.current.scrollIntoView({
@@ -168,14 +185,32 @@ const Question: React.FC<IQuestionProps> = ({
       }, 0);
     }
   }, [selectedQuestion]);
+  if (!isVisible) return null;
   return (
     <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
       <div css={titleCss(disabled)}>
-        <div css={titleCountCss}>{currentQuestionIndex}.</div>
+        <div css={titleCountCss}></div>
         <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
         </div>
       </div>
+
+      {(isLimited || isLimitedValue) && (
+        <div css={limitMessageWrapperCss}>
+          {isLimited && (
+            <span
+              css={limitMessageCss}
+            >{`Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `}</span>
+          )}
+
+          {isLimitedValue && (
+            <span css={limitMessageCss}>
+              {`Текст ответа должен быть числом. Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}.`}
+            </span>
+          )}
+        </div>
+      )}
+
       {hasComment && (
         <div
           css={commentCss(disabled)}
@@ -236,15 +271,25 @@ const Question: React.FC<IQuestionProps> = ({
 };
 
 const mapStateToProps = (state: IState, props: OwnProps) => {
-  const { userAnswers, visitedPageDocIDList, location, needScrolling } = state;
+  const {
+    userAnswers,
+    visitedPageDocIDList,
+    location,
+    needScrolling,
+    visiblityRulesDict,
+  } = state;
   const { question } = props;
   const { docID } = question;
   const { questionIndex } = location;
-
+  const isVisilbe = visibleChecking(
+    userAnswers,
+    visiblityRulesDict[String(docID)]
+  );
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
     selectedQuestion: needScrolling && questionIndex === props.index,
+    isVisible: isVisilbe,
   };
 };
 

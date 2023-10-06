@@ -66,7 +66,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       values: [
         {
           value,
-          optionID: String(0),
+          optionID: 0,
           isFocused: true,
           validationResult: { isValid: false, message: "ошибка" },
         },
@@ -80,7 +80,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       values: [
         {
           value: value,
-          optionID: String(0),
+          optionID: 0,
           isFocused: true,
           validationResult: { isValid: false, message: "ошибка" },
         },
@@ -111,7 +111,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       values: [
         {
           value: value,
-          optionID: String(0),
+          optionID: 0,
           isFocused: false,
           validationResult,
         },

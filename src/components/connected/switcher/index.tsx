@@ -3,29 +3,18 @@ import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, IconButton } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { ILocation, ISlideMoveDirection, IState } from "../../../types";
+import Nav from "../../common/Nav";
+import { IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
-  FETCH_SURVEY_DATA,
-  SEND_SURVEY_DATA,
-  SET_VISITED_PAGE_DOCID,
+  SAGA_CHANGE_CURRENT_PAGE,
   START_SURVEY,
-  TOGGLE_MODAL_VISIBLE,
 } from "../../../services/redux/types";
 import {
-  changeCurretLocation,
-  deleteUserAnswers,
-  setNeedScrolling,
+  goToTheNextPage,
+  selectSection,
 } from "../../../services/redux/actions";
-import getPrevAndNextLocation from "../../../utils/getPrevAndNextLocation";
-
-import {
-  findFirstIncompleteQuestion,
-  sectionValidtion,
-} from "../../../utils/questionIsDone";
 import { buttonCss, iconBtnCss } from "./sc";
-import { homeButtonCss, onlyDesctopButtonCss } from "../../../sc";
-import Nav from "../../common/Nav";
 
 export type ISwitcherProps = ConnectedProps<typeof connector>;
 
@@ -34,86 +23,34 @@ const Switcher: React.FC<ISwitcherProps> = ({
   buttonStartCaption,
   buttonNextCaption,
   buttonBackCaption,
-  buttonFinishCaption,
-  pagesCount,
   isShowPageList,
-  handleClick,
   startSurvey,
   isEmptyData,
-  submit,
-  openModal,
-  noticePage,
-  userAnswers,
   pages,
   uid,
-  deleteAnswers,
-  setScrolling,
+  continueSurvey,
+  setNextPage,
+  setPrevPage,
+  selectPage,
+  strictModeNavigation,
+  pageList,
+  setFirstPage,
+  pageTitle,
 }) => {
   if (isEmptyData) {
     return null;
   }
 
-  const [prevLocation, nextLocation] = getPrevAndNextLocation(location);
-  const { pageIndex, pathName } = location;
-  const showBackBtn = !(!isShowPageList && prevLocation.pathName === "survey");
-  const firstIncompleteQuestion = findFirstIncompleteQuestion(
-    pages,
-    userAnswers
-  );
-  const notFirstEntering = Boolean(firstIncompleteQuestion);
+  const { pageIndex } = location;
+  const showBackBtn = !(!isShowPageList && pageIndex === 0);
 
-  const resultSectionValidation =
-    pathName === "section" && sectionValidtion(pages[pageIndex], userAnswers);
-  // console.log("resultSectionValidation", resultSectionValidation);
-
-  const rightClick = resultSectionValidation
-    ? () => {
-        noticePage(String(pages[pageIndex].docID));
-        handleClick({
-          location: nextLocation,
-          slideMoveDirection: "right-to-left",
-          needSendAnswers: true,
-        });
-      }
-    : () => {
-        noticePage(String(pages[pageIndex].docID));
-      };
-
-  const completeSurvey = () => {
-    noticePage(String(pages[pageIndex].docID));
-    if (!firstIncompleteQuestion) {
-      submit();
-      return;
-    }
-    openModal();
-  };
-
-  const pageTitle = pages[pageIndex].title
-    ? pages[pageIndex].title
-    : `Страница ${pageIndex + 1}`;
+  const firstPageDocID = String(pages[0].docID);
 
   switch (location.pathName) {
     case "greeting": {
       return (
         <>
-          <Button
-            key="1"
-            css={buttonCss(true, "right")}
-            onClick={() => {
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: isShowPageList ? "survey" : "section",
-                  title: isShowPageList ? "survey" : "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              });
-              deleteAnswers();
-              startSurvey();
-            }}
-          >
+          <Button key="1" css={buttonCss(true, "right")} onClick={startSurvey}>
             {uid ? "начать заново" : buttonStartCaption}
           </Button>
 
@@ -121,31 +58,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             <Button
               key="2"
               css={buttonCss(true, "left")}
-              onClick={() => {
-                setScrolling(true);
-                handleClick({
-                  location: {
-                    pageIndex: notFirstEntering
-                      ? firstIncompleteQuestion!.pageIndex
-                      : 0,
-                    questionIndex: notFirstEntering
-                      ? firstIncompleteQuestion!.questionIndex
-                      : 0,
-                    pathName: notFirstEntering
-                      ? "section"
-                      : isShowPageList
-                      ? "survey"
-                      : "section",
-                    title: notFirstEntering
-                      ? "section"
-                      : isShowPageList
-                      ? "survey"
-                      : "section",
-                  },
-                  slideMoveDirection: "right-to-left",
-                  needSendAnswers: false,
-                });
-              }}
+              onClick={continueSurvey}
             >
               Продолжить
             </Button>
@@ -159,18 +72,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Button
             key="1"
             css={buttonCss(true, "right")}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "section",
-                  title: "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
+            onClick={() => setFirstPage(firstPageDocID)}
           >
             {buttonNextCaption}
           </Button>
@@ -178,33 +80,12 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton1"
             css={iconBtnCss("right")}
-            onClick={() =>
-              handleClick({
-                location: {
-                  pageIndex: 0,
-                  questionIndex: 0,
-                  pathName: "section",
-                  title: "section",
-                },
-                slideMoveDirection: "right-to-left",
-                needSendAnswers: false,
-              })
-            }
+            onClick={() => setFirstPage(firstPageDocID)}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
-          <IconButton
-            key="IconButton2"
-            css={iconBtnCss("left")}
-            disabled
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
-          >
+
+          <IconButton key="IconButton2" css={iconBtnCss("left")} disabled>
             <ChevronRightIcon fontSize="large" />
           </IconButton>
         </>
@@ -215,47 +96,23 @@ const Switcher: React.FC<ISwitcherProps> = ({
         <>
           <Nav
             title={pageTitle}
-            pages={pages}
-            currentPageIndex={pageIndex}
-            isShowPageList={isShowPageList}
-            onChange={(pageIndex, slideMoveDirection) => {
-              handleClick({
-                location: {
-                  pageIndex: pageIndex,
-                  pathName: "section",
-                  questionIndex: 0,
-                  title: "section",
-                },
-                needSendAnswers: true,
-                slideMoveDirection: slideMoveDirection,
-              });
-            }}
+            pageList={pageList}
+            showList={true}
+            selectPage={selectPage}
           />
 
           <Button
             key="1"
             css={buttonCss(true, "right")}
-            onClick={() => {
-              nextLocation.pageIndex === pagesCount
-                ? completeSurvey()
-                : rightClick();
-            }}
+            onClick={() => setNextPage()}
           >
-            {nextLocation.pageIndex === pagesCount
-              ? buttonFinishCaption
-              : buttonNextCaption}
+            {buttonNextCaption}
           </Button>
 
           <Button
             key="2"
             css={buttonCss(showBackBtn, "left")}
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
+            onClick={() => setPrevPage()}
           >
             {buttonBackCaption}
           </Button>
@@ -263,24 +120,18 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton1"
             css={iconBtnCss("right")}
-            disabled={nextLocation.pageIndex === pagesCount}
             onClick={() => {
-              rightClick();
+              setNextPage();
             }}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
+
           <IconButton
             key="IconButton2"
             css={iconBtnCss("left")}
-            disabled={!isShowPageList && prevLocation.pathName === "survey"}
-            onClick={() =>
-              handleClick({
-                location: prevLocation,
-                slideMoveDirection: "left-to-right",
-                needSendAnswers: true,
-              })
-            }
+            disabled={strictModeNavigation && location.pageIndex === 0}
+            onClick={() => setPrevPage()}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
@@ -299,7 +150,14 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
     params,
+    pageMovementLogs,
+    pageTransitionRuleDict,
+    strictModeNavigation,
+    pagesDict,
   } = state;
+  // console.log("pageMovementLogs", pageMovementLogs);
+  // console.log("visitedPageDocIDList", visitedPageDocIDList);
+  // console.log("pagesDict", pagesDict);
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
@@ -310,6 +168,21 @@ const mapStateToProps = (state: IState) => {
   const pages = data?.pages || [];
   const pagesCount = pages.length;
   const uid = isEmptyData ? "" : params?.uid;
+  const currentPage = pages[location.pageIndex];
+  const pageTransitionRules = pageTransitionRuleDict[String(currentPage.docID)];
+  const showFinishBtn =
+    location.pageIndex + 1 === pagesCount && !pageTransitionRules;
+  const pageList = strictModeNavigation
+    ? pageMovementLogs.map((pageDocID) => pagesDict[pageDocID].page)
+    : pages;
+
+  const { pageIndex } = location;
+
+  const pageTitle = pages[pageIndex].title
+    ? pages[pageIndex].title
+    : strictModeNavigation
+    ? `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`
+    : `Страница ${location.pageIndex + 1}`;
 
   return {
     isEmptyData,
@@ -325,51 +198,38 @@ const mapStateToProps = (state: IState) => {
     pages,
     pagesCount,
     uid,
+    showFinishBtn,
+    strictModeNavigation,
+    pageList,
+    pageTitle,
   };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
-    openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
-    closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
-    submit: () => {
+    startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
+    continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
+    setNextPage: (docID?: string) =>
+      dispatch({
+        type: SAGA_CHANGE_CURRENT_PAGE,
+        direction: "right-to-left",
+        targetPageID: docID,
+      }),
+    setPrevPage: (docID?: string) =>
+      dispatch({
+        type: SAGA_CHANGE_CURRENT_PAGE,
+        direction: "left-to-right",
+        targetPageID: docID,
+      }),
+
+    setFirstPage: (targetPageID: string) => {
+      dispatch(goToTheNextPage({ direction: "right-to-left", targetPageID }));
+    },
+
+    selectPage: (pageDocID: string) => dispatch(selectSection({ pageDocID })),
+
+    completeSurvey: () => {
       dispatch({ type: COMPLETE_SURVEY });
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: 0,
-            questionIndex: 0,
-            pathName: "completion",
-            title: "completion",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
-    },
-    handleClick: (payload: {
-      location: ILocation;
-      slideMoveDirection: ISlideMoveDirection;
-      needSendAnswers: boolean;
-    }) => {
-      const { location, slideMoveDirection, needSendAnswers } = payload;
-      dispatch(
-        changeCurretLocation({
-          location: location,
-          slideMoveDirection: slideMoveDirection,
-        })
-      );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
-    },
-    noticePage: (docID: string) => {
-      dispatch({ type: SET_VISITED_PAGE_DOCID, payload: docID });
-    },
-    deleteAnswers: () => {
-      dispatch(deleteUserAnswers());
-    },
-    setScrolling: (value: boolean) => {
-      dispatch(setNeedScrolling(value));
     },
   };
 };

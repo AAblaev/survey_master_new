@@ -15,7 +15,6 @@ import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
-  START_SURVEY,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
 
@@ -31,7 +30,6 @@ const App: React.FC<IApp> = ({
   slideMoveDirection,
   handleClick,
   submit,
-  startSurvey,
   modalVisible,
   openModal,
   closeModal,
@@ -74,7 +72,6 @@ const App: React.FC<IApp> = ({
         slideMoveDirection={slideMoveDirection}
         handleClick={handleClick}
         submit={submit}
-        startSurvey={startSurvey}
         modalVisible={modalVisible}
         openModal={openModal}
         closeModal={closeModal}
@@ -116,7 +113,6 @@ const mapStateToProps = (state: IState) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {

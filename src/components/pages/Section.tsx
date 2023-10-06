@@ -9,7 +9,6 @@ import {
   FETCH_SURVEY_DATA,
   SEND_SURVEY_DATA,
   SET_VISITED_PAGE_DOCID,
-  START_SURVEY,
   TOGGLE_MODAL_VISIBLE,
 } from "../../services/redux/types";
 import { changeCurretLocation } from "../../services/redux/actions";
@@ -26,37 +25,14 @@ export type ISectionProps = {
   questionCount: number;
 };
 
-const Section: React.FC<IOwnSectionProps> = ({
-  page,
-  pages,
-  questionCount,
-  showFinishBtn,
-  buttonFinishCaption,
-  noticePage,
-  submit,
-  openModal,
-  userAnswers,
-  pageIndex,
-}) => {
+const Section: React.FC<IOwnSectionProps> = ({ page, questionCount }) => {
+  // console.log("Section", questionCount);
   const questions = page.questions ? page.questions : [];
-  const title = page.title ? page.title : `Страница ${pageIndex + 1}`;
   let counter = 0;
-
-  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
-
-  const completeSurvey = () => {
-    noticePage(String(page.docID));
-    if (!resultValidation) {
-      submit();
-      return;
-    }
-    openModal();
-  };
-  // <Typography css={titleCss}>{title}</Typography>
 
   return (
     <div>
-      <div css={questionListCss}>
+      <div css={questionListCss(questionCount)}>
         {questions.map((q, index) => {
           if (q.config.dataType === "textblock") {
             return <TextBlock key={index} question={q} />;
@@ -64,29 +40,33 @@ const Section: React.FC<IOwnSectionProps> = ({
           counter++;
           return (
             <Question
-              key={index}
+              key={q.docID}
               index={index}
               currentQuestionIndex={questionCount + counter}
+              questionCount={questionCount}
               question={q}
+              pageID={page.docID}
             />
           );
         })}
       </div>
-      {showFinishBtn && (
-        <Button
-          key="finish"
-          css={onlyDesctopButtonCss}
-          variant="contained"
-          onClick={() => {
-            completeSurvey();
-          }}
-        >
-          {buttonFinishCaption}
-        </Button>
-      )}
     </div>
   );
 };
+
+//
+// {showFinishBtn && (
+//   <Button
+//     key="finish"
+//     css={onlyDesctopButtonCss}
+//     variant="contained"
+//     onClick={() => {
+//       completeSurvey();
+//     }}
+//   >
+//     {buttonFinishCaption}
+//   </Button>
+// )}
 
 const mapStateToProps = (state: IState) => {
   const {
@@ -108,10 +88,10 @@ const mapStateToProps = (state: IState) => {
   const pagesCount = pages.length;
   const showFinishBtn =
     pathName === "section" && pageIndex + 1 === pages.length;
-
+  const resultValidation = findFirstIncompleteQuestion(pages, userAnswers);
   return {
     isEmptyData,
-    userAnswers,
+    resultValidation,
     location,
     slideMoveDirection,
     modalVisible,
@@ -120,18 +100,15 @@ const mapStateToProps = (state: IState) => {
     buttonBackCaption,
     buttonFinishCaption,
     isShowPageList,
-    pages,
     pagesCount,
     showFinishBtn,
     questionIndex,
-    pageIndex,
   };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    startSurvey: () => dispatch({ type: START_SURVEY }),
     openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     submit: () => {

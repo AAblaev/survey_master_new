@@ -41,7 +41,7 @@ export const formControlCss = ({
     background-color: transparent;
   }
   & .MuiFilledInput-inputHiddenLabel {
-    padding: 10px;
+    padding: 5px;
   }
 `;
 
@@ -60,6 +60,13 @@ export const commentCss = (disabled: boolean) => css`
   }
 `;
 
+export const testCss = css`
+  &::before {
+    counter-increment: section; /* Increment the value of section counter by 1 */
+    content: "Section " counter(section) ": "; /* Display counter value in default style (decimal) */
+  }
+`;
+
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
   display: flex;
@@ -71,10 +78,26 @@ export const titleCountCss = css`
   font-size: 1.2rem;
   color: ${PRIMARY_COLOR};
   font-weight: bold;
+  &::before {
+    counter-increment: section; /* Increment the value of section counter by 1 */
+    content: "" counter(section) "."; /* Display counter value in default style (decimal) */
+  }
 `;
 
 export const titleTextCss = (needCorrect: boolean) => css`
   font-size: 1.2rem;
   font-weight: 500;
   color: ${needCorrect ? "red" : "#000000"};
+  transition: color 0.3s ease;
+`;
+
+export const limitMessageWrapperCss = css`
+  margin-top: 5px;
+  margin-bottom: 5px;
+`;
+
+export const limitMessageCss = css`
+  font-size: 1rem;
+  font-weight: 300;
+  color: gray;
 `;

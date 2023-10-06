@@ -1,10 +1,3 @@
-// export type IPathname =
-//   | "/"
-//   | "/campaning"
-//   | "/section"
-//   | "/question"
-//   | "/answer";
-
 export type IData = {
   docID: number;
   name: string;
@@ -29,6 +22,7 @@ export type IData = {
   buttonNextCaption: string;
   buttonStartCaption: string;
   answers: IBackendAnswer[];
+  rules: IRule[];
 };
 
 export type IPage = {
@@ -124,6 +118,7 @@ export type ISimpleType =
   | "integer"
   | "float"
   | "datetime"; //number, float, date
+
 export type IDataType =
   | "select"
   | "dropdown"
@@ -149,7 +144,7 @@ export type IValidationResult = {
 };
 
 export type IValue = {
-  optionID: number | string;
+  optionID: number;
   value: string;
   dimension0?: string;
   dimension1?: string;
@@ -167,11 +162,11 @@ export type IAnswer = {
   questionID: number;
   values: IValue[];
 };
+
 export type IBranchRule = {};
 export type IQuoteRule = {};
 export type IVisibilityRule = {};
 
-/////
 export type IError = {
   status: boolean;
   message: string;
@@ -183,7 +178,12 @@ export type IParams = {
 
 export type IParsedData = IData;
 export type IPageName = string;
-export type IPathName = "greeting" | "survey" | "section" | "completion";
+export type IPathName =
+  | "greeting"
+  | "survey"
+  | "section"
+  | "completion"
+  | "disqualification";
 
 export type ILocation = {
   pathName: IPathName;
@@ -196,7 +196,126 @@ export type IUserAnswer = {
   [key: string]: IAnswer;
 };
 
+export type IPagesDict = {
+  [key: string]: { page: IPage; order: number };
+};
+
 export type ISlideMoveDirection = "left-to-right" | "right-to-left";
+
+// rules and events
+export type IEventType =
+  | "answeredQuestion"
+  | "skippedQuestion"
+  | "selectedOption"
+  | "struggledToAnswer"
+  | "formula";
+
+export interface IBaseEvent {
+  docID: number;
+  eventOperator: "AND" | "OR" | null;
+  type: IEventType;
+}
+
+export type IEvent =
+  | IAnsweredQuestionEvent
+  | ISkippedQuestionEvent
+  | ISelectedOptionEvent
+  | IStruggledToAnswerEvent
+  | IFormulaEvent;
+
+// 'answeredQuestionEvent'|'skippedQuestionEvent'|'selectedOptionEvent'|'struggledToAnswerEvent'|'formulaEvent'
+
+export interface IAnsweredQuestionEvent extends IBaseEvent {
+  type: "answeredQuestion";
+  questionID: number;
+}
+export interface ISkippedQuestionEvent extends IBaseEvent {
+  type: "skippedQuestion";
+  questionID: number;
+}
+export interface ISelectedOptionEvent extends IBaseEvent {
+  type: "selectedOption";
+  questionID: number;
+  optionID: number; // для selectedOptionEvent
+  dimention0: number; // для selectedOptionEvent
+  dimention1: number; // для selectedOptionEvent
+  dimention2: number; // для selectedOptionEvent
+}
+export interface IStruggledToAnswerEvent extends IBaseEvent {
+  type: "struggledToAnswer";
+  questionID: number;
+}
+export interface IFormulaEvent extends IBaseEvent {
+  type: "formula";
+  formula: IFormula;
+}
+
+export type IFormula = {
+  expressionFirst: string;
+  expressionSecond: string;
+  operator: "<" | ">" | "<>" | "=";
+  variables: IVariable[];
+};
+
+export type IVariable = {
+  code: string;
+  value: {
+    questionID: number;
+    optionID?: number;
+    dimention0?: number;
+    dimention1?: number;
+    dimention2?: number;
+  };
+};
+
+export interface IBaseRule {
+  docID: number;
+  title: string;
+  events: IEvent[];
+  type:
+    | "pageTransitionRule"
+    | "surveyCompletionRule"
+    | "disqualificationRule"
+    | "visibilityQuestionRule"
+    | "logicalValidityCheckRule";
+}
+// 'pageTransition'|'surveyCompletion'|'disqualification'|'visibilityQuestion'
+export interface IPageTransitionRule extends IBaseRule {
+  type: "pageTransitionRule";
+  pageID: number;
+  targetPageID: number;
+}
+export interface ISurveyCompletionRule extends IBaseRule {
+  type: "surveyCompletionRule";
+}
+export interface IDisqualificationRule extends IBaseRule {
+  type: "disqualificationRule";
+}
+export interface IVisibilityQuestionRule extends IBaseRule {
+  type: "visibilityQuestionRule";
+  questionID: number;
+}
+export interface ILogicalValidityCheckRule extends IBaseRule {
+  type: "logicalValidityCheckRule";
+  pageID: number;
+}
+
+export type IRule =
+  | IPageTransitionRule
+  | ISurveyCompletionRule
+  | IDisqualificationRule
+  | IVisibilityQuestionRule
+  | ILogicalValidityCheckRule;
+
+export type IVisibleRuleDict = {
+  [key: string]: IVisibilityQuestionRule;
+};
+
+export type IPageTransitionRuleDict = {
+  [key: string]: IPageTransitionRule[];
+};
+
+export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
 
 export type IState = {
   loading: boolean;
@@ -207,118 +326,17 @@ export type IState = {
   userAnswers: IUserAnswer;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
+  modalMessageType: IModalMessageType;
+
   visitedPageDocIDList: string[];
   needScrolling: boolean;
-  // relocate to section
-  // pageQuestionCount: number;
+  // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
+  visiblityRulesDict: IVisibleRuleDict;
+  pageTransitionRuleDict: IPageTransitionRuleDict;
+  targetPageTransitionRuleArr: string[];
+  disqualificationRuleArr: IDisqualificationRule[];
+  surveyCompletionRuleArr: ISurveyCompletionRule[];
+  pagesDict: IPagesDict;
+  pageMovementLogs: string[];
+  strictModeNavigation: boolean;
 };
-
-// const test = {
-//   is_enable: true,
-//   is_time_limited: false,
-//   time_limit: 0,
-//   is_show_by_button: false,
-//   is_save_time: false,
-//   moderation_comment: "",
-//   title: "матрица",
-//   comment_source: "",
-//   comment_compiled: "",
-//   has_comment: false,
-//   is_required: false,
-//   has_unable_answer: false,
-//   unable_answer_text: "",
-//   is_confirmable: false,
-//   options_sort: "default",
-//   rows_sort: "default",
-//   is_multiselect: false,
-//   is_multiselect_column: true,
-//   is_hide_rows_name: false,
-//   is_hide_options_name: false,
-//   options: [
-//     {
-//       id: 15003594,
-//       uid: "option-34",
-//       title: "11",
-//       image_id: null,
-//       image: [],
-//       values: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//       point: 0,
-//       comment: "",
-//     },
-//     {
-//       id: 15003595,
-//       uid: "option-35",
-//       title: "22",
-//       image_id: null,
-//       image: [],
-//       values: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//       point: 0,
-//       comment: "",
-//     },
-//     {
-//       id: 15003596,
-//       uid: "option-36",
-//       title: "33",
-//       image_id: null,
-//       image: [],
-//       values: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//       point: 0,
-//       comment: "",
-//     },
-//   ],
-//   options_related: [],
-//   options_related_unselected: [],
-//   rows: [
-//     {
-//       id: 147,
-//       uid: "row-37",
-//       title: "1",
-//       image_id: null,
-//       image: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//     },
-//     {
-//       id: 148,
-//       uid: "row-38",
-//       title: "2",
-//       image_id: null,
-//       image: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//     },
-//     {
-//       id: 149,
-//       uid: "row-39",
-//       title: "3",
-//       image_id: null,
-//       image: [],
-//       image_width: null,
-//       image_height: null,
-//       image_alt: "",
-//       image_align: null,
-//     },
-//   ],
-//   rows_related: [],
-//   rows_related_unselected: [],
-//   required_min: null,
-//   required_min_col: 1,
-//   is_mobile_disabled: false,
-//   is_flip_rows_cols: false,
-// };

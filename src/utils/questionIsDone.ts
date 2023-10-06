@@ -10,7 +10,8 @@ export const questionValidation = (
 ) => {
   return (
     userAnswers.hasOwnProperty(question.docID) &&
-    userAnswers[question.docID].values.length > 0
+    userAnswers[question.docID].values.length > 0 &&
+    !userAnswers[question.docID].values.some((v) => !v.validationResult.isValid)
   );
 };
 
@@ -30,6 +31,15 @@ export const findFirstIncompleteQuestion = (
     }
   }
   return null; // Возвращаем null, если все вопросы выполнены
+};
+
+export const requiredQuestionsChecking = (
+  page: IPage,
+  userAnswers: IUserAnswer
+) => {
+  return page.questions.some(
+    (q) => q.isRequired && !questionValidation(q, userAnswers)
+  );
 };
 
 export const getNeedCorrect = (
