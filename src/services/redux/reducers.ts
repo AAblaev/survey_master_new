@@ -8,6 +8,7 @@ import { ILocation, IState } from "../../types";
 import { fakePageTransitionRules, fakeRules } from "../../utils/fakeData";
 import { pagesParser } from "../../utils/pagesParser";
 import {
+  getLogicalValidityCheckRulesByQuestionID,
   getNextLocation,
   getPrevLastLocation,
   ruleParser,
@@ -35,6 +36,7 @@ import {
   CANCEL_TRANSITION,
   SURVEY_COMPLETION_RULE_ACTIVE,
   SELECT_SECTION,
+  UPDATE_LOGICAL_RULES_STATUS,
   // IS_ERROR,
 } from "./types";
 
@@ -52,6 +54,9 @@ const initialState: IState = {
   needScrolling: false,
   visiblityRulesDict: {},
   pageTransitionRuleDict: {},
+  logicalValidityCheckRuleDict: {},
+  dependentQuestionsDict: {},
+  dependentPagesDict: {},
   targetPageTransitionRuleArr: [],
   disqualificationRuleArr: [],
   surveyCompletionRuleArr: [],
@@ -62,7 +67,7 @@ const initialState: IState = {
 
 export const reducer = (state: IState = initialState, action: IAction) => {
   // console.log(action.type);
-  // console.log(state);
+  console.log(state);
 
   switch (action.type) {
     case SET_DATA_AND_PARAMS: {
@@ -81,11 +86,22 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         visiblityRulesDict,
         pageTransitionRuleDict,
         disqualificationRuleArr,
-        logicalValidityCheckRuleArr,
+        logicalValidityCheckRuleDict,
         surveyCompletionRuleArr,
         targetPageTransitionRuleArr,
       } = ruleParser(params.surveyID === "12" ? fakeRules : []);
 
+      const {
+        dependentQuestionsDict,
+        dependentPagesDict,
+      } = getLogicalValidityCheckRulesByQuestionID(
+        Object.values(logicalValidityCheckRuleDict).map(
+          (item) => item.logicRule
+        )
+      );
+
+      // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
+      // console.log("dependentQuestionsDict", dependentQuestionsDict);
       // const {
       //   visiblityRulesDict,
       //   pageTransitionRuleDict,
@@ -119,7 +135,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           visiblityRulesDict,
           pageTransitionRuleDict,
           disqualificationRuleArr,
-          logicalValidityCheckRuleArr,
+          logicalValidityCheckRuleDict,
+          dependentQuestionsDict,
+          dependentPagesDict,
           surveyCompletionRuleArr,
           pagesDict,
           strictModeNavigation,
@@ -146,7 +164,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         visiblityRulesDict,
         pageTransitionRuleDict,
         disqualificationRuleArr,
-        logicalValidityCheckRuleArr,
+        logicalValidityCheckRuleDict,
+        dependentQuestionsDict,
+        dependentPagesDict,
         surveyCompletionRuleArr,
         pagesDict,
         strictModeNavigation,
@@ -500,6 +520,17 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       return {
         ...state,
         needScrolling: action.payload,
+      };
+    }
+
+    case UPDATE_LOGICAL_RULES_STATUS: {
+      const newValues = action.payload.values;
+      return {
+        ...state,
+        logicalValidityCheckRuleDict: {
+          ...state.logicalValidityCheckRuleDict,
+          ...newValues,
+        },
       };
     }
 

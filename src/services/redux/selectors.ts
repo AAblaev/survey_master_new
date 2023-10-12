@@ -1,5 +1,10 @@
 import { createSelector } from "reselect";
-import { IState } from "../../types";
+import {
+  IDependentsQuestionsLogicalValidity,
+  ILogicalValidityCheckRuleDict,
+  IState,
+  IUserAnswer,
+} from "../../types";
 
 export const selectSurveyID = (state: IState) => ({
   surveyID: state.params.surveyID,
@@ -52,4 +57,16 @@ export const selectCompleteSurveyProps = (state: IState) => ({
   pageMovementLogs: state.pageMovementLogs,
   pagesDict: state.pagesDict,
   strictModeNavigation: state.strictModeNavigation,
+});
+
+export const selectLogicValidityData = (
+  state: IState
+): {
+  logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
+  dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
+  userAnswers: IUserAnswer;
+} => ({
+  logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
+  dependentQuestionsDict: state.dependentQuestionsDict,
+  userAnswers: state.userAnswers,
 });

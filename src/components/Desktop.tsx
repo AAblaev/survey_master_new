@@ -11,7 +11,6 @@ import {
 } from "../types";
 import AppBar from "./common/AppBar";
 import { Modal } from "./common/modal";
-
 import {
   borderCss,
   contentCss,
@@ -31,24 +30,16 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
+import MessageSnackbar from "./common/Notifications";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
   location: ILocation;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
-  handleClick: (payload: {
-    location: ILocation;
-    slideMoveDirection: ISlideMoveDirection;
-    needSendAnswers: boolean;
-  }) => void;
-  submit: () => void;
-  openModal: () => void;
   closeModal: () => void;
   selectPage: (index: number) => void;
-  setScrolling: (value: boolean) => void;
   data: IData;
-  needScrolling: boolean;
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -189,6 +180,7 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
       <footer css={footerCss}></footer>
+      <MessageSnackbar />
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalContentComponent closeModal={closeModal} />

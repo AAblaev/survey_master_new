@@ -315,6 +315,18 @@ export type IPageTransitionRuleDict = {
   [key: string]: IPageTransitionRule[];
 };
 
+export type ILogicalValidityCheckRuleDict = {
+  [key: string]: { logicRule: ILogicalValidityCheckRule; status: boolean };
+};
+
+export type IDependentsQuestionsLogicalValidity = {
+  [key: string]: ILogicalValidityCheckRule["docID"][];
+};
+
+export type IDependentsPagesLogicalValidity = {
+  [key: string]: ILogicalValidityCheckRule["docID"][];
+};
+
 export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
 
 export type IState = {
@@ -333,6 +345,9 @@ export type IState = {
   // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
+  dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
+  dependentPagesDict: IDependentsPagesLogicalValidity;
   targetPageTransitionRuleArr: string[];
   disqualificationRuleArr: IDisqualificationRule[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];

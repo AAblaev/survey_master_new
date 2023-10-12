@@ -47,16 +47,30 @@ export const getNeedCorrect = (
   isEmpty: boolean,
   isFocused: boolean,
   isValid: boolean,
-  pageIsVisited: boolean
+  pageIsVisited: boolean,
+  isLogicalValiditySuccess: boolean
 ): boolean => {
-  if (isFocused || isValid) {
+  if (isFocused) {
+    // console.log("isFocused");
+    return false;
+  }
+
+  if (isValid && isLogicalValiditySuccess) {
+    // console.log("isValid && isLogicalValiditySuccess");
     return false;
   }
   if (!isRequired && isEmpty) {
+    // console.log("!isRequired && isEmpty");
+    return false;
+  }
+
+  if (!isLogicalValiditySuccess && !pageIsVisited) {
+    // console.log("!isLogicalValiditySuccess && !pageIsVisited");
     return false;
   }
 
   if (isRequired && isEmpty && !pageIsVisited) {
+    // console.log("isRequired && isEmpty && !pageIsVisited");
     return false;
   }
 

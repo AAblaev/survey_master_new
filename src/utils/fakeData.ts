@@ -1608,7 +1608,7 @@ export const fakeRules: IRule[] = [
   },
 
   {
-    docID: 12,
+    docID: 13,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
     questionID: 473,
@@ -1623,7 +1623,7 @@ export const fakeRules: IRule[] = [
   },
 
   {
-    docID: 13,
+    docID: 14,
     type: "pageTransitionRule",
     pageID: 382,
     targetPageID: 383,
@@ -1638,6 +1638,45 @@ export const fakeRules: IRule[] = [
         dimention0: 0,
         dimention1: 0,
         dimention2: 0,
+      },
+    ],
+  },
+
+  {
+    docID: 15,
+    type: "logicalValidityCheckRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    pageID: 356,
+    events: [
+      {
+        docID: 1,
+        eventOperator: "AND",
+        type: "formula",
+        formula: {
+          expressionFirst: "A+B",
+          expressionSecond: "C",
+          operator: "=",
+          variables: [
+            {
+              code: "A",
+              value: {
+                questionID: 460,
+              },
+            },
+            {
+              code: "B",
+              value: {
+                questionID: 461,
+              },
+            },
+            {
+              code: "C",
+              value: {
+                questionID: 462,
+              },
+            },
+          ],
+        },
       },
     ],
   },

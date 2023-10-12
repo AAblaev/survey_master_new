@@ -84,6 +84,7 @@ const Question: React.FC<IQuestionProps> = ({
   pageID,
   isVisible,
   questionCount,
+  isLogicalValiditySuccess,
 }) => {
   const {
     docID,
@@ -161,8 +162,11 @@ const Question: React.FC<IQuestionProps> = ({
     isEmpty,
     isFocused,
     isValid,
-    pageIsVisited
+    pageIsVisited,
+    isLogicalValiditySuccess
   );
+
+  console.log("isLogicalValiditySuccess", isLogicalValiditySuccess);
 
   const userAnswerResult = isInternalExtra
     ? (answerWithExtra as IAnswer)
@@ -277,6 +281,8 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     location,
     needScrolling,
     visiblityRulesDict,
+    logicalValidityCheckRuleDict,
+    dependentQuestionsDict,
   } = state;
   const { question } = props;
   const { docID } = question;
@@ -285,11 +291,22 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     userAnswers,
     visiblityRulesDict[String(docID)]
   );
+
+  const checkingResultArr = dependentQuestionsDict[String(docID)]
+    ? dependentQuestionsDict[String(docID)].map(
+        (ruleDocID) => logicalValidityCheckRuleDict[ruleDocID].status
+      )
+    : [];
+  // console.log("dependentLogicalRules", dependentLogicalRules);
+
+  const isLogicalValiditySuccess = checkingResultArr.every((status) => status);
+
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
     selectedQuestion: needScrolling && questionIndex === props.index,
     isVisible: isVisilbe,
+    isLogicalValiditySuccess,
   };
 };
 
