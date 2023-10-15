@@ -37,6 +37,7 @@ import {
   SURVEY_COMPLETION_RULE_ACTIVE,
   SELECT_SECTION,
   UPDATE_LOGICAL_RULES_STATUS,
+  APPROVE_LOGIC_RULE_STATUS,
   // IS_ERROR,
 } from "./types";
 
@@ -66,8 +67,8 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  // console.log(action.type);
-  console.log(state);
+  console.log(action.type);
+  // console.log(state);
 
   switch (action.type) {
     case SET_DATA_AND_PARAMS: {
@@ -530,6 +531,21 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         logicalValidityCheckRuleDict: {
           ...state.logicalValidityCheckRuleDict,
           ...newValues,
+        },
+      };
+    }
+
+    case APPROVE_LOGIC_RULE_STATUS: {
+      const key = action.payload.ruleDocID;
+      const newValue = {
+        ...state.logicalValidityCheckRuleDict[key],
+        status: true,
+      };
+      return {
+        ...state,
+        logicalValidityCheckRuleDict: {
+          ...state.logicalValidityCheckRuleDict,
+          [key]: newValue,
         },
       };
     }

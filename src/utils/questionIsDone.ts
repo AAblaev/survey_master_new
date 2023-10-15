@@ -64,10 +64,10 @@ export const getNeedCorrect = (
     return false;
   }
 
-  if (!isLogicalValiditySuccess && !pageIsVisited) {
-    // console.log("!isLogicalValiditySuccess && !pageIsVisited");
-    return false;
-  }
+  // if (!isLogicalValiditySuccess && !pageIsVisited) {
+  //   // console.log("!isLogicalValiditySuccess && !pageIsVisited");
+  //   return false;
+  // }
 
   if (isRequired && isEmpty && !pageIsVisited) {
     // console.log("isRequired && isEmpty && !pageIsVisited");

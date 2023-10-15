@@ -340,7 +340,6 @@ function* mySaga() {
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
   yield takeEvery(COMPLETE_SURVEY, completeSurvey);
   yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
-  yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
   yield takeEvery(SET_USER_ANSWER, setAnswer);
 }
 

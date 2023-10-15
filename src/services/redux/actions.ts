@@ -32,6 +32,7 @@ import {
   SURVEY_COMPLETION_RULE_ACTIVE,
   SELECT_SECTION,
   UPDATE_LOGICAL_RULES_STATUS,
+  APPROVE_LOGIC_RULE_STATUS,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -166,3 +167,6 @@ export const selectSection = (payload: { pageDocID: string }) =>
 export const updateLogicalRyleStatus = (payload: {
   values: ILogicalValidityCheckRuleDict;
 }) => <const>{ type: UPDATE_LOGICAL_RULES_STATUS, payload };
+
+export const approveLogicRuleStatus = (payload: { ruleDocID: string }) =>
+  <const>{ type: APPROVE_LOGIC_RULE_STATUS, payload };

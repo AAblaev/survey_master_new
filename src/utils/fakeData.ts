@@ -1371,53 +1371,53 @@ export const fakeRules: IRule[] = [
     ],
   },
 
-  {
-    docID: 3,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 460,
-    events: [
-      {
-        docID: 1,
-        questionID: 428,
-        eventOperator: "AND",
-        type: "selectedOption",
-        optionID: 2116,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
-      },
-    ],
-  },
-  {
-    docID: 4,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 461,
-    events: [
-      {
-        docID: 1,
-        questionID: 460,
-        eventOperator: "AND",
-        type: "answeredQuestion",
-      },
-    ],
-  },
-  {
-    docID: 5,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 462,
-    events: [
-      {
-        docID: 1,
-        questionID: 461,
-        eventOperator: "AND",
-        type: "answeredQuestion",
-      },
-    ],
-  },
-
+  // {
+  //   docID: 3,
+  //   type: "visibilityQuestionRule",
+  //   title: 'покажи вопрос "Текст вопроса"',
+  //   questionID: 460,
+  //   events: [
+  //     {
+  //       docID: 1,
+  //       questionID: 428,
+  //       eventOperator: "AND",
+  //       type: "selectedOption",
+  //       optionID: 2116,
+  //       dimention0: 0,
+  //       dimention1: 0,
+  //       dimention2: 0,
+  //     },
+  //   ],
+  // },
+  // {
+  //   docID: 4,
+  //   type: "visibilityQuestionRule",
+  //   title: 'покажи вопрос "Текст вопроса"',
+  //   questionID: 461,
+  //   events: [
+  //     {
+  //       docID: 1,
+  //       questionID: 460,
+  //       eventOperator: "AND",
+  //       type: "answeredQuestion",
+  //     },
+  //   ],
+  // },
+  // {
+  //   docID: 5,
+  //   type: "visibilityQuestionRule",
+  //   title: 'покажи вопрос "Текст вопроса"',
+  //   questionID: 462,
+  //   events: [
+  //     {
+  //       docID: 1,
+  //       questionID: 461,
+  //       eventOperator: "AND",
+  //       type: "answeredQuestion",
+  //     },
+  //   ],
+  // },
+  //
   {
     docID: 5,
     type: "visibilityQuestionRule",
@@ -1645,7 +1645,7 @@ export const fakeRules: IRule[] = [
   {
     docID: 15,
     type: "logicalValidityCheckRule",
-    title: 'покажи вопрос "Текст вопроса"',
+    title: "ошибка в сложении",
     pageID: 356,
     events: [
       {
@@ -1673,6 +1673,32 @@ export const fakeRules: IRule[] = [
               code: "C",
               value: {
                 questionID: 462,
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    docID: 16,
+    type: "logicalValidityCheckRule",
+    title: "ответ на вопрос 2 должен быть больше 50",
+    pageID: 356,
+    events: [
+      {
+        docID: 1,
+        eventOperator: "AND",
+        type: "formula",
+        formula: {
+          expressionFirst: "A",
+          expressionSecond: "50",
+          operator: ">",
+          variables: [
+            {
+              code: "A",
+              value: {
+                questionID: 460,
               },
             },
           ],

@@ -102,7 +102,7 @@ const Question: React.FC<IQuestionProps> = ({
   const { isLimited, isLimitedValue, limit, limitValue } = config;
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
-  }</div>`;
+  } docID=${docID}</div>`;
 
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const otherInAnswer = answerWithExtra?.values.some(

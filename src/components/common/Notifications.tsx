@@ -1,25 +1,33 @@
 import React, { useState } from "react";
+import { Dispatch } from "redux";
+import { connect, ConnectedProps } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import { ILocation, ILogicalValidityCheckRule, IState } from "../../types";
+import { approveLogicRuleStatus } from "../../services/redux/actions";
 
-function Alert(props: AlertProps) {
+const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+};
 
-interface MessageSnackbarProps {
-  messages: string[];
-}
+export type OwnProps = {
+  location: ILocation;
+};
 
-function MessageSnackbar() {
-  const messages = ["asd"];
-  const [messageQueue, setMessageQueue] = useState<string[]>(messages);
+export type StateProps = ReturnType<typeof mapStateToProps>;
+export type DispatchProps = ReturnType<typeof mapDispathToProps>;
+type INotifications = StateProps & OwnProps & DispatchProps;
 
-  const handleClose = () => {
-    if (messageQueue.length > 0) {
-      setMessageQueue((prevQueue) => prevQueue.slice(1));
-    }
+const Notifications: React.FC<INotifications> = ({
+  rules,
+  deleteNotification,
+}) => {
+  // const [messageQueue, setMessageQueue] = useState<string[]>(messages);
+
+  const handleClose = (docID: number) => {
+    deleteNotification(String(docID));
   };
 
   return (
@@ -31,18 +39,59 @@ function MessageSnackbar() {
           horizontal: "right",
         }}
         open={true}
-        onClose={handleClose}
       >
-        <div>
-          {messageQueue.map((message, index) => (
-            <Alert key={index} severity="error" onClose={handleClose}>
-              {message}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            // mobile version
+            bottom: "60px",
+            position: "relative",
+          }}
+        >
+          {rules.map((rule, index) => (
+            <Alert
+              key={index}
+              severity="error"
+              onClose={() => handleClose(rule.docID)}
+            >
+              {rule.title}
             </Alert>
           ))}
         </div>
       </Snackbar>
     </div>
   );
-}
+};
 
-export default React.memo(MessageSnackbar);
+const mapStateToProps = (state: IState, props: OwnProps) => {
+  const { dependentPagesDict, logicalValidityCheckRuleDict, data } = state;
+  const { location } = props;
+
+  const currentPage = data!.pages[location.pageIndex];
+  const currentLogicalValidityCheckRuleIDs = dependentPagesDict[
+    currentPage.docID
+  ]
+    ? dependentPagesDict[currentPage.docID]
+    : [];
+
+  const rules = currentLogicalValidityCheckRuleIDs.map((id) => {
+    if (!logicalValidityCheckRuleDict[id].status) {
+      return logicalValidityCheckRuleDict[id].logicRule;
+    }
+  }) as ILogicalValidityCheckRule[];
+
+  return { rules: rules.filter((item) => !!item) };
+};
+
+const mapDispathToProps = (dispatch: Dispatch) => {
+  return {
+    deleteNotification: (docID: string) =>
+      dispatch(approveLogicRuleStatus({ ruleDocID: docID })),
+  };
+};
+
+const connector = connect(mapStateToProps, mapDispathToProps);
+
+export default connector(Notifications);

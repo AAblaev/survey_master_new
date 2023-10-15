@@ -30,7 +30,7 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
-import MessageSnackbar from "./common/Notifications";
+import Notifications from "./common/Notifications";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -180,7 +180,7 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
       <footer css={footerCss}></footer>
-      <MessageSnackbar />
+      <Notifications location={location} />
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalContentComponent closeModal={closeModal} />
