@@ -32,7 +32,6 @@ const App: React.FC<IApp> = ({
   closeModal,
   selectPage,
 }) => {
-  console.log("render");
   useEffect(() => {
     !data && fetchData();
   }, [fetchData, data]);

@@ -166,8 +166,6 @@ const Question: React.FC<IQuestionProps> = ({
     isLogicalValiditySuccess
   );
 
-  console.log("isLogicalValiditySuccess", isLogicalValiditySuccess);
-
   const userAnswerResult = isInternalExtra
     ? (answerWithExtra as IAnswer)
     : (userAnswer as IAnswer);
@@ -297,10 +295,24 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
         (ruleDocID) => logicalValidityCheckRuleDict[ruleDocID].status
       )
     : [];
-  // console.log("dependentLogicalRules", dependentLogicalRules);
 
   const isLogicalValiditySuccess = checkingResultArr.every((status) => status);
-
+  // selectedQuestion
+  // disabled
+  // needCorrect
+  // questionText
+  // isLimited
+  // isLimitedValue
+  // hasComment
+  // comment
+  // needPadding
+  // hasUnableAnswer
+  // hasNothingAnswer
+  // hasOtherAnswer
+  // otherInAnswer
+  // isImplementedQuestionType
+  // questionType
+  // isInternalExtra
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,

@@ -212,6 +212,8 @@ function* changeCurrentPage({
     pages,
     surveyCompletionRuleArr,
     disqualificationRuleArr,
+    dependentPagesDict,
+    logicalValidityCheckRuleDict,
   } = yield select(selectChangePageProps);
 
   const answers = userAnswerParses(userAnswers);
@@ -230,6 +232,7 @@ function* changeCurrentPage({
     return;
   }
 
+  ///////////////////////////
   const currentPage = pages[location.pageIndex];
 
   // валидация страницы
@@ -238,9 +241,43 @@ function* changeCurrentPage({
     userAnswers
   );
 
+  const logicalValidityRuleDocIDs: number[] = dependentPagesDict[
+    String(currentPage.docID)
+  ]
+    ? dependentPagesDict[String(currentPage.docID)]
+    : [];
+
+  const newLogicalValidityRuleValues = logicalValidityRuleDocIDs.reduce(
+    (res, id) => {
+      const logicRule = logicalValidityCheckRuleDict[String(id)].logicRule;
+      // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
+      // console.log("id", id);
+      // console.log("logicRule", logicRule);
+      return {
+        ...res,
+        [String(id)]: {
+          logicRule: logicRule,
+          status: logicalValidityChecking(userAnswers, logicRule),
+        },
+      };
+    },
+    {} as ILogicalValidityCheckRuleDict
+  );
+
+  const logicalValidityResult = Object.values(
+    newLogicalValidityRuleValues
+  ).every((rule) => rule.status);
+
   if (!pageValidationResult) {
     yield put(
       cancelTransition({ currentPageDocID: String(currentPage.docID) })
+    );
+    return;
+  }
+
+  if (!logicalValidityResult) {
+    yield put(
+      updateLogicalRyleStatus({ values: newLogicalValidityRuleValues })
     );
     return;
   }
@@ -312,10 +349,6 @@ function* setAnswer(payload: {
   } = yield select(selectLogicValidityData);
 
   const dependentRulsID = dependentQuestionsDict[questionID];
-
-  // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
-  // console.log("dependentQuestionsDict", dependentQuestionsDict);
-  // console.log("dapendentRulsID", dependentRulsID);
 
   if (!dependentRulsID) return;
 

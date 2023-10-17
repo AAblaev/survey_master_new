@@ -40,13 +40,10 @@ export const selectChangePageProps = (state: IState) => ({
   userAnswers: state.userAnswers,
   location: state.location,
   pages: state.data!.pages,
-  visitedPageDocIDList: state.visitedPageDocIDList,
-  pageTransitionRuleDict: state.pageTransitionRuleDict,
-  pageMovementLogs: state.pageMovementLogs,
-  pagesDict: state.pagesDict,
   surveyCompletionRuleArr: state.surveyCompletionRuleArr,
   disqualificationRuleArr: state.disqualificationRuleArr,
-  targetPageTransitionRuleArr: state.targetPageTransitionRuleArr,
+  dependentPagesDict: state.dependentPagesDict,
+  logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
 });
 
 export const selectCompleteSurveyProps = (state: IState) => ({

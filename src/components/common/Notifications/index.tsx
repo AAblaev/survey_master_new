@@ -3,10 +3,9 @@ import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import { ILocation, ILogicalValidityCheckRule, IState } from "../../types";
-import { approveLogicRuleStatus } from "../../services/redux/actions";
+import { ILocation, ILogicalValidityCheckRule, IState } from "../../../types";
+import { approveLogicRuleStatus } from "../../../services/redux/actions";
+import { notificationsWrapperCss } from "./sc";
 
 const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -24,8 +23,6 @@ const Notifications: React.FC<INotifications> = ({
   rules,
   deleteNotification,
 }) => {
-  // const [messageQueue, setMessageQueue] = useState<string[]>(messages);
-
   const handleClose = (docID: number) => {
     deleteNotification(String(docID));
   };
@@ -40,16 +37,7 @@ const Notifications: React.FC<INotifications> = ({
         }}
         open={true}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-            // mobile version
-            bottom: "60px",
-            position: "relative",
-          }}
-        >
+        <div css={notificationsWrapperCss}>
           {rules.map((rule, index) => (
             <Alert
               key={index}
