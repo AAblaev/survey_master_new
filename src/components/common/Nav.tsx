@@ -39,9 +39,14 @@ type INavProps = {
   // isShowPageList: boolean;
 };
 
-const Nav: React.FC<INavProps> = ({ title, pageList, selectPage }) => {
+const Nav: React.FC<INavProps> = ({
+  title,
+  pageList,
+  selectPage,
+  showList,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const showList = pageList.length > 1;
+  // const showList = pageList.length > 1;
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     showList && setAnchorEl(event.currentTarget);
   };
