@@ -5,7 +5,11 @@ import {
   FIRST_PAGE_LOCATION,
 } from "../../consts/const";
 import { ILocation, IState } from "../../types";
-import { fakePageTransitionRules, fakeRules } from "../../utils/fakeData";
+import {
+  fakePageTransitionRules,
+  fakeRules,
+  fakeRules2,
+} from "../../utils/fakeData";
 import { pagesParser } from "../../utils/pagesParser";
 import {
   getLogicalValidityCheckRulesByQuestionID,

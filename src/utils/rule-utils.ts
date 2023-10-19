@@ -274,7 +274,6 @@ export const visibleChecking = (
   userAnswers: IUserAnswer,
   rule?: IVisibilityQuestionRule
 ): boolean => {
-  // console.log("visiblle checking", userAnswers);
   if (!rule) return true;
 
   const { events } = rule;

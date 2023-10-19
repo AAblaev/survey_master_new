@@ -37,7 +37,6 @@ export type OwnProps = {
   index: number;
   pageID: number;
   currentQuestionIndex: number;
-  questionCount: number;
   question: IQuestion;
 };
 
@@ -83,7 +82,6 @@ const Question: React.FC<IQuestionProps> = ({
   setScrolling,
   pageID,
   isVisible,
-  questionCount,
   isLogicalValiditySuccess,
 }) => {
   const {

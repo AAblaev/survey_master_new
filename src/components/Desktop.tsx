@@ -65,30 +65,27 @@ const Desktop: React.FC<IDesktop> = ({
     isShowQuestionsCount,
   } = data;
 
+  // перенести в Таймер
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
 
   const currentPage = pages[pageIndex];
+  // перенести в Таймерэ
+
+  // перенести в ProgressLinear -->
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
       (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
         .length),
     0
   );
-  //
-  const questionCount: number = pages.reduce((acc: number, page, index) => {
-    if (index < pageIndex) {
-      return (
-        acc +
-        page.questions.filter((q) => q.config.dataType !== "textblock").length
-      );
-    } else return acc;
-  }, 0);
 
   const allQuestionsDoneCount = Object.values(userAnswers).filter(
     isQuestionDone
   ).length;
+
+  //<-- перенести в ProgressLinear
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
@@ -114,8 +111,7 @@ const Desktop: React.FC<IDesktop> = ({
           isShowQuestionsCount={isShowQuestionsCount}
         />
       );
-    if (pathName === "section")
-      return <Section page={currentPage} questionCount={questionCount} />;
+    if (pathName === "section") return <Section page={currentPage} />;
     return null;
   };
 

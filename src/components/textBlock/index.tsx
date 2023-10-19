@@ -12,7 +12,7 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 type IOwnTextProps = StateProps & ITextBlockProps;
 
 const TextBlock: React.FC<IOwnTextProps> = ({ question, isVisible }) => {
-  const { hasComment, comment, config } = question;
+  const { hasComment, comment, config, docID } = question;
   if (!isVisible) {
     return null;
   }
@@ -21,7 +21,7 @@ const TextBlock: React.FC<IOwnTextProps> = ({ question, isVisible }) => {
       <div css={titleTextCss(false)}>
         {(hasComment || config.dataType === "textblock") && (
           <div
-            dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
+            dangerouslySetInnerHTML={{ __html: comment ? comment + docID : "" }}
           ></div>
         )}
       </div>
@@ -37,6 +37,7 @@ const mapStateToProps = (state: IState, props: ITextBlockProps) => {
     userAnswers,
     visiblityRulesDict[String(docID)]
   );
+
   return {
     isVisible: isVisilbe,
   };
