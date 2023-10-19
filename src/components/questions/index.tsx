@@ -37,7 +37,6 @@ export type OwnProps = {
   index: number;
   pageID: number;
   currentQuestionIndex: number;
-  questionCount: number;
   question: IQuestion;
 };
 
@@ -83,7 +82,7 @@ const Question: React.FC<IQuestionProps> = ({
   setScrolling,
   pageID,
   isVisible,
-  questionCount,
+  isLogicalValiditySuccess,
 }) => {
   const {
     docID,
@@ -101,7 +100,7 @@ const Question: React.FC<IQuestionProps> = ({
   const { isLimited, isLimitedValue, limit, limitValue } = config;
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
-  }</div>`;
+  } docID=${docID}</div>`;
 
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const otherInAnswer = answerWithExtra?.values.some(
@@ -161,7 +160,8 @@ const Question: React.FC<IQuestionProps> = ({
     isEmpty,
     isFocused,
     isValid,
-    pageIsVisited
+    pageIsVisited,
+    isLogicalValiditySuccess
   );
 
   const userAnswerResult = isInternalExtra
@@ -277,6 +277,8 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     location,
     needScrolling,
     visiblityRulesDict,
+    logicalValidityCheckRuleDict,
+    dependentQuestionsDict,
   } = state;
   const { question } = props;
   const { docID } = question;
@@ -285,11 +287,36 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     userAnswers,
     visiblityRulesDict[String(docID)]
   );
+
+  const checkingResultArr = dependentQuestionsDict[String(docID)]
+    ? dependentQuestionsDict[String(docID)].map(
+        (ruleDocID) => logicalValidityCheckRuleDict[ruleDocID].status
+      )
+    : [];
+
+  const isLogicalValiditySuccess = checkingResultArr.every((status) => status);
+  // selectedQuestion
+  // disabled
+  // needCorrect
+  // questionText
+  // isLimited
+  // isLimitedValue
+  // hasComment
+  // comment
+  // needPadding
+  // hasUnableAnswer
+  // hasNothingAnswer
+  // hasOtherAnswer
+  // otherInAnswer
+  // isImplementedQuestionType
+  // questionType
+  // isInternalExtra
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
     selectedQuestion: needScrolling && questionIndex === props.index,
     isVisible: isVisilbe,
+    isLogicalValiditySuccess,
   };
 };
 

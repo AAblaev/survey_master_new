@@ -31,6 +31,7 @@ export const fakeData: IData = {
   isShowQuestionsCount: true,
   isShowProgressbar: true,
   isShowPageList: true,
+  isShowButtonBack: true,
   answers: [],
   pages: [
     {
@@ -1335,6 +1336,45 @@ export const fakeData: IData = {
   ],
 };
 
+export const fakeRules2: IRule[] = [
+  {
+    docID: 1,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 648,
+    events: [
+      {
+        docID: 1,
+        questionID: 650,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2626,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+  {
+    docID: 2,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 649,
+    events: [
+      {
+        docID: 1,
+        questionID: 650,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2626,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+];
+
 export const fakeRules: IRule[] = [
   {
     docID: 1,
@@ -1375,14 +1415,14 @@ export const fakeRules: IRule[] = [
     docID: 3,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 460,
+    questionID: 466,
     events: [
       {
         docID: 1,
-        questionID: 428,
+        questionID: 670,
         eventOperator: "AND",
         type: "selectedOption",
-        optionID: 2116,
+        optionID: 2689,
         dimention0: 0,
         dimention1: 0,
         dimention2: 0,
@@ -1390,30 +1430,39 @@ export const fakeRules: IRule[] = [
     ],
   },
   {
-    docID: 4,
+    docID: 7,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 461,
+    questionID: 669,
     events: [
       {
         docID: 1,
-        questionID: 460,
+        questionID: 670,
         eventOperator: "AND",
-        type: "answeredQuestion",
+        type: "selectedOption",
+        optionID: 2690,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
       },
     ],
   },
+
   {
-    docID: 5,
+    docID: 4,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 462,
+    questionID: 672,
     events: [
       {
         docID: 1,
-        questionID: 461,
+        questionID: 670,
         eventOperator: "AND",
-        type: "answeredQuestion",
+        type: "selectedOption",
+        optionID: 2691,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
       },
     ],
   },
@@ -1422,40 +1471,77 @@ export const fakeRules: IRule[] = [
     docID: 5,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 463,
+    questionID: 671,
     events: [
       {
         docID: 1,
+        questionID: 670,
         eventOperator: "AND",
-        type: "formula",
-        formula: {
-          expressionFirst: "A+B",
-          expressionSecond: "C",
-          operator: "=",
-          variables: [
-            {
-              code: "A",
-              value: {
-                questionID: 460,
-              },
-            },
-            {
-              code: "B",
-              value: {
-                questionID: 461,
-              },
-            },
-            {
-              code: "C",
-              value: {
-                questionID: 462,
-              },
-            },
-          ],
-        },
+        type: "selectedOption",
+        optionID: 2692,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
       },
     ],
   },
+  {
+    docID: 6,
+    type: "visibilityQuestionRule",
+    title: 'покажи вопрос "Текст вопроса"',
+    questionID: 673,
+    events: [
+      {
+        docID: 1,
+        questionID: 670,
+        eventOperator: "AND",
+        type: "selectedOption",
+        optionID: 2692,
+        dimention0: 0,
+        dimention1: 0,
+        dimention2: 0,
+      },
+    ],
+  },
+
+  // {
+  //   docID: 5,
+  //   type: "visibilityQuestionRule",
+  //   title: 'покажи вопрос "Текст вопроса"',
+  //   questionID: 463,
+  //   events: [
+  //     {
+  //       docID: 1,
+  //       eventOperator: "AND",
+  //       type: "formula",
+  //       formula: {
+  //         expressionFirst: "A+B",
+  //         expressionSecond: "C",
+  //         operator: "=",
+  //         variables: [
+  //           {
+  //             code: "A",
+  //             value: {
+  //               questionID: 460,
+  //             },
+  //           },
+  //           {
+  //             code: "B",
+  //             value: {
+  //               questionID: 461,
+  //             },
+  //           },
+  //           {
+  //             code: "C",
+  //             value: {
+  //               questionID: 462,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     },
+  //   ],
+  // },
   {
     docID: 6,
     type: "pageTransitionRule",
@@ -1516,128 +1602,72 @@ export const fakeRules: IRule[] = [
 
   {
     docID: 9,
-    type: "pageTransitionRule",
-    pageID: 357,
-    targetPageID: 382,
-    title: "переход",
+    type: "logicalValidityCheckRule",
+    title: "ошибка в сложении",
+    pageID: 382,
     events: [
       {
-        docID: 356,
-        type: "selectedOption",
-        questionID: 467,
+        docID: 1,
         eventOperator: "AND",
-        optionID: 2120,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
+        type: "formula",
+        formula: {
+          expressionFirst: "A+B",
+          expressionSecond: "C",
+          operator: "=",
+          variables: [
+            {
+              code: "A",
+              value: {
+                questionID: 674,
+              },
+            },
+            {
+              code: "B",
+              value: {
+                questionID: 675,
+              },
+            },
+            {
+              code: "C",
+              value: {
+                questionID: 676,
+              },
+            },
+          ],
+        },
       },
     ],
   },
+
   {
     docID: 10,
-    type: "pageTransitionRule",
-    pageID: 357,
-    targetPageID: 383,
-    title: "переход",
-    events: [
-      {
-        docID: 356,
-        type: "selectedOption",
-        questionID: 467,
-        eventOperator: "AND",
-        optionID: 2121,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
-      },
-    ],
-  },
-
-  {
-    docID: 11,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 468,
-    events: [
-      {
-        docID: 1,
-        questionID: 467,
-        eventOperator: "AND",
-        type: "answeredQuestion",
-      },
-    ],
-  },
-
-  {
-    docID: 12,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 472,
-    events: [
-      {
-        docID: 1,
-        questionID: 470,
-        eventOperator: "AND",
-        type: "selectedOption",
-        optionID: 2123,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
-      },
-      {
-        docID: 1,
-        questionID: 470,
-        eventOperator: "AND",
-        type: "selectedOption",
-        optionID: 2124,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
-      },
-      {
-        docID: 1,
-        questionID: 470,
-        eventOperator: "AND",
-        type: "selectedOption",
-        optionID: 2125,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
-      },
-    ],
-  },
-
-  {
-    docID: 12,
-    type: "visibilityQuestionRule",
-    title: 'покажи вопрос "Текст вопроса"',
-    questionID: 473,
-    events: [
-      {
-        docID: 1,
-        questionID: 472,
-        eventOperator: "AND",
-        type: "skippedQuestion",
-      },
-    ],
-  },
-
-  {
-    docID: 13,
-    type: "pageTransitionRule",
+    type: "logicalValidityCheckRule",
+    title: "второе число должно быть больше первого",
     pageID: 382,
-    targetPageID: 383,
-    title: "переход",
     events: [
       {
-        docID: 356,
-        type: "selectedOption",
-        questionID: 474,
+        docID: 1,
         eventOperator: "AND",
-        optionID: 2126,
-        dimention0: 0,
-        dimention1: 0,
-        dimention2: 0,
+        type: "formula",
+        formula: {
+          expressionFirst: "A",
+          expressionSecond: "B",
+          operator: "<",
+          variables: [
+            {
+              code: "A",
+              value: {
+                questionID: 674,
+              },
+            },
+            {
+              code: "B",
+              value: {
+                questionID: 675,
+              },
+            },
+          ],
+        },
       },
     ],
   },

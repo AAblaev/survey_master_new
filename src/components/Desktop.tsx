@@ -11,7 +11,6 @@ import {
 } from "../types";
 import AppBar from "./common/AppBar";
 import { Modal } from "./common/modal";
-
 import {
   borderCss,
   contentCss,
@@ -31,24 +30,16 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
+import Notifications from "./common/Notifications";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
   location: ILocation;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
-  handleClick: (payload: {
-    location: ILocation;
-    slideMoveDirection: ISlideMoveDirection;
-    needSendAnswers: boolean;
-  }) => void;
-  submit: () => void;
-  openModal: () => void;
   closeModal: () => void;
   selectPage: (index: number) => void;
-  setScrolling: (value: boolean) => void;
   data: IData;
-  needScrolling: boolean;
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -74,30 +65,27 @@ const Desktop: React.FC<IDesktop> = ({
     isShowQuestionsCount,
   } = data;
 
+  // перенести в Таймер
   const showTimer =
     (pathName === "survey" || pathName === "section") &&
     isLimitTimeForCompletion;
 
   const currentPage = pages[pageIndex];
+  // перенести в Таймерэ
+
+  // перенести в ProgressLinear -->
   const allQuestionCount = pages.reduce(
     (acc: number, page: IPage) =>
       (acc += page.questions.filter((q) => q.config.dataType !== "textblock")
         .length),
     0
   );
-  //
-  const questionCount: number = pages.reduce((acc: number, page, index) => {
-    if (index < pageIndex) {
-      return (
-        acc +
-        page.questions.filter((q) => q.config.dataType !== "textblock").length
-      );
-    } else return acc;
-  }, 0);
 
   const allQuestionsDoneCount = Object.values(userAnswers).filter(
     isQuestionDone
   ).length;
+
+  //<-- перенести в ProgressLinear
 
   const perfectScrollbarRef = useRef<any>(null);
   const perfectScrollbarContainerRef = useRef<HTMLElement | null>(null);
@@ -123,8 +111,7 @@ const Desktop: React.FC<IDesktop> = ({
           isShowQuestionsCount={isShowQuestionsCount}
         />
       );
-    if (pathName === "section")
-      return <Section page={currentPage} questionCount={questionCount} />;
+    if (pathName === "section") return <Section page={currentPage} />;
     return null;
   };
 
@@ -189,6 +176,7 @@ const Desktop: React.FC<IDesktop> = ({
         </PerfectScrollbar>
       </div>
       <footer css={footerCss}></footer>
+      <Notifications location={location} />
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">
         <ModalContentComponent closeModal={closeModal} />

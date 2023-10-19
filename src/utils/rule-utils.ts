@@ -1,15 +1,23 @@
 import { EXTRA_ANSWER } from "../consts/const";
 import {
+  IAnsweredQuestionEvent,
+  IDependentsPagesLogicalValidity,
+  IDependentsQuestionsLogicalValidity,
   IDisqualificationRule,
   IEvent,
   IFormula,
+  IFormulaEvent,
   ILocation,
   ILogicalValidityCheckRule,
+  ILogicalValidityCheckRuleDict,
   IPage,
   IPagesDict,
   IPageTransitionRule,
   IPageTransitionRuleDict,
   IRule,
+  ISelectedOptionEvent,
+  ISkippedQuestionEvent,
+  IStruggledToAnswerEvent,
   ISurveyCompletionRule,
   IUserAnswer,
   IVisibilityQuestionRule,
@@ -22,10 +30,10 @@ export const ruleParser = (
 ): {
   visiblityRulesDict: IVisibleRuleDict;
   pageTransitionRuleDict: IPageTransitionRuleDict;
+  logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
   targetPageTransitionRuleArr: string[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   disqualificationRuleArr: IDisqualificationRule[];
-  logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
 } => {
   return rules.reduce(
     (
@@ -35,7 +43,7 @@ export const ruleParser = (
         targetPageTransitionRuleArr: string[];
         surveyCompletionRuleArr: ISurveyCompletionRule[];
         disqualificationRuleArr: IDisqualificationRule[];
-        logicalValidityCheckRuleArr: ILogicalValidityCheckRule[];
+        logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
       },
       rule: IRule
     ) => {
@@ -99,10 +107,10 @@ export const ruleParser = (
       if (rule.type === "logicalValidityCheckRule") {
         return {
           ...res,
-          logicalValidityCheckRuleArr: [
-            ...res.logicalValidityCheckRuleArr,
-            rule,
-          ],
+          logicalValidityCheckRuleDict: {
+            ...res.logicalValidityCheckRuleDict,
+            [String(rule.docID)]: { logicRule: rule, status: true },
+          },
         };
       }
 
@@ -114,7 +122,7 @@ export const ruleParser = (
       targetPageTransitionRuleArr: [],
       surveyCompletionRuleArr: [],
       disqualificationRuleArr: [],
-      logicalValidityCheckRuleArr: [],
+      logicalValidityCheckRuleDict: {},
     }
   );
 };
@@ -179,11 +187,93 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
   return true;
 };
 
+export const logicalEventChecking = (
+  event: IEvent,
+  userAnswers: IUserAnswer
+): boolean => {
+  if (event.type === "answeredQuestion") {
+    return (
+      !!userAnswers[event.questionID] &&
+      userAnswers[event.questionID].values.length !== 0 &&
+      userAnswers[event.questionID].values[0].value !== "" &&
+      !userAnswers[event.questionID].values[0].isFocused &&
+      userAnswers[event.questionID].values[0].optionID !== EXTRA_ANSWER.UNABLE
+    );
+  }
+  if (event.type === "skippedQuestion") {
+    return (
+      !userAnswers[event.questionID] ||
+      (!!userAnswers[event.questionID] &&
+        userAnswers[event.questionID].values.length === 0)
+    );
+  }
+  if (event.type === "struggledToAnswer") {
+    return (
+      !!userAnswers[event.questionID] &&
+      userAnswers[event.questionID].values.some(
+        (v) => v.optionID === EXTRA_ANSWER.UNABLE
+      )
+    );
+  }
+  if (event.type === "selectedOption") {
+    return (
+      !!userAnswers[event.questionID] &&
+      userAnswers[event.questionID].values.some(
+        (v) =>
+          (v.optionID !== 0 && v.optionID === event.optionID) ||
+          (!!v.dimension0 &&
+            !!v.dimension1 &&
+            v.dimension0 === String(event.dimention0) &&
+            v.dimension1 === String(event.dimention1))
+      )
+    );
+  }
+  if (event.type === "formula") {
+    const { variables } = event.formula;
+    if (
+      variables.some(
+        (v) =>
+          !userAnswers[v.value.questionID] ||
+          (!!userAnswers[v.value.questionID] &&
+            userAnswers[v.value.questionID].values.length === 0) ||
+          (!!userAnswers[v.value.questionID] &&
+            userAnswers[v.value.questionID].values.length > 0 &&
+            userAnswers[v.value.questionID].values[0].isFocused) ||
+          (!!userAnswers[v.value.questionID] &&
+            userAnswers[v.value.questionID].values.length > 0 &&
+            !userAnswers[v.value.questionID].values[0].validationResult.isValid)
+      )
+    ) {
+      // console.log("не все значения!!!");
+      // true для logicalEventChecking
+      return true;
+    }
+
+    return compareExpressions(event.formula, userAnswers);
+  }
+  return true;
+};
+
+export const logicalValidityChecking = (
+  userAnswers: IUserAnswer,
+  rule: ILogicalValidityCheckRule
+) => {
+  const { events } = rule;
+  const operator = events[0].eventOperator;
+  if (operator === "AND" || operator === null) {
+    return events.every((event) => logicalEventChecking(event, userAnswers));
+  }
+  if (operator === "OR") {
+    return events.some((event) => logicalEventChecking(event, userAnswers));
+  }
+
+  return true;
+};
+
 export const visibleChecking = (
   userAnswers: IUserAnswer,
   rule?: IVisibilityQuestionRule
 ): boolean => {
-  // console.log("visiblle checking", userAnswers);
   if (!rule) return true;
 
   const { events } = rule;
@@ -527,4 +617,60 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     userAnswers,
     targetPageTransitionRuleArr,
   });
+};
+
+export const getLogicalValidityCheckRulesByQuestionID = (
+  rules: ILogicalValidityCheckRule[]
+): {
+  dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
+  dependentPagesDict: IDependentsPagesLogicalValidity;
+} => {
+  const questionIDToDocIDs: { [key: string]: number[] } = {};
+  const pageIDToDocIDs: { [key: string]: number[] } = {};
+
+  // Проходим по всем правилам
+  rules.forEach((rule) => {
+    const pageIDStr = String(rule.pageID);
+    if (!pageIDToDocIDs[pageIDStr]) {
+      pageIDToDocIDs[pageIDStr] = [];
+    }
+    pageIDToDocIDs[pageIDStr].push(rule.docID);
+
+    // Проходим по событиям внутри правила
+    rule.events.forEach((event) => {
+      let questionIDs: number[] = [];
+
+      if (event.type === "answeredQuestion") {
+        questionIDs.push((event as IAnsweredQuestionEvent).questionID);
+      } else if (event.type === "skippedQuestion") {
+        questionIDs.push((event as ISkippedQuestionEvent).questionID);
+      } else if (event.type === "selectedOption") {
+        questionIDs.push((event as ISelectedOptionEvent).questionID);
+      } else if (event.type === "struggledToAnswer") {
+        questionIDs.push((event as IStruggledToAnswerEvent).questionID);
+      } else if (event.type === "formula") {
+        // Проверяем, есть ли questionID в value формулы и добавляем его, если есть
+        const formulaEvent = event as IFormulaEvent;
+        formulaEvent.formula.variables.forEach((variable) => {
+          if (variable.value.questionID !== undefined) {
+            questionIDs.push(variable.value.questionID);
+          }
+        });
+      }
+
+      // Добавляем найденные questionID к соответствующим правилам
+      questionIDs.forEach((questionID) => {
+        const questionIDStr = String(questionID);
+        if (!questionIDToDocIDs[questionIDStr]) {
+          questionIDToDocIDs[questionIDStr] = [];
+        }
+        questionIDToDocIDs[questionIDStr].push(rule.docID);
+      });
+    });
+  });
+
+  return {
+    dependentQuestionsDict: questionIDToDocIDs,
+    dependentPagesDict: pageIDToDocIDs,
+  };
 };

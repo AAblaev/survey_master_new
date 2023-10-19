@@ -24,6 +24,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
   buttonNextCaption,
   buttonBackCaption,
   isShowPageList,
+  isShowButtonBack,
   startSurvey,
   isEmptyData,
   pages,
@@ -42,8 +43,9 @@ const Switcher: React.FC<ISwitcherProps> = ({
   }
 
   const { pageIndex } = location;
-  const showBackBtn = !(!isShowPageList && pageIndex === 0);
-
+  // const showBackBtn = !(!isShowPageList && pageIndex === 0);
+  const showBackBtn = isShowButtonBack && !(!isShowPageList && pageIndex === 0);
+  const showNavList = isShowButtonBack && pageList.length > 1;
   const firstPageDocID = String(pages[0].docID);
 
   switch (location.pathName) {
@@ -97,7 +99,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Nav
             title={pageTitle}
             pageList={pageList}
-            showList={true}
+            showList={showNavList}
             selectPage={selectPage}
           />
 
@@ -130,7 +132,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <IconButton
             key="IconButton2"
             css={iconBtnCss("left")}
-            disabled={strictModeNavigation && location.pageIndex === 0}
+            disabled={!showBackBtn}
             onClick={() => setPrevPage()}
           >
             <ChevronRightIcon fontSize="large" />
@@ -141,6 +143,8 @@ const Switcher: React.FC<ISwitcherProps> = ({
   }
   return <></>;
 };
+
+// disabled={strictModeNavigation && location.pageIndex === 0}
 
 const mapStateToProps = (state: IState) => {
   const {
@@ -164,8 +168,10 @@ const mapStateToProps = (state: IState) => {
   const buttonNextCaption = data?.buttonNextCaption || "";
   const buttonBackCaption = data?.buttonBackCaption || "";
   const buttonFinishCaption = data?.buttonFinishCaption || "";
+  const isShowButtonBack = data?.isShowButtonBack || false;
   const isShowPageList = data?.isShowPageList || false;
   const pages = data?.pages || [];
+
   const pagesCount = pages.length;
   const uid = isEmptyData ? "" : params?.uid;
   const currentPage = pages[location.pageIndex];
@@ -195,6 +201,7 @@ const mapStateToProps = (state: IState) => {
     buttonBackCaption,
     buttonFinishCaption,
     isShowPageList,
+    isShowButtonBack,
     pages,
     pagesCount,
     uid,

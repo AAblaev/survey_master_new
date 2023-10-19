@@ -40,7 +40,6 @@ type IFreeListViewProps = {
 };
 
 const FreeListView: React.FC<IFreeListViewProps> = ({
-  currentQuestionIndex,
   question,
   setAnswer,
   userAnswer,

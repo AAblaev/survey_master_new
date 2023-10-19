@@ -4,16 +4,20 @@ import {
   IAnswer,
   IBackendAnswer,
   IData,
+  IDependentsQuestionsLogicalValidity,
   IDisqualificationRule,
   ILocation,
+  ILogicalValidityCheckRuleDict,
   ISlideMoveDirection,
   ISurveyCompletionRule,
+  IUserAnswer,
 } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
 import { requiredQuestionsChecking } from "../../utils/questionIsDone";
 import {
   disqualificationRuleChecking,
+  logicalValidityChecking,
   surveyCompletionChecking,
 } from "../../utils/rule-utils";
 import { userAnswerParses } from "../../utils/userAnswerParser";
@@ -31,11 +35,13 @@ import {
   setVisitedPageDocID,
   cancelTransition,
   surveyCompletionRuleActive,
+  updateLogicalRyleStatus,
 } from "../redux/actions";
 import {
   selectAnswers,
   selectChangePageProps,
   selectCompleteSurveyProps,
+  selectLogicValidityData,
   selectSurveyID,
   selectUid,
 } from "../redux/selectors";
@@ -44,6 +50,7 @@ import {
   FETCH_SURVEY_DATA,
   SAGA_CHANGE_CURRENT_PAGE,
   SEND_SURVEY_DATA,
+  SET_USER_ANSWER,
   START_SURVEY,
 } from "../redux/types";
 import { getParams } from "./utils";
@@ -205,6 +212,8 @@ function* changeCurrentPage({
     pages,
     surveyCompletionRuleArr,
     disqualificationRuleArr,
+    dependentPagesDict,
+    logicalValidityCheckRuleDict,
   } = yield select(selectChangePageProps);
 
   const answers = userAnswerParses(userAnswers);
@@ -223,6 +232,7 @@ function* changeCurrentPage({
     return;
   }
 
+  ///////////////////////////
   const currentPage = pages[location.pageIndex];
 
   // валидация страницы
@@ -231,9 +241,43 @@ function* changeCurrentPage({
     userAnswers
   );
 
+  const logicalValidityRuleDocIDs: number[] = dependentPagesDict[
+    String(currentPage.docID)
+  ]
+    ? dependentPagesDict[String(currentPage.docID)]
+    : [];
+
+  const newLogicalValidityRuleValues = logicalValidityRuleDocIDs.reduce(
+    (res, id) => {
+      const logicRule = logicalValidityCheckRuleDict[String(id)].logicRule;
+      // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
+      // console.log("id", id);
+      // console.log("logicRule", logicRule);
+      return {
+        ...res,
+        [String(id)]: {
+          logicRule: logicRule,
+          status: logicalValidityChecking(userAnswers, logicRule),
+        },
+      };
+    },
+    {} as ILogicalValidityCheckRuleDict
+  );
+
+  const logicalValidityResult = Object.values(
+    newLogicalValidityRuleValues
+  ).every((rule) => rule.status);
+
   if (!pageValidationResult) {
     yield put(
       cancelTransition({ currentPageDocID: String(currentPage.docID) })
+    );
+    return;
+  }
+
+  if (!logicalValidityResult) {
+    yield put(
+      updateLogicalRyleStatus({ values: newLogicalValidityRuleValues })
     );
     return;
   }
@@ -289,12 +333,47 @@ function* changeCurrentPage({
   yield put(goToTheNextPage({ direction, targetPageID }));
 }
 
+function* setAnswer(payload: {
+  type: typeof SET_USER_ANSWER;
+  payload: { questionID: number };
+}) {
+  const questionID = payload.payload.questionID;
+  const {
+    logicalValidityCheckRuleDict,
+    dependentQuestionsDict,
+    userAnswers,
+  }: {
+    logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
+    dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
+    userAnswers: IUserAnswer;
+  } = yield select(selectLogicValidityData);
+
+  const dependentRulsID = dependentQuestionsDict[questionID];
+
+  if (!dependentRulsID) return;
+
+  const result: ILogicalValidityCheckRuleDict = {};
+  dependentRulsID.forEach((id) => {
+    const logicRule = logicalValidityCheckRuleDict[id].logicRule;
+    const newStatus = logicalValidityChecking(userAnswers, logicRule);
+    result[String(id)] = {
+      logicRule: logicRule,
+      status: newStatus,
+    };
+  });
+
+  yield put(updateLogicalRyleStatus({ values: result }));
+
+  // update logicalValidityCheckRuleDict
+}
+
 function* mySaga() {
   yield takeEvery(FETCH_SURVEY_DATA, fetchSurveyData);
   yield takeEvery(START_SURVEY, startSurvey);
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
   yield takeEvery(COMPLETE_SURVEY, completeSurvey);
   yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
+  yield takeEvery(SET_USER_ANSWER, setAnswer);
 }
 
 export default mySaga;

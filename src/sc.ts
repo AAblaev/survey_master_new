@@ -49,7 +49,7 @@ export const onlyDesctopButtonCss = css`
 `;
 
 export const transitionGroupCss = css`
-  padding-bottom: 40px;
+  // padding-bottom: 40px;
   & > div {
     box-sizing: border-box;
   }

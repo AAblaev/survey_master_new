@@ -2,6 +2,7 @@ import {
   IAnswer,
   IData,
   ILocation,
+  ILogicalValidityCheckRuleDict,
   IParams,
   IQuestion,
   ISlideMoveDirection,
@@ -30,6 +31,8 @@ import {
   CANCEL_TRANSITION,
   SURVEY_COMPLETION_RULE_ACTIVE,
   SELECT_SECTION,
+  UPDATE_LOGICAL_RULES_STATUS,
+  APPROVE_LOGIC_RULE_STATUS,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -160,3 +163,10 @@ export const surveyCompletionRuleActive = (payload: {
 
 export const selectSection = (payload: { pageDocID: string }) =>
   <const>{ type: SELECT_SECTION, payload };
+
+export const updateLogicalRyleStatus = (payload: {
+  values: ILogicalValidityCheckRuleDict;
+}) => <const>{ type: UPDATE_LOGICAL_RULES_STATUS, payload };
+
+export const approveLogicRuleStatus = (payload: { ruleDocID: string }) =>
+  <const>{ type: APPROVE_LOGIC_RULE_STATUS, payload };

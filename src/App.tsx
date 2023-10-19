@@ -28,14 +28,9 @@ const App: React.FC<IApp> = ({
   userAnswers,
   location,
   slideMoveDirection,
-  handleClick,
-  submit,
   modalVisible,
-  openModal,
   closeModal,
   selectPage,
-  setScrolling,
-  needScrolling,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -70,14 +65,9 @@ const App: React.FC<IApp> = ({
         userAnswers={userAnswers}
         location={location}
         slideMoveDirection={slideMoveDirection}
-        handleClick={handleClick}
-        submit={submit}
         modalVisible={modalVisible}
-        openModal={openModal}
         closeModal={closeModal}
         selectPage={selectPage}
-        setScrolling={setScrolling}
-        needScrolling={needScrolling}
       />
     </div>
   );
@@ -93,7 +83,6 @@ const mapStateToProps = (state: IState) => {
     params,
     userAnswers,
     modalVisible,
-    visitedPageDocIDList,
     needScrolling,
   } = state;
 
@@ -113,36 +102,7 @@ const mapStateToProps = (state: IState) => {
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
-    openModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: true }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
-    submit: () => {
-      dispatch({ type: COMPLETE_SURVEY });
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: 0,
-            questionIndex: 0,
-            pathName: "completion",
-            title: "completion",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
-    },
-    handleClick: (payload: {
-      location: ILocation;
-      slideMoveDirection: ISlideMoveDirection;
-      needSendAnswers: boolean;
-    }) => {
-      const { location, slideMoveDirection, needSendAnswers } = payload;
-      dispatch(
-        changeCurretLocation({
-          location: location,
-          slideMoveDirection: slideMoveDirection,
-        })
-      );
-      needSendAnswers && dispatch({ type: SEND_SURVEY_DATA });
-    },
     selectPage: (index: number) => {
       dispatch(
         changeCurretLocation({
