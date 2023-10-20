@@ -14,7 +14,10 @@ import {
 } from "../../types";
 import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
-import { requiredQuestionsChecking } from "../../utils/questionIsDone";
+import {
+  findFirstIncompleteQuestion,
+  requiredQuestionsChecking,
+} from "../../utils/questionIsDone";
 import {
   disqualificationRuleChecking,
   logicalValidityChecking,
@@ -160,9 +163,29 @@ function* sendSurveyData() {
 }
 
 function* completeSurvey() {
-  const { uid, userAnswers, location, pages } = yield select(
-    selectCompleteSurveyProps
-  );
+  const {
+    uid,
+    userAnswers,
+    location,
+    pages,
+    strictModeNavigation,
+  } = yield select(selectCompleteSurveyProps);
+
+  // проверить все/все посещенные страницы. зависит от strictModeNavigation
+
+  if (!strictModeNavigation) {
+    const currentPage = pages[location.pageIndex];
+    const firstIncompleteQuestion = findFirstIncompleteQuestion(
+      pages,
+      userAnswers
+    );
+    if (firstIncompleteQuestion) {
+      yield put(
+        cancelTransition({ currentPageDocID: String(currentPage.docID) })
+      );
+      return;
+    }
+  }
 
   const answers = userAnswerParses(userAnswers);
   const pathSendData = PATH_NAME + "answers/?uid=" + uid;
@@ -241,6 +264,15 @@ function* changeCurrentPage({
     userAnswers
   );
 
+  if (!pageValidationResult) {
+    yield put(
+      cancelTransition({ currentPageDocID: String(currentPage.docID) })
+    );
+    return;
+  }
+
+  /// валидация логической коррекции
+
   const logicalValidityRuleDocIDs: number[] = dependentPagesDict[
     String(currentPage.docID)
   ]
@@ -250,9 +282,6 @@ function* changeCurrentPage({
   const newLogicalValidityRuleValues = logicalValidityRuleDocIDs.reduce(
     (res, id) => {
       const logicRule = logicalValidityCheckRuleDict[String(id)].logicRule;
-      // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
-      // console.log("id", id);
-      // console.log("logicRule", logicRule);
       return {
         ...res,
         [String(id)]: {
@@ -267,13 +296,6 @@ function* changeCurrentPage({
   const logicalValidityResult = Object.values(
     newLogicalValidityRuleValues
   ).every((rule) => rule.status);
-
-  if (!pageValidationResult) {
-    yield put(
-      cancelTransition({ currentPageDocID: String(currentPage.docID) })
-    );
-    return;
-  }
 
   if (!logicalValidityResult) {
     yield put(

@@ -1415,7 +1415,7 @@ export const fakeRules: IRule[] = [
     docID: 3,
     type: "visibilityQuestionRule",
     title: 'покажи вопрос "Текст вопроса"',
-    questionID: 466,
+    questionID: 468,
     events: [
       {
         docID: 1,
