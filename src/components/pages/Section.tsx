@@ -9,6 +9,7 @@ import { visibleChecking } from "../../utils/rule-utils";
 import Button from "@material-ui/core/Button";
 import { COMPLETE_SURVEY } from "../../services/redux/types";
 import { onlyDesctopButtonCss } from "../../sc";
+import DelayWrapper from "../common/DelayWrapper";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
@@ -43,7 +44,7 @@ const Section: React.FC<IOwnSectionProps> = ({
         );
       })}
       {showCompleteBtn && (
-        <div>
+        <DelayWrapper>
           <Button
             key="continue"
             variant="contained"
@@ -52,7 +53,7 @@ const Section: React.FC<IOwnSectionProps> = ({
           >
             Завершить
           </Button>
-        </div>
+        </DelayWrapper>
       )}
     </div>
   );

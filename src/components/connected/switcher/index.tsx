@@ -130,6 +130,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
             onClick={() => {
               setNextPage();
             }}
+            disabled={showFinishBtn}
           >
             <ChevronRightIcon fontSize="large" />
           </IconButton>
