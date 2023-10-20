@@ -23,6 +23,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
   buttonStartCaption,
   buttonNextCaption,
   buttonBackCaption,
+  buttonFinishCaption,
   isShowPageList,
   isShowButtonBack,
   startSurvey,
@@ -37,6 +38,8 @@ const Switcher: React.FC<ISwitcherProps> = ({
   pageList,
   setFirstPage,
   pageTitle,
+  showFinishBtn,
+  completeSurvey,
 }) => {
   if (isEmptyData) {
     return null;
@@ -106,9 +109,11 @@ const Switcher: React.FC<ISwitcherProps> = ({
           <Button
             key="1"
             css={buttonCss(true, "right")}
-            onClick={() => setNextPage()}
+            onClick={
+              showFinishBtn ? () => completeSurvey() : () => setNextPage()
+            }
           >
-            {buttonNextCaption}
+            {showFinishBtn ? buttonFinishCaption : buttonNextCaption}
           </Button>
 
           <Button
@@ -232,9 +237,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     setFirstPage: (targetPageID: string) => {
       dispatch(goToTheNextPage({ direction: "right-to-left", targetPageID }));
     },
-
     selectPage: (pageDocID: string) => dispatch(selectSection({ pageDocID })),
-
     completeSurvey: () => {
       dispatch({ type: COMPLETE_SURVEY });
     },

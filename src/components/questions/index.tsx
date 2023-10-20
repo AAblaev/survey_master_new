@@ -100,8 +100,8 @@ const Question: React.FC<IQuestionProps> = ({
   const { isLimited, isLimitedValue, limit, limitValue } = config;
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
-  } docID=${docID}</div>`;
-
+  } `;
+  // docID=${docID}</div>
   const hasExtra = hasNothingAnswer || hasOtherAnswer || hasUnableAnswer;
   const otherInAnswer = answerWithExtra?.values.some(
     (v) => v.optionID === EXTRA_ANSWER.OTHER

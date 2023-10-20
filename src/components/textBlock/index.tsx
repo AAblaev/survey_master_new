@@ -21,7 +21,7 @@ const TextBlock: React.FC<IOwnTextProps> = ({ question, isVisible }) => {
       <div css={titleTextCss(false)}>
         {(hasComment || config.dataType === "textblock") && (
           <div
-            dangerouslySetInnerHTML={{ __html: comment ? comment + docID : "" }}
+            dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
           ></div>
         )}
       </div>

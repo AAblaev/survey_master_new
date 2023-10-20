@@ -90,22 +90,11 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
         <>
           <ModalHeader>
             <div css={modalHeaderWrapperCss}>
-              <span>Поздравляем!</span>
-              <IconButton onClick={() => closeModal()}>
-                <CloseIcon />
-              </IconButton>
+              <span>Завершить?</span>
             </div>
           </ModalHeader>
           <ModalContent>
-            <Typography variant="h6">
-              Вы успешно завершили этот опрос. Мы ценим ваше участие и ваши
-              ответы помогут нам собрать ценные данные.
-            </Typography>
-            <Typography variant="h6">
-              Спасибо, что уделили время для нас!
-            </Typography>
-
-            <div css={buttonsWrapperCss}>
+            <div style={{ display: "flex", gap: "20px" }}>
               <Button
                 key="continue"
                 variant="contained"
@@ -114,7 +103,16 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
                   closeModal();
                 }}
               >
-                Завершить
+                Да
+              </Button>
+              <Button
+                key="continue"
+                variant="contained"
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                Нет
               </Button>
             </div>
           </ModalContent>

@@ -6,6 +6,9 @@ import TextBlock from "../textBlock";
 import { IPage, IState } from "../../types";
 import { questionListCss } from "./sc";
 import { visibleChecking } from "../../utils/rule-utils";
+import Button from "@material-ui/core/Button";
+import { COMPLETE_SURVEY } from "../../services/redux/types";
+import { onlyDesctopButtonCss } from "../../sc";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
@@ -13,7 +16,12 @@ export type ISectionProps = {
   page: IPage;
 };
 
-const Section: React.FC<IOwnSectionProps> = ({ page, questionCount }) => {
+const Section: React.FC<IOwnSectionProps> = ({
+  page,
+  questionCount,
+  showCompleteBtn,
+  completeSurvey,
+}) => {
   const questions = page.questions ? page.questions : [];
   let counter = 0;
 
@@ -34,15 +42,42 @@ const Section: React.FC<IOwnSectionProps> = ({ page, questionCount }) => {
           />
         );
       })}
+      {showCompleteBtn && (
+        <div>
+          <Button
+            key="continue"
+            variant="contained"
+            css={onlyDesctopButtonCss}
+            onClick={() => completeSurvey()}
+          >
+            Завершить
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
 
 const mapStateToProps = (state: IState) => {
-  const { location, userAnswers, visiblityRulesDict, data } = state;
+  const {
+    location,
+    userAnswers,
+    visiblityRulesDict,
+    data,
+    pageTransitionRuleDict,
+  } = state;
   const { pageIndex } = location;
+  const pages = data!.pages || [];
 
-  const pages = data?.pages || [];
+  const currentPage = pages[pageIndex];
+  const hasTransitionRule = pageTransitionRuleDict.hasOwnProperty(
+    String(currentPage.docID)
+  );
+
+  const isLastPage = pageIndex === pages.length - 1;
+
+  const showCompleteBtn = isLastPage && !hasTransitionRule;
+
   const questionCount: number = pages
     .slice(0, pageIndex)
     .reduce((acc, page) => {
@@ -62,11 +97,14 @@ const mapStateToProps = (state: IState) => {
 
   return {
     questionCount,
+    showCompleteBtn,
   };
 };
 
-const mapDispathToProps = (_dispatch: Dispatch) => {
-  return {};
+const mapDispathToProps = (dispatch: Dispatch) => {
+  return {
+    completeSurvey: () => dispatch({ type: COMPLETE_SURVEY }),
+  };
 };
 
 const connector = connect(mapStateToProps, mapDispathToProps);
