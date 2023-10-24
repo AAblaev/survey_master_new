@@ -9,12 +9,14 @@ export type IUnableCheckbox = {
   userAnswer: IAnswer;
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
+  difficultToAnswerPlaceholder: string;
 };
 
 const UnableCheckbox: React.FC<IUnableCheckbox> = ({
   userAnswer,
   setAnswer,
   questionID,
+  difficultToAnswerPlaceholder,
 }) => {
   const checked = Boolean(
     userAnswer &&
@@ -33,7 +35,7 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
         values: [
           {
             optionID: EXTRA_ANSWER.UNABLE,
-            value: "Затрудняюсь ответить",
+            value: difficultToAnswerPlaceholder,
             validationResult: { isValid: true, message: "success" },
             isFocused: false,
           },
@@ -49,7 +51,7 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
           name={"name"}
         />
       }
-      label="Затрудняюсь ответить"
+      label={difficultToAnswerPlaceholder}
       key={"unable"}
     />
   );

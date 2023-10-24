@@ -10,6 +10,7 @@ export type IOtherCheckbox = {
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
   singleAnswer: boolean;
+  otherPlaceholder: string;
 };
 
 const OtherCheckbox: React.FC<IOtherCheckbox> = ({
@@ -17,6 +18,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
   setAnswer,
   questionID,
   singleAnswer,
+  otherPlaceholder,
 }) => {
   const hasOtherInUserAnswer =
     userAnswer &&
@@ -68,7 +70,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
             name={"name"}
           />
         }
-        label="Другое"
+        label={otherPlaceholder}
         key={"other"}
       />
       {checked && (

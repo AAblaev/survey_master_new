@@ -51,9 +51,16 @@ export type IQuestion = {
   hasOtherAnswer: boolean;
   hasNothingAnswer: boolean;
   hasUnableAnswer: boolean;
+  difficultToAnswerPlaceholder: string;
+  nothingPlaceholder: string;
+  otherPlaceholder: string;
   hint?: string;
   scaleType?: number;
 };
+
+// difficultToAnswerPlaceholder:"Затрудняюсь ответить"
+// nothingPlaceholder: "Ничего из вышеперечисленного"
+// otherPlaceholder: "Другое"
 
 export type IOption = {
   docID: number;

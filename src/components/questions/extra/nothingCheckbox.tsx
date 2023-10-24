@@ -8,12 +8,14 @@ export type INothingCheckboxProps = {
   userAnswer: IAnswer;
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
+  nothingPlaceholder: string;
 };
 
 const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
   userAnswer,
   setAnswer,
   questionID,
+  nothingPlaceholder,
 }) => {
   const checked = Boolean(
     userAnswer &&
@@ -48,7 +50,7 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
           name={"name"}
         />
       }
-      label="Ничего из вышеперечисленного"
+      label={nothingPlaceholder}
       key={"notAnyOne"}
     />
   );

@@ -94,6 +94,9 @@ const Question: React.FC<IQuestionProps> = ({
     hasComment,
     comment,
     isRequired,
+    difficultToAnswerPlaceholder,
+    nothingPlaceholder,
+    otherPlaceholder,
   } = question;
   const elementRef = useRef<any>(null);
 
@@ -247,6 +250,7 @@ const Question: React.FC<IQuestionProps> = ({
               setAnswer={setAnswer}
               questionID={question.docID}
               singleAnswer={questionType !== "multiselect"}
+              otherPlaceholder={otherPlaceholder}
             />
           )}
           {!isInternalExtra && hasNothingAnswer && (
@@ -254,6 +258,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
+              nothingPlaceholder={nothingPlaceholder}
             />
           )}
         </FormControl>
@@ -264,6 +269,7 @@ const Question: React.FC<IQuestionProps> = ({
           userAnswer={answerWithExtra as IAnswer}
           setAnswer={setAnswer}
           questionID={question.docID}
+          difficultToAnswerPlaceholder={difficultToAnswerPlaceholder}
         />
       )}
     </div>

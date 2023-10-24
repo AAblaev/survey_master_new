@@ -29,7 +29,15 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const { docID, hint, config, hasNothingAnswer, hasOtherAnswer } = question;
+  const {
+    docID,
+    hint,
+    config,
+    hasNothingAnswer,
+    hasOtherAnswer,
+    nothingPlaceholder,
+    otherPlaceholder,
+  } = question;
   const hasOtherInUserAnswer =
     userAnswer &&
     userAnswer.values.length > 0 &&
@@ -43,7 +51,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       height: 0,
       order: 0,
       photoID: 0,
-      title: hasOtherInUserAnswer ? hasOtherInUserAnswer.value : "",
+      title: otherPlaceholder,
       width: 0,
     });
 
@@ -53,7 +61,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
       height: 0,
       order: 0,
       photoID: 0,
-      title: "ничего из вышеперечисленного",
+      title: nothingPlaceholder,
       width: 0,
     });
 
@@ -81,7 +89,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
         height: 0,
         order: 0,
         photoID: 0,
-        title: "ничего из вышеперечисленного",
+        title: nothingPlaceholder,
         width: 0,
       },
       "-3": {
@@ -179,7 +187,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
               <div css={chipWrapperCss}>
                 {options.map(({ docID, title }) => (
                   <div key={docID} css={chipCss(false)}>
-                    {docID === EXTRA_ANSWER.OTHER ? "другое" : title}
+                    {docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title}
                   </div>
                 ))}
               </div>
@@ -204,7 +212,9 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
                 css={iconCss((value as number[]).includes(item.docID))}
               />
               <span>
-                {item.docID === EXTRA_ANSWER.OTHER ? "другое" : item.title}
+                {item.docID === EXTRA_ANSWER.OTHER
+                  ? otherPlaceholder
+                  : item.title}
               </span>
             </MenuItem>
           ))}

@@ -19,7 +19,15 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
   setAnswer,
   userAnswer,
 }) => {
-  const { docID, config, hint, hasNothingAnswer, hasOtherAnswer } = question;
+  const {
+    docID,
+    config,
+    hint,
+    hasNothingAnswer,
+    hasOtherAnswer,
+    nothingPlaceholder,
+    otherPlaceholder,
+  } = question;
 
   const options = config.options!;
   const selectItems = [...options];
@@ -29,7 +37,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       height: 0,
       order: 0,
       photoID: 0,
-      title: "другое",
+      title: otherPlaceholder,
       width: 0,
     });
 
@@ -39,7 +47,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
       height: 0,
       order: 0,
       photoID: 0,
-      title: "ничего из вышеперечисленного",
+      title: nothingPlaceholder,
       width: 0,
     });
 
@@ -67,7 +75,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
         height: 0,
         order: 0,
         photoID: 0,
-        title: "ничего из вышеперечисленного",
+        title: nothingPlaceholder,
         width: 0,
       },
       "-3": {
@@ -75,7 +83,7 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
         height: 0,
         order: 0,
         photoID: 0,
-        title: "другое",
+        title: otherPlaceholder,
         width: 0,
       },
     }
