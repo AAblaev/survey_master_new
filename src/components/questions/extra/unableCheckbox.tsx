@@ -51,7 +51,11 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
           name={"name"}
         />
       }
-      label={difficultToAnswerPlaceholder}
+      label={
+        difficultToAnswerPlaceholder
+          ? difficultToAnswerPlaceholder
+          : "Затрудняюсь ответить"
+      }
       key={"unable"}
     />
   );

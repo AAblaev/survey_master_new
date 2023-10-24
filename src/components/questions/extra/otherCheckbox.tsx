@@ -70,7 +70,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
             name={"name"}
           />
         }
-        label={otherPlaceholder}
+        label={otherPlaceholder ? otherPlaceholder : "Другое"}
         key={"other"}
       />
       {checked && (

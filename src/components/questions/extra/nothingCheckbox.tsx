@@ -50,7 +50,9 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
           name={"name"}
         />
       }
-      label={nothingPlaceholder}
+      label={
+        nothingPlaceholder ? nothingPlaceholder : "Ничего из вышеперечисленного"
+      }
       key={"notAnyOne"}
     />
   );
