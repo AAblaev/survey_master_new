@@ -16,6 +16,8 @@ import {
   contentCss,
   footerCss,
   gridContainerCss,
+  homeButtonCss,
+  surveyNameCss,
   transitionGroupCss,
 } from "../sc";
 import { isQuestionDone } from "../utils/questionIsDone";
@@ -31,6 +33,8 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 import Notifications from "./common/Notifications";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -119,9 +123,10 @@ const Desktop: React.FC<IDesktop> = ({
     <>
       <AppBar direction="top" fixed>
         <Menu />
-        {showTimer && <Timer limitTime={limitTime} />}
-
         <Switcher />
+        <Typography css={surveyNameCss}>{name}</Typography>
+
+        {false && <Timer limitTime={limitTime} />}
       </AppBar>
 
       <div css={contentCss}>
@@ -134,7 +139,6 @@ const Desktop: React.FC<IDesktop> = ({
         >
           {pathName !== "greeting" && (
             <div className="adaptive-paddings">
-              <div className="survey-name">{name}</div>
               <ProgressLinear
                 allQuestionCount={allQuestionCount}
                 allQuestionsDoneCount={allQuestionsDoneCount}

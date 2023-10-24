@@ -10,13 +10,13 @@ export const buttonsWrapperCss = css`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 20px;
+  gap: 10px;
 `;
 
 export const questionListCss = (questionCount: number) => css`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 30px;
   margin-bottom: 40px;
   counter-reset: section ${questionCount};
 `;

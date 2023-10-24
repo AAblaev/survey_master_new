@@ -27,12 +27,45 @@ export const contentCss = css`
 `;
 
 export const homeButtonCss = css`
-  background-color: #3b424a;
+  // background-color: #3b424a;
   &.MuiButton-root {
     display: flex;
     justify-content: space-between;
     color: #fff;
-    // min-width: 80px;
+    white-space: nowrap;
+  }
+`;
+
+export const surveyNameCss = css`
+  // &.MuiButton-root {
+  //   margin-right: auto;
+  //   display: none;
+  //   justify-content: space-between;
+  //   color: #fff;
+  // }
+  display: none;
+  text-transform: uppercase;
+
+  &.MuiTypography-body1 {
+    font-weight: 600;
+    color: #ffff;
+  }
+
+  &.MuiTypography-root {
+    margin-right: auto;
+  }
+  @media (min-width: 768px) {
+    // &.MuiButton-root {
+    //   display: block;
+    //   white-space: nowrap;
+    //
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
+    // }
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -67,6 +100,7 @@ export const gridContainerCss = css`
   display: grid;
   grid-template-columns: 5% auto 5%;
   grid-template-rows: auto;
+  margin-top: 10px;
 
   @media (min-width: 576px) {
     grid-template-columns: 5% auto 5%;

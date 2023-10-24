@@ -35,6 +35,7 @@ p {
 }
 
 .progress-question-count {
+  margin-top: 10px;
   font-size: 0.62rem;
   font-weight: 500;
 }

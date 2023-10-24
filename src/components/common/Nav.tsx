@@ -56,7 +56,7 @@ const Nav: React.FC<INavProps> = ({
   };
 
   return (
-    <div style={{ marginRight: "auto" }}>
+    <div>
       <Button css={homeButtonCss} onClick={handleClick}>
         {title}
         {showList && <ExpandMoreIcon />}

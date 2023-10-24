@@ -165,9 +165,6 @@ const mapStateToProps = (state: IState) => {
     strictModeNavigation,
     pagesDict,
   } = state;
-  // console.log("pageMovementLogs", pageMovementLogs);
-  // console.log("visitedPageDocIDList", visitedPageDocIDList);
-  // console.log("pagesDict", pagesDict);
 
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";

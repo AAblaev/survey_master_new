@@ -8,7 +8,9 @@ import { PRIMARY_COLOR } from "../../consts/const";
 export const toolbarCss = (direction: IAppBarDirection) => css`
   display: flex;
   flex-direction: ${direction === "bottom" ? "row-reverse" : "row-reverse"};
-  justify-content: ${direction === "bottom" ? "space-between" : "flex-start"};
+  justify-content: ${direction === "bottom"
+    ? "space-between"
+    : "space-between"};
   background-color: ${PRIMARY_COLOR};
 
   padding-right: 5%;

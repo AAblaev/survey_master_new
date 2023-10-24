@@ -191,6 +191,7 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
     params,
+    strictModeNavigation,
   } = state;
 
   const isEmptyData = !Boolean(data);
@@ -199,6 +200,8 @@ const mapStateToProps = (state: IState) => {
   const buttonBackCaption = data?.buttonBackCaption || "";
   const buttonFinishCaption = data?.buttonFinishCaption || "";
   const isShowPageList = data?.isShowPageList || false;
+  const isShowButtonBack = data?.isShowButtonBack || false;
+
   const pages = data?.pages || [];
   const pagesCount = pages.length;
   const surveyID = params.surveyID;
@@ -214,7 +217,7 @@ const mapStateToProps = (state: IState) => {
     buttonNextCaption,
     buttonBackCaption,
     buttonFinishCaption,
-    isShowPageList,
+    isShowPageList: isShowPageList && isShowButtonBack,
     pages,
     pagesCount,
     surveyID,

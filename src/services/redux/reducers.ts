@@ -83,6 +83,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         rules,
         isShowPageList,
         isShowGreetingsPage,
+        isShowButtonBack,
       } = data;
       const userAnswers = answersParsed(answers);
       const pagesDict = pagesParser(pages);
@@ -119,7 +120,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       //////////////////////////////////////////
 
       const strictModeNavigation =
-        !isShowPageList || Object.keys(pageTransitionRuleDict).length > 0;
+        !isShowButtonBack ||
+        !isShowPageList ||
+        Object.keys(pageTransitionRuleDict).length > 0;
 
       if (notTheFirstTime) {
         const { location, pageMovementLogs } = getPrevLastLocation({
@@ -182,9 +185,12 @@ export const reducer = (state: IState = initialState, action: IAction) => {
 
     case START_NEW_SURVEY: {
       const isShowPageList = state.data!.isShowPageList;
+      const isShowButtonBack = state.data!.isShowButtonBack;
+      const firtPageIsSurvey = isShowPageList && isShowButtonBack;
+
       const nextLocation: ILocation = {
-        pathName: isShowPageList ? "survey" : "section",
-        title: isShowPageList ? "survey" : "section",
+        pathName: firtPageIsSurvey ? "survey" : "section",
+        title: firtPageIsSurvey ? "survey" : "section",
         pageIndex: 0,
         questionIndex: 0,
       };
@@ -193,7 +199,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         state.location.pathName === "greeting"
           ? "right-to-left"
           : "left-to-right";
-      const newPageMovementLogs = isShowPageList
+      const newPageMovementLogs = firtPageIsSurvey
         ? []
         : [String(state.data!.pages[0].docID)];
       return {
