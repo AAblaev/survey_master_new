@@ -5,6 +5,7 @@ import { IData } from "../../types";
 
 type ITimerProps = {
   limitTime: IData["limitTime"];
+  brandColor: string;
 };
 //
 // {(pathName === "survey" || pathName === "section") &&
@@ -12,7 +13,7 @@ type ITimerProps = {
 //
 //   )}
 
-const Timer: React.FC<ITimerProps> = ({ limitTime }) => {
+const Timer: React.FC<ITimerProps> = ({ limitTime, brandColor }) => {
   // const isLimitTimeForCompletion = true;
   // const limitTime = 3000;
   const limitTo = useMemo(() => {
@@ -40,7 +41,7 @@ const Timer: React.FC<ITimerProps> = ({ limitTime }) => {
           width: 20,
           height: 30,
           fontSize: 15,
-          color: PRIMARY_COLOR,
+          color: brandColor,
           backgroundColor: "white",
         }}
         separatorStyle={{

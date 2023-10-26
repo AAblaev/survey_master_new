@@ -124,10 +124,10 @@ export const borderCss = css`
   z-index: 20;
 `;
 
-export const footerCss = css`
+export const footerCss = (brandColor: string) => css`
   width: 100%;
   height: 56px;
-  background-color: ${PRIMARY_COLOR};
+  background-color: ${brandColor};
   position: fixed;
   top: auto;
   bottom: 0;

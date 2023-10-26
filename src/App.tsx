@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import "./assets/index.css";
-import { ILocation, ISlideMoveDirection, IState } from "./types";
+import { IState } from "./types";
 import { Dispatch } from "redux";
 import {
   changeCurretLocation,
@@ -12,9 +12,7 @@ import ProgressBar from "./components/common/ProgressBar";
 import Desktop from "./components/Desktop";
 import { contentCss, desctopCss } from "./sc";
 import {
-  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
-  SEND_SURVEY_DATA,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
 
@@ -31,6 +29,7 @@ const App: React.FC<IApp> = ({
   modalVisible,
   closeModal,
   selectPage,
+  brandColor,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -68,6 +67,7 @@ const App: React.FC<IApp> = ({
         modalVisible={modalVisible}
         closeModal={closeModal}
         selectPage={selectPage}
+        brandColor={brandColor}
       />
     </div>
   );
@@ -84,7 +84,12 @@ const mapStateToProps = (state: IState) => {
     userAnswers,
     modalVisible,
     needScrolling,
+    styles,
   } = state;
+
+  const {
+    globalStyle: { brandColor },
+  } = styles;
 
   return {
     userAnswers,
@@ -96,6 +101,7 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
     needScrolling,
+    brandColor,
   };
 };
 

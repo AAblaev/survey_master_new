@@ -3,6 +3,7 @@ import {
   DEFAULT_MOVE_DIRECTION,
   PAGE_LIST_LOCATION,
   FIRST_PAGE_LOCATION,
+  DEFAULT_STYLES,
 } from "../../consts/const";
 import { ILocation, IState } from "../../types";
 import {
@@ -68,6 +69,7 @@ const initialState: IState = {
   pagesDict: {},
   pageMovementLogs: [],
   strictModeNavigation: false,
+  styles: DEFAULT_STYLES,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -84,7 +86,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         isShowPageList,
         isShowGreetingsPage,
         isShowButtonBack,
+        colorScheme,
       } = data;
+
       const userAnswers = answersParsed(answers);
       const pagesDict = pagesParser(pages);
 
@@ -106,23 +110,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         )
       );
 
-      // console.log("logicalValidityCheckRuleDict", logicalValidityCheckRuleDict);
-      // console.log("dependentQuestionsDict", dependentQuestionsDict);
-      // const {
-      //   visiblityRulesDict,
-      //   pageTransitionRuleDict,
-      //   disqualificationRuleArr,
-      //   logicalValidityCheckRuleArr,
-      //   surveyCompletionRuleArr,
-      //   targetPageTransitionRuleArr,
-      // } = ruleParser(rules ? rules : []);
-
-      //////////////////////////////////////////
-
       const strictModeNavigation =
         !isShowButtonBack ||
         !isShowPageList ||
         Object.keys(pageTransitionRuleDict).length > 0;
+      // const styles = DEFAULT_STYLES;
+
+      const styles = colorScheme.jsonStyle;
 
       if (notTheFirstTime) {
         const { location, pageMovementLogs } = getPrevLastLocation({
@@ -155,6 +149,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           needScrolling: true,
           pageMovementLogs,
           modalVisible: true,
+          styles,
         };
       }
 
@@ -180,6 +175,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         strictModeNavigation,
         targetPageTransitionRuleArr,
         location: location,
+        styles,
       };
     }
 

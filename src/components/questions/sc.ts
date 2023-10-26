@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR } from "../../consts/const";
 
 export const formControlCss = ({
   disabled,
@@ -74,9 +73,9 @@ export const titleCss = (disabled: boolean) => css`
   margin-bottom: 10px;
 `;
 
-export const titleCountCss = css`
+export const titleCountCss = (brandColor: string) => css`
   font-size: 1.2rem;
-  color: ${PRIMARY_COLOR};
+  color: ${brandColor};
   font-weight: bold;
   &::before {
     counter-increment: section; /* Increment the value of section counter by 1 */

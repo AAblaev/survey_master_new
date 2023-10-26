@@ -93,9 +93,7 @@ function* fetchSurveyData() {
         notTheFirstTime,
       })
     );
-
     const { isShowGreetingsPage } = data;
-
     const needEmediatlyStartSurvey = !isShowGreetingsPage && !notTheFirstTime;
 
     yield put(setLoading(false));

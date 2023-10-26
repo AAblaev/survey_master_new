@@ -16,7 +16,6 @@ import {
   contentCss,
   footerCss,
   gridContainerCss,
-  homeButtonCss,
   surveyNameCss,
   transitionGroupCss,
 } from "../sc";
@@ -33,7 +32,6 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 import Notifications from "./common/Notifications";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 type IDesktop = {
@@ -44,6 +42,7 @@ type IDesktop = {
   closeModal: () => void;
   selectPage: (index: number) => void;
   data: IData;
+  brandColor: string;
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -54,6 +53,7 @@ const Desktop: React.FC<IDesktop> = ({
   modalVisible,
   closeModal,
   selectPage,
+  brandColor,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -126,7 +126,7 @@ const Desktop: React.FC<IDesktop> = ({
         <Switcher />
         <Typography css={surveyNameCss}>{name}</Typography>
 
-        {false && <Timer limitTime={limitTime} />}
+        {false && <Timer limitTime={limitTime} brandColor={brandColor} />}
       </AppBar>
 
       <div css={contentCss}>
@@ -179,7 +179,7 @@ const Desktop: React.FC<IDesktop> = ({
           </div>
         </PerfectScrollbar>
       </div>
-      <footer css={footerCss}></footer>
+      <footer css={footerCss(brandColor)}></footer>
       <Notifications location={location} />
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">

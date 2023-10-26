@@ -83,6 +83,7 @@ const Question: React.FC<IQuestionProps> = ({
   pageID,
   isVisible,
   isLogicalValiditySuccess,
+  brandColor,
 }) => {
   const {
     docID,
@@ -192,7 +193,7 @@ const Question: React.FC<IQuestionProps> = ({
   return (
     <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
       <div css={titleCss(disabled)}>
-        <div css={titleCountCss}></div>
+        <div css={titleCountCss(brandColor)}></div>
         <div css={titleTextCss(needCorrect)}>
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
         </div>
@@ -285,7 +286,11 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     visiblityRulesDict,
     logicalValidityCheckRuleDict,
     dependentQuestionsDict,
+    styles,
   } = state;
+  const {
+    globalStyle: { brandColor },
+  } = styles;
   const { question } = props;
   const { docID } = question;
   const { questionIndex } = location;
@@ -323,6 +328,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     selectedQuestion: needScrolling && questionIndex === props.index,
     isVisible: isVisilbe,
     isLogicalValiditySuccess,
+    brandColor,
   };
 };
 

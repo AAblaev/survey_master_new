@@ -11,7 +11,6 @@ export const toolbarCss = (direction: IAppBarDirection) => css`
   justify-content: ${direction === "bottom"
     ? "space-between"
     : "space-between"};
-  background-color: ${PRIMARY_COLOR};
 
   padding-right: 5%;
   padding-left: 5%;
@@ -60,7 +59,7 @@ export const bottomCss = css`
     bottom: 0;
     left: 0;
     right: auto;
-    background-color: #46acaf;
+    // background-color: #46acaf;
   }
 `;
 
@@ -85,7 +84,9 @@ const AppBar: React.FC<IAppBarProps> = ({ children, direction, fixed }) => {
       css={appBarCss(direction)}
       position={fixed ? "fixed" : "static"}
     >
-      <Toolbar css={toolbarCss(direction)}>{children}</Toolbar>
+      <Toolbar color="primary" css={toolbarCss(direction)}>
+        {children}
+      </Toolbar>
     </MaterialAppBar>
   );
 };

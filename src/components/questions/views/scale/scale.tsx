@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { IAnswer, IQuestion } from "../../../../types";
 import { optionCss, optionsCss } from "./scale-sc";
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
@@ -6,6 +7,7 @@ import StarIcon from "@material-ui/icons/Star";
 import tinygradient from "tinygradient";
 import { getSmileys } from "./svg/smileys";
 import { css } from "@emotion/react";
+import { getBrandColor } from "../../../../services/redux/selectors";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -31,6 +33,7 @@ const ScaleView: React.FC<IScaleViewProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
+  const { brandColor } = useSelector(getBrandColor);
   const options = config.options!;
   const orientation = config.orientation!;
   const view = config.view!;
@@ -79,7 +82,7 @@ const ScaleView: React.FC<IScaleViewProps> = ({
         return (
           <div
             key={item.docID}
-            css={optionCss(resolvedChecked, view, colors[index])}
+            css={optionCss(resolvedChecked, view, colors[index], brandColor)}
             onClick={() => onClick(item)}
           >
             {view === "stars" ? (
