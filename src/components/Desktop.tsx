@@ -8,6 +8,7 @@ import {
   IData,
   IPage,
   IPathName,
+  IStyles,
 } from "../types";
 import AppBar from "./common/AppBar";
 import { Modal } from "./common/modal";
@@ -43,6 +44,8 @@ type IDesktop = {
   selectPage: (index: number) => void;
   data: IData;
   brandColor: string;
+  backgroundColor: string;
+  appBarStyles: IStyles["componentsStyle"]["appBar"];
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -54,6 +57,8 @@ const Desktop: React.FC<IDesktop> = ({
   closeModal,
   selectPage,
   brandColor,
+  backgroundColor,
+  appBarStyles,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -121,7 +126,7 @@ const Desktop: React.FC<IDesktop> = ({
 
   return (
     <>
-      <AppBar direction="top" fixed>
+      <AppBar direction="top" appBarStyles={appBarStyles} fixed>
         <Menu />
         <Switcher />
         <Typography css={surveyNameCss}>{name}</Typography>
@@ -148,7 +153,7 @@ const Desktop: React.FC<IDesktop> = ({
             </div>
           )}
           <div css={gridContainerCss}>
-            <div css={borderCss}></div>
+            <div css={borderCss(backgroundColor)}></div>
             <TransitionGroup
               css={transitionGroupCss}
               childFactory={(child) =>
@@ -175,7 +180,7 @@ const Desktop: React.FC<IDesktop> = ({
                 {slideRender(pathName)}
               </CSSTransition>
             </TransitionGroup>
-            <div css={borderCss}></div>
+            <div css={borderCss(backgroundColor)}></div>
           </div>
         </PerfectScrollbar>
       </div>

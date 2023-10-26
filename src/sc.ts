@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "./consts/const";
 
-export const desctopCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
+export const desctopCss = (backgroundColor: string) => css`
+  background-color: ${backgroundColor};
   width: 100%;
   height: 100%;
   position: relative;
@@ -31,24 +31,18 @@ export const homeButtonCss = css`
   &.MuiButton-root {
     display: flex;
     justify-content: space-between;
-    color: #fff;
     white-space: nowrap;
+    font-size: inherit;
   }
 `;
 
 export const surveyNameCss = css`
-  // &.MuiButton-root {
-  //   margin-right: auto;
-  //   display: none;
-  //   justify-content: space-between;
-  //   color: #fff;
-  // }
   display: none;
   text-transform: uppercase;
 
   &.MuiTypography-body1 {
     font-weight: 600;
-    color: #ffff;
+    font-size: inherit;
   }
 
   &.MuiTypography-root {
@@ -119,8 +113,8 @@ export const gridContainerCss = css`
   }
 `;
 
-export const borderCss = css`
-  background-color: ${DEFAULT_BACKGROUND_COLOR};
+export const borderCss = (backgroundColor: string) => css`
+  background-color: ${backgroundColor};
   z-index: 20;
 `;
 

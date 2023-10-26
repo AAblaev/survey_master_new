@@ -114,9 +114,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         !isShowButtonBack ||
         !isShowPageList ||
         Object.keys(pageTransitionRuleDict).length > 0;
-      // const styles = DEFAULT_STYLES;
+      const styles = DEFAULT_STYLES;
 
-      const styles = colorScheme.jsonStyle;
+      // const styles = colorScheme.jsonStyle;
 
       if (notTheFirstTime) {
         const { location, pageMovementLogs } = getPrevLastLocation({

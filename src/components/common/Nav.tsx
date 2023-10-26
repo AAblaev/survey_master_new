@@ -57,7 +57,7 @@ const Nav: React.FC<INavProps> = ({
 
   return (
     <div>
-      <Button css={homeButtonCss} onClick={handleClick}>
+      <Button css={homeButtonCss} onClick={handleClick} color="inherit">
         {title}
         {showList && <ExpandMoreIcon />}
       </Button>

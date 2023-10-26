@@ -60,3 +60,12 @@ export const buttonCss = (isShow: boolean, side: "left" | "right") => css`
     }
   }
 `;
+
+export const settingsButtonCss = css`
+  &.MuiIconButton-root {
+    font-size: inherit;
+  }
+  & .MuiSvgIcon-root {
+    font-size: 1.6em;
+  }
+`;

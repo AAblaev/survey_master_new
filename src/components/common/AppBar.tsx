@@ -4,8 +4,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR } from "../../consts/const";
+import { IStyles } from "../../types";
 
-export const toolbarCss = (direction: IAppBarDirection) => css`
+export const toolbarCss = (
+  direction: IAppBarDirection,
+  color: string,
+  fontSize: number
+) => css`
   display: flex;
   flex-direction: ${direction === "bottom" ? "row-reverse" : "row-reverse"};
   justify-content: ${direction === "bottom"
@@ -14,6 +19,9 @@ export const toolbarCss = (direction: IAppBarDirection) => css`
 
   padding-right: 5%;
   padding-left: 5%;
+
+  color: ${color};
+  font-size: ${fontSize}px;
 
   @media (min-width: 576px) {
     &.MuiToolbar-gutters {
@@ -76,15 +84,28 @@ type IAppBarProps = {
   // children?: ReactNode;
   fixed?: boolean;
   direction: IAppBarDirection;
+  appBarStyles: IStyles["componentsStyle"]["appBar"];
 };
 
-const AppBar: React.FC<IAppBarProps> = ({ children, direction, fixed }) => {
+const AppBar: React.FC<IAppBarProps> = ({
+  children,
+  direction,
+  fixed,
+  appBarStyles,
+}) => {
   return (
     <MaterialAppBar
       css={appBarCss(direction)}
       position={fixed ? "fixed" : "static"}
     >
-      <Toolbar color="primary" css={toolbarCss(direction)}>
+      <Toolbar
+        color="primary"
+        css={toolbarCss(
+          direction,
+          appBarStyles.font.color,
+          appBarStyles.font.size
+        )}
+      >
         {children}
       </Toolbar>
     </MaterialAppBar>

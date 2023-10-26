@@ -30,6 +30,8 @@ const App: React.FC<IApp> = ({
   closeModal,
   selectPage,
   brandColor,
+  backgroundColor,
+  appBarStyles,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -37,12 +39,12 @@ const App: React.FC<IApp> = ({
 
   if (error.status) {
     return (
-      <div css={desctopCss}>
-        <AppBar direction="top" fixed></AppBar>
+      <div css={desctopCss(backgroundColor)}>
+        <AppBar appBarStyles={appBarStyles} direction="top" fixed></AppBar>
         <div css={contentCss}>
           <div>Error: {error.message}</div>
         </div>
-        <AppBar direction="bottom" fixed></AppBar>
+        <AppBar appBarStyles={appBarStyles} direction="bottom" fixed></AppBar>
       </div>
     );
   }
@@ -52,7 +54,7 @@ const App: React.FC<IApp> = ({
   }
 
   return (
-    <div css={desctopCss}>
+    <div css={desctopCss(backgroundColor)}>
       {loading && (
         <ProgressBar
           position={"absolute"}
@@ -68,6 +70,8 @@ const App: React.FC<IApp> = ({
         closeModal={closeModal}
         selectPage={selectPage}
         brandColor={brandColor}
+        backgroundColor={backgroundColor}
+        appBarStyles={appBarStyles}
       />
     </div>
   );
@@ -88,7 +92,11 @@ const mapStateToProps = (state: IState) => {
   } = state;
 
   const {
-    globalStyle: { brandColor },
+    globalStyle: {
+      brandColor,
+      background: { color: backgroundColor },
+    },
+    componentsStyle: { appBar: appBarStyles },
   } = styles;
 
   return {
@@ -102,6 +110,8 @@ const mapStateToProps = (state: IState) => {
     data,
     needScrolling,
     brandColor,
+    backgroundColor,
+    appBarStyles,
   };
 };
 
