@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import "./assets/index.css";
-import { ILocation, ISlideMoveDirection, IState } from "./types";
+import { IState } from "./types";
 import { Dispatch } from "redux";
 import {
   changeCurretLocation,
@@ -12,9 +12,7 @@ import ProgressBar from "./components/common/ProgressBar";
 import Desktop from "./components/Desktop";
 import { contentCss, desctopCss } from "./sc";
 import {
-  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
-  SEND_SURVEY_DATA,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
 
@@ -31,6 +29,9 @@ const App: React.FC<IApp> = ({
   modalVisible,
   closeModal,
   selectPage,
+  brandColor,
+  backgroundColor,
+  appBarStyles,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -38,12 +39,12 @@ const App: React.FC<IApp> = ({
 
   if (error.status) {
     return (
-      <div css={desctopCss}>
-        <AppBar direction="top" fixed></AppBar>
+      <div css={desctopCss(backgroundColor)}>
+        <AppBar appBarStyles={appBarStyles} direction="top" fixed></AppBar>
         <div css={contentCss}>
           <div>Error: {error.message}</div>
         </div>
-        <AppBar direction="bottom" fixed></AppBar>
+        <AppBar appBarStyles={appBarStyles} direction="bottom" fixed></AppBar>
       </div>
     );
   }
@@ -53,7 +54,7 @@ const App: React.FC<IApp> = ({
   }
 
   return (
-    <div css={desctopCss}>
+    <div css={desctopCss(backgroundColor)}>
       {loading && (
         <ProgressBar
           position={"absolute"}
@@ -68,6 +69,9 @@ const App: React.FC<IApp> = ({
         modalVisible={modalVisible}
         closeModal={closeModal}
         selectPage={selectPage}
+        brandColor={brandColor}
+        backgroundColor={backgroundColor}
+        appBarStyles={appBarStyles}
       />
     </div>
   );
@@ -84,7 +88,16 @@ const mapStateToProps = (state: IState) => {
     userAnswers,
     modalVisible,
     needScrolling,
+    styles,
   } = state;
+
+  const {
+    globalStyle: {
+      brandColor,
+      background: { color: backgroundColor },
+    },
+    componentsStyle: { appBar: appBarStyles },
+  } = styles;
 
   return {
     userAnswers,
@@ -96,6 +109,9 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     data,
     needScrolling,
+    brandColor,
+    backgroundColor,
+    appBarStyles,
   };
 };
 

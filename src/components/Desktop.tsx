@@ -8,6 +8,7 @@ import {
   IData,
   IPage,
   IPathName,
+  IStyles,
 } from "../types";
 import AppBar from "./common/AppBar";
 import { Modal } from "./common/modal";
@@ -16,7 +17,6 @@ import {
   contentCss,
   footerCss,
   gridContainerCss,
-  homeButtonCss,
   surveyNameCss,
   transitionGroupCss,
 } from "../sc";
@@ -33,7 +33,6 @@ import ModalContentComponent from "./connected/ModalContentsComponent";
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 import Notifications from "./common/Notifications";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 type IDesktop = {
@@ -44,6 +43,9 @@ type IDesktop = {
   closeModal: () => void;
   selectPage: (index: number) => void;
   data: IData;
+  brandColor: string;
+  backgroundColor: string;
+  appBarStyles: IStyles["componentsStyle"]["appBar"];
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -54,6 +56,9 @@ const Desktop: React.FC<IDesktop> = ({
   modalVisible,
   closeModal,
   selectPage,
+  brandColor,
+  backgroundColor,
+  appBarStyles,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -121,12 +126,14 @@ const Desktop: React.FC<IDesktop> = ({
 
   return (
     <>
-      <AppBar direction="top" fixed>
+      <AppBar direction="top" appBarStyles={appBarStyles} fixed>
         <Menu />
         <Switcher />
-        <Typography css={surveyNameCss}>{name}</Typography>
+        <Typography css={surveyNameCss(pathName === "survey")}>
+          {name}
+        </Typography>
 
-        {false && <Timer limitTime={limitTime} />}
+        {false && <Timer limitTime={limitTime} brandColor={brandColor} />}
       </AppBar>
 
       <div css={contentCss}>
@@ -148,7 +155,7 @@ const Desktop: React.FC<IDesktop> = ({
             </div>
           )}
           <div css={gridContainerCss}>
-            <div css={borderCss}></div>
+            <div css={borderCss(backgroundColor)}></div>
             <TransitionGroup
               css={transitionGroupCss}
               childFactory={(child) =>
@@ -175,11 +182,11 @@ const Desktop: React.FC<IDesktop> = ({
                 {slideRender(pathName)}
               </CSSTransition>
             </TransitionGroup>
-            <div css={borderCss}></div>
+            <div css={borderCss(backgroundColor)}></div>
           </div>
         </PerfectScrollbar>
       </div>
-      <footer css={footerCss}></footer>
+      <footer css={footerCss(brandColor)}></footer>
       <Notifications location={location} />
 
       <Modal visible={modalVisible} onClosed={closeModal} size="sm">

@@ -67,3 +67,11 @@ export const selectLogicValidityData = (
   dependentQuestionsDict: state.dependentQuestionsDict,
   userAnswers: state.userAnswers,
 });
+
+export const getBrandColor = (state: IState) => ({
+  brandColor: state.styles.globalStyle.brandColor,
+});
+
+export const getProgressBarStyle = (state: IState) => ({
+  progressBarStyle: state.styles.componentsStyle.progressBar,
+});

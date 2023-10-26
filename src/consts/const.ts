@@ -1,4 +1,4 @@
-import { ILocation, ISlideMoveDirection } from "../types";
+import { ILocation, ISlideMoveDirection, IStyles } from "../types";
 
 export const DEFAULT_QUESTION_INDEX = 0;
 export const DEFAULT_PAGE_INDEX = 0;
@@ -62,3 +62,54 @@ export const DEFAULT_COLUMNS_COUNT = 2;
 
 export const DEFAULT_IS_LIMIT_TIME = true;
 export const DEFAULT_LIMIT_TIME = 2400;
+
+export const DEFAULT_STYLES: IStyles = {
+  globalStyle: {
+    brandColor: "#46acaf",
+    background: {
+      color: "#f9f9f9",
+    },
+  },
+
+  componentsStyle: {
+    appBar: {
+      background: {
+        color: "#46acaf",
+      },
+      font: {
+        size: 14,
+        color: "#ffffff",
+      },
+    },
+    progressBar: {
+      title: {
+        font: {
+          size: 11,
+          color: "#46acaf",
+        },
+      },
+      progress: {
+        strokeColor: ["#108ee9", "#87d068"],
+        trailColor: "#e5e5e5",
+      },
+    },
+    question: {
+      title: {
+        font: {
+          size: 19,
+          color: "#000000",
+        },
+      },
+      counter: {
+        font: {
+          size: 19,
+          color: "#46acaf",
+        },
+      },
+      border: {
+        size: 1,
+        color: "#e5e5e5",
+      },
+    },
+  },
+};

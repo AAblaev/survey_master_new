@@ -38,10 +38,10 @@ export const selectCss = css`
   }
 `;
 
-export const iconCss = (selected: boolean) => css`
+export const iconCss = (selected: boolean, brandColor: string) => css`
   &.MuiSvgIcon-root {
     margin-right: 5px;
-    fill: ${PRIMARY_COLOR};
+    fill: ${brandColor};
     ${!selected && "visibility:hidden"}
   }
 `;

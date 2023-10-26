@@ -1,0 +1,30 @@
+import React from "react";
+import { Dispatch } from "redux";
+import { connect, ConnectedProps } from "react-redux";
+import { getTheme } from "./mui-theme";
+
+import { IState } from "./types";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+
+export type IThemeProviderProps = ConnectedProps<typeof connector>;
+
+const ThemeProvider: React.FC<IThemeProviderProps> = ({ children, theme }) => {
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>;
+};
+
+const mapStateToProps = (state: IState) => {
+  const { styles } = state;
+  const {
+    globalStyle: { brandColor },
+  } = styles;
+  const theme = getTheme(brandColor);
+  return { theme };
+};
+
+const mapDispathToProps = (_dispatch: Dispatch) => {
+  return {};
+};
+
+const connector = connect(mapStateToProps, mapDispathToProps);
+
+export default connector(ThemeProvider);

@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { PRIMARY_COLOR } from "../../consts/const";
 
 export const greatingPageCss = css`
   padding-top: 20px;
@@ -20,14 +19,14 @@ export const questionListCss = (questionCount: number) => css`
   margin-bottom: 40px;
   counter-reset: section ${questionCount};
 `;
-
-export const titleCss = css`
-  &.MuiTypography-body1 {
-    font-size: 1.2rem;
-    color: ${PRIMARY_COLOR};
-    font-weight: bold;
-  }
-`;
+//
+// export const titleCss = css`
+//   &.MuiTypography-body1 {
+//     font-size: 1.2rem;
+//     color: ${PRIMARY_COLOR};
+//     font-weight: bold;
+//   }
+// `;
 
 export const pageCss = css`
   @media (max-width: 576px) {
@@ -47,4 +46,11 @@ export const accordionCss = css`
     display: flex;
     justify-content: space-between;
   }
+`;
+
+export const questionNumberCss = (brandColor: string) => css`
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 3px;
+  color: ${brandColor};
 `;

@@ -24,6 +24,7 @@ import { changeCurretLocation } from "../../../services/redux/actions";
 import { Modal, ModalContent, ModalHeader } from "../../common/modal";
 import { modalHeaderWrapperCss } from "../../../sc";
 import { PATH_NAME } from "../../../services/api/const";
+import { settingsButtonCss } from "./sc";
 
 const StyledMenu = withStyles({
   paper: {
@@ -103,8 +104,8 @@ const AppBarMenu: React.FC<IMenuProps> = ({
   };
   return (
     <div style={{ marginLeft: "10px" }}>
-      <IconButton onClick={menuOpen}>
-        <SettingsIcon style={{ color: "#fff" }} />
+      <IconButton css={settingsButtonCss} onClick={menuOpen} color="inherit">
+        <SettingsIcon />
       </IconButton>
 
       <StyledMenu

@@ -22,7 +22,8 @@ export const optionsCss = (orientation: IOrientation, view: IView) => {
 export const optionCss = (
   selected: boolean,
   view: IView,
-  highlightColor: string
+  highlightColor: string,
+  brandColor: string
 ) => {
   let color = "transparent";
   let backgroundColor = "transparent";
@@ -33,25 +34,25 @@ export const optionCss = (
 
   if (view === "table") {
     color = selected ? "#fff" : "inherit";
-    backgroundColor = selected ? "#46acaf" : "transparent";
+    backgroundColor = selected ? brandColor : "transparent";
     borderWidth = 1;
     flex = "1 1 0%";
   } else if (view === "color") {
     color = "inherit";
     backgroundColor = highlightColor;
     boxShadow = selected
-      ? "#46acaf 0px 0px 0px 0.5em inset"
-      : "#46acaf 0px 0px 0px 0em inset";
+      ? `${brandColor} 0px 0px 0px 0.5em inset`
+      : `${brandColor} 0px 0px 0px 0em inset`;
     flex = "1 1 0%";
   } else if (view === "stars") {
-    color = selected ? "gold" : "#46acaf";
+    color = selected ? "gold" : brandColor;
     justifyContent = "flex-start";
   } else if (view === "smiles") {
     color = selected ? "#fff" : highlightColor;
-    backgroundColor = selected ? "#46acaf" : "transparent";
+    backgroundColor = selected ? brandColor : "transparent";
   } else if (view === "smiles-monochrome") {
-    color = selected ? "#fff" : "#46acaf";
-    backgroundColor = selected ? "#46acaf" : "transparent";
+    color = selected ? "#fff" : brandColor;
+    backgroundColor = selected ? brandColor : "transparent";
   }
 
   return css`

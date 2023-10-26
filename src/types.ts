@@ -24,6 +24,10 @@ export type IData = {
   buttonStartCaption: string;
   answers: IBackendAnswer[];
   rules: IRule[];
+  colorScheme: {
+    docID: number;
+    jsonStyle: IStyles;
+  };
 };
 
 export type IPage = {
@@ -337,6 +341,57 @@ export type IDependentsPagesLogicalValidity = {
 
 export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
 
+export type IStyles = {
+  globalStyle: {
+    brandColor: string;
+    background: {
+      color: string;
+    };
+  };
+
+  componentsStyle: {
+    appBar: {
+      background: {
+        color: string;
+      };
+      font: {
+        size: number;
+        color: string;
+      };
+    };
+    progressBar: {
+      title: {
+        font: {
+          size: number;
+          color: string;
+        };
+      };
+      progress: {
+        strokeColor: string[];
+        trailColor: string;
+      };
+    };
+    question: {
+      title: {
+        font: {
+          size: number;
+          color: string;
+        };
+      };
+      counter: {
+        font: {
+          size: number;
+          color: string;
+        };
+      };
+      border: {
+        size: number;
+        color: string;
+      };
+    };
+  };
+};
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -347,7 +402,6 @@ export type IState = {
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
   modalMessageType: IModalMessageType;
-
   visitedPageDocIDList: string[];
   needScrolling: boolean;
   // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
@@ -362,4 +416,5 @@ export type IState = {
   pagesDict: IPagesDict;
   pageMovementLogs: string[];
   strictModeNavigation: boolean;
+  styles: IStyles;
 };

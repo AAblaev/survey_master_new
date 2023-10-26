@@ -8,7 +8,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Progress } from "antd";
 import { IPage, IUserAnswer } from "../../types";
 import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
-import { accordionCss, pageCss } from "./sc";
+import { accordionCss, pageCss, questionNumberCss } from "./sc";
+import { useSelector } from "react-redux";
+import {
+  getBrandColor,
+  getProgressBarStyle,
+} from "../../services/redux/selectors";
 
 type ISurveyProps = {
   selectPage: (index: number) => void;
@@ -23,6 +28,16 @@ const Survey: React.FC<ISurveyProps> = ({
   userAnswers,
   isShowQuestionsCount,
 }) => {
+  const { brandColor } = useSelector(getBrandColor);
+  const {
+    progressBarStyle: { progress, title },
+  } = useSelector(getProgressBarStyle);
+
+  const strokeColor = {
+    "0%": progress.strokeColor[0],
+    "100%": progress.strokeColor[1],
+  };
+
   return (
     <div css={pageCss}>
       <div>
@@ -61,8 +76,8 @@ const Survey: React.FC<ISurveyProps> = ({
                   <Progress
                     type="circle"
                     size={50}
-                    strokeColor={DEFAULT_STROKE_COLOR}
-                    trailColor={DEFAULT_TRAIL_COLOR}
+                    strokeColor={strokeColor}
+                    trailColor={progress.trailColor}
                     percent={Math.floor(
                       (doneQuestionCount / allQuestionCount) * 100
                     )}
@@ -88,11 +103,13 @@ const Survey: React.FC<ISurveyProps> = ({
                   <div>
                     <div className="questionSize">
                       <div className="question">Всего вопросов: </div>
-                      <div className="questionNumber">{allQuestionCount}</div>
+                      <div css={questionNumberCss(brandColor)}>
+                        {allQuestionCount}
+                      </div>
                     </div>
                     <div className="questionSize">
                       <div className="question">Обязательных вопросов: </div>
-                      <div className="questionNumber">
+                      <div css={questionNumberCss(brandColor)}>
                         {requiredQuestionsCount}
                       </div>
                     </div>

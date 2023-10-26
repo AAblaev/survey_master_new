@@ -13,6 +13,8 @@ import {
   selectCss,
   textFieldCss,
 } from "./sc";
+import { useSelector } from "react-redux";
+import { getBrandColor } from "../../../../services/redux/selectors";
 
 type IMultiDropDownViewProps = {
   currentQuestionIndex: number;
@@ -28,6 +30,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
   userAnswer,
 }) => {
   const [open, setOpen] = useState(false);
+  const { brandColor } = useSelector(getBrandColor);
 
   const {
     docID,
@@ -209,7 +212,10 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
           {selectItems.map((item) => (
             <MenuItem key={item.docID} value={item.docID} css={menuItemCss}>
               <CheckIcon
-                css={iconCss((value as number[]).includes(item.docID))}
+                css={iconCss(
+                  (value as number[]).includes(item.docID),
+                  brandColor
+                )}
               />
               <span>
                 {item.docID === EXTRA_ANSWER.OTHER
