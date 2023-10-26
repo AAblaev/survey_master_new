@@ -36,8 +36,8 @@ export const homeButtonCss = css`
   }
 `;
 
-export const surveyNameCss = css`
-  display: none;
+export const surveyNameCss = (showAnyway: boolean) => css`
+  display: ${showAnyway ? "block" : "none"};
   text-transform: uppercase;
 
   &.MuiTypography-body1 {
@@ -49,13 +49,6 @@ export const surveyNameCss = css`
     margin-right: auto;
   }
   @media (min-width: 768px) {
-    // &.MuiButton-root {
-    //   display: block;
-    //   white-space: nowrap;
-    //
-    //   overflow: hidden;
-    //   text-overflow: ellipsis;
-    // }
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -131,4 +124,14 @@ export const footerCss = (brandColor: string) => css`
   @media (min-width: 768px) {
     display: none;
   }
+`;
+
+export const progressQuestionCountCss = (
+  fontSize: number,
+  color: string
+) => css`
+  margin-top: 10px;
+  font-size: ${fontSize}px;
+  font-weight: 500;
+  color: ${color};
 `;

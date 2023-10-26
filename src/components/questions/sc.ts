@@ -10,11 +10,6 @@ export const formControlCss = ({
   ${disabled && `filter: grayscale(100%)`};
 
   width: 100%;
-  & .MuiFormLabel-root {
-    // color: #000000;
-    // font-size: 1.3rem;
-    // font-weight: 300;
-  }
 
   & .MuiInputLabel-root {
     color: #46acaf;
@@ -26,7 +21,6 @@ export const formControlCss = ({
   & .MuiFilledInput-root {
     // font-size: 1.3rem;
     border: ${noBorderOnInput ? 0 : 1}px solid #e5e5e5;
-    // border: ${noBorderOnInput ? 0 : 1}px solid red;
 
     background-color: #fff;
     border-radius: 0px;
@@ -44,10 +38,14 @@ export const formControlCss = ({
   }
 `;
 
-export const cardCss = (needPadding: boolean) => css`
+export const cardCss = (
+  needPadding: boolean,
+  borderColor: string,
+  borderSize: number
+) => css`
   ${needPadding && `padding: 20px;`}
   background-color: #fff;
-  border: 1px solid #e5e5e5;
+  border: ${borderSize}px solid ${borderColor};
   overflow: hidden;
 `;
 
@@ -73,8 +71,8 @@ export const titleCss = (disabled: boolean) => css`
   margin-bottom: 10px;
 `;
 
-export const titleCountCss = (brandColor: string) => css`
-  font-size: 1.2rem;
+export const titleCountCss = (brandColor: string, fontSize: number) => css`
+  font-size: ${fontSize}px;
   color: ${brandColor};
   font-weight: bold;
   &::before {
@@ -83,10 +81,15 @@ export const titleCountCss = (brandColor: string) => css`
   }
 `;
 
-export const titleTextCss = (needCorrect: boolean) => css`
-  font-size: 1.2rem;
+export const titleTextCss = (
+  needCorrect: boolean,
+  color: string,
+  fontSize: number
+) => css`
+  font-size: ${fontSize}px;
+  //font-size:1.2em;
   font-weight: 500;
-  color: ${needCorrect ? "red" : "#000000"};
+  color: ${needCorrect ? "red" : color};
   transition: color 0.3s ease;
 `;
 

@@ -65,7 +65,7 @@ export const DEFAULT_LIMIT_TIME = 2400;
 
 export const DEFAULT_STYLES: IStyles = {
   globalStyle: {
-    brandColor: "#008000",
+    brandColor: "#46acaf",
     background: {
       color: "#f9f9f9",
     },
@@ -84,7 +84,7 @@ export const DEFAULT_STYLES: IStyles = {
     progressBar: {
       title: {
         font: {
-          size: 16,
+          size: 11,
           color: "#46acaf",
         },
       },

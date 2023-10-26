@@ -129,7 +129,9 @@ const Desktop: React.FC<IDesktop> = ({
       <AppBar direction="top" appBarStyles={appBarStyles} fixed>
         <Menu />
         <Switcher />
-        <Typography css={surveyNameCss}>{name}</Typography>
+        <Typography css={surveyNameCss(pathName === "survey")}>
+          {name}
+        </Typography>
 
         {false && <Timer limitTime={limitTime} brandColor={brandColor} />}
       </AppBar>

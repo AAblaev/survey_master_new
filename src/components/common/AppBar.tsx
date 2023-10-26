@@ -9,7 +9,8 @@ import { IStyles } from "../../types";
 export const toolbarCss = (
   direction: IAppBarDirection,
   color: string,
-  fontSize: number
+  fontSize: number,
+  backgroundColor: string
 ) => css`
   display: flex;
   flex-direction: ${direction === "bottom" ? "row-reverse" : "row-reverse"};
@@ -22,6 +23,10 @@ export const toolbarCss = (
 
   color: ${color};
   font-size: ${fontSize}px;
+
+  &.MuiToolbar-root {
+    background-color: ${backgroundColor};
+  }
 
   @media (min-width: 576px) {
     &.MuiToolbar-gutters {
@@ -99,11 +104,11 @@ const AppBar: React.FC<IAppBarProps> = ({
       position={fixed ? "fixed" : "static"}
     >
       <Toolbar
-        color="primary"
         css={toolbarCss(
           direction,
           appBarStyles.font.color,
-          appBarStyles.font.size
+          appBarStyles.font.size,
+          appBarStyles.background.color
         )}
       >
         {children}

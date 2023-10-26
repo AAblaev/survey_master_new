@@ -84,6 +84,7 @@ const Question: React.FC<IQuestionProps> = ({
   isVisible,
   isLogicalValiditySuccess,
   brandColor,
+  questionStyles,
 }) => {
   const {
     docID,
@@ -193,8 +194,19 @@ const Question: React.FC<IQuestionProps> = ({
   return (
     <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
       <div css={titleCss(disabled)}>
-        <div css={titleCountCss(brandColor)}></div>
-        <div css={titleTextCss(needCorrect)}>
+        <div
+          css={titleCountCss(
+            questionStyles.counter.font.color,
+            questionStyles.counter.font.size
+          )}
+        ></div>
+        <div
+          css={titleTextCss(
+            needCorrect,
+            questionStyles.title.font.color,
+            questionStyles.title.font.size
+          )}
+        >
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
         </div>
       </div>
@@ -221,7 +233,13 @@ const Question: React.FC<IQuestionProps> = ({
           dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
         ></div>
       )}
-      <div css={cardCss(needPadding || Boolean(otherInAnswer))}>
+      <div
+        css={cardCss(
+          needPadding || Boolean(otherInAnswer),
+          questionStyles.border.color,
+          questionStyles.border.size
+        )}
+      >
         <FormControl
           css={formControlCss({
             disabled,
@@ -290,6 +308,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   } = state;
   const {
     globalStyle: { brandColor },
+    componentsStyle: { question: questionStyles },
   } = styles;
   const { question } = props;
   const { docID } = question;
@@ -329,6 +348,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     isVisible: isVisilbe,
     isLogicalValiditySuccess,
     brandColor,
+    questionStyles,
   };
 };
 

@@ -41,10 +41,11 @@ export const iconBtnCss = (side: "left" | "right") => css`
 `;
 
 export const buttonCss = (isShow: boolean, side: "left" | "right") => css`
-  background-color: #3b424a;
+  // background-color: #3b424a;
 
   &.MuiButton-root {
     color: #fff;
+    font-size: inherit;
   }
   &.MuiButtonBase-root {
     display: ${isShow ? "inline-flex" : "none"};

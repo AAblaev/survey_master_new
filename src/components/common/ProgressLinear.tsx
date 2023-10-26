@@ -7,6 +7,7 @@ import {
   getBrandColor,
   getProgressBarStyle,
 } from "../../services/redux/selectors";
+import { progressQuestionCountCss } from "../../sc";
 
 type IProgressLinearProps = {
   allQuestionsDoneCount: number;
@@ -34,7 +35,9 @@ const ProgressLinear: React.FC<IProgressLinearProps> = ({
   return (
     <>
       {isShowQuestionsCount && (
-        <div className="progress-question-count">{questionCount}</div>
+        <div css={progressQuestionCountCss(title.font.size, title.font.color)}>
+          {questionCount}
+        </div>
       )}
       {isShowProgressbar && (
         <>
