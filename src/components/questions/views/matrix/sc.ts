@@ -170,37 +170,31 @@ export const thColumnCss = css`
   overflow-wrap: anywhere;
 `;
 
-export const tableCellCss = css`
-  &.MuiTableCell-root {
-    border: none;
-    padding: 0px;
-  }
-`;
-
 export const headerColumnCss = css`
-  min-width: 250px;
-  ${tableCellCss}
+  // font-size: 1.2rem;
+  font-weight: normal;
+  padding: 0px 10px;
+  text-align: start;
+  overflow-wrap: anywhere;
 `;
-
-// .MuiTableCell-root
 
 export const tdMobileCss = (isSelected: boolean, content: string) => css`
   display: flex;
   cursor: pointer;
-  // padding: 0.5rem;
+  padding: 0.5rem;
   border: 1px solid #e5e5e5;
   width: 100%;
 
 
   ${isSelected && "background-color: #e5e5e5;"}
-  // & > .MuiButtonBase-root {
-  //   display: none;
-  // }
-  //
-  // &::after {
-  //   color:  black;
-  //   content: '${content}';
-  // }
+  & > .MuiButtonBase-root {
+    display: none;
+  }
+
+  &::after {
+    color:  black;
+    content: '${content}';
+  }
 
 `;
 
@@ -210,13 +204,12 @@ export const tdDesctopCss = css`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
-  // & > .MuiButtonBase-root {
-  //   display: inline-block;
-  // }
-  // &::after {
-  //   content: "";
-  // }
+  & > .MuiButtonBase-root {
+    display: inline-block;
+  }
+  &::after {
+    content: "";
+  }
 `;
 
 export const tdCss = (isSelected: boolean, content: string) => css`
@@ -367,5 +360,67 @@ export const borderColorMatrixCss = (alarm: boolean) => css`
   & > .MuiInputBase-root {
     display: flex;
     align-items: flex-start;
+  }
+`;
+export const tableHeaderColumnCss = css`
+  min-width: 250px;
+  &.MuiTableCell-root {
+    border: none;
+    padding: 0px;
+  }
+`;
+
+export const tableCellCss = css`
+  &.MuiTableCell-root {
+    border: none;
+    padding: 0px;
+  }
+`;
+
+export const onlyDesctopRender = css`
+  display: none;
+
+  @media (min-width: 576px) {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  @media (min-width: 992px) {
+    display: block;
+  }
+
+  @media (min-width: 1200px) {
+    display: block;
+  }
+
+  @media (min-width: 1400px) {
+    display: block;
+  }
+`;
+
+export const onlyMobileRender = css`
+  display: block;
+
+  @media (min-width: 576px) {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+
+  @media (min-width: 1200px) {
+    display: none;
+  }
+
+  @media (min-width: 1400px) {
+    display: none;
   }
 `;
