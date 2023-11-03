@@ -362,3 +362,65 @@ export const borderColorMatrixCss = (alarm: boolean) => css`
     align-items: flex-start;
   }
 `;
+export const tableHeaderColumnCss = css`
+  min-width: 250px;
+  &.MuiTableCell-root {
+    border: none;
+    padding: 0px;
+  }
+`;
+
+export const tableCellCss = css`
+  &.MuiTableCell-root {
+    border: none;
+    padding: 0px;
+  }
+`;
+
+export const onlyDesctopRender = css`
+  display: none;
+
+  @media (min-width: 576px) {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    display: block;
+  }
+
+  @media (min-width: 992px) {
+    display: block;
+  }
+
+  @media (min-width: 1200px) {
+    display: block;
+  }
+
+  @media (min-width: 1400px) {
+    display: block;
+  }
+`;
+
+export const onlyMobileRender = css`
+  display: block;
+
+  @media (min-width: 576px) {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+
+  @media (min-width: 992px) {
+    display: none;
+  }
+
+  @media (min-width: 1200px) {
+    display: none;
+  }
+
+  @media (min-width: 1400px) {
+    display: none;
+  }
+`;

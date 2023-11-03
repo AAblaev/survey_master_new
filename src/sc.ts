@@ -85,24 +85,24 @@ export const gridContainerCss = css`
   flex-grow: 1;
   position: relative;
   display: grid;
-  grid-template-columns: 5% auto 5%;
+  grid-template-columns: 5% 90% 5%;
   grid-template-rows: auto;
   margin-top: 10px;
 
   @media (min-width: 576px) {
-    grid-template-columns: 5% auto 5%;
+    grid-template-columns: 5% 90% 5%;
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: 10% auto 10%;
+    grid-template-columns: 10% 80% 10%;
   }
 
   @media (min-width: 992px) {
-    grid-template-columns: 15% auto 15%;
+    grid-template-columns: 15% 70% 15%;
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: 20% auto 20%;
+    grid-template-columns: 20% 60% 20%;
   }
 `;
 
