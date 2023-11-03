@@ -1,5 +1,13 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  makeStyles,
+} from "@material-ui/core";
 import MatrixCell from "./MatrixCell";
 import { IAnswer, IQuestion, ISimpleType, IValue } from "../../../../types";
 import {
@@ -10,6 +18,7 @@ import {
   thRowCss,
   wrapperCss,
   headerColumnCss,
+  tableCellCss,
 } from "./sc";
 import { validation } from "../../../../utils/validation";
 
@@ -23,11 +32,22 @@ type IMatrixViewProps = {
 
 type IValuesDict = { [key: string]: IValue };
 
+const useStyles = makeStyles({
+  table: {
+    maxWidth: "99%",
+    minWidth: "700px",
+    width: "auto", // Задайте минимальную ширину таблицы
+  },
+  firstColumn: {
+    width: "25%",
+  },
+});
 const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
   setAnswer,
   userAnswer,
 }) => {
+  const classes = useStyles();
   const { docID, config } = question;
   const {
     isLimited,
@@ -146,46 +166,84 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
         options={{ suppressScrollX: false, suppressScrollY: true }}
         css={wrapperCss}
       >
-        <div css={gridCss}>
-          <div css={headerCss}>
-            <div className="empty-cell"></div>
-            {columns.map((option) => (
-              <div
-                key={option.docID}
-                css={headerColumnCss}
-                className="table-header-cell"
-              >
-                {option.title}
-              </div>
-            ))}
-          </div>
-
-          {rows.map((row, rowIndex) => (
-            <div key={rowIndex} css={rowCss}>
-              <div css={thRowCss} className="table-row-header">
-                {rows[rowIndex].title}
-              </div>
-              {columns.map((col, colIndex) => (
-                <div key={colIndex} css={cellCss}>
-                  <MatrixCell
-                    key={rowIndex + "td" + colIndex}
-                    title={col.title}
-                    simpleType={simpleType}
-                    rowDocID={row.docID}
-                    columnDocID={col.docID}
-                    value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
-                    isMultiline={config.isMultiline}
-                    handleClick={handleClick}
-                    handleBlur={handleBlur}
-                  />
-                </div>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell component="th" css={headerColumnCss}></TableCell>
+              {columns.map((option) => (
+                <TableCell key={option.docID}>{option.title}</TableCell>
               ))}
-            </div>
-          ))}
-        </div>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <TableCell css={tableCellCss} component="th">
+                  {rows[rowIndex].title}
+                </TableCell>
+
+                {columns.map((col, colIndex) => (
+                  <TableCell key={col.docID} css={tableCellCss}>
+                    <MatrixCell
+                      key={rowIndex + "td" + colIndex}
+                      title={col.title}
+                      simpleType={simpleType}
+                      rowDocID={row.docID}
+                      columnDocID={col.docID}
+                      value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
+                      isMultiline={config.isMultiline}
+                      handleClick={handleClick}
+                      handleBlur={handleBlur}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </PerfectScrollbar>
     </>
   );
 };
 
 export default MatrixView;
+
+//
+//
+// <div css={gridCss}>
+//   <div css={headerCss}>
+//     <div className="empty-cell"></div>
+//     {columns.map((option) => (
+//       <div
+//         key={option.docID}
+//         css={headerColumnCss}
+//         className="table-header-cell"
+//       >
+//         {option.title}
+//       </div>
+//     ))}
+//   </div>
+//
+//   {rows.map((row, rowIndex) => (
+//     <div key={rowIndex} css={rowCss}>
+//       <div css={thRowCss} className="table-row-header">
+//         {rows[rowIndex].title}
+//       </div>
+//       {columns.map((col, colIndex) => (
+//         <div key={colIndex} css={cellCss}>
+//           <MatrixCell
+//             key={rowIndex + "td" + colIndex}
+//             title={col.title}
+//             simpleType={simpleType}
+//             rowDocID={row.docID}
+//             columnDocID={col.docID}
+//             value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
+//             isMultiline={config.isMultiline}
+//             handleClick={handleClick}
+//             handleBlur={handleBlur}
+//           />
+//         </div>
+//       ))}
+//     </div>
+//   ))}
+// </div>
