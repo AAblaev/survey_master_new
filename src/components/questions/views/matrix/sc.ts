@@ -203,7 +203,7 @@ export const tdDesctopCss = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: auto;
   & > .MuiButtonBase-root {
     display: inline-block;
   }

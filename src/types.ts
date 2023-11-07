@@ -47,9 +47,9 @@ export type IQuestion = {
   order: number;
   comment: string | null;
   hasComment?: boolean;
-  branchRules: IBranchRule[];
-  quoteRules: IQuoteRule[];
-  visibilityRules: IVisibilityRule[];
+  branchRules?: IBranchRule[];
+  quoteRules?: IQuoteRule[];
+  visibilityRules?: IVisibilityRule[];
   config: IConfig;
   isRequired: boolean;
   hasOtherAnswer: boolean;

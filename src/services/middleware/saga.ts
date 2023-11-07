@@ -12,7 +12,7 @@ import {
   ISurveyCompletionRule,
   IUserAnswer,
 } from "../../types";
-import { fakeData } from "../../utils/fakeData";
+// import { fakeData } from "../../utils/fakeData";
 import { fakeData2 } from "../../utils/fakeData2";
 import {
   findFirstIncompleteQuestion,

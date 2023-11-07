@@ -10,6 +10,7 @@ import {
   fakePageTransitionRules,
   fakeRules,
   fakeRules2,
+  fakeMatrixData,
 } from "../../utils/fakeData";
 import { pagesParser } from "../../utils/pagesParser";
 import {
@@ -79,6 +80,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
   switch (action.type) {
     case SET_DATA_AND_PARAMS: {
       const { data, params, notTheFirstTime } = action.payload;
+      // const { params, notTheFirstTime } = action.payload;
+      // const data = fakeMatrixData;
+
       const {
         pages,
         answers,
@@ -99,7 +103,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         logicalValidityCheckRuleDict,
         surveyCompletionRuleArr,
         targetPageTransitionRuleArr,
-      } = ruleParser(params.surveyID === "12" ? fakeRules : []);
+      } = ruleParser(rules);
 
       const {
         dependentQuestionsDict,
