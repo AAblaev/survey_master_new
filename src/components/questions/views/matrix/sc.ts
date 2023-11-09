@@ -1,168 +1,13 @@
 import { css } from "@emotion/react";
 
-export const tbodyDesctopCss = css`
-  display: table-row-group;
-  vertical-align: middle;
-`;
-
-export const tbodyMobileCss = css`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-export const tbodyCss = css`
-  ${tbodyMobileCss}
-  @media (min-width: 576px) {
-    ${tbodyMobileCss}
-  }
-
-  @media (min-width: 768px) {
-    ${tbodyDesctopCss}
-  }
-
-  @media (min-width: 992px) {
-    ${tbodyDesctopCss}
-  }
-
-  @media (min-width: 1200px) {
-    ${tbodyDesctopCss}
-  }
-
-  @media (min-width: 1400px) {
-    ${tbodyDesctopCss}
-  }
-`;
-
-const tableMobileCss = css`
-  display: block;
-`;
-const tableDesctopCss = css`
-  display: table;
-`;
-
-export const tableCss = css`
-  font-size: 0.84rem;
-  border-spacing: 0px;
-  border-collapse: collapse;
-  ${tableMobileCss}
-
-  @media (min-width: 576px) {
-    ${tableMobileCss}
-  }
-
-  @media (min-width: 768px) {
-    ${tableDesctopCss}
-  }
-
-  @media (min-width: 992px) {
-    ${tableDesctopCss}
-  }
-
-  @media (min-width: 1200px) {
-    ${tableDesctopCss}
-  }
-
-  @media (min-width: 1400px) {
-    ${tableDesctopCss}
-  }
-`;
-
-const trMobileCss = css`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const trDesctopCss = css``;
-
-export const trCss = css`
-  ${trMobileCss}
-
-  @media (min-width: 576px) {
-    ${trMobileCss}
-  }
-
-  @media (min-width: 768px) {
-    display: table-row;
-  }
-
-  @media (min-width: 992px) {
-    display: table-row;
-  }
-
-  @media (min-width: 1200px) {
-    display: table-row;
-  }
-
-  @media (min-width: 1400px) {
-    display: table-row;
-  }
-`;
-
-export const theadCss = css`
-  display: none;
-  @media (min-width: 576px) {
-    display: none;
-  }
-
-  @media (min-width: 768px) {
-    display: table-header-group;
-  }
-
-  @media (min-width: 992px) {
-    display: table-header-group;
-  }
-
-  @media (min-width: 1200px) {
-    display: table-header-group;
-  }
-
-  @media (min-width: 1400px) {
-    display: table-header-group;
-  }
-`;
-
 export const thRowMobileCss = css`
   padding: 0px;
   text-align: left;
   padding: 0px;
   font-weight: 600;
 `;
-export const thRowDesctopCss = css`
-  padding: 10px 20px;
-  // width: 30%;
-  // min-width: 300px;
-  font-weight: normal;
-  display: flex;
-  align-items: stretch;
-`;
-
-export const thRowCss = css`
-  ${thRowMobileCss}
-  @media (min-width: 576px) {
-    ${thRowMobileCss}
-  }
-
-  @media (min-width: 768px) {
-    ${thRowDesctopCss}
-  }
-
-  @media (min-width: 992px) {
-    ${thRowDesctopCss}
-  }
-
-  @media (min-width: 1200px) {
-    ${thRowDesctopCss}
-  }
-
-  @media (min-width: 1400px) {
-    ${thRowDesctopCss}
-  }
-`;
 
 export const thColumnCss = css`
-  // font-size: 1.2rem;
   font-weight: normal;
   padding: 10px;
   max-width: 100px;
@@ -171,7 +16,6 @@ export const thColumnCss = css`
 `;
 
 export const headerColumnCss = css`
-  // font-size: 1.2rem;
   font-weight: normal;
   padding: 0px 10px;
   text-align: start;
@@ -199,7 +43,7 @@ export const tdMobileCss = (isSelected: boolean, content: string) => css`
 `;
 
 export const tdDesctopCss = css`
-  background-color: white;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -239,23 +83,6 @@ export const tdCss = (isSelected: boolean, content: string) => css`
 
 export const wrapperCss = css`
   padding-bottom: 20px;
-`;
-
-export const textFieldCellCss = css`
-  display: flex;
-  align-items: stretch;
-  // align-items: center;
-
-  padding: 5px;
-
-  @media (min-width: 576px) {
-    display: flex;
-    align-items: center;
-  }
-
-  @media (min-width: 768px) {
-    display: table-cell;
-  }
 `;
 
 export const gridTextFieldCellCss = css`
@@ -362,18 +189,68 @@ export const borderColorMatrixCss = (alarm: boolean) => css`
     align-items: flex-start;
   }
 `;
+
+export const tableCss = css`
+  & .MuiTable-root {
+    width: auto;
+    max-width: 99%;
+    min-width: 700px;
+  }
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+`;
+
 export const tableHeaderColumnCss = css`
   min-width: 250px;
+
   &.MuiTableCell-root {
     border: none;
     padding: 0px;
   }
 `;
 
-export const tableCellCss = css`
+export const tableHeaderCellCss = css`
+  &.MuiTableCell-root {
+    border: none;
+    // text-align: center;
+  }
+`;
+
+export const tableFirstColumnCellCss = css`
   &.MuiTableCell-root {
     border: none;
     padding: 0px;
+    line-height: 1;
+    position: relative;
+    z-index: auto;
+  }
+`;
+
+export const tableRowCss = (showHoverEffect: boolean) => css`
+  &.MuiTableRow-root:hover {
+    background-color: ${showHoverEffect ? "#f2f2f2" : "transparent"};
+  }
+`;
+
+export const tableCellCss = (showHoverEffect: boolean) => css`
+  &.MuiTableCell-root {
+    border: none;
+    padding: 0px;
+    line-height: 1;
+    position: relative;
+    z-index: auto;
+  }
+
+  &:hover::before {
+    content: "";
+    background-color: ${showHoverEffect ? "#f2f2f2" : "transparent"};
+    position: absolute;
+    height: 2000px;
+    width: 100%;
+    left: 0;
+    top: -1000px;
+    z-index: -1;
   }
 `;
 

@@ -82,6 +82,7 @@ export const modalHeaderWrapperCss = css`
 `;
 
 export const gridContainerCss = css`
+  height: 99%;
   flex-grow: 1;
   position: relative;
   display: grid;

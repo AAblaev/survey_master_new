@@ -15,13 +15,17 @@ import {
   gridCss,
   headerCss,
   rowCss,
-  thRowCss,
   wrapperCss,
   headerColumnCss,
   tableCellCss,
   tableHeaderColumnCss,
   onlyDesctopRender,
   onlyMobileRender,
+  thRowMobileCss,
+  tableCss,
+  tableRowCss,
+  tableHeaderCellCss,
+  tableFirstColumnCellCss,
 } from "./sc";
 import { validation } from "../../../../utils/validation";
 
@@ -39,10 +43,15 @@ const useStyles = makeStyles({
   table: {
     maxWidth: "99%",
     minWidth: "700px",
-    width: "auto", // Задайте минимальную ширину таблицы
+    width: "auto",
   },
   firstColumn: {
     width: "25%",
+  },
+  tableRow: {
+    "&:hover": {
+      backgroundColor: "#f2f2f2",
+    },
   },
 });
 const MatrixView: React.FC<IMatrixViewProps> = ({
@@ -61,6 +70,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
     isChooseManyIncol,
   } = config;
   const simpleType = config.simpleType as ISimpleType;
+  const showHoverEffect = simpleType === "boolean";
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
 
@@ -170,7 +180,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
           options={{ suppressScrollX: false, suppressScrollY: true }}
           css={wrapperCss}
         >
-          <Table className={classes.table}>
+          <Table css={tableCss}>
             <TableHead>
               <TableRow>
                 <TableCell
@@ -178,19 +188,24 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                   css={tableHeaderColumnCss}
                 ></TableCell>
                 {columns.map((option) => (
-                  <TableCell key={option.docID}>{option.title}</TableCell>
+                  <TableCell css={tableHeaderCellCss} key={option.docID}>
+                    {option.title}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  <TableCell css={tableCellCss} component="th">
-                    {rows[rowIndex].title}
+                <TableRow key={rowIndex} css={tableRowCss(showHoverEffect)}>
+                  <TableCell css={tableFirstColumnCellCss} component="th">
+                    {row.title}
                   </TableCell>
 
                   {columns.map((col, colIndex) => (
-                    <TableCell key={col.docID} css={tableCellCss}>
+                    <TableCell
+                      key={col.docID}
+                      css={tableCellCss(showHoverEffect)}
+                    >
                       <MatrixCell
                         key={rowIndex + "td" + colIndex}
                         title={col.title}
@@ -227,8 +242,8 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
 
           {rows.map((row, rowIndex) => (
             <div key={rowIndex} css={rowCss}>
-              <div css={thRowCss} className="table-row-header">
-                {rows[rowIndex].title}
+              <div css={thRowMobileCss} className="table-row-header">
+                {row.title}
               </div>
               {columns.map((col, colIndex) => (
                 <div key={colIndex} css={cellCss}>
