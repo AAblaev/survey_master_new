@@ -123,6 +123,8 @@ export type IConfig = {
   mobileTabularView?: boolean;
   isChooseManyInrow?: boolean;
   isChooseManyIncol?: boolean;
+  requiredColunmsCount?: number;
+  requiredRowsCount?: number;
 };
 export type ISimpleType =
   | "boolean"
@@ -387,6 +389,9 @@ export type IStyles = {
       border: {
         size: number;
         color: string;
+      };
+      table: {
+        firstColumnWidth: number;
       };
     };
   };
