@@ -1,5 +1,7 @@
 import {
+  IAnswer,
   IBackendAnswer,
+  IConfig,
   ISimpleType,
   IUserAnswer,
   IValidationResult,
@@ -218,7 +220,6 @@ export const getTextFieldConfig = (simpleType?: ISimpleType) => {
 export const answersParsed = (
   backendAnswers: IBackendAnswer[]
 ): IUserAnswer => {
-  // console.log("backendAnswers", backendAnswers);
   const result: IUserAnswer = {};
   backendAnswers.forEach((backendAnswer) => {
     const values: IValue[] = backendAnswer.values.map((v) => ({
@@ -234,4 +235,37 @@ export const answersParsed = (
   });
 
   return result;
+};
+
+const countUniqueValues = (
+  objects: { [key: string]: any }[],
+  field: string,
+  value: number = 1
+) => {
+  const uniqueValuesSet = new Set();
+  for (const obj of objects) {
+    const value = obj[field];
+    uniqueValuesSet.add(value);
+  }
+
+  return !(value > uniqueValuesSet.size);
+};
+
+export const requiredRowsEndColumnsChecking = (
+  config: IConfig,
+  values: IAnswer["values"] = []
+): boolean => {
+  switch (config.dataType) {
+    case "freelist": {
+      return countUniqueValues(values, "optionID", config.requiredRowsCount);
+    }
+    case "matrix": {
+      return (
+        countUniqueValues(values, "dimension1", config.requiredRowsCount) &&
+        countUniqueValues(values, "dimension0", config.requiredColunmsCount)
+      );
+    }
+  }
+
+  return true;
 };

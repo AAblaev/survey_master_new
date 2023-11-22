@@ -48,17 +48,19 @@ export const getNeedCorrect = (
   isFocused: boolean,
   isValid: boolean,
   pageIsVisited: boolean,
-  isLogicalValiditySuccess: boolean
+  isLogicalValiditySuccess: boolean,
+  hasRequiredRowsAndColumns: boolean
 ): boolean => {
   if (isFocused) {
     // console.log("isFocused");
     return false;
   }
 
-  if (isValid && isLogicalValiditySuccess) {
+  if (isValid && isLogicalValiditySuccess && hasRequiredRowsAndColumns) {
     // console.log("isValid && isLogicalValiditySuccess");
     return false;
   }
+
   if (!isRequired && isEmpty) {
     // console.log("!isRequired && isEmpty");
     return false;
@@ -70,6 +72,11 @@ export const getNeedCorrect = (
   // }
 
   if (isRequired && isEmpty && !pageIsVisited) {
+    // console.log("isRequired && isEmpty && !pageIsVisited");
+    return false;
+  }
+
+  if (isRequired && !hasRequiredRowsAndColumns && !pageIsVisited) {
     // console.log("isRequired && isEmpty && !pageIsVisited");
     return false;
   }

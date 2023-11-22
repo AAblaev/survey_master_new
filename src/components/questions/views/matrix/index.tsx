@@ -1,29 +1,10 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  makeStyles,
-} from "@material-ui/core";
 import MatrixCell from "./MatrixCell";
 import { IAnswer, IQuestion, ISimpleType, IValue } from "../../../../types";
 import {
-  cellCss,
-  gridCss,
-  headerCss,
-  rowCss,
-  wrapperCss,
-  headerColumnCss,
-  tableCellCss,
-  tableHeaderColumnCss,
-  thRowMobileCss,
-  tableCss,
-  tableRowCss,
   tableHeaderCellCss,
-  tableFirstColumnCellCss,
+  wrapperCss,
   new_tableCss,
   new_theadCss,
   new_headerRowCss,
@@ -45,43 +26,29 @@ type IMatrixViewProps = {
 
 type IValuesDict = { [key: string]: IValue };
 
-const useStyles = makeStyles({
-  table: {
-    maxWidth: "99%",
-    minWidth: "700px",
-    width: "auto",
-  },
-  firstColumn: {
-    width: "25%",
-  },
-  tableRow: {
-    "&:hover": {
-      backgroundColor: "#f2f2f2",
-    },
-  },
-});
 const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
   setAnswer,
   userAnswer,
 }) => {
-  const classes = useStyles();
   const { docID, config } = question;
   const {
     isLimited,
     isLimitedValue,
     limit,
     limitValue,
-    isChooseManyInrow,
-    isChooseManyIncol,
-    // mobileTabularView = true,
+    // isChooseManyInrow,
+    // isChooseManyIncol,
+    mobileTabularView = true,
   } = config;
-
-  const mobileTabularView = false;
+  const isChooseManyInrow = true;
+  const isChooseManyIncol = true;
+  // const mobileTabularView = false;
   const simpleType = config.simpleType as ISimpleType;
   const showHoverEffect = simpleType === "boolean";
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const values = userAnswerExist ? userAnswer.values : [];
+  // console.log("values", values);
 
   const valuesDict: IValuesDict = values.reduce((acc: IValuesDict, item) => {
     acc[`d0_${item.dimension0}_d1_${item.dimension1}`] = item;
@@ -238,129 +205,3 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
 };
 
 export default MatrixView;
-
-//
-//
-// <Table css={tableCss}>
-//   <TableHead>
-//     <TableRow>
-//       <TableCell
-//         component="th"
-//         css={tableHeaderColumnCss(250)}
-//       ></TableCell>
-//       {columns.map((option) => (
-//         <TableCell css={tableHeaderCellCss} key={option.docID}>
-//           {option.title}
-//         </TableCell>
-//       ))}
-//     </TableRow>
-//   </TableHead>
-//   <TableBody>
-//     {rows.map((row, rowIndex) => (
-//       <TableRow key={rowIndex} css={tableRowCss(showHoverEffect)}>
-//         <TableCell css={tableFirstColumnCellCss} component="th">
-//           {row.title}
-//         </TableCell>
-//
-//         {columns.map((col, colIndex) => (
-//           <TableCell
-//             key={col.docID}
-//             css={tableCellCss(showHoverEffect)}
-//           >
-//             <MatrixCell
-//               key={rowIndex + "td" + colIndex}
-//               title={col.title}
-//               simpleType={simpleType}
-//               rowDocID={row.docID}
-//               columnDocID={col.docID}
-//               value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
-//               isMultiline={config.isMultiline}
-//               handleClick={handleClick}
-//               handleBlur={handleBlur}
-//             />
-//           </TableCell>
-//         ))}
-//       </TableRow>
-//     ))}
-//   </TableBody>
-// </Table>
-//
-// <div css={onlyMobileRender}>
-//   <div css={gridCss}>
-//     <div css={headerCss}>
-//       <div className="empty-cell"></div>
-//       {columns.map((option) => (
-//         <div
-//           key={option.docID}
-//           css={headerColumnCss}
-//           className="table-header-cell"
-//         >
-//           {option.title}
-//         </div>
-//       ))}
-//     </div>
-//
-//     {rows.map((row, rowIndex) => (
-//       <div key={rowIndex} css={rowCss}>
-//         <div css={thRowMobileCss} className="table-row-header">
-//           {row.title}
-//         </div>
-//         {columns.map((col, colIndex) => (
-//           <div key={colIndex} css={cellCss}>
-//             <MatrixCell
-//               key={rowIndex + "td" + colIndex}
-//               title={col.title}
-//               simpleType={simpleType}
-//               rowDocID={row.docID}
-//               columnDocID={col.docID}
-//               value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
-//               isMultiline={config.isMultiline}
-//               handleClick={handleClick}
-//               handleBlur={handleBlur}
-//             />
-//           </div>
-//         ))}
-//       </div>
-//     ))}
-//   </div>
-// </div>
-
-//
-//
-// <div css={gridCss}>
-//   <div css={headerCss}>
-//     <div className="empty-cell"></div>
-//     {columns.map((option) => (
-//       <div
-//         key={option.docID}
-//         css={headerColumnCss}
-//         className="table-header-cell"
-//       >
-//         {option.title}
-//       </div>
-//     ))}
-//   </div>
-//
-//   {rows.map((row, rowIndex) => (
-//     <div key={rowIndex} css={rowCss}>
-//       <div css={thRowCss} className="table-row-header">
-//         {rows[rowIndex].title}
-//       </div>
-//       {columns.map((col, colIndex) => (
-//         <div key={colIndex} css={cellCss}>
-//           <MatrixCell
-//             key={rowIndex + "td" + colIndex}
-//             title={col.title}
-//             simpleType={simpleType}
-//             rowDocID={row.docID}
-//             columnDocID={col.docID}
-//             value={valuesDict[`d0_${row.docID}_d1_${col.docID}`]}
-//             isMultiline={config.isMultiline}
-//             handleClick={handleClick}
-//             handleBlur={handleBlur}
-//           />
-//         </div>
-//       ))}
-//     </div>
-//   ))}
-// </div>
