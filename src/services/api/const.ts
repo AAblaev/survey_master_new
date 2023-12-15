@@ -11,7 +11,7 @@ export const PATH_NAME_II = __IS_PROD_BUNDLE_MODE__
   ? document.location.origin + document.location.pathname + "api/survey/"
   : PATH_NAME_FOR_DEV_II;
 
-export const DEFAULT_SURVEY_ID = "1";
+export const DEFAULT_SURVEY_ID = "";
 
 type IGetPathName = (payload: {
   basePath: string;

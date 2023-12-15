@@ -2,6 +2,7 @@ import {
   IAnswer,
   IBackendAnswer,
   IConfig,
+  IQuestion,
   ISimpleType,
   IUserAnswer,
   IValidationResult,
@@ -84,10 +85,6 @@ export const validation = (payload: {
 
   if (simpleType === "datetime" && !isValidDate(value)) {
     return { isValid: false, message: "допустимый формат дд.мм.гггг" };
-  }
-
-  if (simpleType === "string" && false) {
-    return { isValid: false, message: "пусто" };
   }
 
   if (simpleType === "integer" && !isInt(value)) {
@@ -252,17 +249,29 @@ const countUniqueValues = (
 };
 
 export const requiredRowsEndColumnsChecking = (
-  config: IConfig,
+  question: IQuestion,
   values: IAnswer["values"] = []
 ): boolean => {
-  switch (config.dataType) {
+  switch (question.config.dataType) {
     case "freelist": {
-      return countUniqueValues(values, "optionID", config.requiredRowsCount);
+      return countUniqueValues(
+        values,
+        "optionID",
+        question.config.requiredRowsCount
+      );
     }
     case "matrix": {
       return (
-        countUniqueValues(values, "dimension1", config.requiredRowsCount) &&
-        countUniqueValues(values, "dimension0", config.requiredColunmsCount)
+        countUniqueValues(
+          values,
+          "dimension1",
+          question.config.requiredRowsCount
+        ) &&
+        countUniqueValues(
+          values,
+          "dimension0",
+          question.config.requiredColunmsCount
+        )
       );
     }
   }

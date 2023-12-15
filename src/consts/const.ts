@@ -123,3 +123,12 @@ export const DEFAULT_STYLES: IStyles = {
     },
   },
 };
+
+export const SUCCESS_CHECKING_RESULT = {
+  status: true,
+  message: "success",
+  modalMessage: {
+    code: 200,
+    type: "success",
+  },
+};

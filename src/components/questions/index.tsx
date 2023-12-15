@@ -15,7 +15,7 @@ import MultiDropDownView from "./views/multiDropDown";
 import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
 import MatrixView from "./views/matrix";
-import { EXTRA_ANSWER, TIMEOUT_VALUE } from "../../consts/const";
+import { EXTRA_ANSWER } from "../../consts/const";
 import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
@@ -84,7 +84,6 @@ const Question: React.FC<IQuestionProps> = ({
   pageID,
   isVisible,
   isLogicalValiditySuccess,
-  brandColor,
   questionStyles,
 }) => {
   const {
@@ -159,7 +158,7 @@ const Question: React.FC<IQuestionProps> = ({
     !answerWithExtra.values.some((v) => !v.validationResult.isValid);
 
   const hasRequiredRowsAndColumns = requiredRowsEndColumnsChecking(
-    config,
+    question,
     userAnswer?.values
   );
 

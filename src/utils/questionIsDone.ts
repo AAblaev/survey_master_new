@@ -1,7 +1,60 @@
 import { IAnswer, IPage, IQuestion, IUserAnswer } from "../types";
+import { requiredRowsEndColumnsChecking } from "./validation";
 
 export const isQuestionDone = (answer: IAnswer) => {
   return answer.values.length !== 0;
+};
+
+export const isRequiredQuestionHasAnswer = (
+  question: IQuestion,
+  userAnswers: IUserAnswer
+) => {
+  return (
+    userAnswers.hasOwnProperty(question.docID) &&
+    userAnswers[question.docID].values.length > 0
+  );
+};
+
+export const requiredQuestionsHasAnswer = (
+  page: IPage,
+  userAnswers: IUserAnswer
+) => {
+  return page.questions.every(
+    (q) => !q.isRequired || (q.isRequired && questionValidation(q, userAnswers))
+  );
+};
+
+export const requiredQuestionsHasCorrectAnswer = (
+  page: IPage,
+  userAnswers: IUserAnswer
+) => {
+  return page.questions.every(
+    (q) =>
+      !q.isRequired || (q.isRequired && new_questionValidation(q, userAnswers))
+  );
+};
+
+export const requiredQuestionsHasFullAnswer = (
+  page: IPage,
+  userAnswers: IUserAnswer
+) => {
+  return page.questions.every(
+    (q) =>
+      !q.isRequired ||
+      (q.isRequired &&
+        requiredRowsEndColumnsChecking(q, userAnswers[q.docID].values))
+  );
+};
+
+export const new_questionValidation = (
+  question: IQuestion,
+  userAnswers: IUserAnswer
+) => {
+  return (
+    userAnswers.hasOwnProperty(question.docID) &&
+    userAnswers[question.docID].values.length > 0 &&
+    userAnswers[question.docID].values.every((v) => v.validationResult.isValid)
+  );
 };
 
 export const questionValidation = (
@@ -18,7 +71,7 @@ export const questionValidation = (
 export const findFirstIncompleteQuestion = (
   pages: IPage[],
   userAnswers: IUserAnswer
-): { pageIndex: number; questionIndex: number } | null => {
+): { pageIndex: number; questionIndex: number; pageID: number } | null => {
   for (let i = 0; i < pages.length; i++) {
     const page = pages[i];
     for (let j = 0; j < page.questions.length; j++) {
@@ -26,7 +79,7 @@ export const findFirstIncompleteQuestion = (
       const isRequiredAndNotAnswer =
         question.isRequired && !questionValidation(question, userAnswers);
       if (isRequiredAndNotAnswer) {
-        return { pageIndex: i, questionIndex: j };
+        return { pageIndex: i, questionIndex: j, pageID: page.docID };
       }
     }
   }

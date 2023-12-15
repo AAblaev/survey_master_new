@@ -8,6 +8,7 @@ import { IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
   SAGA_CHANGE_CURRENT_PAGE,
+  SAGA_CHANGE_LOCATION,
   START_SURVEY,
 } from "../../../services/redux/types";
 import {
@@ -34,7 +35,6 @@ const Switcher: React.FC<ISwitcherProps> = ({
   setNextPage,
   setPrevPage,
   selectPage,
-  strictModeNavigation,
   pageList,
   setFirstPage,
   pageTitle,
@@ -164,8 +164,10 @@ const mapStateToProps = (state: IState) => {
     pageTransitionRuleDict,
     strictModeNavigation,
     pagesDict,
+    firstLocationWithDeviation,
   } = state;
 
+  console.log("firstLocationWithDeviation", firstLocationWithDeviation);
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
   const buttonNextCaption = data?.buttonNextCaption || "";
@@ -209,7 +211,6 @@ const mapStateToProps = (state: IState) => {
     pagesCount,
     uid,
     showFinishBtn,
-    strictModeNavigation,
     pageList,
     pageTitle,
   };
@@ -221,13 +222,13 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     setNextPage: (docID?: string) =>
       dispatch({
-        type: SAGA_CHANGE_CURRENT_PAGE,
+        type: SAGA_CHANGE_LOCATION,
         direction: "right-to-left",
         targetPageID: docID,
       }),
     setPrevPage: (docID?: string) =>
       dispatch({
-        type: SAGA_CHANGE_CURRENT_PAGE,
+        type: SAGA_CHANGE_LOCATION,
         direction: "left-to-right",
         targetPageID: docID,
       }),

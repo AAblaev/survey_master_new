@@ -89,8 +89,9 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     needScrolling,
     styles,
+    visitedPageDocIDList,
   } = state;
-
+  console.log("visitedPageDocIDList", visitedPageDocIDList);
   const {
     globalStyle: {
       brandColor,

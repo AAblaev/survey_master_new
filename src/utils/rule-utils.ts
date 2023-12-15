@@ -128,6 +128,7 @@ export const ruleParser = (
 };
 
 const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
+  // проверить isValid
   if (event.type === "answeredQuestion") {
     return (
       !!userAnswers[event.questionID] &&
@@ -341,7 +342,7 @@ export const pageTransitionRuleChecking = (
   userAnswers: IUserAnswer,
   rule: IPageTransitionRule
 ): boolean => {
-  const { events, title } = rule;
+  const { events } = rule;
   const operator = events[0].eventOperator;
 
   if (operator === "AND" || operator === null) {
@@ -358,7 +359,7 @@ export const disqualificationRuleChecking = (
   userAnswers: IUserAnswer,
   rule: IDisqualificationRule
 ): boolean => {
-  const { events, title } = rule;
+  const { events } = rule;
   const operator = events[0].eventOperator;
 
   if (operator === "AND" || operator === null) {
@@ -375,7 +376,7 @@ export const surveyCompletionChecking = (
   userAnswers: IUserAnswer,
   rule: ISurveyCompletionRule
 ): boolean => {
-  const { events, title } = rule;
+  const { events } = rule;
   const operator = events[0].eventOperator;
 
   if (operator === "AND" || operator === null) {

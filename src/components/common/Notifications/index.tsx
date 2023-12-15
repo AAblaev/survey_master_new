@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dispatch } from "redux";
-import { connect, ConnectedProps } from "react-redux";
+import { connect } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { ILocation, ILogicalValidityCheckRule, IState } from "../../../types";
