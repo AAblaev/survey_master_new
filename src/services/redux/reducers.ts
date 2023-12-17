@@ -48,7 +48,6 @@ import {
   SET_ALL_PAGES_VISITED,
   CANCEL_COMPLETION,
   GO_TO_FIRST_DEVIATION_PAGE,
-  // IS_ERROR,
 } from "./types";
 
 const initialState: IState = {
@@ -140,7 +139,6 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           pages,
           targetPageTransitionRuleArr,
         });
-        console.log("notTheFirstTime pageMovementLogs", pageMovementLogs);
 
         return {
           ...state,
@@ -439,6 +437,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       return {
         ...state,
         location: firstLocationWithDeviation,
+        // needScrolling: true,
         slideMoveDirection: "left-to-right",
         modalVisible: false,
       };

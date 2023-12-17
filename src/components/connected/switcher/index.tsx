@@ -164,10 +164,8 @@ const mapStateToProps = (state: IState) => {
     pageTransitionRuleDict,
     strictModeNavigation,
     pagesDict,
-    firstLocationWithDeviation,
   } = state;
 
-  console.log("firstLocationWithDeviation", firstLocationWithDeviation);
   const isEmptyData = !Boolean(data);
   const buttonStartCaption = data?.buttonStartCaption || "";
   const buttonNextCaption = data?.buttonNextCaption || "";

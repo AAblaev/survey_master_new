@@ -15,6 +15,7 @@ import {
   FETCH_SURVEY_DATA,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
+import ErrorComponent from "./components/ErrorComponent";
 
 export type IApp = ConnectedProps<typeof connector>;
 
@@ -42,7 +43,10 @@ const App: React.FC<IApp> = ({
       <div css={desctopCss(backgroundColor)}>
         <AppBar appBarStyles={appBarStyles} direction="top" fixed></AppBar>
         <div css={contentCss}>
-          <div>Error: {error.message}</div>
+          <ErrorComponent
+            message={error.message}
+            backgroundColor={backgroundColor}
+          />
         </div>
         <AppBar appBarStyles={appBarStyles} direction="bottom" fixed></AppBar>
       </div>
@@ -91,7 +95,6 @@ const mapStateToProps = (state: IState) => {
     styles,
     visitedPageDocIDList,
   } = state;
-  console.log("visitedPageDocIDList", visitedPageDocIDList);
   const {
     globalStyle: {
       brandColor,

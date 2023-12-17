@@ -6,7 +6,7 @@ import {
 } from "../../api/const";
 import { IStoredData } from "../saga";
 
-export const getParams = () => {
+export const getParams = ({ correctUid }: { correctUid: boolean }) => {
   const params = new URLSearchParams(document.location.search);
   const surveyIDfromURL = params.get("surveyID");
   const uidFromURL = params.get("uid");
@@ -27,6 +27,7 @@ export const getParams = () => {
     prevSurveyID,
     prevUid,
     isNewAPI,
+    correctUid: correctUid,
   });
 
   const uid = uidFromURL ? uidFromURL : isRetryingFetch ? prevUid : "";

@@ -88,8 +88,15 @@ export type IStoredData = {
   surveyID: string;
 };
 
-function* fetchSurveyData() {
-  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams();
+function* fetchSurveyData({
+  correctUid = true,
+}: {
+  type: typeof FETCH_SURVEY_DATA;
+  correctUid?: boolean;
+}) {
+  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams({
+    correctUid: correctUid,
+  });
   const params = {
     surveyID,
     uid,
@@ -99,12 +106,11 @@ function* fetchSurveyData() {
     yield put(setLoading(true));
     const result: IFetchResult = yield call(() => fethData(fetchPath));
     const data = result.data;
-
     yield put(
       setDataAndParams({
         data,
         params,
-        notTheFirstTime,
+        notTheFirstTime: notTheFirstTime && correctUid,
       })
     );
     const { isShowGreetingsPage } = data;
@@ -112,15 +118,28 @@ function* fetchSurveyData() {
 
     yield put(setLoading(false));
     if (needEmediatlyStartSurvey) {
+      // console.log("needEmediatlyStartSurvey");
+      // console.log("correctUid", correctUid);
+
       yield put({ type: START_SURVEY, isContinue: false });
     }
   } catch (e) {
-    console.log("Error fetchSurveyData");
-    console.log("Error fetchSurveyData", e);
+    const error = e as AxiosError<{ name: string }>;
+    // console.log("Error fetchSurveyData");
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+
+    // console.log("Error fetchSurveyData", message);
 
     yield put(setLoading(false));
-    const error = e as AxiosError;
-    yield put(setError({ status: true, message: error.message }));
+
+    // if (message === "NoCompletion4Uid") {
+    //   yield put({ type: FETCH_SURVEY_DATA, correctUid: false });
+    //   return;
+    // }
+
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -286,10 +305,10 @@ function* completeValidation() {
     checkAllPagesLogicalValidity()
   );
 
-  console.log("resultCheckingRules", resultCheckingRules);
+  // console.log("resultCheckingRules", resultCheckingRules);
 
   if (!firstIncompleteQuestion && resultCheckingRules.status) {
-    console.log("all questions and rules are correct");
+    // console.log("all questions and rules are correct");
     return true;
   }
 
@@ -311,7 +330,7 @@ function* completeValidation() {
   // yield put(setAllPagesVisited());
 
   // найти первую стр с отклонением
-  console.log("2");
+  // console.log("2");
 
   return !firstIncompleteQuestion && resultCheckingRules.status;
 }
@@ -439,7 +458,7 @@ function* changeLocationValidation(direction: ISlideMoveDirection) {
       };
     }
   } catch (mm) {
-    console.log("catch", mm);
+    // console.log("catch", mm);
     const modalMessage = mm as IModalMessage;
     switch (modalMessage.code) {
       case 201:
@@ -476,7 +495,7 @@ function* sagaChangeLocation({
   direction: ISlideMoveDirection;
   targetPageID?: string;
 }) {
-  console.log("sagaChangeLocation");
+  // console.log("sagaChangeLocation");
   const validationResult: boolean = yield call(() =>
     changeLocationValidation(direction)
   );
@@ -495,7 +514,7 @@ function* sagaChangeLocation({
 }
 
 function* sagaSendData() {
-  console.log("sagaSendData");
+  // console.log("sagaSendData");
   const { uid, userAnswers } = yield select(selectChangePageProps);
 
   const answers = userAnswerParses(userAnswers);
@@ -511,7 +530,7 @@ function* sagaSendData() {
 }
 
 function* imediateCompletion() {
-  console.log("imediateCompletion");
+  // console.log("imediateCompletion");
   const { uid, userAnswers, location } = yield select(
     selectCompleteSurveyProps
   );
@@ -544,7 +563,7 @@ function* imediateCompletion() {
 }
 
 function* imediateDisqualification() {
-  console.log("imediateDisqualification");
+  // console.log("imediateDisqualification");
   const { uid, userAnswers, location } = yield select(
     selectCompleteSurveyProps
   );
