@@ -11,9 +11,14 @@ type IProgressBarProps = {
   size?: number;
   position?: IProgressBarPosition;
   background?: string;
+  brandColor?: string;
 };
 
-const rootCss = (position: IProgressBarPosition, background: string) => {
+const rootCss = (
+  position: IProgressBarPosition,
+  background: string,
+  brandColor: string
+) => {
   const positionedExtraProps = css`
     top: 0;
     left: 0;
@@ -30,7 +35,7 @@ const rootCss = (position: IProgressBarPosition, background: string) => {
     background: ${background};
     ${position !== "static" && positionedExtraProps};
     & .MuiCircularProgress-colorPrimary {
-      color: #46acaf;
+      color: ${brandColor};
     }
   `;
 };
@@ -40,8 +45,9 @@ const ProgressBar: React.FC<IProgressBarProps> = ({
   size = 60,
   position = "static",
   background = "transparent",
+  brandColor = "transparent",
 }) => (
-  <div css={rootCss(position, background)}>
+  <div css={rootCss(position, background, brandColor)}>
     <CircularProgress disableShrink color={color} size={size} />
   </div>
 );

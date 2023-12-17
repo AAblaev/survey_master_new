@@ -63,6 +63,7 @@ const App: React.FC<IApp> = ({
         <ProgressBar
           position={"absolute"}
           background={"rgba(255, 255, 255, 0.5)"}
+          brandColor={brandColor}
         />
       )}
       <Desktop
