@@ -1,4 +1,3 @@
-import { createSelector } from "reselect";
 import {
   IDependentsQuestionsLogicalValidity,
   ILogicalValidityCheckRuleDict,
@@ -19,6 +18,10 @@ export const selectPathName = (state: IState) => ({
 });
 
 export const selectAnswers = (state: IState) => ({
+  userAnswers: state.userAnswers,
+});
+
+export const selectAnswersAndUid = (state: IState) => ({
   userAnswers: state.userAnswers,
 });
 
@@ -44,6 +47,7 @@ export const selectChangePageProps = (state: IState) => ({
   disqualificationRuleArr: state.disqualificationRuleArr,
   dependentPagesDict: state.dependentPagesDict,
   logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
+  strictModeNavigation: state.strictModeNavigation,
 });
 
 export const selectCompleteSurveyProps = (state: IState) => ({
@@ -55,6 +59,25 @@ export const selectCompleteSurveyProps = (state: IState) => ({
   pagesDict: state.pagesDict,
   strictModeNavigation: state.strictModeNavigation,
 });
+
+export const logicalRulesCheckingProps = (state: IState) => {
+  const currentPage = state.data?.pages[state.location.pageIndex];
+  return {
+    logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
+    dependentQuestionsDict: state.dependentQuestionsDict,
+    userAnswers: state.userAnswers,
+    pageDocID: currentPage?.docID,
+  };
+};
+
+export const allLogicalRulesCheckingProps = (state: IState) => {
+  return {
+    logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
+    dependentPagesDict: state.dependentPagesDict,
+    userAnswers: state.userAnswers,
+    pages: state.data!.pages,
+  };
+};
 
 export const selectLogicValidityData = (
   state: IState

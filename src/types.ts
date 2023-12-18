@@ -123,6 +123,8 @@ export type IConfig = {
   mobileTabularView?: boolean;
   isChooseManyInrow?: boolean;
   isChooseManyIncol?: boolean;
+  requiredColunmsCount?: number;
+  requiredRowsCount?: number;
 };
 export type ISimpleType =
   | "boolean"
@@ -339,7 +341,47 @@ export type IDependentsPagesLogicalValidity = {
   [key: string]: ILogicalValidityCheckRule["docID"][];
 };
 
+export type ICheckingConfig = {
+  questionChecking: boolean;
+  logicalChecking: boolean;
+  disqualificationChecking: boolean;
+  completeChecking: boolean;
+  immediatelyComplete: boolean;
+};
+
+export type IResultCheckingRules = {
+  status: boolean;
+  deviationPageIndex: number;
+};
+
 export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
+
+export type IModalMessage =
+  | {
+      code: 101;
+      type: "greeting";
+    }
+  | {
+      code: 201;
+      type: "cancelTransition";
+    }
+  | {
+      code: 202;
+      type: "cancelTransition";
+    }
+  | {
+      code: 301;
+      type: "completion";
+    }
+  | {
+      code: 302;
+      type: "completion";
+    }
+  | {
+      code: 303;
+      type: "completion";
+    }
+  | { code: 401; type: "disqualification" };
 
 export type IStyles = {
   globalStyle: {
@@ -388,6 +430,9 @@ export type IStyles = {
         size: number;
         color: string;
       };
+      table: {
+        firstColumnWidth: number;
+      };
     };
   };
 };
@@ -397,11 +442,12 @@ export type IState = {
   error: IError;
   data: IParsedData | null;
   location: ILocation;
+  firstLocationWithDeviation: ILocation;
   params: IParams;
   userAnswers: IUserAnswer;
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
-  modalMessageType: IModalMessageType;
+  modalMessage: IModalMessage;
   visitedPageDocIDList: string[];
   needScrolling: boolean;
   // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct

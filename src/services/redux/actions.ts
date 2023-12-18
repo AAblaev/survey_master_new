@@ -3,6 +3,7 @@ import {
   IData,
   ILocation,
   ILogicalValidityCheckRuleDict,
+  IModalMessage,
   IParams,
   IQuestion,
   ISlideMoveDirection,
@@ -33,6 +34,10 @@ import {
   SELECT_SECTION,
   UPDATE_LOGICAL_RULES_STATUS,
   APPROVE_LOGIC_RULE_STATUS,
+  SET_FIRST_LOCATION_WITH_DEVIATION,
+  SET_ALL_PAGES_VISITED,
+  CANCEL_COMPLETION,
+  GO_TO_FIRST_DEVIATION_PAGE,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -144,6 +149,10 @@ export const setCurrentPage = (payload: {
   visitedPageDocIDList: string[];
 }) => <const>{ type: CHANGE_CURRENT_PAGE, payload };
 
+export const setFirstLocationWithDeviation = (payload: {
+  location: ILocation;
+}) => <const>{ type: SET_FIRST_LOCATION_WITH_DEVIATION, payload };
+
 export const goToTheNextPage = (payload: {
   direction: ISlideMoveDirection;
   targetPageID: string | undefined;
@@ -154,8 +163,10 @@ export const goToThePrevPage = (payload: {
   targetPageID: string | undefined;
 }) => <const>{ type: GO_TO_THE_PREVIOUS_PAGE, payload };
 
-export const cancelTransition = (payload: { currentPageDocID: string }) =>
-  <const>{ type: CANCEL_TRANSITION, payload };
+export const cancelTransition = (payload: {
+  currentPageDocID: string;
+  modalMessage: IModalMessage;
+}) => <const>{ type: CANCEL_TRANSITION, payload };
 
 export const surveyCompletionRuleActive = (payload: {
   currentPageDocID: string;
@@ -170,3 +181,12 @@ export const updateLogicalRyleStatus = (payload: {
 
 export const approveLogicRuleStatus = (payload: { ruleDocID: string }) =>
   <const>{ type: APPROVE_LOGIC_RULE_STATUS, payload };
+
+export const setAllPagesVisited = () => <const>{ type: SET_ALL_PAGES_VISITED };
+
+export const cancelCompletion = (payload: {
+  location: ILocation;
+  modalMessage: IModalMessage;
+}) => <const>{ type: CANCEL_COMPLETION, payload };
+export const goToFirstDeviationPage = () =>
+  <const>{ type: GO_TO_FIRST_DEVIATION_PAGE };

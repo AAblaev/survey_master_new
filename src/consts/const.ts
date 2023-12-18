@@ -31,6 +31,13 @@ export const DISQUALIFICATION_PAGE_LOCATION: ILocation = {
   questionIndex: 0,
 };
 
+export const FAKE_PAGE_LOCATION: ILocation = {
+  pathName: "section",
+  title: "section",
+  pageIndex: 0,
+  questionIndex: 0,
+};
+
 export const COMPLETION_PAGE_LOCATION: ILocation = {
   pathName: "completion",
   title: "completion",
@@ -110,6 +117,18 @@ export const DEFAULT_STYLES: IStyles = {
         size: 1,
         color: "#e5e5e5",
       },
+      table: {
+        firstColumnWidth: 250,
+      },
     },
+  },
+};
+
+export const SUCCESS_CHECKING_RESULT = {
+  status: true,
+  message: "success",
+  modalMessage: {
+    code: 200,
+    type: "success",
   },
 };

@@ -15,7 +15,7 @@ import MultiDropDownView from "./views/multiDropDown";
 import ScaleView from "./views/scale/scale";
 import SelectView from "./views/select";
 import MatrixView from "./views/matrix";
-import { EXTRA_ANSWER, TIMEOUT_VALUE } from "../../consts/const";
+import { EXTRA_ANSWER } from "../../consts/const";
 import Html from "./views/html";
 import NothingCheckbox from "./extra/nothingCheckbox";
 import UnableCheckbox from "./extra/unableCheckbox";
@@ -32,6 +32,7 @@ import {
   limitMessageWrapperCss,
 } from "./sc";
 import { visibleChecking } from "../../utils/rule-utils";
+import { requiredRowsEndColumnsChecking } from "../../utils/validation";
 
 export type OwnProps = {
   index: number;
@@ -83,7 +84,6 @@ const Question: React.FC<IQuestionProps> = ({
   pageID,
   isVisible,
   isLogicalValiditySuccess,
-  brandColor,
   questionStyles,
 }) => {
   const {
@@ -151,12 +151,16 @@ const Question: React.FC<IQuestionProps> = ({
 
   const isFocused =
     !!answerWithExtra && answerWithExtra.values.some((v) => v.isFocused);
-  // console.log("title", title);
-  // console.log("isFocused", isFocused);
+
   const isValid =
     !!answerWithExtra &&
     answerWithExtra.values.length > 0 &&
     !answerWithExtra.values.some((v) => !v.validationResult.isValid);
+
+  const hasRequiredRowsAndColumns = requiredRowsEndColumnsChecking(
+    question,
+    userAnswer?.values
+  );
 
   const pageIsVisited = visitedPageDocIDList.includes(String(pageID));
 
@@ -166,7 +170,8 @@ const Question: React.FC<IQuestionProps> = ({
     isFocused,
     isValid,
     pageIsVisited,
-    isLogicalValiditySuccess
+    isLogicalValiditySuccess,
+    hasRequiredRowsAndColumns
   );
 
   const userAnswerResult = isInternalExtra

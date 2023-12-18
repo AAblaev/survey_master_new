@@ -1,5 +1,8 @@
 import {
+  IAnswer,
   IBackendAnswer,
+  IConfig,
+  IQuestion,
   ISimpleType,
   IUserAnswer,
   IValidationResult,
@@ -82,10 +85,6 @@ export const validation = (payload: {
 
   if (simpleType === "datetime" && !isValidDate(value)) {
     return { isValid: false, message: "допустимый формат дд.мм.гггг" };
-  }
-
-  if (simpleType === "string" && false) {
-    return { isValid: false, message: "пусто" };
   }
 
   if (simpleType === "integer" && !isInt(value)) {
@@ -218,7 +217,6 @@ export const getTextFieldConfig = (simpleType?: ISimpleType) => {
 export const answersParsed = (
   backendAnswers: IBackendAnswer[]
 ): IUserAnswer => {
-  // console.log("backendAnswers", backendAnswers);
   const result: IUserAnswer = {};
   backendAnswers.forEach((backendAnswer) => {
     const values: IValue[] = backendAnswer.values.map((v) => ({
@@ -234,4 +232,49 @@ export const answersParsed = (
   });
 
   return result;
+};
+
+const countUniqueValues = (
+  objects: { [key: string]: any }[],
+  field: string,
+  value: number = 1
+) => {
+  const uniqueValuesSet = new Set();
+  for (const obj of objects) {
+    const value = obj[field];
+    uniqueValuesSet.add(value);
+  }
+
+  return !(value > uniqueValuesSet.size);
+};
+
+export const requiredRowsEndColumnsChecking = (
+  question: IQuestion,
+  values: IAnswer["values"] = []
+): boolean => {
+  switch (question.config.dataType) {
+    case "freelist": {
+      return countUniqueValues(
+        values,
+        "optionID",
+        question.config.requiredRowsCount
+      );
+    }
+    case "matrix": {
+      return (
+        countUniqueValues(
+          values,
+          "dimension1",
+          question.config.requiredRowsCount
+        ) &&
+        countUniqueValues(
+          values,
+          "dimension0",
+          question.config.requiredColunmsCount
+        )
+      );
+    }
+  }
+
+  return true;
 };

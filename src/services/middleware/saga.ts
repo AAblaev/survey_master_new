@@ -1,19 +1,25 @@
 import { AxiosError } from "axios";
 import { call, put, select, takeEvery } from "redux-saga/effects";
 import {
-  IAnswer,
   IBackendAnswer,
   IData,
   IDependentsQuestionsLogicalValidity,
   IDisqualificationRule,
   ILocation,
   ILogicalValidityCheckRuleDict,
+  IModalMessage,
+  IPage,
+  IResultCheckingRules,
   ISlideMoveDirection,
   ISurveyCompletionRule,
   IUserAnswer,
 } from "../../types";
+import getCheckingConfig from "../../utils/getCheckingConfig";
+import { getFirstLocationWithDeviation } from "../../utils/getFirstLocationWithDeviation";
+import logicalRulesChecking from "../../utils/logicalvalidityChecking";
+import pageQuestionChecking from "../../utils/pageQuestionChecking";
 // import { fakeData } from "../../utils/fakeData";
-import { fakeData2 } from "../../utils/fakeData2";
+// import { fakeData2 } from "../../utils/fakeData2";
 import {
   findFirstIncompleteQuestion,
   requiredQuestionsChecking,
@@ -39,9 +45,15 @@ import {
   cancelTransition,
   surveyCompletionRuleActive,
   updateLogicalRyleStatus,
+  setFirstLocationWithDeviation,
+  setAllPagesVisited,
+  cancelCompletion,
 } from "../redux/actions";
 import {
+  allLogicalRulesCheckingProps,
+  logicalRulesCheckingProps,
   selectAnswers,
+  selectAnswersAndUid,
   selectChangePageProps,
   selectCompleteSurveyProps,
   selectLogicValidityData,
@@ -52,6 +64,8 @@ import {
   COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   SAGA_CHANGE_CURRENT_PAGE,
+  SAGA_CHANGE_LOCATION,
+  SEND_ANSWERS,
   SEND_SURVEY_DATA,
   SET_USER_ANSWER,
   START_SURVEY,
@@ -74,8 +88,15 @@ export type IStoredData = {
   surveyID: string;
 };
 
-function* fetchSurveyData() {
-  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams();
+function* fetchSurveyData({
+  correctUid = true,
+}: {
+  type: typeof FETCH_SURVEY_DATA;
+  correctUid?: boolean;
+}) {
+  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams({
+    correctUid: correctUid,
+  });
   const params = {
     surveyID,
     uid,
@@ -85,12 +106,11 @@ function* fetchSurveyData() {
     yield put(setLoading(true));
     const result: IFetchResult = yield call(() => fethData(fetchPath));
     const data = result.data;
-
     yield put(
       setDataAndParams({
         data,
         params,
-        notTheFirstTime,
+        notTheFirstTime: notTheFirstTime && correctUid,
       })
     );
     const { isShowGreetingsPage } = data;
@@ -98,13 +118,28 @@ function* fetchSurveyData() {
 
     yield put(setLoading(false));
     if (needEmediatlyStartSurvey) {
+      // console.log("needEmediatlyStartSurvey");
+      // console.log("correctUid", correctUid);
+
       yield put({ type: START_SURVEY, isContinue: false });
     }
   } catch (e) {
-    console.log("Error fetchSurveyData");
+    const error = e as AxiosError<{ name: string }>;
+    // console.log("Error fetchSurveyData");
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+
+    // console.log("Error fetchSurveyData", message);
+
     yield put(setLoading(false));
-    const error = e as AxiosError;
-    yield put(setError({ status: true, message: error.message }));
+
+    // if (message === "NoCompletion4Uid") {
+    //   yield put({ type: FETCH_SURVEY_DATA, correctUid: false });
+    //   return;
+    // }
+
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -147,12 +182,10 @@ function* sendSurveyData() {
   const { userAnswers } = yield select(selectAnswers);
   const answers = userAnswerParses(userAnswers);
   const path = PATH_NAME + "answers/?uid=" + uid;
-  // console.log("path", path);
-  // console.log("answers", answers);
 
   try {
     yield put(setLoading(true));
-    const result: unknown = yield call(() => sendData(path, answers));
+    yield call(() => sendData(path, answers));
     yield put(setLoading(false));
     // console.log("sendSurveyData success", result);
   } catch (err) {
@@ -160,197 +193,172 @@ function* sendSurveyData() {
   }
 }
 
-function* completeSurvey() {
-  const {
-    uid,
-    userAnswers,
-    location,
-    pages,
-    strictModeNavigation,
-  } = yield select(selectCompleteSurveyProps);
-
-  // проверить все/все посещенные страницы. зависит от strictModeNavigation
-
-  if (!strictModeNavigation) {
-    const currentPage = pages[location.pageIndex];
-    const firstIncompleteQuestion = findFirstIncompleteQuestion(
-      pages,
-      userAnswers
-    );
-    if (firstIncompleteQuestion) {
-      yield put(
-        cancelTransition({ currentPageDocID: String(currentPage.docID) })
-      );
-      return;
-    }
+function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
+  if (!logicalChecking) {
+    return true;
   }
 
-  const answers = userAnswerParses(userAnswers);
-  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
-  const pathComplete = PATH_NAME + "complete/" + uid;
-
-  try {
-    yield put(setLoading(true));
-    const result1: unknown = yield call(() => sendData(pathSendData, answers));
-    const result2: unknown = yield call(() => complete(pathComplete, {}));
-
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: "completion",
-          title: "completion",
-          questionIndex: 0,
-          pageIndex: location.pageIndex,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
-
-    yield put(setLoading(false));
-
-    // console.log("completeSurvey send success", result1);
-    // console.log("completeSurvey complete success", result2);
-  } catch (err) {
-    console.log("error", err);
-  }
-}
-
-function* changeCurrentPage({
-  direction,
-  targetPageID,
-}: {
-  type: typeof SAGA_CHANGE_CURRENT_PAGE;
-  direction: ISlideMoveDirection;
-  targetPageID?: string;
-}) {
-  // если пользователь решил перейти на однц из предыдущих страниц
-  // проверки на дисквалификацию и завершение, а так же валидация ответов не вызываются
-
   const {
-    uid,
-    userAnswers,
-    location,
-    pages,
-    surveyCompletionRuleArr,
-    disqualificationRuleArr,
     dependentPagesDict,
     logicalValidityCheckRuleDict,
-  } = yield select(selectChangePageProps);
+    userAnswers,
+    pageDocID,
+  } = yield select(logicalRulesCheckingProps);
 
-  const answers = userAnswerParses(userAnswers);
-  const path = PATH_NAME + "answers/?uid=" + uid;
-  if (direction === "left-to-right") {
-    try {
-      yield put(setLoading(true));
-      const result: unknown = yield call(() => sendData(path, answers));
-      yield put(setLoading(false));
-      // console.log("sendSurveyData success", result);
-    } catch (err) {
-      console.log("error", err);
-    }
+  const logicCheckingResult = logicalRulesChecking({
+    dependentPagesDict,
+    logicalValidityCheckRuleDict,
+    userAnswers,
+    pageDocID,
+    logicalChecking,
+  });
 
-    yield put(goToThePrevPage({ direction, targetPageID }));
-    return;
-  }
-
-  ///////////////////////////
-  const currentPage = pages[location.pageIndex];
-
-  // валидация страницы
-  const pageValidationResult = !requiredQuestionsChecking(
-    currentPage,
-    userAnswers
-  );
-
-  if (!pageValidationResult) {
+  if (!logicCheckingResult.status) {
     yield put(
-      cancelTransition({ currentPageDocID: String(currentPage.docID) })
+      updateLogicalRyleStatus({
+        values: logicCheckingResult.newLogicalValidityRuleValues,
+      })
     );
-    return;
+    return false;
   }
 
-  /// валидация логической коррекции
+  return true;
+}
 
-  const logicalValidityRuleDocIDs: number[] = dependentPagesDict[
-    String(currentPage.docID)
-  ]
-    ? dependentPagesDict[String(currentPage.docID)]
-    : [];
+function* checkAllPagesLogicalValidity() {
+  const {
+    dependentPagesDict,
+    logicalValidityCheckRuleDict,
+    userAnswers,
+    pages,
+  } = yield select(allLogicalRulesCheckingProps);
+  let findPageWithUnvalidRule = false;
+  let deviationPageIndex = 0;
 
-  const newLogicalValidityRuleValues = logicalValidityRuleDocIDs.reduce(
-    (res, id) => {
-      const logicRule = logicalValidityCheckRuleDict[String(id)].logicRule;
-      return {
-        ...res,
-        [String(id)]: {
-          logicRule: logicRule,
-          status: logicalValidityChecking(userAnswers, logicRule),
-        },
-      };
+  const newLogicalValidityRuleValues = pages.reduce(
+    (res: ILogicalValidityCheckRuleDict, page: IPage, index: number) => {
+      const logicCheckingResult = logicalRulesChecking({
+        dependentPagesDict,
+        logicalValidityCheckRuleDict,
+        userAnswers,
+        pageDocID: page.docID,
+        logicalChecking: true,
+      });
+      if (!logicCheckingResult.status && !findPageWithUnvalidRule) {
+        findPageWithUnvalidRule = true;
+        deviationPageIndex = index;
+      }
+
+      return { ...res, ...logicCheckingResult.newLogicalValidityRuleValues };
     },
     {} as ILogicalValidityCheckRuleDict
   );
 
-  const logicalValidityResult = Object.values(
-    newLogicalValidityRuleValues
-  ).every((rule) => rule.status);
+  yield put(
+    updateLogicalRyleStatus({
+      values: newLogicalValidityRuleValues,
+    })
+  );
 
-  if (!logicalValidityResult) {
-    yield put(
-      updateLogicalRyleStatus({ values: newLogicalValidityRuleValues })
+  return { status: !findPageWithUnvalidRule, deviationPageIndex };
+}
+
+function* completeValidation() {
+  const {
+    userAnswers,
+    pages,
+    surveyCompletionRuleArr,
+    disqualificationRuleArr,
+    strictModeNavigation,
+  } = yield select(selectChangePageProps);
+
+  if (strictModeNavigation) {
+    const result: boolean = yield call(() =>
+      changeLocationValidation("right-to-left")
     );
-    return;
+    return result;
   }
 
-  // проверка на дисквалификацию
   const isDisqualificated = disqualificationRuleArr.some(
     (rule: IDisqualificationRule) =>
       disqualificationRuleChecking(userAnswers, rule)
   );
   if (isDisqualificated) {
-    yield put(setVisitedPageDocID(String(currentPage.docID)));
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: "disqualification",
-          title: "disqualification",
-          questionIndex: 0,
-          pageIndex: location.pageIndex,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
+    yield imediateDisqualification();
+    return false;
   }
 
-  // проверка на complete rule
   const isComplete = surveyCompletionRuleArr.some(
     (rule: ISurveyCompletionRule) => surveyCompletionChecking(userAnswers, rule)
   );
+
   if (isComplete) {
-    yield put(
-      surveyCompletionRuleActive({
-        currentPageDocID: String(currentPage.docID),
-      })
-    );
+    yield imediateCompletion();
+    return false;
   }
 
-  // отправить ответы
-  // const answers = userAnswerParses(userAnswers);
-  // const path = PATH_NAME + "answers/?uid=" + uid;
+  const firstIncompleteQuestion = findFirstIncompleteQuestion(
+    pages,
+    userAnswers
+  );
+  const resultCheckingRules: IResultCheckingRules = yield call(() =>
+    checkAllPagesLogicalValidity()
+  );
 
+  // console.log("resultCheckingRules", resultCheckingRules);
+
+  if (!firstIncompleteQuestion && resultCheckingRules.status) {
+    // console.log("all questions and rules are correct");
+    return true;
+  }
+
+  const firstLocationWithDeviation = getFirstLocationWithDeviation(
+    firstIncompleteQuestion,
+    resultCheckingRules
+  );
+
+  yield put(
+    cancelCompletion({
+      location: firstLocationWithDeviation,
+      modalMessage: { code: 302, type: "completion" },
+    })
+  );
+
+  // yield put(
+  //   setFirstLocationWithDeviation({ location: firstLocationWithDeviation })
+  // );
+  // yield put(setAllPagesVisited());
+
+  // найти первую стр с отклонением
+  // console.log("2");
+
+  return !firstIncompleteQuestion && resultCheckingRules.status;
+}
+
+function* completeSurvey() {
+  // проверить все/все посещенные страницы. зависит от strictModeNavigation
+
+  // проверка
+  const completeValidationResult: boolean = yield call(() =>
+    completeValidation()
+  );
+
+  if (completeValidationResult) {
+    yield imediateCompletion();
+  }
+}
+
+function* sendAnswers() {
+  const { uid, userAnswers } = yield select(selectAnswersAndUid);
+  const answers = userAnswerParses(userAnswers);
+  const path = PATH_NAME + "answers/?uid=" + uid;
   try {
     yield put(setLoading(true));
-    const result: unknown = yield call(() => sendData(path, answers));
+    yield call(() => sendData(path, answers));
     yield put(setLoading(false));
   } catch (err) {
     console.log("error", err);
   }
-
-  if (isComplete || isDisqualificated) {
-    return;
-  }
-
-  yield put(goToTheNextPage({ direction, targetPageID }));
 }
 
 function* setAnswer(payload: {
@@ -383,8 +391,208 @@ function* setAnswer(payload: {
   });
 
   yield put(updateLogicalRyleStatus({ values: result }));
+}
 
-  // update logicalValidityCheckRuleDict
+function* changeLocationValidation(direction: ISlideMoveDirection) {
+  const {
+    userAnswers,
+    location,
+    pages,
+    surveyCompletionRuleArr,
+    disqualificationRuleArr,
+    dependentPagesDict,
+    logicalValidityCheckRuleDict,
+    strictModeNavigation,
+  } = yield select(selectChangePageProps);
+
+  const currentPage = pages[location.pageIndex];
+  const {
+    questionChecking,
+    logicalChecking,
+    disqualificationChecking,
+    completeChecking,
+  } = getCheckingConfig(direction, strictModeNavigation);
+
+  try {
+    // проверка на дисквалификацию
+    const isDisqualificated = disqualificationChecking
+      ? disqualificationRuleArr.some((rule: IDisqualificationRule) =>
+          disqualificationRuleChecking(userAnswers, rule)
+        )
+      : false;
+
+    if (isDisqualificated) {
+      throw { code: 401, type: "disqualification" };
+    }
+
+    // проверка на досрочное завершение
+    const isComplete = completeChecking
+      ? surveyCompletionRuleArr.some((rule: ISurveyCompletionRule) =>
+          surveyCompletionChecking(userAnswers, rule)
+        )
+      : false;
+    if (isComplete) {
+      throw { code: 301, type: "completion" };
+    }
+
+    // валидация обязательных вопросов
+    const questionCheckingResult = pageQuestionChecking({
+      page: currentPage,
+      userAnswers,
+      questionChecking,
+    });
+
+    if (!questionCheckingResult.status) {
+      throw questionCheckingResult.modalMessage;
+    }
+
+    // валидация логической коррекции
+    const logicCheckingResult: boolean = yield call(() =>
+      checkCurrentPageLogicalValidity(logicalChecking)
+    );
+
+    if (!logicCheckingResult) {
+      throw {
+        code: 202,
+        type: "cancelTransition",
+      };
+    }
+  } catch (mm) {
+    // console.log("catch", mm);
+    const modalMessage = mm as IModalMessage;
+    switch (modalMessage.code) {
+      case 201:
+      case 202: {
+        yield put(
+          cancelTransition({
+            currentPageDocID: String(currentPage.docID),
+            modalMessage: modalMessage as IModalMessage,
+          })
+        );
+        return false;
+      }
+
+      case 301: {
+        yield imediateCompletion();
+        return false;
+      }
+
+      case 401: {
+        yield imediateDisqualification();
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function* sagaChangeLocation({
+  targetPageID,
+  direction,
+}: {
+  type: typeof SAGA_CHANGE_LOCATION;
+  direction: ISlideMoveDirection;
+  targetPageID?: string;
+}) {
+  // console.log("sagaChangeLocation");
+  const validationResult: boolean = yield call(() =>
+    changeLocationValidation(direction)
+  );
+
+  if (!validationResult) {
+    return;
+  }
+
+  yield sagaSendData();
+  // const res: boolean = yield call(() => sagaSendData());
+  if (direction === "left-to-right") {
+    yield put(goToThePrevPage({ direction, targetPageID: targetPageID }));
+  } else {
+    yield put(goToTheNextPage({ direction, targetPageID: targetPageID }));
+  }
+}
+
+function* sagaSendData() {
+  // console.log("sagaSendData");
+  const { uid, userAnswers } = yield select(selectChangePageProps);
+
+  const answers = userAnswerParses(userAnswers);
+  const path = PATH_NAME + "answers/?uid=" + uid;
+  try {
+    yield put(setLoading(true));
+    yield call(() => sendData(path, answers));
+    yield put(setLoading(false));
+    // console.log("sendSurveyData success", result);
+  } catch (err) {
+    console.log("error", err);
+  }
+}
+
+function* imediateCompletion() {
+  // console.log("imediateCompletion");
+  const { uid, userAnswers, location } = yield select(
+    selectCompleteSurveyProps
+  );
+
+  const answers = userAnswerParses(userAnswers);
+  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
+  const pathComplete = PATH_NAME + "complete/" + uid;
+
+  try {
+    yield put(setLoading(true));
+    yield call(() => sendData(pathSendData, answers));
+    yield call(() => complete(pathComplete, {}));
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "completion",
+          title: "completion",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
+    // clear localStorage
+    localStorage.clear();
+    yield put(setLoading(false));
+  } catch (err) {
+    console.log("error", err);
+  }
+}
+
+function* imediateDisqualification() {
+  // console.log("imediateDisqualification");
+  const { uid, userAnswers, location } = yield select(
+    selectCompleteSurveyProps
+  );
+
+  const answers = userAnswerParses(userAnswers);
+  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
+  const pathComplete = PATH_NAME + "complete/" + uid;
+
+  try {
+    yield put(setLoading(true));
+    yield call(() => sendData(pathSendData, answers));
+    yield call(() => complete(pathComplete, {}));
+    yield put(
+      changeCurretLocation({
+        location: {
+          pathName: "disqualification",
+          title: "disqualification",
+          questionIndex: 0,
+          pageIndex: location.pageIndex,
+        },
+        slideMoveDirection: "right-to-left",
+      })
+    );
+    localStorage.clear();
+
+    yield put(setLoading(false));
+  } catch (err) {
+    console.log("error", err);
+  }
 }
 
 function* mySaga() {
@@ -392,8 +600,9 @@ function* mySaga() {
   yield takeEvery(START_SURVEY, startSurvey);
   yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
   yield takeEvery(COMPLETE_SURVEY, completeSurvey);
-  yield takeEvery(SAGA_CHANGE_CURRENT_PAGE, changeCurrentPage);
+  yield takeEvery(SAGA_CHANGE_LOCATION, sagaChangeLocation);
   yield takeEvery(SET_USER_ANSWER, setAnswer);
+  yield takeEvery(SEND_ANSWERS, sendAnswers);
 }
 
 export default mySaga;

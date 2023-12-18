@@ -8,6 +8,7 @@ import { modalHeaderWrapperCss, onlyDesctopButtonCss } from "../../../sc";
 import { buttonsWrapperCss } from "../../pages/sc";
 import { IState } from "../../../types";
 import { COMPLETE_SURVEY, START_SURVEY } from "../../../services/redux/types";
+import { goToFirstDeviationPage } from "../../../services/redux/actions";
 
 type IModalContentComponentProps = {
   closeModal: () => void;
@@ -17,14 +18,15 @@ export type IOwnModalContentComponentProps = IModalContentComponentProps &
   ConnectedProps<typeof connector>;
 
 const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
-  modalMessageType,
+  modalMessage,
   closeModal,
   startSurvey,
   continueSurvey,
   completeSurvey,
+  goToQuesions,
 }) => {
-  switch (modalMessageType) {
-    case "greeting": {
+  switch (modalMessage.code) {
+    case 101: {
       return (
         <>
           <ModalHeader>
@@ -65,7 +67,7 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
         </>
       );
     }
-    case "cancelTransition": {
+    case 201: {
       return (
         <>
           <ModalHeader>
@@ -84,8 +86,27 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
         </>
       );
     }
+    case 202: {
+      return (
+        <>
+          <ModalHeader>
+            <div css={modalHeaderWrapperCss}>
+              <span>Отмена</span>
+              <IconButton onClick={() => closeModal()}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </ModalHeader>
+          <ModalContent>
+            <Typography variant="h6">
+              Пожалуйста, проверьте корректность ответов
+            </Typography>
+          </ModalContent>
+        </>
+      );
+    }
 
-    case "completion": {
+    case 301: {
       return (
         <>
           <ModalHeader>
@@ -119,12 +140,88 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
         </>
       );
     }
+    case 302: {
+      return (
+        <>
+          <ModalHeader>
+            <div css={modalHeaderWrapperCss}>
+              <span>Отмена</span>
+            </div>
+          </ModalHeader>
+          <ModalContent>
+            <Typography variant="h6">
+              Пожалуйста, ответьте на все обязательные вопросы
+            </Typography>
+            <div css={buttonsWrapperCss}>
+              <Button
+                key="to_question"
+                variant="outlined"
+                onClick={() => {
+                  goToQuesions();
+                }}
+              >
+                К вопросам
+              </Button>
+              <Button
+                key="continue"
+                variant="contained"
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                Закрыть
+              </Button>
+            </div>
+          </ModalContent>
+        </>
+      );
+    }
+
+    case 303: {
+      return (
+        <>
+          <ModalHeader>
+            <div css={modalHeaderWrapperCss}>
+              <span>Отмена</span>
+            </div>
+          </ModalHeader>
+          <ModalContent>
+            <Typography variant="h6">
+              Пожалуйста, проверьте корректность ответов
+            </Typography>
+            <div style={{ display: "flex", gap: "20px" }}>
+              <Button
+                key="continue"
+                variant="contained"
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                К вопросам
+              </Button>
+              <Button
+                key="continue"
+                variant="contained"
+                onClick={() => {
+                  closeModal();
+                }}
+              >
+                Закрыть
+              </Button>
+            </div>
+          </ModalContent>
+        </>
+      );
+    }
+    case 401: {
+      return null;
+    }
   }
 };
 
 const mapStateToProps = (state: IState) => {
-  const { modalMessageType } = state;
-  return { modalMessageType };
+  const { modalMessage } = state;
+  return { modalMessage };
 };
 
 const mapDispathToProps = (dispatch: Dispatch) => {
@@ -132,6 +229,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     completeSurvey: () => dispatch({ type: COMPLETE_SURVEY }),
+    goToQuesions: () => dispatch(goToFirstDeviationPage()),
   };
 };
 

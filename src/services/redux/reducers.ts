@@ -6,12 +6,12 @@ import {
   DEFAULT_STYLES,
 } from "../../consts/const";
 import { ILocation, IState } from "../../types";
-import {
-  fakePageTransitionRules,
-  fakeRules,
-  fakeRules2,
-  fakeMatrixData,
-} from "../../utils/fakeData";
+// import {
+//   fakePageTransitionRules,
+//   fakeRules,
+//   fakeRules2,
+//   fakeMatrixData,
+// } from "../../utils/fakeData";
 import { pagesParser } from "../../utils/pagesParser";
 import {
   getLogicalValidityCheckRulesByQuestionID,
@@ -44,16 +44,23 @@ import {
   SELECT_SECTION,
   UPDATE_LOGICAL_RULES_STATUS,
   APPROVE_LOGIC_RULE_STATUS,
-  // IS_ERROR,
+  SET_FIRST_LOCATION_WITH_DEVIATION,
+  SET_ALL_PAGES_VISITED,
+  CANCEL_COMPLETION,
+  GO_TO_FIRST_DEVIATION_PAGE,
 } from "./types";
 
 const initialState: IState = {
   loading: false,
   error: { message: "", status: false },
   modalVisible: false,
-  modalMessageType: "greeting",
+  modalMessage: {
+    code: 101,
+    type: "greeting",
+  },
   data: null,
   location: GREETING_PAGE_LOCATION,
+  firstLocationWithDeviation: GREETING_PAGE_LOCATION,
   params: {},
   userAnswers: {},
   slideMoveDirection: DEFAULT_MOVE_DIRECTION,
@@ -152,6 +159,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           slideMoveDirection: "right-to-left",
           needScrolling: true,
           pageMovementLogs,
+          // visitedPageDocIDList: pageMovementLogs,
           modalVisible: true,
           styles,
         };
@@ -240,6 +248,11 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       const currentPageDocID = String(currentPage.docID);
 
       const { direction, targetPageID } = action.payload;
+      // console.log("targetPageID", targetPageID);
+      // console.log("targetPageID", Boolean(targetPageID));
+      // console.log("targetPageID", targetPageID === undefined);
+      // console.log("targetPageID", typeof targetPageID);
+
       if (!strictModeNavigation) {
         const nextPageIndex = targetPageID
           ? pagesDict[targetPageID].order
@@ -278,10 +291,15 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         targetPageTransitionRuleArr,
       });
 
-      const newVisitedPageDocIDList = [
-        ...visitedPageDocIDList,
-        currentPageDocID,
-      ];
+      const newVisitedPageDocIDList = visitedPageDocIDList.includes(
+        currentPageDocID
+      )
+        ? visitedPageDocIDList
+        : [...visitedPageDocIDList, currentPageDocID];
+      // const newVisitedPageDocIDList = [
+      //   ...visitedPageDocIDList,
+      //   currentPageDocID,
+      // ];
 
       if (nextLocation.pathName === "completion") {
         return {
@@ -414,6 +432,16 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     case CHANGE_CURRENT_PAGE: {
       return { ...state, ...action.payload };
     }
+    case GO_TO_FIRST_DEVIATION_PAGE: {
+      const { firstLocationWithDeviation } = state;
+      return {
+        ...state,
+        location: firstLocationWithDeviation,
+        // needScrolling: true,
+        slideMoveDirection: "left-to-right",
+        modalVisible: false,
+      };
+    }
 
     case IS_LOADING: {
       return { ...state, loading: action.payload };
@@ -461,6 +489,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       };
     }
 
+    case SET_FIRST_LOCATION_WITH_DEVIATION: {
+      return {
+        ...state,
+        firstLocationWithDeviation: action.payload.location,
+      };
+    }
+
     case SET_USER_ANSWER: {
       const { questionID } = action.payload;
       return {
@@ -473,7 +508,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     }
 
     case CANCEL_TRANSITION: {
-      const { currentPageDocID } = action.payload;
+      const { currentPageDocID, modalMessage } = action.payload;
 
       return {
         ...state,
@@ -483,7 +518,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           ? state.visitedPageDocIDList
           : [...state.visitedPageDocIDList, currentPageDocID],
         modalVisible: true,
-        modalMessageType: "cancelTransition",
+        modalMessage: modalMessage,
       };
     }
 
@@ -518,6 +553,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           ? state.visitedPageDocIDList
           : [...state.visitedPageDocIDList, action.payload],
       };
+    }
+
+    case SET_ALL_PAGES_VISITED: {
+      const { data } = state;
+      const { pages } = data!;
+      const new_visitedPageDocIDList = pages.map((page) => String(page.docID));
+      return { ...state, visitedPageDocIDList: new_visitedPageDocIDList };
     }
 
     case DELETE_USER_ANSWERS: {
@@ -560,6 +602,20 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       };
     }
 
+    case CANCEL_COMPLETION: {
+      const { location, modalMessage } = action.payload;
+      const { data } = state;
+      const { pages } = data!;
+      const new_visitedPageDocIDList = pages.map((page) => String(page.docID));
+
+      return {
+        ...state,
+        visitedPageDocIDList: new_visitedPageDocIDList,
+        firstLocationWithDeviation: location,
+        modalVisible: true,
+        modalMessage: modalMessage,
+      };
+    }
     default: {
       return { ...state };
     }

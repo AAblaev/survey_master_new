@@ -19,6 +19,7 @@ type IMatixCellProps = {
   title: string;
   isMultiline: boolean;
   simpleType: ISimpleType;
+  mobileTabularView: boolean;
 };
 
 type ITextFieldCellProps = {
@@ -28,6 +29,7 @@ type ITextFieldCellProps = {
   title: string;
   isMultiline: boolean;
   value?: IValue;
+  mobileTabularView: boolean;
 };
 
 type IBoolCellProps = {
@@ -36,6 +38,7 @@ type IBoolCellProps = {
   columnDocID: number;
   handleClick: (rowDocID: number, columnDocID: number) => void;
   title: string;
+  mobileTabularView: boolean;
 };
 
 const MatrixCell: React.FC<IMatixCellProps> = ({
@@ -47,6 +50,7 @@ const MatrixCell: React.FC<IMatixCellProps> = ({
   value,
   isMultiline,
   simpleType,
+  mobileTabularView,
 }) => {
   if (simpleType === "boolean") {
     const isChecked = Boolean(value) && value?.value === "1";
@@ -57,6 +61,7 @@ const MatrixCell: React.FC<IMatixCellProps> = ({
         handleClick={handleClick}
         title={title}
         isChecked={isChecked}
+        mobileTabularView={mobileTabularView}
       />
     );
   }
@@ -69,6 +74,7 @@ const MatrixCell: React.FC<IMatixCellProps> = ({
       title={title}
       handleBlur={handleBlur}
       value={value}
+      mobileTabularView={mobileTabularView}
     />
   );
 };
@@ -79,10 +85,11 @@ const BoolCell: React.FC<IBoolCellProps> = ({
   rowDocID,
   columnDocID,
   title,
+  mobileTabularView,
 }) => {
   return (
     <div
-      css={tdCss(isChecked, title)}
+      css={tdCss(mobileTabularView, isChecked, title)}
       onClick={() => handleClick(rowDocID, columnDocID)}
     >
       <GreenRadio checked={isChecked} />
@@ -97,6 +104,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
   title,
   value,
   isMultiline,
+  mobileTabularView,
 }) => {
   const storeTextValue = value ? value.value : "";
   const [textValue, setTextValue] = useState(storeTextValue);
@@ -108,7 +116,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
   }, [storeTextValue]);
   return (
     <div css={gridTextFieldCellCss}>
-      <div css={titleTextFieldCellCss}>{title}</div>
+      <div css={titleTextFieldCellCss(mobileTabularView)}>{title}</div>
       <Tooltip title={!isValid ? validationMessage : ""}>
         <TextField
           InputProps={{

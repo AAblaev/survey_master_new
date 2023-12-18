@@ -11,7 +11,7 @@ export const PATH_NAME_II = __IS_PROD_BUNDLE_MODE__
   ? document.location.origin + document.location.pathname + "api/survey/"
   : PATH_NAME_FOR_DEV_II;
 
-export const DEFAULT_SURVEY_ID = "1";
+export const DEFAULT_SURVEY_ID = "";
 
 type IGetPathName = (payload: {
   basePath: string;
@@ -20,6 +20,7 @@ type IGetPathName = (payload: {
   prevSurveyID: string;
   prevUid: string;
   isNewAPI: boolean;
+  correctUid: boolean;
 }) => string;
 
 export const getPathName: IGetPathName = ({
@@ -29,9 +30,12 @@ export const getPathName: IGetPathName = ({
   prevSurveyID,
   prevUid,
   isNewAPI,
+  correctUid,
 }) => {
   if (isNewAPI) {
-    if (uidFromURL) {
+    // console.log("isNewAPI");
+
+    if (uidFromURL && correctUid) {
       // console.log("uidFromURL");
       return `${basePath}${surveyIDfromURL}?uid=${uidFromURL}`;
     }
@@ -39,13 +43,16 @@ export const getPathName: IGetPathName = ({
     if (
       prevSurveyID &&
       prevUid &&
-      String(surveyIDfromURL) === String(prevSurveyID)
+      String(surveyIDfromURL) === String(prevSurveyID) &&
+      correctUid
     ) {
       return `${basePath}${surveyIDfromURL}?uid=${prevUid}`;
     }
 
     return `${basePath}${surveyIDfromURL}`;
   }
+
+  // console.log("oldApi");
 
   if (!surveyIDfromURL) {
     return `${basePath}${DEFAULT_SURVEY_ID}`;
