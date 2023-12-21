@@ -1,7 +1,13 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import MatrixCell from "./MatrixCell";
-import { IAnswer, IQuestion, ISimpleType, IValue } from "../../../../types";
+import {
+  IAnswer,
+  IQuestion,
+  ISimpleType,
+  IStyles,
+  IValue,
+} from "../../../../types";
 import {
   tableHeaderCellCss,
   wrapperCss,
@@ -22,6 +28,7 @@ type IMatrixViewProps = {
   setAnswer: (answer: IAnswer) => void;
   userAnswer: IAnswer;
   validation: (question: IQuestion) => void;
+  questionStyles: IStyles["componentsStyle"]["question"];
 };
 
 type IValuesDict = { [key: string]: IValue };
@@ -30,19 +37,24 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
   question,
   setAnswer,
   userAnswer,
+  questionStyles,
 }) => {
+  const firstColumnWidth = questionStyles.table.firstColumnWidth
+    ? questionStyles.table.firstColumnWidth
+    : 250;
+
   const { docID, config } = question;
   const {
     isLimited,
     isLimitedValue,
     limit,
     limitValue,
-    // isChooseManyInrow,
-    // isChooseManyIncol,
+    isChooseManyInrow,
+    isChooseManyIncol,
     mobileTabularView = true,
   } = config;
-  const isChooseManyInrow = true;
-  const isChooseManyIncol = true;
+  // const isChooseManyInrow = true;
+  // const isChooseManyIncol = true;
   // const mobileTabularView = false;
   const simpleType = config.simpleType as ISimpleType;
   const showHoverEffect = simpleType === "boolean";
@@ -159,7 +171,7 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
           <table css={new_tableCss(mobileTabularView)}>
             <thead css={new_theadCss(mobileTabularView)}>
               <tr css={new_headerRowCss}>
-                <th css={new_headerFirstColumnCellCss(250)}></th>
+                <th css={new_headerFirstColumnCellCss(firstColumnWidth)}></th>
                 {columns.map((option) => (
                   <th css={tableHeaderCellCss} key={option.docID}>
                     {option.title}
@@ -173,7 +185,9 @@ const MatrixView: React.FC<IMatrixViewProps> = ({
                   key={rowIndex}
                   css={trCss(mobileTabularView, showHoverEffect)}
                 >
-                  <th css={new_tableFirstColumnCellCss}>{row.title}</th>
+                  <th css={new_tableFirstColumnCellCss(firstColumnWidth)}>
+                    {row.title}
+                  </th>
 
                   {columns.map((col, colIndex) => (
                     <td

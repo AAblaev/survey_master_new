@@ -125,20 +125,10 @@ function* fetchSurveyData({
     }
   } catch (e) {
     const error = e as AxiosError<{ name: string }>;
-    // console.log("Error fetchSurveyData");
     const message = error?.response?.data?.name
       ? error.response.data.name
       : error.message;
-
-    // console.log("Error fetchSurveyData", message);
-
     yield put(setLoading(false));
-
-    // if (message === "NoCompletion4Uid") {
-    //   yield put({ type: FETCH_SURVEY_DATA, correctUid: false });
-    //   return;
-    // }
-
     yield put(setError({ status: true, message: message }));
   }
 }
@@ -172,8 +162,13 @@ function* startSurvey({
     );
     yield put(setLoading(false));
     // console.log("startSurvey success", result);
-  } catch (err) {
-    console.log("error", err);
+  } catch (e) {
+    const error = e as AxiosError<{ name: string }>;
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+    yield put(setLoading(false));
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -188,8 +183,13 @@ function* sendSurveyData() {
     yield call(() => sendData(path, answers));
     yield put(setLoading(false));
     // console.log("sendSurveyData success", result);
-  } catch (err) {
-    console.log("error", err);
+  } catch (e) {
+    const error = e as AxiosError<{ name: string }>;
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+    yield put(setLoading(false));
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -356,8 +356,13 @@ function* sendAnswers() {
     yield put(setLoading(true));
     yield call(() => sendData(path, answers));
     yield put(setLoading(false));
-  } catch (err) {
-    console.log("error", err);
+  } catch (e) {
+    const error = e as AxiosError<{ name: string }>;
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+    yield put(setLoading(false));
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -524,8 +529,13 @@ function* sagaSendData() {
     yield call(() => sendData(path, answers));
     yield put(setLoading(false));
     // console.log("sendSurveyData success", result);
-  } catch (err) {
-    console.log("error", err);
+  } catch (e) {
+    const error = e as AxiosError<{ name: string }>;
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+    yield put(setLoading(false));
+    yield put(setError({ status: true, message: message }));
   }
 }
 
@@ -557,8 +567,13 @@ function* imediateCompletion() {
     // clear localStorage
     localStorage.clear();
     yield put(setLoading(false));
-  } catch (err) {
-    console.log("error", err);
+  } catch (e) {
+    const error = e as AxiosError<{ name: string }>;
+    const message = error?.response?.data?.name
+      ? error.response.data.name
+      : error.message;
+    yield put(setLoading(false));
+    yield put(setError({ status: true, message: message }));
   }
 }
 

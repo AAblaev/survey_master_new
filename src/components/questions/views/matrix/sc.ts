@@ -372,12 +372,12 @@ export const trCss = (
   ${!mobileTabularView && onlyDesctopTRow(showHoverEffect)}
 `;
 
-export const new_tableFirstColumnCellCss = css`
+export const new_tableFirstColumnCellCss = (firstColumnWidth: number) => css`
   display: table-cell;
   vertical-align: inherit;
   font-weight: bold;
   text-align: -internal-center;
-
+  width: ${firstColumnWidth}px;
   color: inherit;
   display: table-cell;
   padding: 16px;

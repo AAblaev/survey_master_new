@@ -264,6 +264,7 @@ const Question: React.FC<IQuestionProps> = ({
               setAnswer={setAnswer}
               needCorrect={needCorrect}
               validation={validation}
+              questionStyles={questionStyles}
             />
           ) : (
             <div>Данного типа вопроса нет {questionType}</div>
