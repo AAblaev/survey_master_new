@@ -64,7 +64,10 @@ export const questionValidation = (
   return (
     userAnswers.hasOwnProperty(question.docID) &&
     userAnswers[question.docID].values.length > 0 &&
-    !userAnswers[question.docID].values.some((v) => !v.validationResult.isValid)
+    !userAnswers[question.docID].values.some(
+      (v) => !v.validationResult.isValid
+    ) &&
+    requiredRowsEndColumnsChecking(question, userAnswers[question.docID].values)
   );
 };
 
@@ -78,6 +81,7 @@ export const findFirstIncompleteQuestion = (
       const question = page.questions[j];
       const isRequiredAndNotAnswer =
         question.isRequired && !questionValidation(question, userAnswers);
+
       if (isRequiredAndNotAnswer) {
         return { pageIndex: i, questionIndex: j, pageID: page.docID };
       }

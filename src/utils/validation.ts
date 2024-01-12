@@ -239,6 +239,7 @@ const countUniqueValues = (
   field: string,
   value: number = 1
 ) => {
+  console.log("value", value);
   const uniqueValuesSet = new Set();
   for (const obj of objects) {
     const value = obj[field];

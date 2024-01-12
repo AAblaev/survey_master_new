@@ -52,7 +52,7 @@ export const ruleParser = (
           ...res,
           visiblityRulesDict: {
             ...res.visiblityRulesDict,
-            [String(rule.questionID)]: rule,
+            [String(rule.visibleQuestionID)]: rule,
           },
         };
       }
@@ -129,49 +129,54 @@ export const ruleParser = (
 
 const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
   // проверить isValid
-  if (event.type === "answeredQuestion") {
-    return (
+  // console.log(event.type);
+
+  const { type, reverseCondition } = event;
+
+  if (type === "answeredQuestion") {
+    const result =
       !!userAnswers[event.questionID] &&
       userAnswers[event.questionID].values.length !== 0 &&
       userAnswers[event.questionID].values[0].value !== "" &&
       !userAnswers[event.questionID].values[0].isFocused &&
-      userAnswers[event.questionID].values[0].optionID !== EXTRA_ANSWER.UNABLE
-    );
+      userAnswers[event.questionID].values[0].optionID !== EXTRA_ANSWER.UNABLE;
+    return reverseCondition ? result : !result;
   }
-  if (event.type === "skippedQuestion") {
-    return (
+  if (type === "skippedQuestion") {
+    const result =
       !userAnswers[event.questionID] ||
       (!!userAnswers[event.questionID] &&
-        userAnswers[event.questionID].values.length === 0)
-    );
+        userAnswers[event.questionID].values.length === 0);
+
+    return reverseCondition ? result : !result;
   }
-  if (event.type === "struggledToAnswer") {
-    return (
+  if (type === "struggledToAnswer") {
+    const result =
       !!userAnswers[event.questionID] &&
       userAnswers[event.questionID].values.some(
         (v) => v.optionID === EXTRA_ANSWER.UNABLE
-      )
-    );
+      );
+    return reverseCondition ? result : !result;
   }
-  if (event.type === "selectedOption") {
-    return (
+  if (type === "selectedOption") {
+    const result =
       !!userAnswers[event.questionID] &&
       userAnswers[event.questionID].values.some(
         (v) =>
-          (v.optionID !== 0 && v.optionID === event.optionID) ||
+          (v.optionID !== 0 && v.optionID === event.dimention0) ||
           (!!v.dimension0 &&
             !!v.dimension1 &&
             v.dimension0 === String(event.dimention0) &&
             v.dimension1 === String(event.dimention1))
-      )
-    );
+      );
+    return reverseCondition ? result : !result;
   }
-  if (event.type === "formula") {
+  if (type === "formula") {
     const { variables } = event.formula;
     if (
       variables.some(
         (v) =>
-          !userAnswers[v.value.questionID] ||
+          (event.reverseCondition && !userAnswers[v.value.questionID]) ||
           (!!userAnswers[v.value.questionID] &&
             userAnswers[v.value.questionID].values.length === 0) ||
           (!!userAnswers[v.value.questionID] &&
@@ -182,8 +187,21 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
       // console.log("не все значения");
       return false;
     }
+    const result = compareExpressions(event.formula, userAnswers);
+    return reverseCondition ? result : !result;
+  }
 
-    return compareExpressions(event.formula, userAnswers);
+  if (type === "grouped") {
+    const { eventOperator, events } = event;
+    if (events.length === 0) {
+      return true;
+    }
+    if (eventOperator === "AND" || eventOperator === null) {
+      return events.every((event) => eventChecking(event, userAnswers));
+    }
+    if (eventOperator === "OR") {
+      return events.some((event) => eventChecking(event, userAnswers));
+    }
   }
   return true;
 };
@@ -192,6 +210,7 @@ export const logicalEventChecking = (
   event: IEvent,
   userAnswers: IUserAnswer
 ): boolean => {
+  console.log("logicalEventChecking");
   if (event.type === "answeredQuestion") {
     return (
       !!userAnswers[event.questionID] &&
@@ -231,6 +250,7 @@ export const logicalEventChecking = (
   }
   if (event.type === "formula") {
     const { variables } = event.formula;
+    console.log("variables");
     if (
       variables.some(
         (v) =>
@@ -252,6 +272,18 @@ export const logicalEventChecking = (
 
     return compareExpressions(event.formula, userAnswers);
   }
+  if (event.type === "grouped") {
+    const { eventOperator, events } = event;
+    if (events.length === 0) {
+      return true;
+    }
+    if (eventOperator === "AND" || eventOperator === null) {
+      return events.every((event) => logicalEventChecking(event, userAnswers));
+    }
+    if (eventOperator === "OR") {
+      return events.some((event) => logicalEventChecking(event, userAnswers));
+    }
+  }
   return true;
 };
 
@@ -259,16 +291,22 @@ export const logicalValidityChecking = (
   userAnswers: IUserAnswer,
   rule: ILogicalValidityCheckRule
 ) => {
-  const { events } = rule;
-  const operator = events[0].eventOperator;
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => logicalEventChecking(event, userAnswers));
-  }
-  if (operator === "OR") {
-    return events.some((event) => logicalEventChecking(event, userAnswers));
-  }
+  const { rootEvent } = rule;
+  // const operator = events[0].eventOperator;
 
-  return true;
+  return logicalEventChecking(rootEvent, userAnswers);
+
+  //
+  // const { events } = rule;
+  // const operator = events[0].eventOperator;
+  // if (operator === "AND" || operator === null) {
+  //   return events.every((event) => logicalEventChecking(event, userAnswers));
+  // }
+  // if (operator === "OR") {
+  //   return events.some((event) => logicalEventChecking(event, userAnswers));
+  // }
+  //
+  // return true;
 };
 
 export const visibleChecking = (
@@ -277,17 +315,25 @@ export const visibleChecking = (
 ): boolean => {
   if (!rule) return true;
 
-  const { events } = rule;
-  const operator = events[0].eventOperator;
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => eventChecking(event, userAnswers));
-  }
-  if (operator === "OR") {
-    return events.some((event) => eventChecking(event, userAnswers));
-  }
+  const { rootEvent } = rule;
+  // const operator = events[0].eventOperator;
 
-  return true;
+  return eventChecking(rootEvent, userAnswers);
+  // const { events } = rule;
+  // const operator = events[0].eventOperator;
+  // if (operator === "AND" || operator === null) {
+  //   return events.every((event) => eventChecking(event, userAnswers));
+  // }
+  // if (operator === "OR") {
+  //   return events.some((event) => eventChecking(event, userAnswers));
+  // }
+  //
+  // return true;
 };
+
+function removeQuotes(input: string): string {
+  return input.replace(/['"]/g, "");
+}
 
 const compareExpressions = (formula: IFormula, userAnswers: IUserAnswer) => {
   const { expressionFirst, expressionSecond, operator, variables } = formula;
@@ -297,16 +343,19 @@ const compareExpressions = (formula: IFormula, userAnswers: IUserAnswer) => {
       userAnswers[variable.value.questionID].values[0].value
     );
   }
-
+  // console.log("variableValues", variableValues);
   // Заменяем переменные в выражениях на их значения
   const replacedExpressionFirst = replaceVariables(
-    expressionFirst,
+    removeQuotes(expressionFirst),
     variableValues
   );
   const replacedExpressionSecond = replaceVariables(
-    expressionSecond,
+    removeQuotes(expressionSecond),
     variableValues
   );
+  // console.log("replacedExpressionFirst", replacedExpressionFirst);
+  // console.log("replacedExpressionSecond", replacedExpressionSecond);
+  // console.log("operator", operator);
 
   // Выполняем сравнение с учетом оператора
   switch (operator) {
@@ -316,8 +365,14 @@ const compareExpressions = (formula: IFormula, userAnswers: IUserAnswer) => {
       return eval(replacedExpressionFirst) > eval(replacedExpressionSecond);
     case "<>":
       return eval(replacedExpressionFirst) !== eval(replacedExpressionSecond);
-    case "=":
+    case "=": {
+      // console.log("=");
+      // console.log(
+      //   eval(replacedExpressionFirst) === eval(replacedExpressionSecond)
+      // );
+
       return eval(replacedExpressionFirst) === eval(replacedExpressionSecond);
+    }
     default:
       throw new Error("Недопустимый оператор");
   }
@@ -342,51 +397,63 @@ export const pageTransitionRuleChecking = (
   userAnswers: IUserAnswer,
   rule: IPageTransitionRule
 ): boolean => {
-  const { events } = rule;
-  const operator = events[0].eventOperator;
+  const { rootEvent } = rule;
+  // const operator = events[0].eventOperator;
 
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => eventChecking(event, userAnswers));
-  }
-  if (operator === "OR") {
-    return events.some((event) => eventChecking(event, userAnswers));
-  }
-
-  return false;
+  return eventChecking(rootEvent, userAnswers);
+  // const { events } = rule;
+  // const operator = events[0].eventOperator;
+  //
+  // if (operator === "AND" || operator === null) {
+  //   return events.every((event) => eventChecking(event, userAnswers));
+  // }
+  // if (operator === "OR") {
+  //   return events.some((event) => eventChecking(event, userAnswers));
+  // }
+  //
+  // return false;
 };
 
 export const disqualificationRuleChecking = (
   userAnswers: IUserAnswer,
   rule: IDisqualificationRule
 ): boolean => {
-  const { events } = rule;
-  const operator = events[0].eventOperator;
+  const { rootEvent } = rule;
+  // const operator = events[0].eventOperator;
 
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => eventChecking(event, userAnswers));
-  }
-  if (operator === "OR") {
-    return events.some((event) => eventChecking(event, userAnswers));
-  }
+  // console.log("disqualificationRuleChecking");
 
-  return false;
+  return eventChecking(rootEvent, userAnswers);
+  // const { events } = rule;
+  // const operator = events[0].eventOperator;
+  //
+  // if (operator === "AND" || operator === null) {
+  //   return events.every((event) => eventChecking(event, userAnswers));
+  // }
+  // if (operator === "OR") {
+  //   return events.some((event) => eventChecking(event, userAnswers));
+  // }
+  //
+  // return false;
 };
 
 export const surveyCompletionChecking = (
   userAnswers: IUserAnswer,
   rule: ISurveyCompletionRule
 ): boolean => {
-  const { events } = rule;
-  const operator = events[0].eventOperator;
+  const { rootEvent } = rule;
+  // const operator = events[0].eventOperator;
 
-  if (operator === "AND" || operator === null) {
-    return events.every((event) => eventChecking(event, userAnswers));
-  }
-  if (operator === "OR") {
-    return events.some((event) => eventChecking(event, userAnswers));
-  }
+  return eventChecking(rootEvent, userAnswers);
 
-  return false;
+  // if (operator === "AND" || operator === null) {
+  //   return events.every((event) => eventChecking(event, userAnswers));
+  // }
+  // if (operator === "OR") {
+  //   return events.some((event) => eventChecking(event, userAnswers));
+  // }
+
+  // return false;
 };
 
 export const firstPageLocation: ILocation = {
@@ -629,45 +696,81 @@ export const getLogicalValidityCheckRulesByQuestionID = (
   const questionIDToDocIDs: { [key: string]: number[] } = {};
   const pageIDToDocIDs: { [key: string]: number[] } = {};
 
+  function processEvents(
+    events: IEvent[] | undefined,
+    rule: ILogicalValidityCheckRule
+  ) {
+    if (!events) return;
+
+    events.forEach((event) => {
+      if ("questionID" in event) {
+        const questionID = event.questionID;
+
+        if (!questionIDToDocIDs[questionID]) {
+          questionIDToDocIDs[questionID] = [];
+        }
+        questionIDToDocIDs[questionID].push(rule.docID);
+      }
+
+      if (event.type === "grouped") {
+        processEvents(event.events, rule);
+      }
+
+      if (event.type === "formula" && event.formula.variables) {
+        event.formula.variables.forEach((variable) => {
+          const formulaQuestionID = variable.value.questionID;
+
+          if (!questionIDToDocIDs[formulaQuestionID]) {
+            questionIDToDocIDs[formulaQuestionID] = [];
+          }
+          questionIDToDocIDs[formulaQuestionID].push(rule.docID);
+        });
+      }
+    });
+  }
+
   // Проходим по всем правилам
   rules.forEach((rule) => {
+    const { docID, pageID, rootEvent } = rule;
     const pageIDStr = String(rule.pageID);
     if (!pageIDToDocIDs[pageIDStr]) {
       pageIDToDocIDs[pageIDStr] = [];
     }
     pageIDToDocIDs[pageIDStr].push(rule.docID);
 
+    processEvents([rootEvent], rule);
+
     // Проходим по событиям внутри правила
-    rule.events.forEach((event) => {
-      let questionIDs: number[] = [];
+    // rule.events.forEach((event) => {
+    //   let questionIDs: number[] = [];
+    //
+    //   if (event.type === "answeredQuestion") {
+    //     questionIDs.push((event as IAnsweredQuestionEvent).questionID);
+    //   } else if (event.type === "skippedQuestion") {
+    //     questionIDs.push((event as ISkippedQuestionEvent).questionID);
+    //   } else if (event.type === "selectedOption") {
+    //     questionIDs.push((event as ISelectedOptionEvent).questionID);
+    //   } else if (event.type === "struggledToAnswer") {
+    //     questionIDs.push((event as IStruggledToAnswerEvent).questionID);
+    //   } else if (event.type === "formula") {
+    //     // Проверяем, есть ли questionID в value формулы и добавляем его, если есть
+    //     const formulaEvent = event as IFormulaEvent;
+    //     formulaEvent.formula.variables.forEach((variable) => {
+    //       if (variable.value.questionID !== undefined) {
+    //         questionIDs.push(variable.value.questionID);
+    //       }
+    //     });
+    //   }
 
-      if (event.type === "answeredQuestion") {
-        questionIDs.push((event as IAnsweredQuestionEvent).questionID);
-      } else if (event.type === "skippedQuestion") {
-        questionIDs.push((event as ISkippedQuestionEvent).questionID);
-      } else if (event.type === "selectedOption") {
-        questionIDs.push((event as ISelectedOptionEvent).questionID);
-      } else if (event.type === "struggledToAnswer") {
-        questionIDs.push((event as IStruggledToAnswerEvent).questionID);
-      } else if (event.type === "formula") {
-        // Проверяем, есть ли questionID в value формулы и добавляем его, если есть
-        const formulaEvent = event as IFormulaEvent;
-        formulaEvent.formula.variables.forEach((variable) => {
-          if (variable.value.questionID !== undefined) {
-            questionIDs.push(variable.value.questionID);
-          }
-        });
-      }
-
-      // Добавляем найденные questionID к соответствующим правилам
-      questionIDs.forEach((questionID) => {
-        const questionIDStr = String(questionID);
-        if (!questionIDToDocIDs[questionIDStr]) {
-          questionIDToDocIDs[questionIDStr] = [];
-        }
-        questionIDToDocIDs[questionIDStr].push(rule.docID);
-      });
-    });
+    // Добавляем найденные questionID к соответствующим правилам
+    // questionIDs.forEach((questionID) => {
+    //   const questionIDStr = String(questionID);
+    //   if (!questionIDToDocIDs[questionIDStr]) {
+    //     questionIDToDocIDs[questionIDStr] = [];
+    //   }
+    //   questionIDToDocIDs[questionIDStr].push(rule.docID);
+    // });
+    // });
   });
 
   return {

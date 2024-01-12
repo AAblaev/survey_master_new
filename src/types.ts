@@ -222,12 +222,14 @@ export type IEventType =
   | "skippedQuestion"
   | "selectedOption"
   | "struggledToAnswer"
-  | "formula";
+  | "formula"
+  | "grouped";
 
 export interface IBaseEvent {
   docID: number;
   eventOperator: "AND" | "OR" | null;
   type: IEventType;
+  reverseCondition: boolean;
 }
 
 export type IEvent =
@@ -235,10 +237,15 @@ export type IEvent =
   | ISkippedQuestionEvent
   | ISelectedOptionEvent
   | IStruggledToAnswerEvent
-  | IFormulaEvent;
+  | IFormulaEvent
+  | IGroupedQuestionEvent;
 
 // 'answeredQuestionEvent'|'skippedQuestionEvent'|'selectedOptionEvent'|'struggledToAnswerEvent'|'formulaEvent'
 
+export interface IGroupedQuestionEvent extends IBaseEvent {
+  type: "grouped";
+  events: IEvent[];
+}
 export interface IAnsweredQuestionEvent extends IBaseEvent {
   type: "answeredQuestion";
   questionID: number;
@@ -285,7 +292,7 @@ export type IVariable = {
 export interface IBaseRule {
   docID: number;
   title: string;
-  events: IEvent[];
+  rootEvent: IEvent;
   type:
     | "pageTransitionRule"
     | "surveyCompletionRule"
@@ -308,6 +315,7 @@ export interface IDisqualificationRule extends IBaseRule {
 export interface IVisibilityQuestionRule extends IBaseRule {
   type: "visibilityQuestionRule";
   questionID: number;
+  visibleQuestionID: number;
 }
 export interface ILogicalValidityCheckRule extends IBaseRule {
   type: "logicalValidityCheckRule";

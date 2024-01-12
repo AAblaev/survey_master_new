@@ -216,6 +216,13 @@ const Question: React.FC<IQuestionProps> = ({
         </div>
       </div>
 
+      {hasComment && (
+        <div
+          css={commentCss(disabled)}
+          dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
+        ></div>
+      )}
+
       {(isLimited || isLimitedValue) && (
         <div css={limitMessageWrapperCss}>
           {isLimited && (
@@ -230,13 +237,6 @@ const Question: React.FC<IQuestionProps> = ({
             </span>
           )}
         </div>
-      )}
-
-      {hasComment && (
-        <div
-          css={commentCss(disabled)}
-          dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
-        ></div>
       )}
       <div
         css={cardCss(
@@ -325,9 +325,11 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
   );
 
   const checkingResultArr = dependentQuestionsDict[String(docID)]
-    ? dependentQuestionsDict[String(docID)].map(
-        (ruleDocID) => logicalValidityCheckRuleDict[ruleDocID].status
-      )
+    ? dependentQuestionsDict[String(docID)].map((ruleDocID) => {
+        // console.log(logicalValidityCheckRuleDict[ruleDocID]);
+
+        return logicalValidityCheckRuleDict[ruleDocID].status;
+      })
     : [];
 
   const isLogicalValiditySuccess = checkingResultArr.every((status) => status);

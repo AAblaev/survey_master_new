@@ -194,6 +194,7 @@ function* sendSurveyData() {
 }
 
 function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
+  // console.log("checkCurrentPageLogicalValidity");
   if (!logicalChecking) {
     return true;
   }
@@ -382,8 +383,9 @@ function* setAnswer(payload: {
   } = yield select(selectLogicValidityData);
 
   const dependentRulsID = dependentQuestionsDict[questionID];
-
+  // console.log("asdasd");
   if (!dependentRulsID) return;
+  // console.log("asdasd11");
 
   const result: ILogicalValidityCheckRuleDict = {};
   dependentRulsID.forEach((id) => {
