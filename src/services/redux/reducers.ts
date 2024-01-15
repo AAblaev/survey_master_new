@@ -124,7 +124,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       const strictModeNavigation =
         !isShowButtonBack ||
         !isShowPageList ||
-        Object.keys(pageTransitionRuleDict).length > 0;
+        Object.keys(pageTransitionRuleDict).length > 0 ||
+        surveyCompletionRuleArr.length > 0;
       // const styles = DEFAULT_STYLES;
 
       // console.log("strictModeNavigation", strictModeNavigation);
