@@ -40,6 +40,7 @@ const Switcher: React.FC<ISwitcherProps> = ({
   pageTitle,
   showFinishBtn,
   completeSurvey,
+  strictModeNavigation,
 }) => {
   if (isEmptyData) {
     return null;
@@ -47,7 +48,12 @@ const Switcher: React.FC<ISwitcherProps> = ({
 
   const { pageIndex } = location;
   // const showBackBtn = !(!isShowPageList && pageIndex === 0);
-  const showBackBtn = isShowButtonBack && !(!isShowPageList && pageIndex === 0);
+  const showBackBtn =
+    isShowButtonBack &&
+    !(
+      (!isShowPageList && pageIndex === 0) ||
+      (strictModeNavigation && pageIndex === 0)
+    );
   const showNavList = isShowButtonBack && pageList.length > 1;
   const firstPageDocID = String(pages[0].docID);
 
@@ -193,6 +199,7 @@ const mapStateToProps = (state: IState) => {
     ? `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`
     : `Страница ${location.pageIndex + 1}`;
 
+  // console.log("strictModeNavigation", strictModeNavigation);
   return {
     isEmptyData,
     userAnswers,
@@ -211,6 +218,7 @@ const mapStateToProps = (state: IState) => {
     showFinishBtn,
     pageList,
     pageTitle,
+    strictModeNavigation,
   };
 };
 

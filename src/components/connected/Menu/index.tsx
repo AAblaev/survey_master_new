@@ -218,7 +218,7 @@ const mapStateToProps = (state: IState) => {
     buttonNextCaption,
     buttonBackCaption,
     buttonFinishCaption,
-    isShowPageList: isShowPageList && isShowButtonBack,
+    isShowPageList: isShowPageList && isShowButtonBack && !strictModeNavigation,
     pages,
     pagesCount,
     surveyID,

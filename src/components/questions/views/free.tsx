@@ -51,6 +51,10 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
     ) {
       return;
     }
+
+    const isValid =
+      userAnswerExist && userAnswer.values[0].validationResult.isValid;
+
     setAnswer({
       questionID: docID,
       values: [
@@ -58,13 +62,15 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
           value,
           optionID: 0,
           isFocused: true,
-          validationResult: { isValid: false, message: "ошибка" },
+          validationResult: { isValid: isValid, message: "ошибка" },
         },
       ],
     });
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const isValid =
+      userAnswerExist && userAnswer.values[0].validationResult.isValid;
     setAnswer({
       questionID: docID,
       values: [
@@ -72,7 +78,7 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
           value: value,
           optionID: 0,
           isFocused: true,
-          validationResult: { isValid: false, message: "ошибка" },
+          validationResult: { isValid: isValid, message: "ошибка" },
         },
       ],
     });

@@ -137,8 +137,9 @@ const eventChecking = (event: IEvent, userAnswers: IUserAnswer): boolean => {
     const result =
       !!userAnswers[event.questionID] &&
       userAnswers[event.questionID].values.length !== 0 &&
-      userAnswers[event.questionID].values[0].value !== "" &&
-      !userAnswers[event.questionID].values[0].isFocused &&
+      // userAnswers[event.questionID].values[0].value !== "" &&
+      userAnswers[event.questionID].values[0].validationResult.isValid &&
+      // !userAnswers[event.questionID].values[0].isFocused &&
       userAnswers[event.questionID].values[0].optionID !== EXTRA_ANSWER.UNABLE;
     return reverseCondition ? result : !result;
   }
@@ -210,7 +211,7 @@ export const logicalEventChecking = (
   event: IEvent,
   userAnswers: IUserAnswer
 ): boolean => {
-  console.log("logicalEventChecking");
+  // console.log("logicalEventChecking");
   if (event.type === "answeredQuestion") {
     return (
       !!userAnswers[event.questionID] &&
@@ -250,7 +251,7 @@ export const logicalEventChecking = (
   }
   if (event.type === "formula") {
     const { variables } = event.formula;
-    console.log("variables");
+    // console.log("variables");
     if (
       variables.some(
         (v) =>
@@ -582,31 +583,6 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
   const pageMovementLogs: string[] = [];
   const location: ILocation = firstPageLocation;
 
-  // дисквалификация? -> дисквалификация конец
-  // if (
-  //   disqualificationRuleArr.some((rule) =>
-  //     disqualificationRuleChecking(userAnswers, rule)
-  //   )
-  // ) {
-  //   return {
-  //     location: disqualificationLocation,
-  //     pageMovementLogs: pageMovementLogs,
-  //   };
-  // }
-
-  // complete? -> страница завершения конец??????
-
-  // if (
-  //   surveyCompletionRuleArr.some((rule) =>
-  //     surveyCompletionChecking(userAnswers, rule)
-  //   )
-  // ) {
-  //   return {
-  //     location: completionLocation,
-  //     pageMovementLogs: pageMovementLogs,
-  //   };
-  // }
-
   // есть обязательный без ответа? -> отмена перехода конец
   return findFirstIncompleteQuestionInNextPage({
     currentLocation: location,
@@ -739,38 +715,6 @@ export const getLogicalValidityCheckRulesByQuestionID = (
     pageIDToDocIDs[pageIDStr].push(rule.docID);
 
     processEvents([rootEvent], rule);
-
-    // Проходим по событиям внутри правила
-    // rule.events.forEach((event) => {
-    //   let questionIDs: number[] = [];
-    //
-    //   if (event.type === "answeredQuestion") {
-    //     questionIDs.push((event as IAnsweredQuestionEvent).questionID);
-    //   } else if (event.type === "skippedQuestion") {
-    //     questionIDs.push((event as ISkippedQuestionEvent).questionID);
-    //   } else if (event.type === "selectedOption") {
-    //     questionIDs.push((event as ISelectedOptionEvent).questionID);
-    //   } else if (event.type === "struggledToAnswer") {
-    //     questionIDs.push((event as IStruggledToAnswerEvent).questionID);
-    //   } else if (event.type === "formula") {
-    //     // Проверяем, есть ли questionID в value формулы и добавляем его, если есть
-    //     const formulaEvent = event as IFormulaEvent;
-    //     formulaEvent.formula.variables.forEach((variable) => {
-    //       if (variable.value.questionID !== undefined) {
-    //         questionIDs.push(variable.value.questionID);
-    //       }
-    //     });
-    //   }
-
-    // Добавляем найденные questionID к соответствующим правилам
-    // questionIDs.forEach((questionID) => {
-    //   const questionIDStr = String(questionID);
-    //   if (!questionIDToDocIDs[questionIDStr]) {
-    //     questionIDToDocIDs[questionIDStr] = [];
-    //   }
-    //   questionIDToDocIDs[questionIDStr].push(rule.docID);
-    // });
-    // });
   });
 
   return {

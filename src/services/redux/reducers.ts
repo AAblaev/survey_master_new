@@ -127,6 +127,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         Object.keys(pageTransitionRuleDict).length > 0;
       // const styles = DEFAULT_STYLES;
 
+      // console.log("strictModeNavigation", strictModeNavigation);
+
       const styles = colorScheme.jsonStyle;
 
       if (notTheFirstTime) {
@@ -194,7 +196,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     case START_NEW_SURVEY: {
       const isShowPageList = state.data!.isShowPageList;
       const isShowButtonBack = state.data!.isShowButtonBack;
-      const firtPageIsSurvey = isShowPageList && isShowButtonBack;
+      const strictModeNavigation = state.strictModeNavigation;
+      const firtPageIsSurvey =
+        isShowPageList && isShowButtonBack && !strictModeNavigation;
 
       const nextLocation: ILocation = {
         pathName: firtPageIsSurvey ? "survey" : "section",
@@ -302,11 +306,12 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       // ];
 
       if (nextLocation.pathName === "completion") {
+        // console.log("completion");
         return {
           ...state,
           visitedPageDocIDList: newVisitedPageDocIDList,
           modalVisible: true,
-          modalMessageType: "completion",
+          modalMessage: { code: 301, type: "complete" },
         };
       }
 

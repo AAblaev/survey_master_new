@@ -25,6 +25,7 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
   completeSurvey,
   goToQuesions,
 }) => {
+  // console.log("modalMessage.code", modalMessage.code);
   switch (modalMessage.code) {
     case 101: {
       return (
