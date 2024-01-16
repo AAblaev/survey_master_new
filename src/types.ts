@@ -14,6 +14,7 @@ export type IData = {
   isShowQuestionsCount: boolean;
   isShowProgressbar: boolean;
   isShowPageList: boolean;
+  isShowSurveyName: boolean;
   disqualificationPage: string;
   completionPage: string;
   limitTime: number;

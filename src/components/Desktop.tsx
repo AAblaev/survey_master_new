@@ -46,6 +46,7 @@ type IDesktop = {
   brandColor: string;
   backgroundColor: string;
   appBarStyles: IStyles["componentsStyle"]["appBar"];
+  isShowSurveyName: boolean;
 };
 
 const Desktop: React.FC<IDesktop> = ({
@@ -59,6 +60,7 @@ const Desktop: React.FC<IDesktop> = ({
   brandColor,
   backgroundColor,
   appBarStyles,
+  isShowSurveyName,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -129,9 +131,11 @@ const Desktop: React.FC<IDesktop> = ({
       <AppBar direction="top" appBarStyles={appBarStyles} fixed>
         <Menu />
         <Switcher />
-        <Typography css={surveyNameCss(pathName === "survey")}>
-          {name}
-        </Typography>
+        {isShowSurveyName && (
+          <Typography css={surveyNameCss(pathName === "survey")}>
+            {name}
+          </Typography>
+        )}
 
         {false && <Timer limitTime={limitTime} brandColor={brandColor} />}
       </AppBar>

@@ -66,7 +66,10 @@ const mapStateToProps = (state: IState) => {
     visiblityRulesDict,
     data,
     pageTransitionRuleDict,
+    pageMovementLogs,
+    pagesDict,
   } = state;
+
   const { pageIndex } = location;
   const pages = data!.pages || [];
 
@@ -79,22 +82,23 @@ const mapStateToProps = (state: IState) => {
 
   const showCompleteBtn = isLastPage && !hasTransitionRule;
 
-  const questionCount: number = pages
-    .slice(0, pageIndex)
-    .reduce((acc, page) => {
-      const currentQuestionsCount = page.questions.reduce(
-        (pageAcc, question) => {
-          const visibilityRule = visiblityRulesDict[String(question.docID)];
-          const isVisible =
-            question.config.dataType !== "textblock" &&
-            visibleChecking(userAnswers, visibilityRule);
-          return pageAcc + (isVisible ? 1 : 0);
-        },
-        0
-      );
+  const prevPages = pageMovementLogs
+    .map((pageID, index) => {
+      if (index + 1 !== pageMovementLogs.length) return pagesDict[pageID].page;
+    })
+    .filter((page) => !!page) as IPage[];
 
-      return acc + currentQuestionsCount;
+  const questionCount: number = prevPages.reduce((acc, page) => {
+    const currentQuestionsCount = page.questions.reduce((pageAcc, question) => {
+      const visibilityRule = visiblityRulesDict[String(question.docID)];
+      const isVisible =
+        question.config.dataType !== "textblock" &&
+        visibleChecking(userAnswers, visibilityRule);
+      return pageAcc + (isVisible ? 1 : 0);
     }, 0);
+
+    return acc + currentQuestionsCount;
+  }, 0);
 
   return {
     questionCount,

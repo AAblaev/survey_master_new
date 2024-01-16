@@ -33,6 +33,7 @@ const App: React.FC<IApp> = ({
   brandColor,
   backgroundColor,
   appBarStyles,
+  isShowSurveyName,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -77,6 +78,7 @@ const App: React.FC<IApp> = ({
         brandColor={brandColor}
         backgroundColor={backgroundColor}
         appBarStyles={appBarStyles}
+        isShowSurveyName={isShowSurveyName}
       />
     </div>
   );
@@ -104,6 +106,8 @@ const mapStateToProps = (state: IState) => {
     componentsStyle: { appBar: appBarStyles },
   } = styles;
 
+  const isShowSurveyName = Boolean(data?.isShowSurveyName);
+
   return {
     userAnswers,
     loading,
@@ -117,6 +121,7 @@ const mapStateToProps = (state: IState) => {
     brandColor,
     backgroundColor,
     appBarStyles,
+    isShowSurveyName,
   };
 };
 
