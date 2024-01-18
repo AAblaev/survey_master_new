@@ -11,14 +11,30 @@ export type ITextBlockProps = {
 export type StateProps = ReturnType<typeof mapStateToProps>;
 type IOwnTextProps = StateProps & ITextBlockProps;
 
-const TextBlock: React.FC<IOwnTextProps> = ({ question, isVisible }) => {
+const TextBlock: React.FC<IOwnTextProps> = ({
+  question,
+  questionStyles,
+  isVisible,
+}) => {
   const { hasComment, comment, config, docID } = question;
   if (!isVisible) {
     return null;
   }
   return (
-    <div css={cardCss(true)}>
-      <div css={titleTextCss(false)}>
+    <div
+      css={cardCss(
+        true,
+        questionStyles.border.color,
+        questionStyles.border.size
+      )}
+    >
+      <div
+        css={titleTextCss(
+          false,
+          questionStyles.title.font.color,
+          questionStyles.title.font.size
+        )}
+      >
         {(hasComment || config.dataType === "textblock") && (
           <div
             dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
@@ -30,7 +46,11 @@ const TextBlock: React.FC<IOwnTextProps> = ({ question, isVisible }) => {
 };
 
 const mapStateToProps = (state: IState, props: ITextBlockProps) => {
-  const { userAnswers, visiblityRulesDict } = state;
+  const { userAnswers, visiblityRulesDict, styles } = state;
+  const {
+    globalStyle: { brandColor },
+    componentsStyle: { question: questionStyles },
+  } = styles;
   const { question } = props;
   const { docID } = question;
   const isVisilbe = visibleChecking(
@@ -40,6 +60,7 @@ const mapStateToProps = (state: IState, props: ITextBlockProps) => {
 
   return {
     isVisible: isVisilbe,
+    questionStyles,
   };
 };
 

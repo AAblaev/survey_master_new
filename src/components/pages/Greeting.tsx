@@ -1,7 +1,7 @@
 import React from "react";
 import { IState } from "../../types";
 import { onlyDesctopButtonCss } from "../../sc";
-import { Button } from "@material-ui/core";
+import Button from "@mui/material/Button";
 import { connect, ConnectedProps } from "react-redux";
 import { Dispatch } from "redux";
 import { buttonsWrapperCss, greatingPageCss } from "./sc";

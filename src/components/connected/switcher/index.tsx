@@ -1,8 +1,8 @@
 import React from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
-import { Button, IconButton } from "@material-ui/core";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { Button, IconButton } from "@mui/material";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Nav from "../../common/Nav";
 import { IState } from "../../../types";
 import {

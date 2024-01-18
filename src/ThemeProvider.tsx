@@ -2,9 +2,9 @@ import React from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { getTheme } from "./mui-theme";
-
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { IState } from "./types";
-import { MuiThemeProvider } from "@material-ui/core/styles";
+// import { MuiThemeProvider } from "@material-ui/core/styles";
 
 export type IThemeProviderProps = ConnectedProps<typeof connector>;
 

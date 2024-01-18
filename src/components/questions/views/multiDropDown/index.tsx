@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import CheckIcon from "@material-ui/icons/Check";
-import FormControl from "@material-ui/core/FormControl";
+import CheckIcon from "@mui/icons-material/Check";
+import FormControl from "@mui/material/FormControl";
 import { IAnswer, IOption, IQuestion, IState } from "../../../../types";
-import { MenuItem, Select, TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@mui/material";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import {
   chipCss,
@@ -111,7 +113,7 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
     ? (userAnswer as IAnswer).values.map((item) => item.optionID)
     : ["default"];
 
-  const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+  const handleChange = (e: SelectChangeEvent<(number | string)[]>) => {
     const optionIDs = e.target.value as (number | string)[];
     const currentValue = optionIDs[optionIDs.length - 1];
     const isExtra =
@@ -205,7 +207,6 @@ const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
               vertical: "top",
               horizontal: "right",
             },
-            getContentAnchorEl: null,
           }}
           css={selectCss}
         >

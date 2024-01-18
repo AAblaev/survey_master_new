@@ -1,11 +1,11 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import { IAnswer, IQuestion } from "../../../types";
 import { REGEXP_DICT, validation } from "../../../utils/validation";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import ErrorIcon from "@material-ui/icons/Error";
-import Tooltip from "@material-ui/core/Tooltip";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import ErrorIcon from "@mui/icons-material/Error";
+import Tooltip from "@mui/material/Tooltip";
 import { borderColorCss } from "./free-list";
 
 type IFreeQuestionProps = {

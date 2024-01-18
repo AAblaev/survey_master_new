@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 import PerfectScrollbar from "react-perfect-scrollbar";
-
-import Menu, { MenuProps } from "@material-ui/core/Menu";
-import CloseIcon from "@material-ui/icons/Close";
-import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
-
-import { IconButton, ListItemText, MenuItem } from "@material-ui/core";
-import Link, { LinkProps } from "@material-ui/core/Link";
-
-import SettingsIcon from "@material-ui/icons/Settings";
+import Menu, { MenuProps } from "@mui/material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
+import { IconButton, ListItemText, MenuItem } from "@mui/material";
+import Link, { LinkProps } from "@mui/material/Link";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { ILocation, ISlideMoveDirection, IState } from "../../../types";
 import {
   COMPLETE_SURVEY,
@@ -33,7 +30,6 @@ const StyledMenu = withStyles({
 })((props: MenuProps) => (
   <Menu
     elevation={0}
-    getContentAnchorEl={null}
     anchorOrigin={{
       vertical: "bottom",
       horizontal: "right",
@@ -45,6 +41,7 @@ const StyledMenu = withStyles({
     {...props}
   />
 ));
+//getContentAnchorEl={null}
 
 const StyledLink = withStyles({
   root: {

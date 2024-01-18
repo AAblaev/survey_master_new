@@ -1,9 +1,8 @@
 import React from "react";
-import { FormControlLabel } from "@material-ui/core";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
-import { css } from "@emotion/react";
 
 export type IUnableCheckbox = {
   userAnswer: IAnswer;
