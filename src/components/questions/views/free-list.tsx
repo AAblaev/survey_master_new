@@ -22,6 +22,9 @@ export const freeListItemLabelCss = css`
 `;
 
 export const borderColorCss = (alarm: boolean) => css`
+  & .MuiInputBase-input {
+    padding: 5px;
+  }
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }

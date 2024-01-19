@@ -40,7 +40,7 @@ type IDesktop = {
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
   closeModal: () => void;
-  selectPage: (index: number) => void;
+  selectPage: (pageID: string) => void;
   data: IData;
   brandColor: string;
   backgroundColor: string;

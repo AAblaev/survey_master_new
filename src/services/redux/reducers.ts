@@ -271,6 +271,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
             modalMessageType: "completion",
           };
         }
+        const newPageMovementLogs = pages
+          .map((page) => page.docID)
+          .slice(0, nextPageIndex + 1);
 
         const nextLocation: ILocation = {
           pathName: "section",
@@ -282,6 +285,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           ...state,
           location: nextLocation,
           slideMoveDirection: direction,
+          pageMovementLogs: newPageMovementLogs,
         };
       }
 
@@ -339,6 +343,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         strictModeNavigation,
       } = state;
       const { targetPageID, direction } = action.payload;
+      const pages = data!.pages;
       if (!strictModeNavigation) {
         const prevPageIndex = targetPageID
           ? pagesDict[targetPageID].order
@@ -353,15 +358,18 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           pageIndex: prevPageIndex < 0 ? 0 : prevPageIndex,
           questionIndex: 0,
         };
+        const newPageMovementLogs = pages
+          .map((page) => page.docID)
+          .slice(0, prevPageIndex + 1);
 
         return {
           ...state,
           location: prevLocation,
           slideMoveDirection: direction,
+          pageMovementLogs: newPageMovementLogs,
         };
       }
 
-      const pages = data!.pages;
       const { pageIndex } = location;
       const currentPage = pages[pageIndex];
       const currentPageDocID = String(currentPage.docID);
@@ -398,23 +406,30 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         strictModeNavigation,
         pagesDict,
         location,
+        data,
       } = state;
+
+      const pages = data!.pages;
       const newLocation = {
         pathName: "section",
         title: "section",
         pageIndex: pagesDict[pageDocID].order,
         questionIndex: 0,
       };
+
       if (!strictModeNavigation) {
         const slideMoveDirection =
           pagesDict[pageDocID].order < location.pageIndex
             ? "left-to-right"
             : "right-to-left";
-
+        const newPageMovementLogs = pages
+          .map((page) => page.docID)
+          .slice(0, pagesDict[pageDocID].order + 1);
         return {
           ...state,
           location: newLocation,
           slideMoveDirection,
+          pageMovementLogs: newPageMovementLogs,
         };
       }
 

@@ -4,36 +4,91 @@ import { PRIMARY_COLOR } from "./consts/const";
 
 export const getTheme = (brandColor: string) => {
   return createTheme({
-    // palette: {
-    //   primary: {
-    //     main: brandColor,
-    //   },
-    // },
-    // typography: {
-    //   fontFamily: [
-    //     "-apple-system",
-    //     "BlinkMacSystemFont",
-    //     "Montserrat",
-    //     "Segoe UI",
-    //     "Roboto",
-    //     "Oxygen",
-    //     "Ubuntu",
-    //     "Cantarell",
-    //     "Fira Sans",
-    //     "Droid Sans",
-    //     "Helvetica Neue",
-    //     "Arial",
-    //     "sans-serif",
-    //   ].join(","),
-    //   body1: {
-    //     color: "inherit",
-    //     fontSize: "0.84rem",
-    //   },
-    //   body2: {
-    //     color: "inherit",
-    //     fontSize: "0.84rem",
-    //   },
-    // },
+    palette: {
+      primary: {
+        main: brandColor,
+      },
+    },
+    typography: {
+      fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Montserrat",
+        "Segoe UI",
+        "Roboto",
+        "Oxygen",
+        "Ubuntu",
+        "Cantarell",
+        "Fira Sans",
+        "Droid Sans",
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif",
+      ].join(","),
+      body1: {
+        color: "inherit",
+        fontSize: "0.84rem",
+      },
+      body2: {
+        color: "inherit",
+        fontSize: "0.84rem",
+      },
+    },
+
+    components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            color: "inherit",
+          },
+        },
+      },
+      MuiSelect: {
+        styleOverrides: {
+          select: {
+            backgroundColor: "#fff",
+            "&:focus": {
+              backgroundColor: "#fff",
+            },
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            color: "inherit",
+            fontSize: ".84rem",
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          contained: {
+            backgroundColor: brandColor,
+            borderRadius: 0,
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: brandColor,
+              color: "#fff",
+            },
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            fontSize: ".84rem",
+          },
+        },
+      },
+      MuiPopover: {
+        styleOverrides: {
+          root: {
+            zIndex: "10000 !important" as any,
+          },
+        },
+      },
+    },
     // overrides: {
     //   MuiPaper: {
     //     root: {

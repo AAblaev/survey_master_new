@@ -16,7 +16,7 @@ import {
 } from "../../services/redux/selectors";
 
 type ISurveyProps = {
-  selectPage: (index: number) => void;
+  selectPage: (pageID: string) => void;
   pages: IPage[];
   userAnswers: IUserAnswer;
   isShowQuestionsCount: boolean;
@@ -91,7 +91,7 @@ const Survey: React.FC<ISurveyProps> = ({
                     variant="contained"
                     size="small"
                     onClick={() => {
-                      selectPage(index);
+                      selectPage(String(page.docID));
                     }}
                   >
                     Перейти
@@ -118,7 +118,7 @@ const Survey: React.FC<ISurveyProps> = ({
                     variant="contained"
                     size="small"
                     onClick={() => {
-                      selectPage(index);
+                      selectPage(String(page.docID));
                     }}
                   >
                     Перейти
