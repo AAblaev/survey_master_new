@@ -5,6 +5,7 @@ import { IState } from "./types";
 import { Dispatch } from "redux";
 import {
   changeCurretLocation,
+  selectSection,
   setNeedScrolling,
 } from "./services/redux/actions";
 import AppBar from "./components/common/AppBar";
@@ -129,19 +130,20 @@ const mapDispathToProps = (dispatch: Dispatch) => {
   return {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
-    selectPage: (index: number) => {
-      dispatch(
-        changeCurretLocation({
-          location: {
-            pageIndex: index,
-            pathName: "section",
-            questionIndex: 0,
-            title: "section",
-          },
-          slideMoveDirection: "right-to-left",
-        })
-      );
-    },
+    selectPage: (pageDocID: string) => dispatch(selectSection({ pageDocID })),
+    // selectPage: (index: number) => {
+    //   dispatch(
+    //     changeCurretLocation({
+    //       location: {
+    //         pageIndex: index,
+    //         pathName: "section",
+    //         questionIndex: 0,
+    //         title: "section",
+    //       },
+    //       slideMoveDirection: "right-to-left",
+    //     })
+    //   );
+    // },
     setScrolling: (value: boolean) => dispatch(setNeedScrolling(value)),
   };
 };

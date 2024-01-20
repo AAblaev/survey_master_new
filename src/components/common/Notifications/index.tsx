@@ -1,8 +1,8 @@
 import React from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { ILocation, ILogicalValidityCheckRule, IState } from "../../../types";
 import { approveLogicRuleStatus } from "../../../services/redux/actions";
 import { notificationsWrapperCss } from "./sc";

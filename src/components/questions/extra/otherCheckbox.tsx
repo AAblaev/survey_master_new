@@ -1,5 +1,6 @@
 import React from "react";
-import { FormControlLabel, TextField } from "@material-ui/core";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer, IValue } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";

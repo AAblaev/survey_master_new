@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { alpha, Theme } from "@material-ui/core/styles";
+import { alpha, Theme } from "@mui/material/styles";
 import { DEFAULT_BACKGROUND_COLOR } from "../../../consts/const";
 import { IModalSize } from "./modal.types";
 

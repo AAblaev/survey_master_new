@@ -1,7 +1,7 @@
 import React from "react";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { Typography } from "@material-ui/core";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
 import { IQuestion, IAnswer } from "../../../../types";
 import GreenCheckbox from "../../../common/GreenCheckbox";
 import { formGroupCss } from "./sc";

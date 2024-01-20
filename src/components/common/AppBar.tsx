@@ -1,6 +1,6 @@
 import React from "react";
-import { AppBar as MaterialAppBar } from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar";
+import { AppBar as MaterialAppBar } from "@mui/material";
+import Toolbar from "@mui/material/Toolbar";
 
 import { css } from "@emotion/react";
 import { PRIMARY_COLOR } from "../../consts/const";

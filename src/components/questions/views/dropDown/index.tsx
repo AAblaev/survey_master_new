@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
-import FormControl from "@material-ui/core/FormControl";
+import React from "react";
+import FormControl from "@mui/material/FormControl";
 import { IAnswer, IOption, IQuestion } from "../../../../types";
-import { MenuItem, Select, TextField } from "@material-ui/core";
+import TextField from "@mui/material/TextField";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import { formControlCss, renderValueCss, textFieldCss } from "./sc";
 import { selectCss } from "../multiDropDown/sc";
@@ -96,8 +99,8 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
 
   const autoFocus = userAnswerExist && userAnswer.values[0].value === "";
 
-  const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const optionID = e.target.value as number;
+  const handleChange = (e: SelectChangeEvent<number>) => {
+    const optionID = Number(e.target.value) as number;
     const isValid = optionID !== EXTRA_ANSWER.OTHER;
     setAnswer({
       questionID: docID,
@@ -130,7 +133,6 @@ const DropDownView: React.FC<IDropDownViewProps> = ({
               vertical: "top",
               horizontal: "right",
             },
-            getContentAnchorEl: null,
           }}
           displayEmpty={true}
           renderValue={(value: any) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Progress } from "antd";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
 import { useSelector } from "react-redux";
 import {

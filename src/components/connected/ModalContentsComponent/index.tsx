@@ -1,7 +1,7 @@
 import React from "react";
 import { Dispatch } from "redux";
-import { Button, IconButton, Typography } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Button, IconButton, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { connect, ConnectedProps } from "react-redux";
 import { ModalContent, ModalHeader } from "../../common/modal";
 import { modalHeaderWrapperCss, onlyDesctopButtonCss } from "../../../sc";

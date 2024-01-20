@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import TextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
 import { ISimpleType, IValue } from "../../../../types";
 import GreenRadio from "../../../common/GreenRadio";
 import {

@@ -29,11 +29,10 @@ import Section from "./pages/Section";
 import Greeting from "./pages/Greeting";
 import Menu from "./connected/Menu";
 import ModalContentComponent from "./connected/ModalContentsComponent";
-
 import Switcher from "./connected/switcher";
 import Timer from "./common/Timer";
 import Notifications from "./common/Notifications";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 
 type IDesktop = {
   userAnswers: IUserAnswer;
@@ -41,7 +40,7 @@ type IDesktop = {
   slideMoveDirection: ISlideMoveDirection;
   modalVisible: boolean;
   closeModal: () => void;
-  selectPage: (index: number) => void;
+  selectPage: (pageID: string) => void;
   data: IData;
   brandColor: string;
   backgroundColor: string;
