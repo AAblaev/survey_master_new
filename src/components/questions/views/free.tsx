@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import ErrorIcon from "@mui/icons-material/Error";
 import Tooltip from "@mui/material/Tooltip";
 import { borderColorCss } from "./free-list";
+import MyDatePicker from "../../common/datePicker";
 
 type IFreeQuestionProps = {
   currentQuestionIndex: number;
@@ -114,6 +115,10 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
       ],
     });
   };
+
+  if (simpleType === "datetime") {
+    return <MyDatePicker />;
+  }
 
   return (
     <TextField
