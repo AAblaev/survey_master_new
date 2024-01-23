@@ -41,12 +41,14 @@ export const formControlCss = ({
 export const cardCss = (
   needPadding: boolean,
   borderColor: string,
-  borderSize: number
+  borderSize: number,
+  smallSise: boolean
 ) => css`
   ${needPadding && `padding: 20px;`}
   background-color: #fff;
   border: ${borderSize}px solid ${borderColor};
   overflow: hidden;
+  ${smallSise && `width: 13rem`};
 `;
 
 export const commentCss = (disabled: boolean) => css`

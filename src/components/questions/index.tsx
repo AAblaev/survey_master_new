@@ -242,7 +242,8 @@ const Question: React.FC<IQuestionProps> = ({
         css={cardCss(
           needPadding || Boolean(otherInAnswer),
           questionStyles.border.color,
-          questionStyles.border.size
+          questionStyles.border.size,
+          question.config.simpleType === "datetime"
         )}
       >
         <FormControl

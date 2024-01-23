@@ -22,17 +22,34 @@ export const freeListItemLabelCss = css`
 `;
 
 export const borderColorCss = (alarm: boolean) => css`
+  & .MuiInputBase-root {
+    border-radius: 0px;
+  }
   & .MuiInputBase-input {
     padding: 5px;
+    // border: 1px solid blue;
+  }
+  & .Mui-focused {
+    border: 0px solid red;
+  }
+
+  & .MuiInputBase-input:focus {
+    padding: 5px;
+    // border: 1px solid red;
   }
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }
   & .MuiFilledInput-multiline {
     padding: 5px;
+    // border: 1px solid red;
+  }
+  & .MuiFilledInput-root.Mui-focused {
+    background-color: #fff;
+    box-shadow: #46acaf;
+    border-color: #e5e5e5;
   }
 `;
-
 type IFreeListViewProps = {
   currentQuestionIndex: number;
   question: IQuestion;

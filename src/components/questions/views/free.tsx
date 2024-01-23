@@ -117,7 +117,13 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
   };
 
   if (simpleType === "datetime") {
-    return <MyDatePicker />;
+    return (
+      <MyDatePicker
+        setAnswer={setAnswer}
+        userAnswer={userAnswer}
+        question={question}
+      />
+    );
   }
 
   return (
