@@ -3,6 +3,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
+import GreenRadio from "../../common/GreenRadio";
+import { css } from "@emotion/react";
 
 export type IUnableCheckbox = {
   userAnswer: IAnswer;
@@ -44,11 +46,7 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
   return (
     <FormControlLabel
       control={
-        <GreenCheckbox
-          checked={checked}
-          onChange={handleChange}
-          name={"name"}
-        />
+        <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
       }
       label={
         difficultToAnswerPlaceholder
@@ -56,6 +54,9 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
           : "Затрудняюсь ответить"
       }
       key={"unable"}
+      css={css`
+        margin-left: -7px;
+      `}
     />
   );
 };
