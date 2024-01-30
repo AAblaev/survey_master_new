@@ -6,7 +6,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import ErrorIcon from "@mui/icons-material/Error";
 import Tooltip from "@mui/material/Tooltip";
-import { borderColorCss } from "./free-list";
+import { alertCss, borderColorCss, textFieldWrapperCss } from "./free-list";
 import MyDatePicker from "../../common/datePicker";
 
 type IFreeQuestionProps = {
@@ -118,44 +118,68 @@ const FreeView: React.FC<IFreeQuestionProps> = ({
 
   if (simpleType === "datetime") {
     return (
-      <MyDatePicker
-        setAnswer={setAnswer}
-        userAnswer={userAnswer}
-        question={question}
-      />
-    );
-  }
+      <div css={textFieldWrapperCss}>
+        <MyDatePicker
+          setAnswer={setAnswer}
+          userAnswer={userAnswer}
+          question={question}
+        />
 
-  return (
-    <TextField
-      id="outlined-multiline-static"
-      InputProps={{
-        disableUnderline: true,
-        endAdornment: showAlert && (
-          <InputAdornment position="end">
+        {showAlert && (
+          <div css={alertCss}>
             <Tooltip title={validationMessage}>
               <IconButton>
                 <ErrorIcon />
               </IconButton>
             </Tooltip>
-          </InputAdornment>
-        ),
-      }}
-      hiddenLabel
-      placeholder={question.hint}
-      color="primary"
-      variant="filled"
-      css={borderColorCss(showAlert)}
-      fullWidth
-      multiline={isMultiline}
-      minRows={4}
-      maxRows={4}
-      value={value}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onChange={handleChange}
-    />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div css={textFieldWrapperCss}>
+      <TextField
+        id="outlined-multiline-static"
+        InputProps={{
+          disableUnderline: true,
+        }}
+        hiddenLabel
+        placeholder={question.hint}
+        color="primary"
+        variant="filled"
+        css={borderColorCss(showAlert)}
+        fullWidth
+        multiline={isMultiline}
+        minRows={4}
+        maxRows={4}
+        value={value}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onChange={handleChange}
+      />
+      <div style={{ minWidth: "40px" }}>
+        {showAlert && (
+          <Tooltip title={validationMessage}>
+            <IconButton>
+              <ErrorIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </div>
+    </div>
   );
 };
 
 export default FreeView;
+//
+// endAdornment: showAlert && (
+//   <InputAdornment position="end">
+//     <Tooltip title={validationMessage}>
+//       <IconButton>
+//         <ErrorIcon />
+//       </IconButton>
+//     </Tooltip>
+//   </InputAdornment>
+// ),

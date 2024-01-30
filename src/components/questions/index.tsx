@@ -243,13 +243,15 @@ const Question: React.FC<IQuestionProps> = ({
           needPadding || Boolean(otherInAnswer),
           questionStyles.border.color,
           questionStyles.border.size,
-          question.config.simpleType === "datetime"
+          question.config.simpleType === "datetime",
+          questionType === "free" && needCorrect
         )}
       >
         <FormControl
           css={formControlCss({
             disabled,
-            noBorderOnInput: false,
+            noBorderOnInput: questionType === "free",
+            boderOnForm: questionType === "free" && needCorrect,
           })}
           focused={false}
         >

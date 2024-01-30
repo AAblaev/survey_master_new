@@ -67,6 +67,9 @@ export const validation = (payload: {
         min: string;
         max: string;
       };
+  isSimpleDateLimit?: boolean;
+  simpleDateMin?: string;
+  simpleDateMax?: string;
 }): IValidationResult => {
   const {
     value,
@@ -75,6 +78,9 @@ export const validation = (payload: {
     isLimitedValue,
     limit,
     limitValue,
+    isSimpleDateLimit,
+    simpleDateMin,
+    simpleDateMax,
   } = payload;
 
   // check empty value
@@ -131,15 +137,34 @@ export const validation = (payload: {
 
   // check out of range datatime
 
-  if (isLimitedValue && simpleType === "datetime") {
+  if (isSimpleDateLimit && simpleType === "datetime") {
+    console.log("checking");
     const valueDateArr = value.split(".");
     const valueDate = new Date(
       Number(valueDateArr[2]),
       Number(valueDateArr[1]) - 1,
       Number(valueDateArr[0])
     );
-    const minDate = new Date(String(limitValue!.min));
-    const maxDate = new Date(String(limitValue!.max));
+
+    /// испавить
+
+    const [minDay, minMonth, minYear] = simpleDateMin!.split(" ")[0].split(".");
+    const [maxDay, maxMonth, maxYear] = simpleDateMax!.split(" ")[0].split(".");
+
+    const minDate = new Date(
+      Number(minYear),
+      Number(minMonth) - 1,
+      Number(minDay)
+    );
+    const maxDate = new Date(
+      Number(maxYear),
+      Number(maxMonth) - 1,
+      Number(maxDay)
+    );
+
+    // console.log(minDate);
+    // console.log(maxDate);
+    // console.log(valueDate);
 
     const minDateStr = minDate.toLocaleString("ru-RU", {
       year: "numeric",
@@ -152,17 +177,20 @@ export const validation = (payload: {
       day: "numeric",
     });
 
-    if (minDate > valueDate)
+    if (minDate > valueDate) {
       return {
         isValid: false,
         message: `значение не может быть меньше ${minDateStr}`,
       };
+    }
 
-    if (maxDate < valueDate)
+    if (maxDate < valueDate) {
+      console.log("asdas");
       return {
         isValid: false,
         message: `значение не может быть больше ${maxDateStr}`,
       };
+    }
   }
 
   return { isValid: true, message: "success" };
