@@ -33,6 +33,7 @@ import {
 } from "./sc";
 import { visibleChecking } from "../../utils/rule-utils";
 import { requiredRowsEndColumnsChecking } from "../../utils/validation";
+import ExtraMessage from "../common/ExtraMessage";
 
 export type OwnProps = {
   index: number;
@@ -178,6 +179,8 @@ const Question: React.FC<IQuestionProps> = ({
     ? (answerWithExtra as IAnswer)
     : (userAnswer as IAnswer);
 
+  // const extraMessage = "";
+
   useEffect(() => {
     if (!isVisible && !isEmpty) {
       setAnswer({ questionID: docID, values: [] });
@@ -222,22 +225,8 @@ const Question: React.FC<IQuestionProps> = ({
           dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
         ></div>
       )}
+      <ExtraMessage config={config} />
 
-      {(isLimited || isLimitedValue) && (
-        <div css={limitMessageWrapperCss}>
-          {isLimited && (
-            <span
-              css={limitMessageCss}
-            >{`Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `}</span>
-          )}
-
-          {isLimitedValue && (
-            <span css={limitMessageCss}>
-              {`Текст ответа должен быть числом. Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}.`}
-            </span>
-          )}
-        </div>
-      )}
       <div
         css={cardCss(
           needPadding || Boolean(otherInAnswer),
@@ -373,3 +362,20 @@ const mapDispathToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispathToProps)(Question);
+
+//
+// {(isLimited || isLimitedValue) && (
+//   <div css={limitMessageWrapperCss}>
+//     {isLimited && (
+//       <span
+//         css={limitMessageCss}
+//       >{`Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `}</span>
+//     )}
+//
+//     {isLimitedValue && (
+//       <span css={limitMessageCss}>
+//         {`Текст ответа должен быть числом. Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}.`}
+//       </span>
+//     )}
+//   </div>
+// )}
