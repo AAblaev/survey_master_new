@@ -10,6 +10,19 @@ import Tooltip from "@mui/material/Tooltip";
 import { css } from "@emotion/react";
 import { REGEXP_DICT, validation } from "../../../utils/validation";
 
+export const textFieldWrapperCss = css`
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
+export const alertCss = css`
+  position: absolute;
+  top: 0px;
+  right: -40px;
+  z-index: 1000000000;
+`;
+
 export const freeListItemCss = css`
   margin-top: 10px !important;
   margin-bottom: 10px !important;
@@ -22,17 +35,44 @@ export const freeListItemLabelCss = css`
 `;
 
 export const borderColorCss = (alarm: boolean) => css`
+  & .MuiInputBase-root {
+    border-radius: 0px;
+  }
   & .MuiInputBase-input {
     padding: 5px;
+    border: 0px solid red;
+  }
+  & .Mui-focused {
+  }
+
+  & .MuiInputBase-input:focus {
   }
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }
   & .MuiFilledInput-multiline {
-    padding: 5px;
+    border: 0px solid red;
+  }
+  & .MuiFilledInput-root.Mui-focused {
+    background-color: #fff;
+    box-shadow: #46acaf;
+    border-color: #e5e5e5;
+  }
+
+  & .MuiOutlinedInput-notchedOutline {
+    border: 0px solid red;
+    border-size: 0px;
+  }
+
+  &
+    .MuiInputBase-root-MuiOutlinedInput-root.Mui-focused.MuiOutlinedInput-notchedOutline {
+    border-size: 0px;
+  }
+
+  & > fieldset {
+    border-size: 0px;
   }
 `;
-
 type IFreeListViewProps = {
   currentQuestionIndex: number;
   question: IQuestion;

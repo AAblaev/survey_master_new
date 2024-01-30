@@ -3,12 +3,14 @@ import { css } from "@emotion/react";
 export const formControlCss = ({
   disabled,
   noBorderOnInput,
+  boderOnForm,
 }: {
   disabled: boolean;
   noBorderOnInput: boolean;
+  boderOnForm: boolean;
 }) => css`
   ${disabled && `filter: grayscale(100%)`};
-
+  // ${boderOnForm && `border: 1px solid red`};
   width: 100%;
 
   & .MuiInputLabel-root {
@@ -41,12 +43,15 @@ export const formControlCss = ({
 export const cardCss = (
   needPadding: boolean,
   borderColor: string,
-  borderSize: number
+  borderSize: number,
+  smallSise: boolean,
+  alert: boolean
 ) => css`
   ${needPadding && `padding: 20px;`}
   background-color: #fff;
-  border: ${borderSize}px solid ${borderColor};
-  overflow: hidden;
+  border: ${borderSize}px solid ${alert ? "red" : borderColor};
+  // overflow: hidden;
+  ${smallSise && `width: 13rem`};
 `;
 
 export const commentCss = (disabled: boolean) => css`

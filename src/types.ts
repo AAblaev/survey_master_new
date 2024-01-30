@@ -118,6 +118,9 @@ export type IConfig = {
         min: string;
         max: string;
       };
+  isSimpleDateLimit?: boolean;
+  simpleDateMax?: string;
+  simpleDateMin?: string;
   //
   dateType?: unknown;
   scaleType?: unknown;
