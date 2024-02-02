@@ -426,6 +426,9 @@ export type IStyles = {
       };
     };
     question: {
+      background: {
+        color: string;
+      };
       title: {
         font: {
           size: number;

@@ -319,7 +319,8 @@ const Question: React.FC<IQuestionProps> = ({
           questionStyles.border.color,
           questionStyles.border.size,
           question.config.simpleType === "datetime",
-          questionType === "free" && needCorrect
+          questionType === "free" && needCorrect,
+          questionStyles.background?.color
         )}
       >
         <FormControl

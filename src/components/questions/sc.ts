@@ -45,10 +45,12 @@ export const cardCss = (
   borderColor: string,
   borderSize: number,
   smallSise: boolean,
-  alert: boolean
+  alert: boolean,
+  backgroundColor?: string
 ) => css`
   ${needPadding && `padding: 20px;`}
-  background-color: #fff;
+  background-color:${backgroundColor ? backgroundColor : "#fff"};
+  // background-color:#fff;
   border: ${borderSize}px solid ${alert ? "red" : borderColor};
   // overflow: hidden;
   ${false && `width: 13rem`};

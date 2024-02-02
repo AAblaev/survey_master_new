@@ -37,24 +37,32 @@ export const freeListItemLabelCss = css`
 export const borderColorCss = (alarm: boolean) => css`
   & .MuiInputBase-root {
     border-radius: 0px;
+    background-color: transparent;
   }
   & .MuiInputBase-input {
     padding: 11px;
     border: 0px solid red;
+    background-color: transparent;
   }
   & .Mui-focused {
+    background-color: transparent;
+  }
+  background-color: transparent;
+  & .MuiInputBase-input:focus {
+    background-color: transparent;
   }
 
-  & .MuiInputBase-input:focus {
-  }
   & .MuiFilledInput-root {
     ${alarm && `border-color:red`}
   }
+
   & .MuiFilledInput-multiline {
     border: 0px solid red;
   }
   & .MuiFilledInput-root.Mui-focused {
-    background-color: #fff;
+    // background-color: #fff;
+    background-color: transparent;
+
     box-shadow: #46acaf;
     border-color: #e5e5e5;
   }
