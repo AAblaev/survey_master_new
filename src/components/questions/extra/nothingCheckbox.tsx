@@ -3,6 +3,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
+import GreenRadio from "../../common/GreenRadio";
 
 export type INothingCheckboxProps = {
   userAnswer: IAnswer;
@@ -44,11 +45,7 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
   return (
     <FormControlLabel
       control={
-        <GreenCheckbox
-          checked={checked}
-          onChange={handleChange}
-          name={"name"}
-        />
+        <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
       }
       label={
         nothingPlaceholder ? nothingPlaceholder : "Ничего из вышеперечисленного"

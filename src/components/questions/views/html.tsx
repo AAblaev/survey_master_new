@@ -1,9 +1,7 @@
 import React, { useMemo } from "react";
-import { ICommonQuestionProps } from "../common-question.types";
+import { IViewComponentProps } from "..";
 
-type IHtmlProps = ICommonQuestionProps & { [key: string]: any };
-
-const Html: React.FC<IHtmlProps> = ({ question }) => {
+const Html: React.FC<IViewComponentProps> = ({ question }) => {
   const { comment } = question;
   const markup = useMemo(
     () => ({

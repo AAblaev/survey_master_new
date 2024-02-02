@@ -106,10 +106,16 @@ export const getNeedCorrect = (
   isValid: boolean,
   pageIsVisited: boolean,
   isLogicalValiditySuccess: boolean,
-  hasRequiredRowsAndColumns: boolean
+  hasRequiredRowsAndColumns: boolean,
+  hasExtraInAnswer: boolean
 ): boolean => {
   if (isFocused) {
     // console.log("isFocused");
+    return false;
+  }
+
+  if (hasExtraInAnswer) {
+    // console.log("isUnabled");
     return false;
   }
 

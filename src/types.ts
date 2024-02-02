@@ -98,7 +98,7 @@ export type IConfig = {
   timeLimit: number;
   title: string;
   options?: IOption[] | null;
-  simpleType?: ISimpleType;
+  simpleType: ISimpleType;
   view?: IView;
   orientation?: IOrientation;
   //

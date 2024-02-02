@@ -5,6 +5,7 @@ import GreenCheckbox from "../../common/GreenCheckbox";
 import { IAnswer, IValue } from "../../../types";
 import { EXTRA_ANSWER } from "../../../consts/const";
 import { textFieldCss } from "../views/dropDown/sc";
+import GreenRadio from "../../common/GreenRadio";
 
 export type IOtherCheckbox = {
   userAnswer: IAnswer;
@@ -65,11 +66,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
     <>
       <FormControlLabel
         control={
-          <GreenCheckbox
-            checked={checked}
-            onChange={handleChange}
-            name={"name"}
-          />
+          <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
         }
         label={otherPlaceholder ? otherPlaceholder : "Другое"}
         key={"other"}

@@ -21,19 +21,11 @@ import {
   new_tableCellCss,
 } from "./sc";
 import { validation } from "../../../../utils/validation";
-
-type IMatrixViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  validation: (question: IQuestion) => void;
-  questionStyles: IStyles["componentsStyle"]["question"];
-};
+import { IViewComponentProps } from "../..";
 
 type IValuesDict = { [key: string]: IValue };
 
-const MatrixView: React.FC<IMatrixViewProps> = ({
+const MatrixView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,

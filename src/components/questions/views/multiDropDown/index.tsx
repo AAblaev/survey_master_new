@@ -17,16 +17,9 @@ import {
 } from "./sc";
 import { useSelector } from "react-redux";
 import { getBrandColor } from "../../../../services/redux/selectors";
+import { IViewComponentProps } from "../..";
 
-type IMultiDropDownViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  validation: (question: IQuestion) => void;
-  userAnswer: IAnswer;
-};
-
-const MultiDropDownView: React.FC<IMultiDropDownViewProps> = ({
+const MultiDropDownView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,

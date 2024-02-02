@@ -1,23 +1,15 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
-import { IAnswer, IQuestion } from "../../../types";
-import { REGEXP_DICT, validation } from "../../../utils/validation";
-import InputAdornment from "@mui/material/InputAdornment";
+import { IAnswer, IQuestion } from "../../../../types";
+import { REGEXP_DICT, validation } from "../../../../utils/validation";
 import IconButton from "@mui/material/IconButton";
 import ErrorIcon from "@mui/icons-material/Error";
 import Tooltip from "@mui/material/Tooltip";
-import { alertCss, borderColorCss, textFieldWrapperCss } from "./free-list";
-import MyDatePicker from "../../common/datePicker";
+import { alertCss, borderColorCss, textFieldWrapperCss } from "../free-list";
+import MyDatePicker from "../../../common/datePicker";
+import { IViewComponentProps } from "../..";
 
-type IFreeQuestionProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  validation: (question: IQuestion, optionID?: string) => void;
-};
-
-const FreeView: React.FC<IFreeQuestionProps> = ({
+const FreeView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,

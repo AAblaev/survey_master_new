@@ -51,7 +51,7 @@ export const cardCss = (
   background-color: #fff;
   border: ${borderSize}px solid ${alert ? "red" : borderColor};
   // overflow: hidden;
-  ${smallSise && `width: 13rem`};
+  ${false && `width: 13rem`};
 `;
 
 export const commentCss = (disabled: boolean) => css`
@@ -101,6 +101,7 @@ export const titleTextCss = (
 export const limitMessageWrapperCss = css`
   margin-top: 5px;
   margin-bottom: 5px;
+  position: relative;
 `;
 
 export const limitMessageCss = css`

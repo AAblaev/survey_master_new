@@ -8,16 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import { formControlCss, renderValueCss, textFieldCss } from "./sc";
 import { selectCss } from "../multiDropDown/sc";
+import { IViewComponentProps } from "../..";
 
-type IDropDownViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  validation: (question: IQuestion) => void;
-};
-
-const DropDownView: React.FC<IDropDownViewProps> = ({
+const DropDownView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,
