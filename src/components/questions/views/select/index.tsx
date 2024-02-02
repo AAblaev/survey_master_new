@@ -7,16 +7,9 @@ import GreenCheckbox from "../../../common/GreenCheckbox";
 import { formGroupCss } from "./sc";
 import { DEFAULT_COLUMNS_COUNT } from "../../../../consts/const";
 import GreenRadio from "../../../common/GreenRadio";
+import { IViewComponentProps } from "../..";
 
-type ISelectViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  validation: (question: IQuestion) => void;
-};
-
-const SelectView: React.FC<ISelectViewProps> = ({
+const SelectView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,

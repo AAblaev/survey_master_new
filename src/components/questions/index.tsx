@@ -7,7 +7,14 @@ import {
   setNeedScrolling,
   validation,
 } from "../../services/redux/actions";
-import { IAnswer, IQuestion, IState } from "../../types";
+import {
+  IAnswer,
+  IDataType,
+  IQuestion,
+  ISimpleType,
+  IState,
+  IStyles,
+} from "../../types";
 import FreeView from "./views/free";
 import FreeListView from "./views/free-list";
 import DropDownView from "./views/dropDown";
@@ -34,17 +41,8 @@ import {
 import { visibleChecking } from "../../utils/rule-utils";
 import { requiredRowsEndColumnsChecking } from "../../utils/validation";
 import ExtraMessage from "../common/ExtraMessage";
-
-export type OwnProps = {
-  index: number;
-  pageID: number;
-  currentQuestionIndex: number;
-  question: IQuestion;
-};
-
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type DispatchProps = ReturnType<typeof mapDispathToProps>;
-type IQuestionProps = StateProps & OwnProps & DispatchProps;
+import DatePicker from "./views/datePicker";
+import DatePickerListView from "./views/datePicker-list";
 
 const viewDict = {
   free: FreeView,
@@ -57,6 +55,70 @@ const viewDict = {
   html: Html,
   matrix: MatrixView,
 };
+
+export type IViewComponentProps = {
+  currentQuestionIndex: number;
+  question: IQuestion;
+  setAnswer: (answer: IAnswer) => void;
+  userAnswer: IAnswer;
+  questionStyles: IStyles["componentsStyle"]["question"];
+};
+
+type IViewComponent = React.FC<IViewComponentProps>;
+
+type IGetViewComponent = (
+  questionType: IDataType,
+  simpleType: ISimpleType
+) => IViewComponent;
+
+const getViewComponent: IGetViewComponent = (questionType, simpleType) => {
+  switch (questionType) {
+    case "free": {
+      if (simpleType === "datetime") return DatePicker;
+      return FreeView;
+    }
+    case "freelist": {
+      if (simpleType === "datetime") return DatePickerListView;
+      return FreeListView;
+    }
+    case "dropdown": {
+      return DropDownView;
+    }
+    case "multidropdown": {
+      return MultiDropDownView;
+    }
+    case "scale": {
+      return ScaleView;
+    }
+    case "select": {
+      return SelectView;
+    }
+    case "multiselect": {
+      return SelectView;
+    }
+    case "html": {
+      return Html;
+    }
+    case "matrix": {
+      return MatrixView;
+    }
+
+    default: {
+      return FreeView;
+    }
+  }
+};
+
+export type OwnProps = {
+  index: number;
+  pageID: number;
+  currentQuestionIndex: number;
+  question: IQuestion;
+};
+
+export type StateProps = ReturnType<typeof mapStateToProps>;
+export type DispatchProps = ReturnType<typeof mapDispathToProps>;
+type IQuestionProps = StateProps & OwnProps & DispatchProps;
 
 export const extraFilter = (
   userAnswer: IAnswer,
@@ -103,7 +165,7 @@ const Question: React.FC<IQuestionProps> = ({
   } = question;
   const elementRef = useRef<any>(null);
 
-  const { isLimited, isLimitedValue, limit, limitValue } = config;
+  // const { isLimited, isLimitedValue, limit, limitValue } = config;
   const questionText = `<div>${title}${
     isRequired ? '<span style="color:red;">*</span>' : ""
   } `;
@@ -114,7 +176,8 @@ const Question: React.FC<IQuestionProps> = ({
   );
 
   const questionType = config.dataType as keyof typeof viewDict;
-  const ViewComponent = viewDict[questionType];
+  // const ViewComponent = viewDict[questionType];
+  const ViewComponent = getViewComponent(questionType, config.simpleType);
   const isImplementedQuestionType = viewDict.hasOwnProperty(questionType);
   const needPadding =
     questionType === "freelist" ||
@@ -158,6 +221,24 @@ const Question: React.FC<IQuestionProps> = ({
     answerWithExtra.values.length > 0 &&
     !answerWithExtra.values.some((v) => !v.validationResult.isValid);
 
+  const isUnabled =
+    !!answerWithExtra &&
+    answerWithExtra.values.length > 0 &&
+    answerWithExtra.values[0].optionID === -1;
+
+  const isNothing =
+    !!answerWithExtra &&
+    answerWithExtra.values.length > 0 &&
+    answerWithExtra.values[0].optionID === -2;
+
+  const isOther =
+    !!answerWithExtra &&
+    answerWithExtra.values.length > 0 &&
+    answerWithExtra.values[0].optionID === -3 &&
+    answerWithExtra.values[0].value !== "";
+
+  const hasExtraInAnswer = isUnabled || isNothing || isOther;
+
   const hasRequiredRowsAndColumns = requiredRowsEndColumnsChecking(
     question,
     userAnswer?.values
@@ -172,7 +253,8 @@ const Question: React.FC<IQuestionProps> = ({
     isValid,
     pageIsVisited,
     isLogicalValiditySuccess,
-    hasRequiredRowsAndColumns
+    hasRequiredRowsAndColumns,
+    hasExtraInAnswer
   );
 
   const userAnswerResult = isInternalExtra
@@ -225,7 +307,11 @@ const Question: React.FC<IQuestionProps> = ({
           dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
         ></div>
       )}
-      <ExtraMessage config={config} />
+      <ExtraMessage
+        config={config}
+        needCorrect={needCorrect}
+        hasRequiredRowsAndColumns={hasRequiredRowsAndColumns}
+      />
 
       <div
         css={cardCss(
@@ -254,8 +340,6 @@ const Question: React.FC<IQuestionProps> = ({
                   : (userAnswerResult as IAnswer)
               }
               setAnswer={setAnswer}
-              needCorrect={needCorrect}
-              validation={validation}
               questionStyles={questionStyles}
             />
           ) : (
@@ -325,22 +409,7 @@ const mapStateToProps = (state: IState, props: OwnProps) => {
     : [];
 
   const isLogicalValiditySuccess = checkingResultArr.every((status) => status);
-  // selectedQuestion
-  // disabled
-  // needCorrect
-  // questionText
-  // isLimited
-  // isLimitedValue
-  // hasComment
-  // comment
-  // needPadding
-  // hasUnableAnswer
-  // hasNothingAnswer
-  // hasOtherAnswer
-  // otherInAnswer
-  // isImplementedQuestionType
-  // questionType
-  // isInternalExtra
+
   return {
     userAnswer: userAnswers[docID] ? userAnswers[docID] : null,
     visitedPageDocIDList,
@@ -362,20 +431,3 @@ const mapDispathToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispathToProps)(Question);
-
-//
-// {(isLimited || isLimitedValue) && (
-//   <div css={limitMessageWrapperCss}>
-//     {isLimited && (
-//       <span
-//         css={limitMessageCss}
-//       >{`Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `}</span>
-//     )}
-//
-//     {isLimitedValue && (
-//       <span css={limitMessageCss}>
-//         {`Текст ответа должен быть числом. Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}.`}
-//       </span>
-//     )}
-//   </div>
-// )}

@@ -1,14 +1,14 @@
 import React from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { IAnswer, IQuestion } from "../../../types";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import ErrorIcon from "@mui/icons-material/Error";
 import Tooltip from "@mui/material/Tooltip";
 import { css } from "@emotion/react";
-import { REGEXP_DICT, validation } from "../../../utils/validation";
+import { REGEXP_DICT, validation } from "../../../../utils/validation";
+import { IViewComponentProps } from "../..";
 
 export const textFieldWrapperCss = css`
   display: flex;
@@ -39,7 +39,7 @@ export const borderColorCss = (alarm: boolean) => css`
     border-radius: 0px;
   }
   & .MuiInputBase-input {
-    padding: 5px;
+    padding: 11px;
     border: 0px solid red;
   }
   & .Mui-focused {
@@ -73,20 +73,11 @@ export const borderColorCss = (alarm: boolean) => css`
     border-size: 0px;
   }
 `;
-type IFreeListViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  needCorrect?: boolean;
-  validation: (question: IQuestion) => void;
-};
 
-const FreeListView: React.FC<IFreeListViewProps> = ({
+const FreeListView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,
-  needCorrect,
 }) => {
   const { docID, config } = question;
   const {
@@ -261,13 +252,3 @@ const FreeListView: React.FC<IFreeListViewProps> = ({
 };
 
 export default FreeListView;
-//
-// endAdornment: showAlert && (
-//   <InputAdornment position="end">
-//     <Tooltip title={validationMessage}>
-//       <IconButton>
-//         <ErrorIcon />
-//       </IconButton>
-//     </Tooltip>
-//   </InputAdornment>
-// ),

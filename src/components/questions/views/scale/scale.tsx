@@ -8,6 +8,7 @@ import tinygradient from "tinygradient";
 import { getSmileys } from "./svg/smileys";
 import { css } from "@emotion/react";
 import { getBrandColor } from "../../../../services/redux/selectors";
+import { IViewComponentProps } from "../..";
 
 export const freeListItemCss = css`
   margin-top: 10px !important;
@@ -19,15 +20,7 @@ export const freeListItemLabelCss = css`
   color: #787878 !important;
 `;
 
-type IScaleViewProps = {
-  currentQuestionIndex: number;
-  question: IQuestion;
-  setAnswer: (answer: IAnswer) => void;
-  userAnswer: IAnswer;
-  validation: (question: IQuestion) => void;
-};
-
-const ScaleView: React.FC<IScaleViewProps> = ({
+const ScaleView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,

@@ -138,7 +138,6 @@ export const validation = (payload: {
   // check out of range datatime
 
   if (isSimpleDateLimit && simpleType === "datetime") {
-    console.log("checking");
     const valueDateArr = value.split(".");
     const valueDate = new Date(
       Number(valueDateArr[2]),
@@ -185,7 +184,6 @@ export const validation = (payload: {
     }
 
     if (maxDate < valueDate) {
-      console.log("asdas");
       return {
         isValid: false,
         message: `значение не может быть больше ${maxDateStr}`,
@@ -281,6 +279,12 @@ export const requiredRowsEndColumnsChecking = (
   question: IQuestion,
   values: IAnswer["values"] = []
 ): boolean => {
+  const hasExtra =
+    values.values.length > 0 &&
+    (values[0].optionID === -1 ||
+      values[0].optionID === -2 ||
+      (values[0].optionID === -3 && values[0].value !== ""));
+  if (hasExtra) return true;
   switch (question.config.dataType) {
     case "freelist": {
       return countUniqueValues(
