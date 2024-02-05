@@ -273,12 +273,12 @@ function* completeValidation() {
     strictModeNavigation,
   } = yield select(selectChangePageProps);
 
-  if (strictModeNavigation) {
-    const result: boolean = yield call(() =>
-      changeLocationValidation("right-to-left")
-    );
-    return result;
-  }
+  // if (strictModeNavigation) {
+  //   const result: boolean = yield call(() =>
+  //     changeLocationValidation("right-to-left")
+  //   );
+  //   return result;
+  // }
 
   const isDisqualificated = disqualificationRuleArr.some(
     (rule: IDisqualificationRule) =>
@@ -306,7 +306,7 @@ function* completeValidation() {
     checkAllPagesLogicalValidity()
   );
 
-  // console.log("resultCheckingRules", resultCheckingRules);
+  console.log("resultCheckingRules", resultCheckingRules);
 
   if (!firstIncompleteQuestion && resultCheckingRules.status) {
     // console.log("all questions and rules are correct");

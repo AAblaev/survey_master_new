@@ -10,8 +10,11 @@ export const getFirstLocationWithDeviation: IGetFirstLocationWithDeviation = (
   firstIncompleteQuestion,
   resultCheckingRules
 ) => {
+  console.log("firstIncompleteQuestion", firstIncompleteQuestion);
+  console.log("resultCheckingRules", resultCheckingRules);
+
   if (firstIncompleteQuestion && !resultCheckingRules.status) {
-    // console.log("getFirstLocationWithDeviation 1");
+    console.log("getFirstLocationWithDeviation 1");
     return {
       pathName: "section",
       title: "section",
@@ -20,8 +23,8 @@ export const getFirstLocationWithDeviation: IGetFirstLocationWithDeviation = (
     };
   }
 
-  if (resultCheckingRules.status && firstIncompleteQuestion) {
-    // console.log("getFirstLocationWithDeviation 2");
+  if (resultCheckingRules.status && Boolean(firstIncompleteQuestion)) {
+    console.log("getFirstLocationWithDeviation 2");
 
     return {
       pathName: "section",
@@ -30,14 +33,16 @@ export const getFirstLocationWithDeviation: IGetFirstLocationWithDeviation = (
       questionIndex: 0,
     };
   }
-  // console.log("getFirstLocationWithDeviation 3");
+  console.log("getFirstLocationWithDeviation 3");
 
   const location: ILocation = {
     pathName: "section",
     title: "section",
     pageIndex: Math.min(
       resultCheckingRules.deviationPageIndex,
-      firstIncompleteQuestion!.pageIndex
+      firstIncompleteQuestion
+        ? firstIncompleteQuestion.pageIndex
+        : resultCheckingRules.deviationPageIndex
     ),
     questionIndex: 0,
   };
