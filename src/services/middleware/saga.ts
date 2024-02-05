@@ -70,130 +70,14 @@ import {
   SET_USER_ANSWER,
   START_SURVEY,
 } from "../redux/types";
+import {
+  imediateCompletion,
+  imediateDisqualification,
+  sagaSendData,
+} from "./api_saga_functions";
 import { getParams } from "./utils";
 
-export type IFetchResult = {
-  data: IData;
-  answers: IBackendAnswer[];
-  [key: string]: unknown;
-};
-
-export type IStartResult = {
-  data: string;
-  [key: string]: unknown;
-};
-
-export type IStoredData = {
-  uid: string;
-  surveyID: string;
-};
-
-function* fetchSurveyData({
-  correctUid = true,
-}: {
-  type: typeof FETCH_SURVEY_DATA;
-  correctUid?: boolean;
-}) {
-  const { fetchPath, path, uid, surveyID, notTheFirstTime } = getParams({
-    correctUid: correctUid,
-  });
-  const params = {
-    surveyID,
-    uid,
-    path,
-  };
-  try {
-    yield put(setLoading(true));
-    const result: IFetchResult = yield call(() => fethData(fetchPath));
-    const data = result.data;
-    yield put(
-      setDataAndParams({
-        data,
-        params,
-        notTheFirstTime: notTheFirstTime && correctUid,
-      })
-    );
-    const { isShowGreetingsPage } = data;
-    const needEmediatlyStartSurvey = !isShowGreetingsPage && !notTheFirstTime;
-
-    yield put(setLoading(false));
-    if (needEmediatlyStartSurvey) {
-      // console.log("needEmediatlyStartSurvey");
-      // console.log("correctUid", correctUid);
-
-      yield put({ type: START_SURVEY, isContinue: false });
-    }
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
-
-function* startSurvey({
-  isContinue,
-}: {
-  type: typeof START_SURVEY;
-  isContinue: boolean;
-}) {
-  const { surveyID } = yield select(selectSurveyID);
-  if (isContinue) {
-    yield put(continuePrevSurvey());
-    return;
-  }
-
-  const isNewAPI = Number.isNaN(Number(surveyID));
-
-  const path = isNewAPI
-    ? `${PATH_NAME}start2/${surveyID}`
-    : `${PATH_NAME}start/${surveyID}`;
-
-  try {
-    yield put(setLoading(true));
-    const result: IStartResult = yield call(() => fethData(path));
-    const newUid = result.data;
-    yield put(startNewSurvey(newUid));
-    localStorage.setItem(
-      "surveyParams",
-      JSON.stringify({ uid: newUid, surveyID: surveyID })
-    );
-    yield put(setLoading(false));
-    // console.log("startSurvey success", result);
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
-
-function* sendSurveyData() {
-  const { uid } = yield select(selectUid);
-  const { userAnswers } = yield select(selectAnswers);
-  const answers = userAnswerParses(userAnswers);
-  const path = PATH_NAME + "answers/?uid=" + uid;
-
-  try {
-    yield put(setLoading(true));
-    yield call(() => sendData(path, answers));
-    yield put(setLoading(false));
-    // console.log("sendSurveyData success", result);
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
-
-function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
+export function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
   // console.log("checkCurrentPageLogicalValidity");
   if (!logicalChecking) {
     return true;
@@ -226,7 +110,7 @@ function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
   return true;
 }
 
-function* checkAllPagesLogicalValidity() {
+export function* checkAllPagesLogicalValidity() {
   const {
     dependentPagesDict,
     logicalValidityCheckRuleDict,
@@ -264,7 +148,7 @@ function* checkAllPagesLogicalValidity() {
   return { status: !findPageWithUnvalidRule, deviationPageIndex };
 }
 
-function* completeValidation() {
+export function* completeValidation() {
   const {
     userAnswers,
     pages,
@@ -336,7 +220,7 @@ function* completeValidation() {
   return !firstIncompleteQuestion && resultCheckingRules.status;
 }
 
-function* completeSurvey() {
+export function* completeSurvey() {
   // проверить все/все посещенные страницы. зависит от strictModeNavigation
 
   // проверка
@@ -349,25 +233,26 @@ function* completeSurvey() {
   }
 }
 
-function* sendAnswers() {
-  const { uid, userAnswers } = yield select(selectAnswersAndUid);
-  const answers = userAnswerParses(userAnswers);
-  const path = PATH_NAME + "answers/?uid=" + uid;
-  try {
-    yield put(setLoading(true));
-    yield call(() => sendData(path, answers));
-    yield put(setLoading(false));
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
+// export function* sendAnswers() {
+//   console.log("!!!!!sendAnswers");
+//   const { uid, userAnswers } = yield select(selectAnswersAndUid);
+//   const answers = userAnswerParses(userAnswers);
+//   const path = PATH_NAME + "answers/?uid=" + uid;
+//   try {
+//     yield put(setLoading(true));
+//     yield call(() => sendData(path, answers));
+//     yield put(setLoading(false));
+//   } catch (e) {
+//     const error = e as AxiosError<{ name: string }>;
+//     const message = error?.response?.data?.name
+//       ? error.response.data.name
+//       : error.message;
+//     yield put(setLoading(false));
+//     yield put(setError({ status: true, message: message }));
+//   }
+// }
 
-function* setAnswer(payload: {
+export function* setAnswer(payload: {
   type: typeof SET_USER_ANSWER;
   payload: { questionID: number };
 }) {
@@ -400,7 +285,7 @@ function* setAnswer(payload: {
   yield put(updateLogicalRyleStatus({ values: result }));
 }
 
-function* changeLocationValidation(direction: ISlideMoveDirection) {
+export function* changeLocationValidation(direction: ISlideMoveDirection) {
   const {
     userAnswers,
     location,
@@ -494,7 +379,7 @@ function* changeLocationValidation(direction: ISlideMoveDirection) {
   return true;
 }
 
-function* sagaChangeLocation({
+export function* sagaChangeLocation({
   targetPageID,
   direction,
 }: {
@@ -519,107 +404,3 @@ function* sagaChangeLocation({
     yield put(goToTheNextPage({ direction, targetPageID: targetPageID }));
   }
 }
-
-function* sagaSendData() {
-  // console.log("sagaSendData");
-  const { uid, userAnswers } = yield select(selectChangePageProps);
-
-  const answers = userAnswerParses(userAnswers);
-  const path = PATH_NAME + "answers/?uid=" + uid;
-  try {
-    yield put(setLoading(true));
-    yield call(() => sendData(path, answers));
-    yield put(setLoading(false));
-    // console.log("sendSurveyData success", result);
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
-
-function* imediateCompletion() {
-  // console.log("imediateCompletion");
-  const { uid, userAnswers, location } = yield select(
-    selectCompleteSurveyProps
-  );
-
-  const answers = userAnswerParses(userAnswers);
-  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
-  const pathComplete = PATH_NAME + "complete/" + uid;
-
-  try {
-    yield put(setLoading(true));
-    yield call(() => sendData(pathSendData, answers));
-    yield call(() => complete(pathComplete, {}));
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: "completion",
-          title: "completion",
-          questionIndex: 0,
-          pageIndex: location.pageIndex,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
-    // clear localStorage
-    localStorage.clear();
-    yield put(setLoading(false));
-  } catch (e) {
-    const error = e as AxiosError<{ name: string }>;
-    const message = error?.response?.data?.name
-      ? error.response.data.name
-      : error.message;
-    yield put(setLoading(false));
-    yield put(setError({ status: true, message: message }));
-  }
-}
-
-function* imediateDisqualification() {
-  // console.log("imediateDisqualification");
-  const { uid, userAnswers, location } = yield select(
-    selectCompleteSurveyProps
-  );
-
-  const answers = userAnswerParses(userAnswers);
-  const pathSendData = PATH_NAME + "answers/?uid=" + uid;
-  const pathComplete = PATH_NAME + "complete/" + uid;
-
-  try {
-    yield put(setLoading(true));
-    yield call(() => sendData(pathSendData, answers));
-    yield call(() => complete(pathComplete, {}));
-    yield put(
-      changeCurretLocation({
-        location: {
-          pathName: "disqualification",
-          title: "disqualification",
-          questionIndex: 0,
-          pageIndex: location.pageIndex,
-        },
-        slideMoveDirection: "right-to-left",
-      })
-    );
-    localStorage.clear();
-
-    yield put(setLoading(false));
-  } catch (err) {
-    console.log("error", err);
-  }
-}
-
-function* mySaga() {
-  yield takeEvery(FETCH_SURVEY_DATA, fetchSurveyData);
-  yield takeEvery(START_SURVEY, startSurvey);
-  yield takeEvery(SEND_SURVEY_DATA, sendSurveyData);
-  yield takeEvery(COMPLETE_SURVEY, completeSurvey);
-  yield takeEvery(SAGA_CHANGE_LOCATION, sagaChangeLocation);
-  yield takeEvery(SET_USER_ANSWER, setAnswer);
-  yield takeEvery(SEND_ANSWERS, sendAnswers);
-}
-
-export default mySaga;

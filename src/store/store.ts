@@ -6,8 +6,8 @@ import {
   Reducer,
 } from "redux";
 import createSagaMiddleware from "redux-saga";
-import mySaga from "../services/middleware/saga";
-import { reducer } from "../services/redux";
+import mySaga from "../services/middleware";
+import { reducer } from "../services/redux/reducers";
 
 // import { IParsedData } from "../utils/getInitState";
 // import {
