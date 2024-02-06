@@ -136,6 +136,10 @@ const FreeView: React.FC<IViewComponentProps> = ({
         id="outlined-multiline-static"
         InputProps={{
           disableUnderline: true,
+          type:
+            simpleType === "integer" || simpleType === "float"
+              ? "number"
+              : "text",
         }}
         hiddenLabel
         placeholder={question.hint}
