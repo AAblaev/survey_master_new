@@ -1,11 +1,7 @@
-import { AxiosError } from "axios";
-import { call, put, select, takeEvery } from "redux-saga/effects";
+import { call, put, select } from "redux-saga/effects";
 import {
-  IBackendAnswer,
-  IData,
   IDependentsQuestionsLogicalValidity,
   IDisqualificationRule,
-  ILocation,
   ILogicalValidityCheckRuleDict,
   IModalMessage,
   IPage,
@@ -20,45 +16,25 @@ import logicalRulesChecking from "../../utils/logicalvalidityChecking";
 import pageQuestionChecking from "../../utils/pageQuestionChecking";
 // import { fakeData } from "../../utils/fakeData";
 // import { fakeData2 } from "../../utils/fakeData2";
-import {
-  findFirstIncompleteQuestion,
-  requiredQuestionsChecking,
-} from "../../utils/questionIsDone";
+import { findFirstIncompleteQuestion } from "../../utils/questionIsDone";
 import {
   disqualificationRuleChecking,
   logicalValidityChecking,
   surveyCompletionChecking,
 } from "../../utils/rule-utils";
-import { userAnswerParses } from "../../utils/userAnswerParser";
-import { complete, fethData, sendData } from "../api";
-import { PATH_NAME } from "../api/const";
+
 import {
-  changeCurretLocation,
-  setError,
-  setLoading,
-  setDataAndParams,
-  continuePrevSurvey,
-  startNewSurvey,
   goToTheNextPage,
   goToThePrevPage,
-  setVisitedPageDocID,
   cancelTransition,
-  surveyCompletionRuleActive,
   updateLogicalRyleStatus,
-  setFirstLocationWithDeviation,
-  setAllPagesVisited,
   cancelCompletion,
 } from "../redux/actions";
 import {
   allLogicalRulesCheckingProps,
   logicalRulesCheckingProps,
-  selectAnswers,
-  selectAnswersAndUid,
   selectChangePageProps,
-  selectCompleteSurveyProps,
   selectLogicValidityData,
-  selectSurveyID,
-  selectUid,
 } from "../redux/selectors";
 import {
   COMPLETE_SURVEY,
@@ -75,10 +51,9 @@ import {
   imediateDisqualification,
   sagaSendData,
 } from "./api_saga_functions";
-import { getParams } from "./utils";
 
 export function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
-  // console.log("checkCurrentPageLogicalValidity");
+  // console.log("!checkCurrentPageLogicalValidity", logicalChecking);
   if (!logicalChecking) {
     return true;
   }
@@ -97,8 +72,10 @@ export function* checkCurrentPageLogicalValidity(logicalChecking: boolean) {
     pageDocID,
     logicalChecking,
   });
+  // console.log("logicCheckingResult", logicCheckingResult);
 
   if (!logicCheckingResult.status) {
+    // console.log("hello");
     yield put(
       updateLogicalRyleStatus({
         values: logicCheckingResult.newLogicalValidityRuleValues,
@@ -115,23 +92,26 @@ export function* checkAllPagesLogicalValidity() {
     dependentPagesDict,
     logicalValidityCheckRuleDict,
     userAnswers,
-    pages,
+    pagesDict,
+    pageMovementLogs,
   } = yield select(allLogicalRulesCheckingProps);
   let findPageWithUnvalidRule = false;
   let deviationPageIndex = 0;
 
-  const newLogicalValidityRuleValues = pages.reduce(
-    (res: ILogicalValidityCheckRuleDict, page: IPage, index: number) => {
+  // console.log("pageMovementLogs", pageMovementLogs);
+
+  const newLogicalValidityRuleValues = pageMovementLogs.reduce(
+    (res: ILogicalValidityCheckRuleDict, docID: IPage["docID"]) => {
       const logicCheckingResult = logicalRulesChecking({
         dependentPagesDict,
         logicalValidityCheckRuleDict,
         userAnswers,
-        pageDocID: page.docID,
+        pageDocID: docID,
         logicalChecking: true,
       });
       if (!logicCheckingResult.status && !findPageWithUnvalidRule) {
         findPageWithUnvalidRule = true;
-        deviationPageIndex = index;
+        deviationPageIndex = docID;
       }
 
       return { ...res, ...logicCheckingResult.newLogicalValidityRuleValues };
@@ -145,7 +125,12 @@ export function* checkAllPagesLogicalValidity() {
     })
   );
 
-  return { status: !findPageWithUnvalidRule, deviationPageIndex };
+  return {
+    status: !findPageWithUnvalidRule,
+    deviationPageIndex: deviationPageIndex
+      ? pagesDict[deviationPageIndex].order
+      : deviationPageIndex,
+  };
 }
 
 export function* completeValidation() {
@@ -154,15 +139,8 @@ export function* completeValidation() {
     pages,
     surveyCompletionRuleArr,
     disqualificationRuleArr,
-    strictModeNavigation,
+    pageMovementLogs,
   } = yield select(selectChangePageProps);
-
-  // if (strictModeNavigation) {
-  //   const result: boolean = yield call(() =>
-  //     changeLocationValidation("right-to-left")
-  //   );
-  //   return result;
-  // }
 
   const isDisqualificated = disqualificationRuleArr.some(
     (rule: IDisqualificationRule) =>
@@ -181,16 +159,18 @@ export function* completeValidation() {
     yield imediateCompletion();
     return false;
   }
-
+  // console.log("completeValidation", pageMovementLogs);
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
-    pages,
+    pages.filter((page: IPage) =>
+      (pageMovementLogs as string[]).includes(String(page.docID))
+    ) as IPage[],
     userAnswers
   );
   const resultCheckingRules: IResultCheckingRules = yield call(() =>
     checkAllPagesLogicalValidity()
   );
 
-  console.log("resultCheckingRules", resultCheckingRules);
+  // console.log("resultCheckingRules", resultCheckingRules);
 
   if (!firstIncompleteQuestion && resultCheckingRules.status) {
     // console.log("all questions and rules are correct");
@@ -202,20 +182,14 @@ export function* completeValidation() {
     resultCheckingRules
   );
 
+  // console.log("firstLocationWithDeviation", firstLocationWithDeviation);
+
   yield put(
     cancelCompletion({
       location: firstLocationWithDeviation,
       modalMessage: { code: 302, type: "completion" },
     })
   );
-
-  // yield put(
-  //   setFirstLocationWithDeviation({ location: firstLocationWithDeviation })
-  // );
-  // yield put(setAllPagesVisited());
-
-  // найти первую стр с отклонением
-  // console.log("2");
 
   return !firstIncompleteQuestion && resultCheckingRules.status;
 }
@@ -232,25 +206,6 @@ export function* completeSurvey() {
     yield imediateCompletion();
   }
 }
-
-// export function* sendAnswers() {
-//   console.log("!!!!!sendAnswers");
-//   const { uid, userAnswers } = yield select(selectAnswersAndUid);
-//   const answers = userAnswerParses(userAnswers);
-//   const path = PATH_NAME + "answers/?uid=" + uid;
-//   try {
-//     yield put(setLoading(true));
-//     yield call(() => sendData(path, answers));
-//     yield put(setLoading(false));
-//   } catch (e) {
-//     const error = e as AxiosError<{ name: string }>;
-//     const message = error?.response?.data?.name
-//       ? error.response.data.name
-//       : error.message;
-//     yield put(setLoading(false));
-//     yield put(setError({ status: true, message: message }));
-//   }
-// }
 
 export function* setAnswer(payload: {
   type: typeof SET_USER_ANSWER;
@@ -296,7 +251,7 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
     logicalValidityCheckRuleDict,
     strictModeNavigation,
   } = yield select(selectChangePageProps);
-
+  // console.log("changeLocationValidation");
   const currentPage = pages[location.pageIndex];
   const {
     questionChecking,
@@ -307,11 +262,16 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
 
   try {
     // проверка на дисквалификацию
+
     const isDisqualificated = disqualificationChecking
       ? disqualificationRuleArr.some((rule: IDisqualificationRule) =>
           disqualificationRuleChecking(userAnswers, rule)
         )
       : false;
+    // console.log(
+    //   "changeLocationValidation isDisqualificated",
+    //   isDisqualificated
+    // );
 
     if (isDisqualificated) {
       throw { code: 401, type: "disqualification" };
@@ -326,6 +286,7 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
     if (isComplete) {
       throw { code: 301, type: "completion" };
     }
+    // console.log("changeLocationValidation isComplete", isComplete);
 
     // валидация обязательных вопросов
     const questionCheckingResult = pageQuestionChecking({
@@ -333,6 +294,11 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
       userAnswers,
       questionChecking,
     });
+
+    // console.log(
+    //   "changeLocationValidation questionCheckingResult",
+    //   questionCheckingResult
+    // );
 
     if (!questionCheckingResult.status) {
       throw questionCheckingResult.modalMessage;
@@ -343,6 +309,7 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
       checkCurrentPageLogicalValidity(logicalChecking)
     );
 
+    // console.log("checkCurrentPageLogicalValidity!!!", logicCheckingResult);
     if (!logicCheckingResult) {
       throw {
         code: 202,

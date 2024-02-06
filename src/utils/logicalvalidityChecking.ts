@@ -26,6 +26,13 @@ const logicalRulesChecking: ILogicalRulesChecking = ({
   userAnswers,
   logicalChecking,
 }) => {
+  // console.log("pageDocID", {
+  //   pageDocID,
+  //   dependentPagesDict,
+  //   logicalValidityCheckRuleDict,
+  //   userAnswers,
+  //   logicalChecking,
+  // });
   if (!logicalChecking) {
     return {
       status: true,
@@ -41,6 +48,7 @@ const logicalRulesChecking: ILogicalRulesChecking = ({
     : [];
 
   if (logicalValidityRuleDocIDs.length === 0) {
+    // console.log("logicalValidityRuleDocIDs.length === 0");
     return {
       status: true,
       modalMessage: { code: 100, type: "success" },
@@ -67,6 +75,8 @@ const logicalRulesChecking: ILogicalRulesChecking = ({
   ).every((rule) => rule.status);
 
   if (allLogicRulesAreSuccess) {
+    // console.log("allLogicRulesAreSuccess");
+
     return {
       status: true,
       modalMessage: { code: 100, type: "success" },

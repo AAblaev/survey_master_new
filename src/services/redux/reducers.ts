@@ -81,7 +81,7 @@ const initialState: IState = {
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
-  console.log(action.type);
+  // console.log(action.type);
   // console.log(state);
 
   switch (action.type) {
@@ -120,6 +120,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           (item) => item.logicRule
         )
       );
+
+      // console.log("dependentPagesDict", dependentPagesDict);
 
       const strictModeNavigation =
         !isShowButtonBack ||

@@ -44,7 +44,7 @@ const Notifications: React.FC<INotifications> = ({
               severity="error"
               onClose={() => handleClose(rule.docID)}
             >
-              {rule.title}
+              {rule.title ? rule.title : "ошибка"}
             </Alert>
           ))}
         </div>
