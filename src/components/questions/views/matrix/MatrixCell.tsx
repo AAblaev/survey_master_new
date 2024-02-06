@@ -126,6 +126,10 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
           InputProps={{
             style: { height: "100%" },
             disableUnderline: true,
+            type:
+              simpleType === "integer" || simpleType === "float"
+                ? "number"
+                : "text",
           }}
           hiddenLabel
           fullWidth

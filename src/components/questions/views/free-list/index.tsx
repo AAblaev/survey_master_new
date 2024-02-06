@@ -238,6 +238,10 @@ const FreeListView: React.FC<IViewComponentProps> = ({
                     </Tooltip>
                   </InputAdornment>
                 ),
+                type:
+                  simpleType === "integer" || simpleType === "float"
+                    ? "number"
+                    : "text",
               }}
               color="primary"
               variant="filled"
