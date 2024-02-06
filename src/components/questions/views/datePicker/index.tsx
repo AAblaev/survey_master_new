@@ -12,7 +12,11 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { ruRU } from "@mui/x-date-pickers/locales";
 import { css } from "@emotion/react";
-import { dateParser, dateParserForDayjs } from "../../../../utils/dateParser";
+import {
+  dateParser,
+  dateParserForDayjs,
+  getDateRange,
+} from "../../../../utils/dateParser";
 import { IViewComponentProps } from "../..";
 
 const ruLocale =
@@ -36,7 +40,7 @@ const DatePicker: React.FC<IViewComponentProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { isSimpleDateLimit, simpleDateMax, simpleDateMin } = config;
+  const { isSimpleDateLimit, simpleDateMax, simpleDateMin, dateType } = config;
 
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const showAlert =
@@ -53,12 +57,19 @@ const DatePicker: React.FC<IViewComponentProps> = ({
 
   const parsedValue = dateParserForDayjs(value);
 
-  const minDate = isSimpleDateLimit
-    ? dateParserForDayjs(simpleDateMin!.split(" ")[0])
-    : dayjs("1901-01-01");
-  const maxDate = isSimpleDateLimit
-    ? dateParserForDayjs(simpleDateMax!.split(" ")[0])
-    : dayjs("2100-12-31");
+  // const minDate = isSimpleDateLimit
+  //   ? dateParserForDayjs(simpleDateMin!.split(" ")[0])
+  //   : dayjs("1000-01-01");
+  // const maxDate = isSimpleDateLimit
+  //   ? dateParserForDayjs(simpleDateMax!.split(" ")[0])
+  //   : dayjs("2100-12-31");
+
+  const [minDate, maxDate] = getDateRange({
+    isSimpleDateLimit,
+    dateType: dateType as number,
+    simpleDateMax,
+    simpleDateMin,
+  });
 
   const onChange = (newValue: dayjs.Dayjs | null) => {
     const value_str = dateParser(newValue ? newValue.toDate() : null) ?? "";

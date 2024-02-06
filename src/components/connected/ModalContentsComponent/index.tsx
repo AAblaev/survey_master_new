@@ -118,7 +118,7 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
           <ModalContent>
             <div style={{ display: "flex", gap: "20px" }}>
               <Button
-                key="continue"
+                key="complete"
                 variant="contained"
                 onClick={() => {
                   completeSurvey();

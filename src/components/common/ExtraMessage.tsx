@@ -5,6 +5,7 @@ import { IConfig } from "../../types";
 import { limitMessageCss, limitMessageWrapperCss } from "../questions/sc";
 import ErrorIcon from "@mui/icons-material/Error";
 import { css } from "@emotion/react";
+import { getDateRangeMessage } from "../../utils/dateParser";
 
 type IExtraMessageProps = {
   config: IConfig;
@@ -30,6 +31,7 @@ const ExtraMessage: React.FC<IExtraMessageProps> = ({
     limit,
     limitValue,
     dataType,
+    dateType,
     requiredRowsCount,
     requiredColunmsCount,
     simpleType,
@@ -66,6 +68,8 @@ const ExtraMessage: React.FC<IExtraMessageProps> = ({
       result += `Значение должно быть не менее ${
         simpleDateMin!.split(" ")[0]
       } и не более ${simpleDateMax!.split(" ")[0]}. `;
+    } else {
+      result += getDateRangeMessage(dateType as number);
     }
 
     if (dataType === "freelist" && isRequired) {

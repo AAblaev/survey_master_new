@@ -9,6 +9,7 @@ import {
   tdCss,
   titleTextFieldCellCss,
 } from "./sc";
+import { REGEXP_DICT } from "../../../../utils/validation";
 
 type IMatixCellProps = {
   rowDocID: number; // dimension0
@@ -30,6 +31,7 @@ type ITextFieldCellProps = {
   isMultiline: boolean;
   value?: IValue;
   mobileTabularView: boolean;
+  simpleType: ISimpleType;
 };
 
 type IBoolCellProps = {
@@ -68,6 +70,7 @@ const MatrixCell: React.FC<IMatixCellProps> = ({
 
   return (
     <TextFieldCell
+      simpleType={simpleType}
       rowDocID={rowDocID}
       columnDocID={columnDocID}
       isMultiline={isMultiline}
@@ -105,6 +108,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
   value,
   isMultiline,
   mobileTabularView,
+  simpleType,
 }) => {
   const storeTextValue = value ? value.value : "";
   const [textValue, setTextValue] = useState(storeTextValue);
@@ -132,7 +136,14 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
           css={borderColorMatrixCss(!isValid)}
           value={textValue}
           onChange={(e) => {
-            setTextValue(e.target.value);
+            const value = e.target.value;
+            if (
+              (simpleType === "integer" || simpleType === "float") &&
+              !REGEXP_DICT["float"].test(value)
+            ) {
+              return;
+            }
+            setTextValue(value);
           }}
           onBlur={(e) => {
             handleBlur(rowDocID, columnDocID, e.target.value);

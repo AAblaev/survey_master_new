@@ -147,6 +147,8 @@ const Desktop: React.FC<IDesktop> = ({
             perfectScrollbarContainerRef.current = ref;
           }}
         >
+          <div style={{ height: "15px" }}></div>
+
           {pathName !== "greeting" && (
             <div className="adaptive-paddings">
               <ProgressLinear

@@ -98,7 +98,12 @@ const mapStateToProps = (state: IState) => {
     needScrolling,
     styles,
     visitedPageDocIDList,
+    pageMovementLogs,
   } = state;
+  //
+  // console.log("visitedPageDocIDList", visitedPageDocIDList);
+  // console.log("pageMovementLogs", pageMovementLogs);
+
   const {
     globalStyle: {
       brandColor,

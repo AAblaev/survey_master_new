@@ -121,6 +121,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         )
       );
 
+      // console.log("dependentPagesDict", dependentPagesDict);
+
       const strictModeNavigation =
         !isShowButtonBack ||
         !isShowPageList ||

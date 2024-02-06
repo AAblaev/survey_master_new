@@ -7,7 +7,11 @@ import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { ruRU } from "@mui/x-date-pickers/locales";
 import { css } from "@emotion/react";
-import { dateParser, dateParserForDayjs } from "../../../../utils/dateParser";
+import {
+  dateParser,
+  dateParserForDayjs,
+  getDateRange,
+} from "../../../../utils/dateParser";
 
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
@@ -73,7 +77,7 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
   userAnswer,
 }) => {
   const { docID, config } = question;
-  const { isSimpleDateLimit, simpleDateMax, simpleDateMin } = config;
+  const { isSimpleDateLimit, simpleDateMax, simpleDateMin, dateType } = config;
   const options = config.options!;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
 
@@ -97,7 +101,6 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
 
     if (isFocused) return;
 
-    console.log("onChange");
     const newValues = isFieldEmpty
       ? [
           ...values,
@@ -192,12 +195,12 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
     setAnswer({ questionID: docID, values: newValue });
   };
 
-  const minDate = isSimpleDateLimit
-    ? dateParserForDayjs(simpleDateMin!.split(" ")[0])
-    : dayjs("1901-01-01");
-  const maxDate = isSimpleDateLimit
-    ? dateParserForDayjs(simpleDateMax!.split(" ")[0])
-    : dayjs("2100-12-31");
+  const [minDate, maxDate] = getDateRange({
+    isSimpleDateLimit,
+    dateType: dateType as number,
+    simpleDateMax,
+    simpleDateMin,
+  });
 
   return (
     <LocalizationProvider

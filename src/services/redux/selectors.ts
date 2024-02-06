@@ -48,6 +48,7 @@ export const selectChangePageProps = (state: IState) => ({
   dependentPagesDict: state.dependentPagesDict,
   logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
   strictModeNavigation: state.strictModeNavigation,
+  pageMovementLogs: state.pageMovementLogs,
 });
 
 export const selectCompleteSurveyProps = (state: IState) => ({
@@ -65,7 +66,9 @@ export const logicalRulesCheckingProps = (state: IState) => {
   return {
     logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
     dependentQuestionsDict: state.dependentQuestionsDict,
+    dependentPagesDict: state.dependentPagesDict,
     userAnswers: state.userAnswers,
+    pageMovementLogs: state.pageMovementLogs,
     pageDocID: currentPage?.docID,
   };
 };
@@ -75,6 +78,8 @@ export const allLogicalRulesCheckingProps = (state: IState) => {
     logicalValidityCheckRuleDict: state.logicalValidityCheckRuleDict,
     dependentPagesDict: state.dependentPagesDict,
     userAnswers: state.userAnswers,
+    pageMovementLogs: state.pageMovementLogs,
+    pagesDict: state.pagesDict,
     pages: state.data!.pages,
   };
 };

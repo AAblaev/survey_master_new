@@ -130,11 +130,11 @@ const DropDownView: React.FC<IViewComponentProps> = ({
           displayEmpty={true}
           renderValue={(value: any) => {
             return (
-              <span css={renderValueCss(value === "")}>
+              <div css={renderValueCss(value === "")}>
                 {value === "" || value === EXTRA_ANSWER.UNABLE
                   ? optionsDict["default"].title
                   : optionsDict[value].title}
-              </span>
+              </div>
             );
           }}
           css={selectCss}
