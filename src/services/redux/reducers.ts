@@ -78,6 +78,7 @@ const initialState: IState = {
   pageMovementLogs: [],
   strictModeNavigation: false,
   styles: DEFAULT_STYLES,
+  timerTime: 6000,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -98,6 +99,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         isShowGreetingsPage,
         isShowButtonBack,
         colorScheme,
+        limitTime,
+        limitTimeLeft,
       } = data;
 
       const userAnswers = answersParsed(answers);
@@ -167,6 +170,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           // visitedPageDocIDList: pageMovementLogs,
           modalVisible: true,
           styles,
+          timerTime: limitTimeLeft,
         };
       }
 
@@ -202,6 +206,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       const strictModeNavigation = state.strictModeNavigation;
       const firtPageIsSurvey =
         isShowPageList && isShowButtonBack && !strictModeNavigation;
+      const limitTime = state.data!.limitTime;
 
       const nextLocation: ILocation = {
         pathName: firtPageIsSurvey ? "survey" : "section",
@@ -227,6 +232,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         location: nextLocation,
         slideMoveDirection: slideMoveDirection,
         pageMovementLogs: newPageMovementLogs,
+        timerTime: limitTime,
       };
     }
 

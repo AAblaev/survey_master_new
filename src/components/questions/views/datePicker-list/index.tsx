@@ -173,7 +173,7 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
     const validationResult = validation({
       value,
       simpleType: "datetime",
-      isSimpleDateLimit,
+      isSimpleDateLimit: true,
       simpleDateMin,
       simpleDateMax,
     });
