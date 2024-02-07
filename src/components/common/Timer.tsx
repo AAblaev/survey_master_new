@@ -38,7 +38,7 @@ const Timer: React.FC<ITimerProps> = ({
     return [diffInHours >= 24, diffInHours >= 1, true, true];
   }, [diffInHours]);
   return (
-    <div css={{ marginLeft: "auto" }}>
+    <div css={{ marginRight: "auto" }}>
       <FlipClockCountdown
         to={limitTo}
         renderMap={countdownRenderMap}
@@ -58,7 +58,6 @@ const Timer: React.FC<ITimerProps> = ({
         }}
         showLabels={false}
         onComplete={() => {
-          console.log("countdown complete");
           completeSurveyByTimer();
         }}
       />
