@@ -57,12 +57,12 @@ export const getDateRange = (payload: {
   }
 };
 
-const formatDate = (date: Date): string => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-};
+// const formatDate = (date: Date): string => {
+//   const day = String(date.getDate()).padStart(2, "0");
+//   const month = String(date.getMonth() + 1).padStart(2, "0");
+//   const year = date.getFullYear();
+//   return `${day}.${month}.${year}`;
+// };
 
 export const getDateRangeMessage = (dateType: number) => {
   const today = new Date();
@@ -82,7 +82,7 @@ export const getDateRangeMessage = (dateType: number) => {
       return `Пожалуйста, выберите будущую дату. `;
     }
     case 4: {
-      return `Пожалуйста, выберите будущую дату, включая сегодня`;
+      return `Пожалуйста, выберите будущую дату, включая сегодня `;
     }
     case 0:
     default:

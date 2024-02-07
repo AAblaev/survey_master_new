@@ -265,7 +265,6 @@ const countUniqueValues = (
   field: string,
   value: number = 1
 ) => {
-  // console.log("value", value);
   const uniqueValuesSet = new Set();
   for (const obj of objects) {
     const value = obj[field];
@@ -279,6 +278,7 @@ export const requiredRowsEndColumnsChecking = (
   question: IQuestion,
   values: IAnswer["values"] = []
 ): boolean => {
+  if (values.length === 0) return true;
   const hasExtra =
     values.values.length > 0 &&
     (values[0].optionID === -1 ||
@@ -287,25 +287,26 @@ export const requiredRowsEndColumnsChecking = (
   if (hasExtra) return true;
   switch (question.config.dataType) {
     case "freelist": {
-      return countUniqueValues(
-        values,
-        "optionID",
-        question.config.requiredRowsCount
-      );
+      const requiredRowsCount = question.config.requiredRowsCount
+        ? question.config.requiredRowsCount
+        : question.config.options!.filter((option) => option.dimension === 0)
+            .length;
+      return countUniqueValues(values, "optionID", requiredRowsCount);
     }
     case "matrix": {
-      return (
-        countUniqueValues(
-          values,
-          "dimension1",
-          question.config.requiredRowsCount
-        ) &&
-        countUniqueValues(
-          values,
-          "dimension0",
-          question.config.requiredColunmsCount
-        )
-      );
+      const requiredRowsCount = question.config.requiredRowsCount
+        ? question.config.requiredRowsCount
+        : question.config.options!.filter((option) => option.dimension === 0)
+            .length;
+      const requiredColunmsCount = question.config.requiredColunmsCount
+        ? question.config.requiredColunmsCount
+        : question.config.options!.filter((option) => option.dimension === 1)
+            .length;
+      const result =
+        countUniqueValues(values, "dimension1", requiredRowsCount) &&
+        countUniqueValues(values, "dimension0", requiredColunmsCount);
+
+      return result;
     }
   }
 
