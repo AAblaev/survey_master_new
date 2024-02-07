@@ -18,6 +18,7 @@ export type IData = {
   disqualificationPage: string;
   completionPage: string;
   limitTime: number;
+  limitTimeLeft: number;
   pages: IPage[];
   buttonBackCaption: string;
   buttonFinishCaption: string;
@@ -201,6 +202,7 @@ export type IPathName =
   | "survey"
   | "section"
   | "completion"
+  | "completion_by_timer"
   | "disqualification";
 
 export type ILocation = {
@@ -478,4 +480,5 @@ export type IState = {
   pageMovementLogs: string[];
   strictModeNavigation: boolean;
   styles: IStyles;
+  timerTime: number;
 };

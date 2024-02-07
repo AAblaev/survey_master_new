@@ -6,6 +6,7 @@ import { IData } from "../../types";
 type ITimerProps = {
   limitTime: IData["limitTime"];
   brandColor: string;
+  completeSurveyByTimer: () => void;
 };
 //
 // {(pathName === "survey" || pathName === "section") &&
@@ -13,12 +14,16 @@ type ITimerProps = {
 //
 //   )}
 
-const Timer: React.FC<ITimerProps> = ({ limitTime, brandColor }) => {
+const Timer: React.FC<ITimerProps> = ({
+  limitTime,
+  brandColor,
+  completeSurveyByTimer,
+}) => {
   // const isLimitTimeForCompletion = true;
   // const limitTime = 3000;
   const limitTo = useMemo(() => {
     const date = new Date();
-    date.setSeconds(date.getSeconds() + DEFAULT_LIMIT_TIME);
+    date.setSeconds(date.getSeconds() + limitTime);
     return date;
   }, [limitTime]);
   const diffInHours = useMemo(() => {
@@ -54,6 +59,7 @@ const Timer: React.FC<ITimerProps> = ({ limitTime, brandColor }) => {
         showLabels={false}
         onComplete={() => {
           console.log("countdown complete");
+          completeSurveyByTimer();
         }}
       />
     </div>

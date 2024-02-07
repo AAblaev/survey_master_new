@@ -5,6 +5,7 @@ import { IState } from "./types";
 import { Dispatch } from "redux";
 import {
   changeCurretLocation,
+  completeByTymer,
   selectSection,
   setNeedScrolling,
 } from "./services/redux/actions";
@@ -13,6 +14,7 @@ import ProgressBar from "./components/common/ProgressBar";
 import Desktop from "./components/Desktop";
 import { contentCss, desctopCss } from "./sc";
 import {
+  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";
@@ -35,6 +37,8 @@ const App: React.FC<IApp> = ({
   backgroundColor,
   appBarStyles,
   isShowSurveyName,
+  completeSurveyByTimer,
+  timerTime,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -80,6 +84,8 @@ const App: React.FC<IApp> = ({
         backgroundColor={backgroundColor}
         appBarStyles={appBarStyles}
         isShowSurveyName={isShowSurveyName}
+        completeSurveyByTimer={completeSurveyByTimer}
+        timerTime={timerTime}
       />
     </div>
   );
@@ -99,6 +105,7 @@ const mapStateToProps = (state: IState) => {
     styles,
     visitedPageDocIDList,
     pageMovementLogs,
+    timerTime,
   } = state;
   //
   // console.log("visitedPageDocIDList", visitedPageDocIDList);
@@ -128,6 +135,7 @@ const mapStateToProps = (state: IState) => {
     backgroundColor,
     appBarStyles,
     isShowSurveyName,
+    timerTime,
   };
 };
 
@@ -136,19 +144,7 @@ const mapDispathToProps = (dispatch: Dispatch) => {
     fetchData: () => dispatch({ type: FETCH_SURVEY_DATA }),
     closeModal: () => dispatch({ type: TOGGLE_MODAL_VISIBLE, payload: false }),
     selectPage: (pageDocID: string) => dispatch(selectSection({ pageDocID })),
-    // selectPage: (index: number) => {
-    //   dispatch(
-    //     changeCurretLocation({
-    //       location: {
-    //         pageIndex: index,
-    //         pathName: "section",
-    //         questionIndex: 0,
-    //         title: "section",
-    //       },
-    //       slideMoveDirection: "right-to-left",
-    //     })
-    //   );
-    // },
+    completeSurveyByTimer: () => dispatch(completeByTymer()),
     setScrolling: (value: boolean) => dispatch(setNeedScrolling(value)),
   };
 };

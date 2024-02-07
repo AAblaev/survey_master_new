@@ -36,16 +36,7 @@ import {
   selectChangePageProps,
   selectLogicValidityData,
 } from "../redux/selectors";
-import {
-  COMPLETE_SURVEY,
-  FETCH_SURVEY_DATA,
-  SAGA_CHANGE_CURRENT_PAGE,
-  SAGA_CHANGE_LOCATION,
-  SEND_ANSWERS,
-  SEND_SURVEY_DATA,
-  SET_USER_ANSWER,
-  START_SURVEY,
-} from "../redux/types";
+import { SAGA_CHANGE_LOCATION, SET_USER_ANSWER } from "../redux/types";
 import {
   imediateCompletion,
   imediateDisqualification,
@@ -154,15 +145,16 @@ export function* completeValidation() {
   const isComplete = surveyCompletionRuleArr.some(
     (rule: ISurveyCompletionRule) => surveyCompletionChecking(userAnswers, rule)
   );
+  // console.log("isComplete", isComplete);
 
   if (isComplete) {
     yield imediateCompletion();
     return false;
   }
-  // console.log("completeValidation", pageMovementLogs);
+  console.log("completeValidation", pageMovementLogs);
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
     pages.filter((page: IPage) =>
-      (pageMovementLogs as string[]).includes(String(page.docID))
+      (pageMovementLogs as number[]).includes(page.docID)
     ) as IPage[],
     userAnswers
   );
@@ -170,6 +162,7 @@ export function* completeValidation() {
     checkAllPagesLogicalValidity()
   );
 
+  // console.log("firstIncompleteQuestion", firstIncompleteQuestion);
   // console.log("resultCheckingRules", resultCheckingRules);
 
   if (!firstIncompleteQuestion && resultCheckingRules.status) {
@@ -370,4 +363,8 @@ export function* sagaChangeLocation({
   } else {
     yield put(goToTheNextPage({ direction, targetPageID: targetPageID }));
   }
+}
+
+export function* completeByTymer() {
+  yield imediateCompletion(true);
 }

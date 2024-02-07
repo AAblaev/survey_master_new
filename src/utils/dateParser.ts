@@ -73,16 +73,16 @@ export const getDateRangeMessage = (dateType: number) => {
 
   switch (dateType) {
     case 1: {
-      return `Значение должно быть меньше ${formatDate(today)}. `;
+      return `Пожалуйста, выберите прошедшую дату. `;
     }
     case 2: {
-      return `Значение должно быть меньше ${formatDate(tomorrow)}. `;
+      return `Пожалуйста, выберите прошедшую дату, включая сегодня. `;
     }
     case 3: {
-      return `Значение должно быть больше ${formatDate(today)}. `;
+      return `Пожалуйста, выберите будущую дату. `;
     }
     case 4: {
-      return `Значение должно быть больше ${formatDate(yesterday)}. `;
+      return `Пожалуйста, выберите будущую дату, включая сегодня`;
     }
     case 0:
     default:

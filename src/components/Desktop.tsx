@@ -46,7 +46,12 @@ type IDesktop = {
   backgroundColor: string;
   appBarStyles: IStyles["componentsStyle"]["appBar"];
   isShowSurveyName: boolean;
+  completeSurveyByTimer: () => void;
+  timerTime: number;
 };
+
+const completionByTimerPage =
+  "<p><strong>Опрос был завершён из-за истечения отведённого времени.</strong></p><p><strong>Благодарим Вас за честные ответы и потраченное время!</strong></p>";
 
 const Desktop: React.FC<IDesktop> = ({
   data,
@@ -60,6 +65,8 @@ const Desktop: React.FC<IDesktop> = ({
   backgroundColor,
   appBarStyles,
   isShowSurveyName,
+  completeSurveyByTimer,
+  timerTime,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -71,7 +78,6 @@ const Desktop: React.FC<IDesktop> = ({
     disqualificationPage,
     name,
     isLimitTimeForCompletion,
-    limitTime,
     isShowQuestionsCount,
   } = data;
 
@@ -109,6 +115,9 @@ const Desktop: React.FC<IDesktop> = ({
         />
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "completion_by_timer")
+      return <InfoPage html={completionByTimerPage} />;
+
     if (pathName === "disqualification")
       return <InfoPage html={disqualificationPage} />;
 
@@ -136,7 +145,13 @@ const Desktop: React.FC<IDesktop> = ({
           </Typography>
         )}
 
-        {false && <Timer limitTime={limitTime} brandColor={brandColor} />}
+        {showTimer && (
+          <Timer
+            limitTime={timerTime}
+            brandColor={brandColor}
+            completeSurveyByTimer={completeSurveyByTimer}
+          />
+        )}
       </AppBar>
 
       <div css={contentCss}>

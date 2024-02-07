@@ -19,7 +19,11 @@ import {
   selectSurveyID,
   selectUid,
 } from "../redux/selectors";
-import { FETCH_SURVEY_DATA, START_SURVEY } from "../redux/types";
+import {
+  COMPLETE_SURVEY,
+  FETCH_SURVEY_DATA,
+  START_SURVEY,
+} from "../redux/types";
 import { getParams } from "./utils";
 
 export type IFetchResult = {
@@ -164,7 +168,7 @@ export function* sagaSendData() {
   }
 }
 
-export function* imediateCompletion() {
+export function* imediateCompletion(byTimer?: boolean) {
   // console.log("imediateCompletion");
   const { uid, userAnswers, location } = yield select(
     selectCompleteSurveyProps
@@ -172,7 +176,8 @@ export function* imediateCompletion() {
 
   const answers = userAnswerParses(userAnswers);
   const pathSendData = PATH_NAME + "answers/?uid=" + uid;
-  const pathComplete = PATH_NAME + "complete/" + uid;
+  const by_timer_path = byTimer ? "?btm=1" : "";
+  const pathComplete = PATH_NAME + "complete/" + uid + by_timer_path;
 
   try {
     yield put(setLoading(true));
@@ -181,8 +186,8 @@ export function* imediateCompletion() {
     yield put(
       changeCurretLocation({
         location: {
-          pathName: "completion",
-          title: "completion",
+          pathName: byTimer ? "completion_by_timer" : "completion",
+          title: byTimer ? "completion_by_timer" : "completion",
           questionIndex: 0,
           pageIndex: location.pageIndex,
         },

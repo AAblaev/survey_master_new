@@ -71,6 +71,7 @@ const DatePicker: React.FC<IViewComponentProps> = ({
     simpleDateMin,
   });
 
+  console.log();
   const onChange = (newValue: dayjs.Dayjs | null) => {
     const value_str = dateParser(newValue ? newValue.toDate() : null) ?? "";
 
@@ -129,7 +130,7 @@ const DatePicker: React.FC<IViewComponentProps> = ({
     const validationResult = validation({
       value,
       simpleType: "datetime",
-      isSimpleDateLimit,
+      isSimpleDateLimit: true,
       simpleDateMin,
       simpleDateMax,
     });
