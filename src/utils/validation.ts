@@ -161,10 +161,6 @@ export const validation = (payload: {
       Number(maxDay)
     );
 
-    // console.log(minDate);
-    // console.log(maxDate);
-    // console.log(valueDate);
-
     const minDateStr = minDate.toLocaleString("ru-RU", {
       year: "numeric",
       month: "numeric",
@@ -265,7 +261,6 @@ const countUniqueValues = (
   field: string,
   value: number = 1
 ) => {
-  // console.log("value", value);
   const uniqueValuesSet = new Set();
   for (const obj of objects) {
     const value = obj[field];
@@ -279,33 +274,47 @@ export const requiredRowsEndColumnsChecking = (
   question: IQuestion,
   values: IAnswer["values"] = []
 ): boolean => {
+  if (values.length === 0) return true;
+  // console.log("values", values);
   const hasExtra =
-    values.values.length > 0 &&
+    values.length > 0 &&
     (values[0].optionID === -1 ||
       values[0].optionID === -2 ||
       (values[0].optionID === -3 && values[0].value !== ""));
+  //
+  // console.log("values.values.length > 0", values.length > 0);
+  // console.log("values[0].optionID === -1", values[0].optionID === -1);
+  // console.log("values[0].optionID === -2", values[0].optionID === -1);
+  // console.log(
+  //   "values[0].optionID === -3 && values[0].value !== ",
+  //   values[0].optionID === -3 && values[0].value !== ""
+  // );
+  //
+  // console.log("hasExtra", hasExtra);
+
   if (hasExtra) return true;
   switch (question.config.dataType) {
     case "freelist": {
-      return countUniqueValues(
-        values,
-        "optionID",
-        question.config.requiredRowsCount
-      );
+      const requiredRowsCount = question.config.requiredRowsCount
+        ? question.config.requiredRowsCount
+        : question.config.options!.filter((option) => option.dimension === 0)
+            .length;
+      return countUniqueValues(values, "optionID", requiredRowsCount);
     }
     case "matrix": {
-      return (
-        countUniqueValues(
-          values,
-          "dimension1",
-          question.config.requiredRowsCount
-        ) &&
-        countUniqueValues(
-          values,
-          "dimension0",
-          question.config.requiredColunmsCount
-        )
-      );
+      const requiredRowsCount = question.config.requiredRowsCount
+        ? question.config.requiredRowsCount
+        : question.config.options!.filter((option) => option.dimension === 0)
+            .length;
+      const requiredColunmsCount = question.config.requiredColunmsCount
+        ? question.config.requiredColunmsCount
+        : question.config.options!.filter((option) => option.dimension === 1)
+            .length;
+      const result =
+        countUniqueValues(values, "dimension1", requiredRowsCount) &&
+        countUniqueValues(values, "dimension0", requiredColunmsCount);
+
+      return result;
     }
   }
 

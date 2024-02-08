@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { IAnswer, IQuestion } from "../../../../types";
 import { optionCss, optionsCss } from "./scale-sc";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarIcon from "@mui/icons-material/Star";
@@ -36,8 +35,6 @@ const ScaleView: React.FC<IViewComponentProps> = ({
     selected !== null
       ? options.findIndex((item) => item.docID === selected.optionID)
       : null;
-  // const orientation = "horizontal" as IOrientation;
-  // const view = "smiles-monochrome" as IView;
 
   const onClick = (item: typeof options[0]) => {
     const values =
@@ -46,7 +43,7 @@ const ScaleView: React.FC<IViewComponentProps> = ({
         : [
             {
               optionID: item.docID,
-              value: "",
+              value: String(item.title),
               isFocused: false,
               validationResult: { isValid: true, message: "success" },
             },
