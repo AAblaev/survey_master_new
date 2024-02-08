@@ -264,9 +264,9 @@ export interface ISelectedOptionEvent extends IBaseEvent {
   type: "selectedOption";
   questionID: number;
   optionID: number; // для selectedOptionEvent
-  dimention0: number; // для selectedOptionEvent
-  dimention1: number; // для selectedOptionEvent
-  dimention2: number; // для selectedOptionEvent
+  dimention0?: number; // для selectedOptionEvent
+  dimention1?: number; // для selectedOptionEvent
+  dimention2?: number; // для selectedOptionEvent
 }
 export interface IStruggledToAnswerEvent extends IBaseEvent {
   type: "struggledToAnswer";
@@ -327,6 +327,112 @@ export interface ILogicalValidityCheckRule extends IBaseRule {
   type: "logicalValidityCheckRule";
   pageID: number;
 }
+
+// const oldRules = [
+//   {
+//     docID: 301,
+//     type: "logicalValidityCheckRule",
+//     pageID: 526,
+//     targetPageID: 0,
+//     visibleQuestionID: 0,
+//     questionID: 0,
+//     rootEvent: {
+//       docID: 301,
+//       questionID: 0,
+//       eventOperator: "AND",
+//       type: "grouped",
+//       reverseCondition: false,
+//       dimention0: 0,
+//       dimention1: 0,
+//       dimention2: 0,
+//       formula: null,
+//       events: [
+//         {
+//           docID: 303,
+//           questionID: 920,
+//           eventOperator: null,
+//           type: "selectedOption",
+//           reverseCondition: true,
+//           dimention0: 3615,
+//           dimention1: 0,
+//           dimention2: 0,
+//           formula: null,
+//           events: [],
+//         },
+//         {
+//           docID: 304,
+//           questionID: 919,
+//           eventOperator: null,
+//           type: "selectedOption",
+//           reverseCondition: true,
+//           dimention0: 3612,
+//           dimention1: 0,
+//           dimention2: 0,
+//           formula: null,
+//           events: [],
+//         },
+//       ],
+//     },
+//   },
+// ];
+// const new_rules: ILogicalValidityCheckRule[] = [
+//   {
+//     type: "logicalValidityCheckRule",
+//     docID: 301,
+//     pageID: 526,
+//     title: "Вы нам не подходите по возрасту",
+//     targetPageID: 0,
+//     visibleQuestionID: 0,
+//     questionID: 0,
+//     rootEvent: {
+//       docID: 1,
+//       eventOperator: "AND",
+//       type: "grouped",
+//       reverseCondition: false,
+//       events: [
+//         {
+//           docID: 2,
+//           reverseCondition: false,
+//           type: "selectedOption",
+//           dimention0: 3615,
+//           dimention1: 0,
+//           dimention2: 0,
+//           formula: null,
+//           questionID: 920,
+//           eventOperator: null,
+//             events: [],
+//         },
+//       ],
+//     },
+//   },
+//
+//   {
+//     type: "logicalValidityCheckRule",
+//     docID: 302,
+//     pageID: 526,
+//     title: "Нам нужны водители",
+//     rootEvent: {
+//       docID: 1,
+//       eventOperator: "AND",
+//       type: "grouped",
+//       reverseCondition: false,
+//       events: [
+//         {
+//           docID: 3,
+//           reverseCondition: false,
+//           type: "selectedOption",
+//           dimention0: 3612,
+//           dimention1: 0,
+//           dimention2: 0,
+//           formula: null,
+//           questionID: 919,
+//           eventOperator: null,
+//           events: [],
+//         },
+//       ],
+//     },
+//   },
+// ];
 
 export type IRule =
   | IPageTransitionRule

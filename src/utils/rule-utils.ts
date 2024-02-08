@@ -487,7 +487,26 @@ export type IGetNextLocation = (payload: {
   pagesDict: IPagesDict;
   targetPageTransitionRuleArr: string[];
   pageMovementLogs: string[];
+  visibleRuleDict: IVisibleRuleDict;
 }) => ILocation;
+
+type IIsEmptyPage = (payload: {
+  page: IPage;
+  userAnswers: IUserAnswer;
+  visibleRuleDict: IVisibleRuleDict;
+}) => boolean;
+
+export const isEmptyPage: IIsEmptyPage = ({
+  page,
+  userAnswers,
+  visibleRuleDict,
+}) => {
+  const questions = page.questions;
+  if (questions.length === 0) return true;
+  return questions.some((q) =>
+    visibleChecking(userAnswers, visibleRuleDict[String(q.docID)])
+  );
+};
 
 export const getNextLocation: IGetNextLocation = ({
   currentLocation,
@@ -498,10 +517,24 @@ export const getNextLocation: IGetNextLocation = ({
   pages,
   pageMovementLogs,
   targetPageTransitionRuleArr,
+  visibleRuleDict,
 }) => {
   // правила перехода? -> переход по правилу
 
   // console.log("rules", rules);
+
+  const successfulRules = pageTransitionRules.filter((rule) =>
+    pageTransitionRuleChecking(userAnswers, rule)
+  );
+
+  const targetPagesID = successfulRules.map((rule) => rule.targetPageID);
+
+  if (targetPagesID.length > 0) {
+    targetPagesID.find((targetPageID) => {
+      const page = pagesDict[String(targetPageID)].page;
+      return !isEmptyPage({ page, userAnswers, visibleRuleDict });
+    });
+  }
 
   const firstRuleWithSuccessResult = pageTransitionRules.find((rule) =>
     pageTransitionRuleChecking(userAnswers, rule)
@@ -571,6 +604,7 @@ export type IGetPrevLastLocation = (payload: {
   disqualificationRuleArr: IDisqualificationRule[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   targetPageTransitionRuleArr: string[];
+  visibleRuleDict: IVisibleRuleDict;
 }) => { location: ILocation; pageMovementLogs: string[] };
 
 export const getPrevLastLocation: IGetPrevLastLocation = ({
@@ -579,6 +613,7 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
   pagesDict,
   pageTransitionRuleDict,
   targetPageTransitionRuleArr,
+  visibleRuleDict,
 }) => {
   const pageMovementLogs: string[] = [];
   const location: ILocation = firstPageLocation;
@@ -592,6 +627,7 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
     pageTransitionRuleDict,
     userAnswers,
     targetPageTransitionRuleArr,
+    visibleRuleDict,
   });
 };
 
@@ -603,6 +639,7 @@ type IFindFirstIncompleteQuestionInNextPage = (payload: {
   pageMovementLogs: string[];
   pageTransitionRuleDict: IPageTransitionRuleDict;
   targetPageTransitionRuleArr: string[];
+  visibleRuleDict: IVisibleRuleDict;
 }) => { location: ILocation; pageMovementLogs: string[] };
 
 export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestionInNextPage = ({
@@ -613,6 +650,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
   pageMovementLogs,
   pageTransitionRuleDict,
   targetPageTransitionRuleArr,
+  visibleRuleDict,
 }) => {
   const currentPage = pages[currentLocation.pageIndex];
   pageMovementLogs.push(String(currentPage.docID));
@@ -635,6 +673,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     userAnswers,
     targetPageTransitionRuleArr,
     pageMovementLogs,
+    visibleRuleDict,
   });
 
   const hasAnsweredQuestionInNextPage = pages[
@@ -660,6 +699,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
     pageTransitionRuleDict,
     userAnswers,
     targetPageTransitionRuleArr,
+    visibleRuleDict,
   });
 };
 
