@@ -161,10 +161,6 @@ export const validation = (payload: {
       Number(maxDay)
     );
 
-    // console.log(minDate);
-    // console.log(maxDate);
-    // console.log(valueDate);
-
     const minDateStr = minDate.toLocaleString("ru-RU", {
       year: "numeric",
       month: "numeric",
@@ -279,11 +275,23 @@ export const requiredRowsEndColumnsChecking = (
   values: IAnswer["values"] = []
 ): boolean => {
   if (values.length === 0) return true;
+  // console.log("values", values);
   const hasExtra =
-    values.values.length > 0 &&
+    values.length > 0 &&
     (values[0].optionID === -1 ||
       values[0].optionID === -2 ||
       (values[0].optionID === -3 && values[0].value !== ""));
+  //
+  // console.log("values.values.length > 0", values.length > 0);
+  // console.log("values[0].optionID === -1", values[0].optionID === -1);
+  // console.log("values[0].optionID === -2", values[0].optionID === -1);
+  // console.log(
+  //   "values[0].optionID === -3 && values[0].value !== ",
+  //   values[0].optionID === -3 && values[0].value !== ""
+  // );
+  //
+  // console.log("hasExtra", hasExtra);
+
   if (hasExtra) return true;
   switch (question.config.dataType) {
     case "freelist": {

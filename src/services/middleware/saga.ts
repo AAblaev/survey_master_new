@@ -151,7 +151,6 @@ export function* completeValidation() {
     yield imediateCompletion();
     return false;
   }
-  console.log("completeValidation", pageMovementLogs);
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
     pages.filter((page: IPage) =>
       (pageMovementLogs as number[]).includes(page.docID)
@@ -162,9 +161,6 @@ export function* completeValidation() {
     checkAllPagesLogicalValidity()
   );
 
-  // console.log("firstIncompleteQuestion", firstIncompleteQuestion);
-  // console.log("resultCheckingRules", resultCheckingRules);
-
   if (!firstIncompleteQuestion && resultCheckingRules.status) {
     // console.log("all questions and rules are correct");
     return true;
@@ -174,8 +170,6 @@ export function* completeValidation() {
     firstIncompleteQuestion,
     resultCheckingRules
   );
-
-  // console.log("firstLocationWithDeviation", firstLocationWithDeviation);
 
   yield put(
     cancelCompletion({
@@ -244,7 +238,6 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
     logicalValidityCheckRuleDict,
     strictModeNavigation,
   } = yield select(selectChangePageProps);
-  // console.log("changeLocationValidation");
   const currentPage = pages[location.pageIndex];
   const {
     questionChecking,
@@ -261,10 +254,6 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
           disqualificationRuleChecking(userAnswers, rule)
         )
       : false;
-    // console.log(
-    //   "changeLocationValidation isDisqualificated",
-    //   isDisqualificated
-    // );
 
     if (isDisqualificated) {
       throw { code: 401, type: "disqualification" };
@@ -279,7 +268,6 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
     if (isComplete) {
       throw { code: 301, type: "completion" };
     }
-    // console.log("changeLocationValidation isComplete", isComplete);
 
     // валидация обязательных вопросов
     const questionCheckingResult = pageQuestionChecking({
@@ -287,11 +275,6 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
       userAnswers,
       questionChecking,
     });
-
-    // console.log(
-    //   "changeLocationValidation questionCheckingResult",
-    //   questionCheckingResult
-    // );
 
     if (!questionCheckingResult.status) {
       throw questionCheckingResult.modalMessage;
@@ -302,7 +285,6 @@ export function* changeLocationValidation(direction: ISlideMoveDirection) {
       checkCurrentPageLogicalValidity(logicalChecking)
     );
 
-    // console.log("checkCurrentPageLogicalValidity!!!", logicCheckingResult);
     if (!logicCheckingResult) {
       throw {
         code: 202,

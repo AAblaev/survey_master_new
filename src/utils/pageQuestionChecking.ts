@@ -19,6 +19,7 @@ const pageQuestionChecking = ({
     return SUCCESS_CHECKING_RESULT;
   }
   if (!requiredQuestionsHasAnswer(page, userAnswers)) {
+    console.log("!requiredQuestionsHasAnswer");
     return {
       status: false,
       message: "NOT_ALL_REQUIRED_QUESTIONS_HAS_ANSWERS",
@@ -29,6 +30,8 @@ const pageQuestionChecking = ({
     };
   }
   if (!requiredQuestionsHasCorrectAnswer(page, userAnswers)) {
+    console.log("!requiredQuestionsHasCorrectAnswer");
+
     return {
       status: false,
       message: "NOT_ALL_REQUIRED_QUESTIONS_HAS_CORRECT_ANSWERS",
@@ -39,6 +42,8 @@ const pageQuestionChecking = ({
     };
   }
   if (!requiredQuestionsHasFullAnswer(page, userAnswers)) {
+    console.log("!requiredQuestionsHasFullAnswer");
+
     return {
       status: false,
       message: "NOT_ALL_REQUIRED_QUESTIONS_HAS_FULL_ANSWERS",
