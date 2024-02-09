@@ -48,23 +48,9 @@ const FreeView: React.FC<IViewComponentProps> = ({
       return;
     }
     setTextValue(value);
-    // const isValid =
-    //   userAnswerExist && userAnswer.values[0].validationResult.isValid;
-    //
-    // setAnswer({
-    //   questionID: docID,
-    //   values: [
-    //     {
-    //       value,
-    //       optionID: 0,
-    //       isFocused: true,
-    //       validationResult: { isValid: isValid, message: "ошибка" },
-    //     },
-    //   ],
-    // });
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleFocus = (_e: React.FocusEvent<HTMLTextAreaElement>) => {
     const isValid =
       userAnswerExist && userAnswer.values[0].validationResult.isValid;
     setAnswer({
