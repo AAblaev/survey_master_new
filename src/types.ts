@@ -8,6 +8,7 @@ export type IData = {
   isLimitTimeForCompletion: boolean;
   isShowGreetingsPage: boolean;
   greetingsPage: string;
+  byTimerPage: string;
   isShowButtonBack: boolean;
   isShowCompletionPage: boolean;
   isShowDisqualificationPage: boolean;

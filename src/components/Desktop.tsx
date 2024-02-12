@@ -75,6 +75,7 @@ const Desktop: React.FC<IDesktop> = ({
     isShowProgressbar,
     greetingsPage,
     completionPage,
+    byTimerPage,
     disqualificationPage,
     name,
     isLimitTimeForCompletion,
@@ -116,7 +117,7 @@ const Desktop: React.FC<IDesktop> = ({
       );
     if (pathName === "completion") return <InfoPage html={completionPage} />;
     if (pathName === "completion_by_timer")
-      return <InfoPage html={completionByTimerPage} />;
+      return <InfoPage html={byTimerPage} />;
 
     if (pathName === "disqualification")
       return <InfoPage html={disqualificationPage} />;

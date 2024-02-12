@@ -521,14 +521,28 @@ export const getNextLocation: IGetNextLocation = ({
 }) => {
   // правила перехода? -> переход по правилу
 
+  // console.log({
+  //   currentLocation,
+  //   pageCount,
+  //   pageTransitionRules,
+  //   userAnswers,
+  //   pagesDict,
+  //   pages,
+  //   pageMovementLogs,
+  //   targetPageTransitionRuleArr,
+  //   visibleRuleDict,
+  // });
+
   // console.log("rules", rules);
 
   const successfulRules = pageTransitionRules.filter((rule) =>
     pageTransitionRuleChecking(userAnswers, rule)
   );
+  // console.log("successfulRules", successfulRules);
 
   const targetPagesID = successfulRules.map((rule) => rule.targetPageID);
 
+  ////
   if (targetPagesID.length > 0) {
     targetPagesID.find((targetPageID) => {
       const page = pagesDict[String(targetPageID)].page;
@@ -573,12 +587,28 @@ export const getNextLocation: IGetNextLocation = ({
 
   // console.log("targetPageTransitionRuleArr", targetPageTransitionRuleArr);
 
-  const nextPage = pages.find(
-    (page, index) =>
+  const nextPage = pages.find((page, index) => {
+    // console.log(index);
+    // console.log(
+    //   "currentLocation.pageIndex < index",
+    //   currentLocation.pageIndex < index
+    // );
+    // console.log(
+    //   "!pageMovementLogs.includes(String(page.docID))",
+    //   !pageMovementLogs.includes(String(page.docID))
+    // );
+    // console.log(
+    //   "!targetPageTransitionRuleArr.includes(String(page.docID))",
+    //   !targetPageTransitionRuleArr.includes(String(page.docID))
+    // );
+
+    return (
       currentLocation.pageIndex < index &&
       !pageMovementLogs.includes(String(page.docID)) &&
       !targetPageTransitionRuleArr.includes(String(page.docID))
-  );
+    );
+  });
+  // console.log("nextPage", nextPage);
 
   if (!nextPage) {
     return completionLocation;

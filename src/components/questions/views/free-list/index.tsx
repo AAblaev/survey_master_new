@@ -125,14 +125,15 @@ const FreeListView: React.FC<IViewComponentProps> = ({
     values,
     options
   );
-
-  console.log("storeTextValues", storeTextValues);
+  // console.log("userAnswer", userAnswer);
+  // console.log("storeTextValues", storeTextValues);
 
   const handleFocus = (rowDocID: number) => {
     const newValue = { ...storeTextValues[String(rowDocID)], isFocused: true };
-    const newValues = Object.values({ ...storeTextValues, newValue }).filter(
-      (v) => v.value !== ""
-    );
+    const newValues = Object.values({
+      ...storeTextValues,
+      [String(newValue.optionID)]: newValue,
+    }).filter((v) => v.value !== "");
     setAnswer({
       questionID: docID,
       values: newValues,
@@ -161,7 +162,18 @@ const FreeListView: React.FC<IViewComponentProps> = ({
       isFocused: false,
       validationResult: validationResult,
     };
-    const newValues = Object.values({ ...storeTextValues, newValue });
+    const newValues = Object.values({
+      ...storeTextValues,
+      [String(newValue.optionID)]: newValue,
+    });
+
+    // console.log("validationResult", validationResult);
+    // console.log("newValue", newValue);
+    // console.log("newValues", newValues);
+    // console.log(
+    //   'newValues.filter((v) => v.value !== "")',
+    //   newValues.filter((v) => v.value !== "")
+    // );
 
     setAnswer({
       questionID: docID,
@@ -173,7 +185,7 @@ const FreeListView: React.FC<IViewComponentProps> = ({
     <>
       {options.map((item, i) => {
         const value = storeTextValues[String(item.docID)] as IValue;
-        console.log(i, "---", value);
+        // console.log(i, "---", value);
 
         return (
           <TextFieldRow

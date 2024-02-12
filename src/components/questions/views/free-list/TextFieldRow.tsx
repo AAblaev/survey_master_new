@@ -22,7 +22,7 @@ type ITextFieldRow = {
 };
 
 const TextFieldRow: React.FC<ITextFieldRow> = (props) => {
-  console.log(props);
+  // console.log(props);
   const {
     value,
     title,

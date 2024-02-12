@@ -10,7 +10,7 @@ import { getDateRangeMessage } from "../../utils/dateParser";
 type IExtraMessageProps = {
   config: IConfig;
   needCorrect: boolean;
-  hasRequiredRowsAndColumns: boolean;
+  isReqRowAndColCheckSuccess: boolean;
 };
 
 export const alertCss = css`
@@ -23,7 +23,7 @@ export const alertCss = css`
 const ExtraMessage: React.FC<IExtraMessageProps> = ({
   config,
   needCorrect,
-  hasRequiredRowsAndColumns,
+  isReqRowAndColCheckSuccess,
 }) => {
   const {
     isLimited,
@@ -129,7 +129,7 @@ const ExtraMessage: React.FC<IExtraMessageProps> = ({
   return (
     <div css={limitMessageWrapperCss}>
       <div css={limitMessageCss}>{text}</div>
-      {needCorrect && !hasRequiredRowsAndColumns && (
+      {needCorrect && !isReqRowAndColCheckSuccess && (
         <div css={alertCss}>
           <Tooltip title={"проверьте выполнение условия"}>
             <IconButton>
