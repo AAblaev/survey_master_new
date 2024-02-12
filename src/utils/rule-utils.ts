@@ -503,7 +503,7 @@ export const isEmptyPage: IIsEmptyPage = ({
 }) => {
   const questions = page.questions;
   if (questions.length === 0) return true;
-  return questions.some((q) =>
+  return !questions.some((q) =>
     visibleChecking(userAnswers, visibleRuleDict[String(q.docID)])
   );
 };
@@ -601,11 +601,16 @@ export const getNextLocation: IGetNextLocation = ({
     //   "!targetPageTransitionRuleArr.includes(String(page.docID))",
     //   !targetPageTransitionRuleArr.includes(String(page.docID))
     // );
+    // console.log(
+    //   " !isEmptyPage({ page, userAnswers, visibleRuleDict })",
+    //   !isEmptyPage({ page, userAnswers, visibleRuleDict })
+    // );
 
     return (
       currentLocation.pageIndex < index &&
       !pageMovementLogs.includes(String(page.docID)) &&
-      !targetPageTransitionRuleArr.includes(String(page.docID))
+      !targetPageTransitionRuleArr.includes(String(page.docID)) &&
+      !isEmptyPage({ page, userAnswers, visibleRuleDict })
     );
   });
   // console.log("nextPage", nextPage);
