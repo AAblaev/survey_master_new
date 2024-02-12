@@ -130,10 +130,11 @@ const FreeListView: React.FC<IViewComponentProps> = ({
 
   const handleFocus = (rowDocID: number) => {
     const newValue = { ...storeTextValues[String(rowDocID)], isFocused: true };
+
     const newValues = Object.values({
       ...storeTextValues,
       [String(newValue.optionID)]: newValue,
-    }).filter((v) => v.value !== "");
+    }).filter((v) => v.value !== "" || (v.value === "" && v.isFocused));
     setAnswer({
       questionID: docID,
       values: newValues,

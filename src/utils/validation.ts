@@ -311,9 +311,9 @@ export const requiredRowsEndColumnsChecking = (
         : question.config.options!.filter((option) => option.dimension === 1)
             .length;
       const result =
-        countUniqueValues(values, "dimension1", requiredRowsCount) &&
-        countUniqueValues(values, "dimension0", requiredColunmsCount);
-
+        countUniqueValues(values, "dimension0", requiredRowsCount) &&
+        countUniqueValues(values, "dimension1", requiredColunmsCount);
+      // console.log("result", result);
       return result;
     }
   }
