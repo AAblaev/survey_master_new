@@ -25,7 +25,7 @@ export const toolbarCss = (
   font-size: ${fontSize}px;
 
   &.MuiToolbar-root {
-    background-color: ${backgroundColor};
+    background: ${backgroundColor};
   }
 
   @media (min-width: 576px) {

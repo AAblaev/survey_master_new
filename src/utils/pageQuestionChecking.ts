@@ -19,7 +19,7 @@ const pageQuestionChecking = ({
     return SUCCESS_CHECKING_RESULT;
   }
   if (!requiredQuestionsHasAnswer(page, userAnswers)) {
-    console.log("!requiredQuestionsHasAnswer");
+    // console.log("!requiredQuestionsHasAnswer");
     return {
       status: false,
       message: "NOT_ALL_REQUIRED_QUESTIONS_HAS_ANSWERS",
@@ -30,7 +30,7 @@ const pageQuestionChecking = ({
     };
   }
   if (!requiredQuestionsHasCorrectAnswer(page, userAnswers)) {
-    console.log("!requiredQuestionsHasCorrectAnswer");
+    // console.log("!requiredQuestionsHasCorrectAnswer");
 
     return {
       status: false,
@@ -42,7 +42,7 @@ const pageQuestionChecking = ({
     };
   }
   if (!requiredQuestionsHasFullAnswer(page, userAnswers)) {
-    console.log("!requiredQuestionsHasFullAnswer");
+    // console.log("!requiredQuestionsHasFullAnswer");
 
     return {
       status: false,

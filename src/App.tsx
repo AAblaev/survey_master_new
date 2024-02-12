@@ -44,6 +44,7 @@ const App: React.FC<IApp> = ({
     !data && fetchData();
   }, [fetchData, data]);
 
+  // console.log("userAnswers", userAnswers);
   if (error.status) {
     return (
       <div css={desctopCss(backgroundColor)}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
@@ -9,6 +9,8 @@ import Tooltip from "@mui/material/Tooltip";
 import { css } from "@emotion/react";
 import { REGEXP_DICT, validation } from "../../../../utils/validation";
 import { IViewComponentProps } from "../..";
+import { IOption, IValue } from "../../../../types";
+import TextFieldRow from "./TextFieldRow";
 
 export const textFieldWrapperCss = css`
   display: flex;
@@ -82,6 +84,24 @@ export const borderColorCss = (alarm: boolean) => css`
   }
 `;
 
+const getValuesDict = (values: IValue[], options: IOption[]) => {
+  const dictTemplate = options.reduce(
+    (res, option) => ({
+      ...res,
+      [String(option.docID)]: {
+        optionID: option.docID,
+        value: "",
+        validationResult: { isValid: true, message: "" },
+        isFocused: false,
+      },
+    }),
+    {}
+  );
+  return values.reduce((res, v) => {
+    return { ...res, [String(v.optionID)]: v };
+  }, dictTemplate);
+};
+
 const FreeListView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
@@ -101,162 +121,89 @@ const FreeListView: React.FC<IViewComponentProps> = ({
 
   const values = userAnswerExist ? userAnswer.values : [];
 
-  const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    item: typeof options[0]
-  ) => {
-    if (
-      (simpleType === "integer" || simpleType === "float") &&
-      !REGEXP_DICT["float"].test(e.target.value)
-    ) {
-      return;
-    }
+  const storeTextValues: { [key: string]: IValue } = getValuesDict(
+    values,
+    options
+  );
+  // console.log("userAnswer", userAnswer);
+  // console.log("storeTextValues", storeTextValues);
 
-    const newValue = values.map((value) => {
-      if (value.optionID === item.docID) {
-        return {
-          optionID: value.optionID,
-          value: e.target.value,
-          validationResult: { isValid: false, message: "ошибка" },
-          isFocused: true,
-        };
-      }
-      return value;
-    });
+  const handleFocus = (rowDocID: number) => {
+    const newValue = { ...storeTextValues[String(rowDocID)], isFocused: true };
+
+    const newValues = Object.values({
+      ...storeTextValues,
+      [String(newValue.optionID)]: newValue,
+    }).filter((v) => v.value !== "" || (v.value === "" && v.isFocused));
     setAnswer({
       questionID: docID,
-      values: newValue,
+      values: newValues,
     });
   };
 
-  const handleFocus = (
-    e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
-    item: typeof options[0]
-  ) => {
-    const isFieldEmpty = !values.some((v) => v.optionID === item.docID);
-
-    const newValue = isFieldEmpty
-      ? [
-          ...values,
-          {
-            optionID: item.docID,
-            value: "",
-            validationResult: { isValid: false, message: "пусто" },
-            isFocused: true,
-          },
-        ]
-      : values.map((value) => {
-          if (value.optionID === item.docID) {
-            return {
-              optionID: value.optionID,
-              value: value.value,
-              validationResult: value.validationResult,
-              isFocused: true,
-            };
-          }
-          return value;
-        });
-    setAnswer({
-      questionID: docID,
-      values: newValue,
+  const handleBlur = (rowDocID: number, value: string) => {
+    // if (value.trim() === "") {
+    //   setAnswer({
+    //     questionID: docID,
+    //     values: [],
+    //   });
+    //   return;
+    // }
+    const validationResult = validation({
+      value: value,
+      simpleType: simpleType ?? "string",
+      isLimited,
+      isLimitedValue,
+      limit,
+      limitValue,
     });
-  };
-
-  const handleBlur = (
-    e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement, Element>,
-    item: typeof options[0]
-  ) => {
-    const currentValue = e.target.value;
-    if (currentValue.trim() === "") {
-      const prevValue = values.filter((v) => v.optionID !== item.docID);
-
-      setAnswer({
-        questionID: docID,
-        values: prevValue,
-      });
-      return;
-    }
-
-    const newValue = values.map((value) => {
-      if (value.optionID === item.docID) {
-        const validationResult = validation({
-          value: value.value,
-          simpleType: simpleType ?? "string",
-          isLimited,
-          isLimitedValue,
-          limit,
-          limitValue,
-        });
-
-        return {
-          optionID: value.optionID,
-          value: value.value,
-          validationResult: validationResult,
-          isFocused: false,
-        };
-      }
-      return value;
+    const newValue = {
+      ...storeTextValues[String(rowDocID)],
+      value: value,
+      isFocused: false,
+      validationResult: validationResult,
+    };
+    const newValues = Object.values({
+      ...storeTextValues,
+      [String(newValue.optionID)]: newValue,
     });
+
+    // console.log("validationResult", validationResult);
+    // console.log("newValue", newValue);
+    // console.log("newValues", newValues);
+    // console.log(
+    //   'newValues.filter((v) => v.value !== "")',
+    //   newValues.filter((v) => v.value !== "")
+    // );
 
     setAnswer({
       questionID: docID,
-      values: newValue,
+      values: newValues.filter((v) => v.value !== ""),
     });
   };
 
   return (
     <>
       {options.map((item, i) => {
-        const answer = userAnswer?.values.find(
-          (answer) => answer.optionID === item.docID
-        );
-        const answerExist = Boolean(answer && userAnswerExist);
-        const value = answer ? answer.value : "";
-        const showAlert =
-          answerExist &&
-          !answer!.validationResult.isValid &&
-          !answer!.isFocused;
-
-        const validationMessage = answerExist
-          ? answer!.validationResult.message
-          : "";
+        const value = storeTextValues[String(item.docID)] as IValue;
+        // console.log(i, "---", value);
 
         return (
-          <FormControl key={item.docID} css={freeListItemCss}>
-            <FormLabel component="legend" css={freeListItemLabelCss}>
-              {item.title}
-            </FormLabel>
-            <TextField
-              InputProps={{
-                disableUnderline: true,
-                endAdornment: showAlert && (
-                  <InputAdornment position="end">
-                    <Tooltip title={validationMessage}>
-                      <IconButton>
-                        <ErrorIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </InputAdornment>
-                ),
-                type:
-                  simpleType === "integer" || simpleType === "float"
-                    ? "number"
-                    : "text",
-              }}
-              color="primary"
-              variant="filled"
-              css={borderColorCss(showAlert)}
-              value={value}
-              hiddenLabel
-              multiline={isMultiline}
-              minRows={4}
-              maxRows={4}
-              placeholder={question.hint}
-              onChange={(e) => onChange(e, item)}
-              onFocus={(e) => handleFocus(e, item)}
-              onBlur={(e) => handleBlur(e, item)}
-            />
-          </FormControl>
+          <TextFieldRow
+            key={item.docID}
+            value={value}
+            title={item.title}
+            simpleType={simpleType}
+            isMultiline={isMultiline}
+            hint={question.hint ? question.hint : ""}
+            handleFocus={(rowDocID: number) => {
+              handleFocus(rowDocID);
+            }}
+            handleBlur={(rowDocID: number, value: string) => {
+              handleBlur(rowDocID, value);
+            }}
+            rowDocID={item.docID}
+          />
         );
       })}
     </>
@@ -264,3 +211,41 @@ const FreeListView: React.FC<IViewComponentProps> = ({
 };
 
 export default FreeListView;
+
+// const onChange = (
+//   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+//   item: typeof options[0]
+// ) => {
+//   if (
+//     (simpleType === "integer" || simpleType === "float") &&
+//     !REGEXP_DICT["float"].test(e.target.value)
+//   ) {
+//     return;
+//   }
+//
+//   setValueDict({
+//     ...valueDict,
+//     [String(item.docID)]: {
+//       optionID: item.docID,
+//       value: e.target.value,
+//       validationResult: { isValid: false, message: "ошибка" },
+//       isFocused: true,
+//     },
+//   });
+
+// const newValue = values.map((value) => {
+//   if (value.optionID === item.docID) {
+//     return {
+//       optionID: value.optionID,
+//       value: e.target.value,
+//       validationResult: { isValid: false, message: "ошибка" },
+//       isFocused: true,
+//     };
+//   }
+//   return value;
+// });
+// setAnswer({
+//   questionID: docID,
+//   values: newValue,
+// });
+// };

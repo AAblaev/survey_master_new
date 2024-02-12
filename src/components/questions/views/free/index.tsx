@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { IAnswer, IQuestion } from "../../../../types";
 import { REGEXP_DICT, validation } from "../../../../utils/validation";
@@ -24,6 +24,12 @@ const FreeView: React.FC<IViewComponentProps> = ({
     limitValue,
   } = config;
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+  const storeTextValue = userAnswerExist
+    ? (userAnswer.values as IAnswer["values"])[0].value
+    : "";
+
+  const [textValue, setTextValue] = useState(storeTextValue);
+
   const showAlert =
     userAnswerExist &&
     !userAnswer.values[0].validationResult.isValid &&
@@ -31,9 +37,6 @@ const FreeView: React.FC<IViewComponentProps> = ({
 
   const validationMessage = userAnswerExist
     ? userAnswer.values[0].validationResult.message
-    : "";
-  const value = userAnswerExist
-    ? (userAnswer.values as IAnswer["values"])[0].value
     : "";
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -44,31 +47,17 @@ const FreeView: React.FC<IViewComponentProps> = ({
     ) {
       return;
     }
-
-    const isValid =
-      userAnswerExist && userAnswer.values[0].validationResult.isValid;
-
-    setAnswer({
-      questionID: docID,
-      values: [
-        {
-          value,
-          optionID: 0,
-          isFocused: true,
-          validationResult: { isValid: isValid, message: "ошибка" },
-        },
-      ],
-    });
+    setTextValue(value);
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleFocus = (_e: React.FocusEvent<HTMLTextAreaElement>) => {
     const isValid =
       userAnswerExist && userAnswer.values[0].validationResult.isValid;
     setAnswer({
       questionID: docID,
       values: [
         {
-          value: value,
+          value: textValue,
           optionID: 0,
           isFocused: true,
           validationResult: { isValid: isValid, message: "ошибка" },
@@ -87,7 +76,7 @@ const FreeView: React.FC<IViewComponentProps> = ({
     }
 
     const validationResult = validation({
-      value,
+      value: textValue,
       simpleType: simpleType ?? "string",
       isLimited,
       isLimitedValue,
@@ -99,7 +88,7 @@ const FreeView: React.FC<IViewComponentProps> = ({
       questionID: docID,
       values: [
         {
-          value: value,
+          value: textValue,
           optionID: 0,
           isFocused: false,
           validationResult,
@@ -108,27 +97,9 @@ const FreeView: React.FC<IViewComponentProps> = ({
     });
   };
 
-  if (simpleType === "datetime") {
-    return (
-      <div css={textFieldWrapperCss}>
-        <MyDatePicker
-          setAnswer={setAnswer}
-          userAnswer={userAnswer}
-          question={question}
-        />
-
-        {showAlert && (
-          <div css={alertCss}>
-            <Tooltip title={validationMessage}>
-              <IconButton>
-                <ErrorIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-        )}
-      </div>
-    );
-  }
+  useEffect(() => {
+    setTextValue(storeTextValue);
+  }, [storeTextValue]);
 
   return (
     <div css={textFieldWrapperCss}>
@@ -150,7 +121,7 @@ const FreeView: React.FC<IViewComponentProps> = ({
         multiline={isMultiline}
         minRows={4}
         maxRows={4}
-        value={value}
+        value={textValue}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}

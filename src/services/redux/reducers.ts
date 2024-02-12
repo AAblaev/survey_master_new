@@ -146,6 +146,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           pageTransitionRuleDict,
           pages,
           targetPageTransitionRuleArr,
+          visibleRuleDict: visiblityRulesDict,
         });
 
         return {
@@ -254,6 +255,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         targetPageTransitionRuleArr,
         visitedPageDocIDList,
         strictModeNavigation,
+        visiblityRulesDict,
       } = state;
       const pages = data!.pages;
       const { pageIndex } = location;
@@ -306,6 +308,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         pageMovementLogs,
         pages,
         targetPageTransitionRuleArr,
+        visibleRuleDict: visiblityRulesDict,
       });
 
       const newVisitedPageDocIDList = visitedPageDocIDList.includes(
@@ -313,13 +316,8 @@ export const reducer = (state: IState = initialState, action: IAction) => {
       )
         ? visitedPageDocIDList
         : [...visitedPageDocIDList, currentPageDocID];
-      // const newVisitedPageDocIDList = [
-      //   ...visitedPageDocIDList,
-      //   currentPageDocID,
-      // ];
 
       if (nextLocation.pathName === "completion") {
-        // console.log("completion");
         return {
           ...state,
           visitedPageDocIDList: newVisitedPageDocIDList,

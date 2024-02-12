@@ -239,7 +239,7 @@ const Question: React.FC<IQuestionProps> = ({
 
   const hasExtraInAnswer = isUnabled || isNothing || isOther;
 
-  const hasRequiredRowsAndColumns = requiredRowsEndColumnsChecking(
+  const isReqRowAndColCheckSuccess = requiredRowsEndColumnsChecking(
     question,
     userAnswer?.values
   );
@@ -253,7 +253,7 @@ const Question: React.FC<IQuestionProps> = ({
     isValid,
     pageIsVisited,
     isLogicalValiditySuccess,
-    hasRequiredRowsAndColumns,
+    isReqRowAndColCheckSuccess,
     hasExtraInAnswer
   );
 
@@ -310,7 +310,7 @@ const Question: React.FC<IQuestionProps> = ({
       <ExtraMessage
         config={config}
         needCorrect={needCorrect}
-        hasRequiredRowsAndColumns={hasRequiredRowsAndColumns}
+        isReqRowAndColCheckSuccess={isReqRowAndColCheckSuccess}
       />
 
       <div
