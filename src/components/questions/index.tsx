@@ -270,15 +270,15 @@ const Question: React.FC<IQuestionProps> = ({
   }, [isVisible]);
 
   useEffect(() => {
-    if (selectedQuestion && elementRef.current) {
-      setTimeout(() => {
-        elementRef.current.scrollIntoView({
-          block: "start",
-          behavior: "auto",
-        });
-        setScrolling(false);
-      }, 0);
-    }
+    // if (selectedQuestion && elementRef.current) {
+    //   setTimeout(() => {
+    //     elementRef.current.scrollIntoView({
+    //       block: "start",
+    //       behavior: "auto",
+    //     });
+    //     setScrolling(false);
+    //   }, 0);
+    // }
   }, [selectedQuestion]);
   if (!isVisible) return null;
   return (

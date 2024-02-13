@@ -17,6 +17,8 @@ import {
   contentCss,
   footerCss,
   gridContainerCss,
+  indentCss,
+  progressWrapperCss,
   surveyNameCss,
   transitionGroupCss,
 } from "../sc";
@@ -155,6 +157,19 @@ const Desktop: React.FC<IDesktop> = ({
         )}
       </AppBar>
 
+      <div css={progressWrapperCss(backgroundColor, isShowProgressbar)}>
+        {pathName !== "greeting" && (
+          <div className="adaptive-paddings">
+            <ProgressLinear
+              allQuestionCount={allQuestionCount}
+              allQuestionsDoneCount={allQuestionsDoneCount}
+              isShowProgressbar={isShowProgressbar}
+              isShowQuestionsCount={isShowProgressbar}
+            />
+          </div>
+        )}
+      </div>
+
       <div css={contentCss}>
         <PerfectScrollbar
           options={{ suppressScrollX: true }}
@@ -163,18 +178,8 @@ const Desktop: React.FC<IDesktop> = ({
             perfectScrollbarContainerRef.current = ref;
           }}
         >
-          <div style={{ height: "15px" }}></div>
+          <div css={indentCss(isShowProgressbar)}></div>
 
-          {pathName !== "greeting" && (
-            <div className="adaptive-paddings">
-              <ProgressLinear
-                allQuestionCount={allQuestionCount}
-                allQuestionsDoneCount={allQuestionsDoneCount}
-                isShowProgressbar={isShowProgressbar}
-                isShowQuestionsCount={isShowProgressbar}
-              />
-            </div>
-          )}
           <div css={gridContainerCss}>
             <div css={borderCss(backgroundColor)}></div>
             <TransitionGroup
