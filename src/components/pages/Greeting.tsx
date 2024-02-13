@@ -28,23 +28,12 @@ const Greeting: React.FC<IOwnGreetingProps> = ({
       <div css={buttonsWrapperCss}>
         <Button
           key="start"
-          variant={uid ? "outlined" : "contained"}
+          variant={"contained"}
           css={onlyDesctopButtonCss}
-          color={uid ? "primary" : undefined}
           onClick={startSurvey}
         >
-          {uid ? "начать заново" : buttonStartCaption}
+          {buttonStartCaption}
         </Button>
-        {uid && (
-          <Button
-            key="continue"
-            variant="contained"
-            css={onlyDesctopButtonCss}
-            onClick={continueSurvey}
-          >
-            Продолжить
-          </Button>
-        )}
       </div>
     </div>
   );

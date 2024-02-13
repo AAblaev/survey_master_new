@@ -29,14 +29,22 @@ import {
   cancelTransition,
   updateLogicalRyleStatus,
   cancelCompletion,
+  setCurrentPage,
+  toggleModalVoisible,
+  toggleTimer,
 } from "../redux/actions";
 import {
   allLogicalRulesCheckingProps,
   logicalRulesCheckingProps,
   selectChangePageProps,
   selectLogicValidityData,
+  selectStartAgainProps,
 } from "../redux/selectors";
-import { SAGA_CHANGE_LOCATION, SET_USER_ANSWER } from "../redux/types";
+import {
+  SAGA_CHANGE_LOCATION,
+  SET_USER_ANSWER,
+  START_SURVEY,
+} from "../redux/types";
 import {
   imediateCompletion,
   imediateDisqualification,
@@ -348,5 +356,35 @@ export function* sagaChangeLocation({
 }
 
 export function* completeByTymer() {
+  yield put(toggleModalVoisible(false));
   yield imediateCompletion(true);
+}
+
+export function* sagaStartAgain() {
+  const { isShowGreetingsPage, isShowPageList } = yield select(
+    selectStartAgainProps
+  );
+
+  if (isShowGreetingsPage) {
+    yield put(
+      setCurrentPage({
+        slideMoveDirection: "left-to-right",
+        location: {
+          pathName: "greeting",
+          title: "greeting",
+          pageIndex: 0,
+          questionIndex: 0,
+        },
+        pageMovementLogs: [],
+        visitedPageDocIDList: [],
+      })
+    );
+    yield put(toggleModalVoisible(false));
+    yield put(toggleTimer(false));
+    localStorage.clear();
+    return;
+  }
+  yield put(toggleModalVoisible(false));
+
+  yield put({ type: START_SURVEY, isContinue: false });
 }

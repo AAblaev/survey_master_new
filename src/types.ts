@@ -588,4 +588,5 @@ export type IState = {
   strictModeNavigation: boolean;
   styles: IStyles;
   timerTime: number;
+  showTimer: boolean;
 };

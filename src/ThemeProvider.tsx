@@ -15,9 +15,12 @@ const ThemeProvider: React.FC<IThemeProviderProps> = ({ children, theme }) => {
 const mapStateToProps = (state: IState) => {
   const { styles } = state;
   const {
-    globalStyle: { brandColor },
+    globalStyle: {
+      brandColor,
+      background: { color: backgroundColor },
+    },
   } = styles;
-  const theme = getTheme(brandColor);
+  const theme = getTheme(brandColor, backgroundColor);
   return { theme };
 };
 

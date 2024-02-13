@@ -12,6 +12,24 @@ export const desctopCss = (backgroundColor: string) => css`
   align-items: center;
 `;
 
+export const progressWrapperCss = (
+  backgroundColor: string,
+  isShowProgressbar: boolean
+) => css`
+  width: 100%;
+  height: ${isShowProgressbar ? "55px" : "0px"};
+
+  position: fixed;
+  top: 64px;
+
+  background-color: ${backgroundColor};
+  z-index: 3;
+`;
+
+export const indentCss = (isShowProgressbar: boolean) => css`
+  height: ${isShowProgressbar ? "55px" : "15px"};
+`;
+
 export const contentCss = css`
   flex: 1 0 auto;
   width: 100%;
@@ -22,7 +40,7 @@ export const contentCss = css`
   @media (min-width: 768px) {
     margin-top: 64px;
     margin-bottom: 0px;
-    height: calc(100% - 64px);
+    height: calc(100% - 128px);
   }
 `;
 
@@ -82,7 +100,7 @@ export const modalHeaderWrapperCss = css`
 `;
 
 export const gridContainerCss = css`
-  height: 99%;
+  height: 95%;
   flex-grow: 1;
   position: relative;
   display: grid;
@@ -109,7 +127,7 @@ export const gridContainerCss = css`
 
 export const borderCss = (backgroundColor: string) => css`
   background-color: ${backgroundColor};
-  z-index: 20;
+  z-index: 1;
 `;
 
 export const footerCss = (brandColor: string) => css`

@@ -17,6 +17,8 @@ import {
   contentCss,
   footerCss,
   gridContainerCss,
+  indentCss,
+  progressWrapperCss,
   surveyNameCss,
   transitionGroupCss,
 } from "../sc";
@@ -48,6 +50,7 @@ type IDesktop = {
   isShowSurveyName: boolean;
   completeSurveyByTimer: () => void;
   timerTime: number;
+  showTimer: boolean;
 };
 
 const completionByTimerPage =
@@ -67,6 +70,7 @@ const Desktop: React.FC<IDesktop> = ({
   isShowSurveyName,
   completeSurveyByTimer,
   timerTime,
+  showTimer,
 }) => {
   const { title, pathName, pageIndex } = location;
   const {
@@ -83,9 +87,10 @@ const Desktop: React.FC<IDesktop> = ({
   } = data;
 
   // перенести в Таймер
-  const showTimer =
+  const isTimer =
     (pathName === "survey" || pathName === "section") &&
-    isLimitTimeForCompletion;
+    isLimitTimeForCompletion &&
+    showTimer;
 
   const currentPage = pages[pageIndex];
   // перенести в Таймерэ
@@ -146,7 +151,7 @@ const Desktop: React.FC<IDesktop> = ({
           </Typography>
         )}
 
-        {showTimer && (
+        {isTimer && (
           <Timer
             limitTime={timerTime}
             brandColor={brandColor}
@@ -154,6 +159,24 @@ const Desktop: React.FC<IDesktop> = ({
           />
         )}
       </AppBar>
+
+      <div
+        css={progressWrapperCss(
+          backgroundColor,
+          isShowProgressbar && (pathName === "survey" || pathName === "section")
+        )}
+      >
+        {pathName !== "greeting" && (
+          <div className="adaptive-paddings">
+            <ProgressLinear
+              allQuestionCount={allQuestionCount}
+              allQuestionsDoneCount={allQuestionsDoneCount}
+              isShowProgressbar={isShowProgressbar}
+              isShowQuestionsCount={isShowProgressbar}
+            />
+          </div>
+        )}
+      </div>
 
       <div css={contentCss}>
         <PerfectScrollbar
@@ -163,18 +186,15 @@ const Desktop: React.FC<IDesktop> = ({
             perfectScrollbarContainerRef.current = ref;
           }}
         >
-          <div style={{ height: "15px" }}></div>
-
-          {pathName !== "greeting" && (
-            <div className="adaptive-paddings">
-              <ProgressLinear
-                allQuestionCount={allQuestionCount}
-                allQuestionsDoneCount={allQuestionsDoneCount}
-                isShowProgressbar={isShowProgressbar}
-                isShowQuestionsCount={isShowProgressbar}
-              />
-            </div>
-          )}
+          <div
+            css={indentCss(
+              isShowProgressbar &&
+                (pathName === "survey" ||
+                  pathName === "section" ||
+                  pathName === "completion" ||
+                  pathName === "completion_by_timer")
+            )}
+          />
           <div css={gridContainerCss}>
             <div css={borderCss(backgroundColor)}></div>
             <TransitionGroup

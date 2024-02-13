@@ -39,6 +39,7 @@ import {
   CANCEL_COMPLETION,
   GO_TO_FIRST_DEVIATION_PAGE,
   COMPLETE_SURVEY_BY_TIMER,
+  TOGGLE_TIMER,
 } from "./types";
 
 export const setNewState = (payload: IState) =>
@@ -193,3 +194,6 @@ export const goToFirstDeviationPage = () =>
   <const>{ type: GO_TO_FIRST_DEVIATION_PAGE };
 
 export const completeByTymer = () => <const>{ type: COMPLETE_SURVEY_BY_TIMER };
+
+export const toggleTimer = (payload: boolean) =>
+  <const>{ type: TOGGLE_TIMER, payload };

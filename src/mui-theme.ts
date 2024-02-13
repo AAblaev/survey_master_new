@@ -2,7 +2,7 @@
 import { createTheme } from "@mui/material/styles";
 import { PRIMARY_COLOR } from "./consts/const";
 
-export const getTheme = (brandColor: string) => {
+export const getTheme = (brandColor: string, backgroundColor: string) => {
   return createTheme({
     palette: {
       primary: {
@@ -40,6 +40,7 @@ export const getTheme = (brandColor: string) => {
         styleOverrides: {
           root: {
             color: "inherit",
+            backgroundColor: "#fff",
           },
         },
       },
@@ -85,6 +86,13 @@ export const getTheme = (brandColor: string) => {
         styleOverrides: {
           root: {
             zIndex: "10000 !important" as any,
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: backgroundColor,
           },
         },
       },

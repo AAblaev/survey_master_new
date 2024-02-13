@@ -48,6 +48,7 @@ import {
   SET_ALL_PAGES_VISITED,
   CANCEL_COMPLETION,
   GO_TO_FIRST_DEVIATION_PAGE,
+  TOGGLE_TIMER,
 } from "./types";
 
 const initialState: IState = {
@@ -79,6 +80,7 @@ const initialState: IState = {
   strictModeNavigation: false,
   styles: DEFAULT_STYLES,
   timerTime: 6000,
+  showTimer: false,
 };
 
 export const reducer = (state: IState = initialState, action: IAction) => {
@@ -172,6 +174,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           modalVisible: true,
           styles,
           timerTime: limitTimeLeft,
+          showTimer: true,
         };
       }
 
@@ -459,6 +462,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
     case CHANGE_CURRENT_PAGE: {
       return { ...state, ...action.payload };
     }
+
     case GO_TO_FIRST_DEVIATION_PAGE: {
       const { firstLocationWithDeviation } = state;
       return {
@@ -642,6 +646,11 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         modalVisible: true,
         modalMessage: modalMessage,
       };
+    }
+
+    case TOGGLE_TIMER: {
+      const showTimer = action.payload;
+      return { ...state, showTimer: showTimer };
     }
     default: {
       return { ...state };

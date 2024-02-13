@@ -7,7 +7,11 @@ import { ModalContent, ModalHeader } from "../../common/modal";
 import { modalHeaderWrapperCss, onlyDesctopButtonCss } from "../../../sc";
 import { buttonsWrapperCss } from "../../pages/sc";
 import { IState } from "../../../types";
-import { COMPLETE_SURVEY, START_SURVEY } from "../../../services/redux/types";
+import {
+  COMPLETE_SURVEY,
+  SAGA_START_AGAIN,
+  START_SURVEY,
+} from "../../../services/redux/types";
 import { goToFirstDeviationPage } from "../../../services/redux/actions";
 
 type IModalContentComponentProps = {
@@ -47,7 +51,6 @@ const ModalContentComponent: React.FC<IOwnModalContentComponentProps> = ({
                 color="primary"
                 onClick={() => {
                   startSurvey();
-                  closeModal();
                 }}
               >
                 начать заново
@@ -227,7 +230,7 @@ const mapStateToProps = (state: IState) => {
 
 const mapDispathToProps = (dispatch: Dispatch) => {
   return {
-    startSurvey: () => dispatch({ type: START_SURVEY, isContinue: false }),
+    startSurvey: () => dispatch({ type: SAGA_START_AGAIN }),
     continueSurvey: () => dispatch({ type: START_SURVEY, isContinue: true }),
     completeSurvey: () => dispatch({ type: COMPLETE_SURVEY }),
     goToQuesions: () => dispatch(goToFirstDeviationPage()),
