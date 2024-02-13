@@ -38,10 +38,9 @@ export const contentCss = css`
   height: calc(100% - 112px);
 
   @media (min-width: 768px) {
-    // padding-top:55px;
     margin-top: 64px;
     margin-bottom: 0px;
-    height: calc(100% - 64px);
+    height: calc(100% - 128px);
   }
 `;
 
@@ -101,7 +100,7 @@ export const modalHeaderWrapperCss = css`
 `;
 
 export const gridContainerCss = css`
-  height: 99%;
+  height: 95%;
   flex-grow: 1;
   position: relative;
   display: grid;

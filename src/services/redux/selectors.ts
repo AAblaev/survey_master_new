@@ -103,3 +103,8 @@ export const getBrandColor = (state: IState) => ({
 export const getProgressBarStyle = (state: IState) => ({
   progressBarStyle: state.styles.componentsStyle.progressBar,
 });
+
+export const selectStartAgainProps = (state: IState) => ({
+  isShowGreetingsPage: state.data!.isShowGreetingsPage,
+  isShowPageList: state.data!.isShowPageList,
+});

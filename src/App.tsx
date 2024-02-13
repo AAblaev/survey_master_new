@@ -39,6 +39,7 @@ const App: React.FC<IApp> = ({
   isShowSurveyName,
   completeSurveyByTimer,
   timerTime,
+  showTimer,
 }) => {
   useEffect(() => {
     !data && fetchData();
@@ -87,6 +88,7 @@ const App: React.FC<IApp> = ({
         isShowSurveyName={isShowSurveyName}
         completeSurveyByTimer={completeSurveyByTimer}
         timerTime={timerTime}
+        showTimer={showTimer}
       />
     </div>
   );
@@ -104,11 +106,10 @@ const mapStateToProps = (state: IState) => {
     modalVisible,
     needScrolling,
     styles,
-    visitedPageDocIDList,
-    pageMovementLogs,
     timerTime,
+    showTimer,
   } = state;
-  //
+
   // console.log("visitedPageDocIDList", visitedPageDocIDList);
   // console.log("pageMovementLogs", pageMovementLogs);
 
@@ -137,6 +138,7 @@ const mapStateToProps = (state: IState) => {
     appBarStyles,
     isShowSurveyName,
     timerTime,
+    showTimer,
   };
 };
 

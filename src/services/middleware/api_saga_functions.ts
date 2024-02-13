@@ -11,6 +11,7 @@ import {
   setError,
   setLoading,
   startNewSurvey,
+  toggleTimer,
 } from "../redux/actions";
 import {
   selectAnswers,
@@ -114,6 +115,7 @@ export function* startSurvey({
       "surveyParams",
       JSON.stringify({ uid: newUid, surveyID: surveyID })
     );
+    yield put(toggleTimer(true));
     yield put(setLoading(false));
     // console.log("startSurvey success", result);
   } catch (e) {
