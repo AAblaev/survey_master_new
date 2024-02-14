@@ -137,7 +137,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
 
       // console.log("strictModeNavigation", strictModeNavigation);
 
-      const styles = colorScheme.jsonStyle;
+      const styles = colorScheme?.jsonStyle
+        ? colorScheme.jsonStyle
+        : DEFAULT_STYLES;
 
       if (notTheFirstTime) {
         const { location, pageMovementLogs } = getPrevLastLocation({

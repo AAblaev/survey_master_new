@@ -22,6 +22,7 @@ import { Modal, ModalContent, ModalHeader } from "../../common/modal";
 import { modalHeaderWrapperCss } from "../../../sc";
 import { PATH_NAME } from "../../../services/api/const";
 import { settingsButtonCss } from "./sc";
+import { getLinkForContinue } from "../../../services/api/utils";
 
 const StyledMenu = withStyles({
   paper: {
@@ -88,8 +89,7 @@ const AppBarMenu: React.FC<IMenuProps> = ({
   const preventDefault = (event: React.SyntheticEvent) =>
     event.preventDefault();
 
-  const linkValue =
-    document.location.origin + "/?surveyID=" + surveyID + "&uid=" + uid;
+  const linkValue = getLinkForContinue(surveyID, uid);
 
   const copyToClipboard = () => {
     const textField = document.createElement("textarea");
