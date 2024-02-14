@@ -12,3 +12,5 @@ export const PATH_NAME_II = __IS_PROD_BUNDLE_MODE__
   : PATH_NAME_FOR_DEV_II;
 
 export const DEFAULT_SURVEY_ID = "";
+
+export const LINK_NAME = "link";
