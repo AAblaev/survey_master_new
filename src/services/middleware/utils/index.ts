@@ -1,16 +1,11 @@
-import {
-  DEFAULT_SURVEY_ID,
-  getPathName,
-  PATH_NAME,
-  PATH_NAME_II,
-} from "../../api/const";
-import { IStoredData } from "../saga";
+import { DEFAULT_SURVEY_ID, PATH_NAME, PATH_NAME_II } from "../../api/const";
+import { getPathName, getSurveyIDfromURL } from "../../api/utils";
+import { IStoredData } from "../api_saga_functions";
 
 export const getParams = ({ correctUid }: { correctUid: boolean }) => {
   const params = new URLSearchParams(document.location.search);
-  const surveyIDfromURL = params.get("surveyID");
+  const surveyIDfromURL = getSurveyIDfromURL(document.location.href);
   const uidFromURL = params.get("uid");
-
   const isNewAPI = Number.isNaN(Number(surveyIDfromURL));
   const surveyID = surveyIDfromURL ? surveyIDfromURL : DEFAULT_SURVEY_ID;
 

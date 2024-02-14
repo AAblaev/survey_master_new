@@ -4,7 +4,6 @@ import "./assets/index.css";
 import { IState } from "./types";
 import { Dispatch } from "redux";
 import {
-  changeCurretLocation,
   completeByTymer,
   selectSection,
   setNeedScrolling,
@@ -14,7 +13,6 @@ import ProgressBar from "./components/common/ProgressBar";
 import Desktop from "./components/Desktop";
 import { contentCss, desctopCss } from "./sc";
 import {
-  COMPLETE_SURVEY,
   FETCH_SURVEY_DATA,
   TOGGLE_MODAL_VISIBLE,
 } from "./services/redux/types";

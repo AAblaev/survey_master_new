@@ -76,5 +76,8 @@ module.exports = ({ mode } = { mode: "production" }) => {
         __IS_PROD_BUNDLE_MODE__: isProd,
       }),
     ],
+    devServer: {
+      historyApiFallback: true,
+    },
   };
 };

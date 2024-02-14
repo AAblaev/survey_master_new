@@ -57,6 +57,9 @@ export function* fetchSurveyData({
     uid,
     path,
   };
+
+  // console.log("fetchPath", fetchPath);
+  // const fakeFetchPath = "http://192.168.0.133:5002/api/survey/bylink/tripl";
   try {
     yield put(setLoading(true));
     const result: IFetchResult = yield call(() => fethData(fetchPath));

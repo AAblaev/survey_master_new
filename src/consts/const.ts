@@ -102,7 +102,7 @@ export const DEFAULT_STYLES: IStyles = {
     },
     question: {
       background: {
-        color: "#000000",
+        color: "#e5e5e5",
       },
       title: {
         font: {
