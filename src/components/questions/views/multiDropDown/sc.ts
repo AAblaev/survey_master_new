@@ -11,12 +11,24 @@ export const chipWrapperCss = css`
   gap: 0.5em;
 `;
 export const chipCss = (isDefault: boolean) => css`
+  display: flex;
+  align-items: center;
+
   color: ${isDefault ? "#555" : "inherit"};
   background-color: ${isDefault ? "transparent" : "#e5e5e5"};
-  padding: 0.5em;
   border-radius: 5px;
+`;
+
+export const chipTitleCss = css`
+  padding: 0.5em;
+  max-width: 17em;
+
   overflow: hidden;
-  white-space: normal;
+  white-space: nowrap;
+
+  /* Добавляем троеточия в конце предложения, если текст
+  не помещается в блок */
+  text-overflow: ellipsis;
 `;
 
 export const selectCss = css`

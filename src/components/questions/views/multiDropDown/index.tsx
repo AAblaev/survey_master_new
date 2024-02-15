@@ -4,10 +4,13 @@ import FormControl from "@mui/material/FormControl";
 import { IAnswer, IOption, IQuestion, IState } from "../../../../types";
 import { MenuItem, TextField } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-
+import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import {
   chipCss,
+  chipTitleCss,
   chipWrapperCss,
   formControlCss,
   iconCss,
@@ -157,6 +160,17 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
     });
   };
 
+  const deleteItem = (optionID: number) => {
+    const newValue = (userAnswer as IAnswer).values.filter(
+      (v) => v.optionID !== optionID
+    );
+
+    setAnswer({
+      questionID: docID,
+      values: newValue,
+    });
+  };
+
   return (
     <>
       <FormControl variant="outlined" css={formControlCss}>
@@ -178,14 +192,23 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
             )
               return (
                 <div key={docID} css={chipCss(true)}>
-                  {optionsDict["default"].title}
+                  <div css={chipTitleCss}>{optionsDict["default"].title}</div>
                 </div>
               );
             return (
               <div css={chipWrapperCss}>
                 {options.map(({ docID, title }) => (
                   <div key={docID} css={chipCss(false)}>
-                    {docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title}
+                    <div css={chipTitleCss}>
+                      {docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title}
+                    </div>
+                    <IconButton
+                      size="small"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={() => deleteItem(docID)}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
                   </div>
                 ))}
               </div>

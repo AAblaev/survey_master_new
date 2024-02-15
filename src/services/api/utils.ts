@@ -82,9 +82,13 @@ export const getPathName: IGetPathName = ({
 
 export const getLinkForContinue = (surveyID: string, uid: string) => {
   const isNewAPI = document.location.pathname.split("/").includes(LINK_NAME);
+  const currentOrigin = document.location.origin;
+  let pathName = document.location.pathname;
+  pathName = pathName.slice(-1) === "/" ? pathName.slice(0, -1) : pathName;
+
   const result = isNewAPI
-    ? document.location.origin + document.location.pathname + "/?uid=" + uid
-    : document.location.origin + "/?surveyID=" + surveyID + "&uid=" + uid;
+    ? currentOrigin + pathName + "/?uid=" + uid
+    : currentOrigin + "/?surveyID=" + surveyID + "&uid=" + uid;
 
   return result;
 };

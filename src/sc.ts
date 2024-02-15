@@ -11,6 +11,11 @@ export const desctopCss = (backgroundColor: string) => css`
   overflow-x: hidden;
   align-items: center;
 `;
+//
+// {docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title}
+// <IconButton onClick={() => console.log("chip onClick")}>
+//   <CancelIcon />
+// </IconButton>
 
 export const progressWrapperCss = (
   backgroundColor: string,
@@ -104,24 +109,25 @@ export const gridContainerCss = css`
   flex-grow: 1;
   position: relative;
   display: grid;
-  grid-template-columns: 5% 90% 5%;
+  gap: 2%;
+  grid-template-columns: 3% 90% 3%;
   grid-template-rows: auto;
   margin-top: 10px;
 
   @media (min-width: 576px) {
-    grid-template-columns: 5% 90% 5%;
+    grid-template-columns: 3% 90% 3%;
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: 10% 80% 10%;
+    grid-template-columns: 8% 80% 8%;
   }
 
   @media (min-width: 992px) {
-    grid-template-columns: 15% 70% 15%;
+    grid-template-columns: 13% 70% 13%;
   }
 
   @media (min-width: 1200px) {
-    grid-template-columns: 20% 60% 20%;
+    grid-template-columns: 18% 60% 18%;
   }
 `;
 
@@ -154,3 +160,327 @@ export const progressQuestionCountCss = (
   font-weight: 500;
   color: ${color};
 `;
+
+//
+//
+// import React, { useState } from "react";
+// import CheckIcon from "@mui/icons-material/Check";
+// import FormControl from "@mui/material/FormControl";
+// import { IAnswer, IOption, IQuestion, IState } from "../../../../types";
+// import { MenuItem, TextField } from "@mui/material";
+// import Select, { SelectChangeEvent } from "@mui/material/Select";
+// import IconButton from "@mui/material/IconButton";
+// import CancelIcon from "@mui/icons-material/Cancel";
+// import Chip from "@mui/material/Chip";
+//
+// import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
+// import {
+//   chipCss,
+//   chipWrapperCss,
+//   formControlCss,
+//   iconCss,
+//   menuItemCss,
+//   selectCss,
+//   textFieldCss,
+// } from "./sc";
+// import { useSelector } from "react-redux";
+// import { getBrandColor } from "../../../../services/redux/selectors";
+// import { IViewComponentProps } from "../..";
+//
+// const MultiDropDownView: React.FC<IViewComponentProps> = ({
+//   question,
+//   setAnswer,
+//   userAnswer,
+// }) => {
+//   const [open, setOpen] = useState(false);
+//   const { brandColor } = useSelector(getBrandColor);
+//
+//   const {
+//     docID,
+//     hint,
+//     config,
+//     hasNothingAnswer,
+//     hasOtherAnswer,
+//     nothingPlaceholder,
+//     otherPlaceholder,
+//   } = question;
+//   const hasOtherInUserAnswer =
+//     userAnswer &&
+//     userAnswer.values.length > 0 &&
+//     userAnswer.values.find((v) => v.optionID === EXTRA_ANSWER.OTHER);
+//
+//   const options = config.options!;
+//   const selectItems = [...options];
+//   hasOtherAnswer &&
+//     selectItems.push({
+//       docID: -3,
+//       height: 0,
+//       order: 0,
+//       photoID: 0,
+//       title: otherPlaceholder,
+//       width: 0,
+//     });
+//
+//   hasNothingAnswer &&
+//     selectItems.push({
+//       docID: -2,
+//       height: 0,
+//       order: 0,
+//       photoID: 0,
+//       title: nothingPlaceholder,
+//       width: 0,
+//     });
+//
+//   const optionsDict = options.reduce(
+//     (res, option) => ({ ...res, [`${option.docID}`]: option }),
+//     {
+//       default: {
+//         docID: 0,
+//         height: 0,
+//         order: 0,
+//         photoID: 0,
+//         title: hint ? hint : DEFAULT_HINT_VALUE,
+//         width: 0,
+//       },
+//       "-1": {
+//         docID: -1,
+//         height: 0,
+//         order: 0,
+//         photoID: 0,
+//         title: "затрудняюсь ответить",
+//         width: 0,
+//       },
+//       "-2": {
+//         docID: -2,
+//         height: 0,
+//         order: 0,
+//         photoID: 0,
+//         title: nothingPlaceholder,
+//         width: 0,
+//       },
+//       "-3": {
+//         docID: -3,
+//         height: 0,
+//         order: 0,
+//         photoID: 0,
+//         title: "",
+//         width: 0,
+//       },
+//     }
+//   ) as { [key: string]: IOption };
+//
+//   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
+//   const value = userAnswerExist
+//     ? (userAnswer as IAnswer).values.map((item) => item.optionID)
+//     : ["default"];
+//
+//   const handleChange = (e: SelectChangeEvent<(number | string)[]>) => {
+//     console.log("handleChange");
+//     const optionIDs = e.target.value as (number | string)[];
+//     const currentValue = optionIDs[optionIDs.length - 1];
+//     const isExtra =
+//       optionIDs.includes(EXTRA_ANSWER.UNABLE) ||
+//       optionIDs.includes(EXTRA_ANSWER.NOTHING);
+//
+//     const newValue = isExtra
+//       ? [
+//           {
+//             optionID: Number(currentValue),
+//             value: String(optionsDict[currentValue].title),
+//             validationResult: { isValid: true, message: "success" },
+//             isFocused: false,
+//           },
+//         ]
+//       : optionIDs
+//           .filter((optionID) => optionID !== "default")
+//           .map((optionID) => {
+//             if (optionID === EXTRA_ANSWER.OTHER) {
+//               const value = hasOtherInUserAnswer
+//                 ? hasOtherInUserAnswer.value
+//                 : "";
+//
+//               return {
+//                 optionID: Number(optionID),
+//                 value: value,
+//                 validationResult: {
+//                   isValid: value === "" ? false : true,
+//                   message: "success",
+//                 },
+//                 isFocused: hasOtherInUserAnswer ? false : true,
+//               };
+//             }
+//             return {
+//               optionID: Number(optionID),
+//               value: String(optionsDict[optionID].title),
+//               validationResult: { isValid: true, message: "success" },
+//               isFocused: false,
+//             };
+//           });
+//
+//     if (currentValue === EXTRA_ANSWER.OTHER && !hasOtherInUserAnswer) {
+//       setOpen(false);
+//     }
+//     setAnswer({
+//       questionID: docID,
+//       values: newValue,
+//     });
+//   };
+//
+//   const preventEvent = (event) => {
+//     event.preventDefault();
+//   };
+//
+//   return (
+//     <>
+//       <FormControl variant="outlined" css={formControlCss}>
+//         <Select
+//           multiple
+//           value={value}
+//           open={open}
+//           onOpen={(e) => {
+//             console.log("onOpen", e);
+//             setOpen(true);
+//           }}
+//           onClose={() => setOpen(false)}
+//           onChange={handleChange}
+//           renderValue={(items) => {
+//             const ids = items as string[];
+//             const options = ids.map((id: string) => optionsDict[id]);
+//
+//             if (
+//               (ids.length === 1 && ids[0] === "default") ||
+//               (ids.length === 1 &&
+//                 String(ids[0]) === String(EXTRA_ANSWER.UNABLE))
+//             )
+//               return (
+//                 <div key={docID} css={chipCss(true)}>
+//                   {optionsDict["default"].title}
+//                 </div>
+//               );
+//             return (
+//               <div css={chipWrapperCss} onClick={() => console.log("onClick")}>
+//                 {options.map(({ docID, title }) => (
+//                   <Chip
+//                     key={docID}
+//                     css={chipCss(false)}
+//                     onClick={() => console.log("chip onClick")}
+//                     label={
+//                       docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title
+//                     }
+//                     onDelete={() => console.log("onDelete", docID)}
+//                     onMouseDown={(event) => event.stopPropagation()}
+//                   ></Chip>
+//                 ))}
+//               </div>
+//             );
+//           }}
+//           MenuProps={{
+//             anchorOrigin: {
+//               vertical: "bottom",
+//               horizontal: "right",
+//             },
+//             transformOrigin: {
+//               vertical: "top",
+//               horizontal: "right",
+//             },
+//           }}
+//           css={selectCss}
+//         >
+//           {selectItems.map((item) => (
+//             <MenuItem key={item.docID} value={item.docID} css={menuItemCss}>
+//               <CheckIcon
+//                 css={iconCss(
+//                   (value as number[]).includes(item.docID),
+//                   brandColor
+//                 )}
+//               />
+//               <span>
+//                 {item.docID === EXTRA_ANSWER.OTHER
+//                   ? otherPlaceholder
+//                   : item.title}
+//               </span>
+//             </MenuItem>
+//           ))}
+//         </Select>
+//       </FormControl>
+//       {Boolean(hasOtherInUserAnswer) && (
+//         <TextField
+//           id={"otherTextField" + docID}
+//           css={textFieldCss}
+//           autoFocus
+//           InputProps={{ disableUnderline: true }}
+//           placeholder="напишите свой вариант"
+//           label=""
+//           color="primary"
+//           fullWidth
+//           multiline
+//           minRows={3}
+//           variant="filled"
+//           value={hasOtherInUserAnswer ? hasOtherInUserAnswer.value : ""}
+//           onFocus={(e) => {
+//             const values = userAnswer.values;
+//             const newValues = values.map((value) => {
+//               if (value.optionID === EXTRA_ANSWER.OTHER) {
+//                 const isValid = e.target.value !== "";
+//                 return {
+//                   optionID: EXTRA_ANSWER.OTHER,
+//                   value: e.target.value,
+//                   validationResult: { isValid: isValid, message: "success" },
+//                   isFocused: true,
+//                 };
+//               }
+//
+//               return value;
+//             });
+//             setAnswer({
+//               questionID: docID,
+//               values: newValues,
+//             });
+//           }}
+//           onBlur={(e) => {
+//             const values = userAnswer.values;
+//             const newValues = values.map((value) => {
+//               if (value.optionID === EXTRA_ANSWER.OTHER) {
+//                 const isValid = e.target.value !== "";
+//                 return {
+//                   optionID: EXTRA_ANSWER.OTHER,
+//                   value: e.target.value,
+//                   validationResult: { isValid: isValid, message: "success" },
+//                   isFocused: false,
+//                 };
+//               }
+//
+//               return value;
+//             });
+//             setAnswer({
+//               questionID: docID,
+//               values: newValues,
+//             });
+//           }}
+//           onChange={(e) => {
+//             const values = userAnswer.values;
+//             const newValues = values.map((value) => {
+//               if (value.optionID === EXTRA_ANSWER.OTHER) {
+//                 const isValid = e.target.value !== "";
+//                 return {
+//                   optionID: EXTRA_ANSWER.OTHER,
+//                   value: e.target.value,
+//                   validationResult: { isValid: isValid, message: "success" },
+//                   isFocused: true,
+//                 };
+//               }
+//
+//               return value;
+//             });
+//             setAnswer({
+//               questionID: docID,
+//               values: newValues,
+//             });
+//           }}
+//         />
+//       )}
+//     </>
+//   );
+// };
+//
+// export default MultiDropDownView;
