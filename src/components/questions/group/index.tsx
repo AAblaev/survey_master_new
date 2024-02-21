@@ -1,47 +1,53 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  IAnswer,
-  IDataType,
-  IQuestion,
-  ISimpleType,
-  IState,
-  IStyles,
-} from "../../../types";
-import Typography from "@mui/material/Typography";
+import { IQuestion, IStyles } from "../../../types";
 import TextBlock from "../../textBlock";
 import Question from "../../questions";
 import { css } from "@emotion/react";
 import { titleCountCss, titleCss, titleTextCss } from "../sc";
 import { DEFAULT_STYLES } from "../../../consts/const";
 
-export const groupCss = (backgroundColor: string, isFlat: boolean) => css`
-
-  ${isFlat && `box-shadow: none;`}
+export const groupCss = (
+  backgroundColor: string,
+  borderColor: string,
+  borderSize: number,
+  borderRadius: number
+) => css`
   background-color: ${backgroundColor};
-
+  border: ${borderSize}px solid ${borderColor};
+  &.MuiPaper-root {
+    border-radius: ${borderRadius}px;
+  }
   &::before {
     display: none;
   }
 `;
-export const accDetailsCss = (isFlat: boolean) => css`
+
+export const accDetailsCss = (padding: string) => css`
   display: flex;
   flex-direction: column;
   gap: 30px;
   margin-bottom: 40px;
   counter-reset: subSection ${0};
-  ${!isFlat && `padding-left: 30px;`}
+
+  padding: ${padding};
 `;
 
-export const summaryCss = (backgroundColor: string, isFlat: boolean) => css`
+export const summaryCss = (
+  backgroundColor: string,
+  padding: string,
+  borderRadius: number
+) => css`
   position: sticky;
   background-color: ${backgroundColor};
+  border-radius: ${borderRadius}px;
+
   top: 0;
   z-index: 10;
-  ${isFlat && `padding: 0;`}
+  padding: ${padding};
 `;
 
 export type IQuestionsGroup = {
@@ -53,8 +59,6 @@ export type IQuestionsGroup = {
 
 export type IQuestionsGroupProps = IQuestionsGroup & {
   questionGroupStyles?: IStyles["componentsStyle"]["questionGroup"];
-  isFlat?: boolean;
-  backgroundColor: string;
   expand: boolean;
 };
 
@@ -64,22 +68,29 @@ const QuestioinsGroup: React.FC<IQuestionsGroupProps> = ({
   questions,
   pageID,
   questionGroupStyles = DEFAULT_STYLES["componentsStyle"]["questionGroup"],
-  isFlat = false,
-  backgroundColor,
   expand,
 }) => {
   return (
     <Accordion
-      elevation={isFlat ? 0 : 4}
       disableGutters
       defaultExpanded={expand}
-      css={groupCss(backgroundColor, isFlat)}
+      elevation={questionGroupStyles.elevation}
+      css={groupCss(
+        questionGroupStyles.background.color,
+        questionGroupStyles.border.color,
+        questionGroupStyles.border.size,
+        questionGroupStyles.border.radius
+      )}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls={String(docID)}
         id={String(pageID)}
-        css={summaryCss(backgroundColor, isFlat)}
+        css={summaryCss(
+          questionGroupStyles.background.color,
+          questionGroupStyles.title.padding,
+          questionGroupStyles.border.radius
+        )}
       >
         <div css={titleCss(false)}>
           <div
@@ -100,7 +111,9 @@ const QuestioinsGroup: React.FC<IQuestionsGroupProps> = ({
           </div>
         </div>
       </AccordionSummary>
-      <AccordionDetails css={accDetailsCss(isFlat)}>
+      <AccordionDetails
+        css={accDetailsCss(questionGroupStyles.details.padding)}
+      >
         {questions.map((q, index) => {
           if (q.config.dataType === "textblock") {
             return <TextBlock key={index} question={q} />;

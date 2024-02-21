@@ -568,6 +568,7 @@ export type IStyles = {
           size: number;
           color: string;
         };
+        padding: string;
       };
       counter: {
         font: {
@@ -578,6 +579,11 @@ export type IStyles = {
       border: {
         size: number;
         color: string;
+        radius: number;
+      };
+      elevation: number;
+      details: {
+        padding: string;
       };
     };
   };

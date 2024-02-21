@@ -25,42 +25,24 @@ const Section: React.FC<IOwnSectionProps> = ({
   showCompleteBtn,
   completeSurvey,
   questionGroupStyles,
+  showGroup,
 }) => {
   const questions = page.questions ? page.questions : [];
   let counter = 0;
 
   return (
     <div css={questionListCss(questionCount)}>
-      <QuestioinsGroup
-        docID={333}
-        title="Группа вопросов"
-        questions={questions}
-        questionGroupStyles={questionGroupStyles}
-        pageID={page.docID}
-        isFlat={false}
-        backgroundColor="#fff"
-        expand={false}
-      />
-      <QuestioinsGroup
-        docID={444}
-        title="Группа вопросов"
-        questions={questions}
-        questionGroupStyles={questionGroupStyles}
-        pageID={page.docID}
-        isFlat={true}
-        backgroundColor="aliceblue"
-        expand={false}
-      />
-      <QuestioinsGroup
-        docID={444}
-        title="Группа вопросов"
-        questions={questions}
-        questionGroupStyles={questionGroupStyles}
-        pageID={page.docID}
-        isFlat={true}
-        backgroundColor="antiquewhite"
-        expand={true}
-      />
+      {showGroup && (
+        <QuestioinsGroup
+          docID={333}
+          title="Группа вопросов"
+          questions={questions}
+          questionGroupStyles={questionGroupStyles}
+          pageID={page.docID}
+          expand={false}
+        />
+      )}
+
       {questions.map((q, index) => {
         if (q.config.dataType === "textblock") {
           return <TextBlock key={index} question={q} />;
@@ -106,6 +88,8 @@ const mapStateToProps = (state: IState) => {
     styles,
   } = state;
 
+  const showGroup = state.params.surveyID === "group_questions";
+
   const {
     globalStyle: { brandColor },
     componentsStyle: { questionGroup: questionGroupStyles },
@@ -145,6 +129,7 @@ const mapStateToProps = (state: IState) => {
     questionCount,
     showCompleteBtn,
     questionGroupStyles,
+    showGroup,
   };
 };
 

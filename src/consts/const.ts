@@ -126,13 +126,14 @@ export const DEFAULT_STYLES: IStyles = {
     },
     questionGroup: {
       background: {
-        color: "aliceblue",
+        color: "#fff",
       },
       title: {
         font: {
           size: 19,
           color: "#000000",
         },
+        padding: "0px 10px 0px 10px",
       },
       counter: {
         font: {
@@ -143,6 +144,11 @@ export const DEFAULT_STYLES: IStyles = {
       border: {
         size: 1,
         color: "#e5e5e5",
+        radius: 4,
+      },
+      elevation: 2,
+      details: {
+        padding: "0px 10px 0px 20px",
       },
     },
   },
