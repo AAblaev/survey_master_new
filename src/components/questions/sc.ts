@@ -64,13 +64,6 @@ export const commentCss = (disabled: boolean) => css`
   }
 `;
 
-export const testCss = css`
-  &::before {
-    counter-increment: section; /* Increment the value of section counter by 1 */
-    content: "Section " counter(section) ": "; /* Display counter value in default style (decimal) */
-  }
-`;
-
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
   display: flex;
@@ -78,14 +71,37 @@ export const titleCss = (disabled: boolean) => css`
   margin-bottom: 10px;
 `;
 
-export const titleCountCss = (brandColor: string, fontSize: number) => css`
-  font-size: ${fontSize}px;
-  color: ${brandColor};
-  font-weight: bold;
+const counter = css`
   &::before {
     counter-increment: section; /* Increment the value of section counter by 1 */
     content: "" counter(section) "."; /* Display counter value in default style (decimal) */
   }
+`;
+
+const counterWithSubcounter = css`
+  &::before {
+    counter-increment: subSection; /* Increment the value of section counter by 1 */
+    content: "" counter(section) "." counter(subSection); /* Display counter value in default style (decimal) */
+  }
+`;
+
+export const titleCountCss = (
+  brandColor: string,
+  fontSize: number,
+  isGrouped: boolean
+) => css`
+  font-size: ${fontSize}px;
+  color: ${brandColor};
+  font-weight: bold;
+
+  ${isGrouped ? counterWithSubcounter : counter}
+  // &::before {
+  //   ${isGrouped && `counter-increment: subSection; `}
+  //   ${isGrouped && `content: counter(section) "." counter(subSection);  `}
+  //   ${!isGrouped && `counter-increment: section; `}
+  //   ${!isGrouped && `counter(section) "." `}
+  //
+  // }
 `;
 
 export const titleTextCss = (

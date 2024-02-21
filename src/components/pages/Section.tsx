@@ -24,12 +24,43 @@ const Section: React.FC<IOwnSectionProps> = ({
   questionCount,
   showCompleteBtn,
   completeSurvey,
+  questionGroupStyles,
 }) => {
   const questions = page.questions ? page.questions : [];
   let counter = 0;
 
   return (
     <div css={questionListCss(questionCount)}>
+      <QuestioinsGroup
+        docID={333}
+        title="Группа вопросов"
+        questions={questions}
+        questionGroupStyles={questionGroupStyles}
+        pageID={page.docID}
+        isFlat={false}
+        backgroundColor="#fff"
+        expand={false}
+      />
+      <QuestioinsGroup
+        docID={444}
+        title="Группа вопросов"
+        questions={questions}
+        questionGroupStyles={questionGroupStyles}
+        pageID={page.docID}
+        isFlat={true}
+        backgroundColor="aliceblue"
+        expand={false}
+      />
+      <QuestioinsGroup
+        docID={444}
+        title="Группа вопросов"
+        questions={questions}
+        questionGroupStyles={questionGroupStyles}
+        pageID={page.docID}
+        isFlat={true}
+        backgroundColor="antiquewhite"
+        expand={true}
+      />
       {questions.map((q, index) => {
         if (q.config.dataType === "textblock") {
           return <TextBlock key={index} question={q} />;
@@ -42,15 +73,11 @@ const Section: React.FC<IOwnSectionProps> = ({
             currentQuestionIndex={questionCount + counter}
             question={q}
             pageID={page.docID}
+            isGrouped={false}
           />
         );
       })}
-      <QuestioinsGroup
-        docID={444}
-        title="группа"
-        questions={questions}
-        pageID={page.docID}
-      />
+
       {showCompleteBtn && (
         <DelayWrapper>
           <Button
@@ -76,7 +103,13 @@ const mapStateToProps = (state: IState) => {
     pageTransitionRuleDict,
     pageMovementLogs,
     pagesDict,
+    styles,
   } = state;
+
+  const {
+    globalStyle: { brandColor },
+    componentsStyle: { questionGroup: questionGroupStyles },
+  } = styles;
 
   const { pageIndex } = location;
   const pages = data!.pages || [];
@@ -111,6 +144,7 @@ const mapStateToProps = (state: IState) => {
   return {
     questionCount,
     showCompleteBtn,
+    questionGroupStyles,
   };
 };
 

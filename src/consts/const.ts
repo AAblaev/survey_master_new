@@ -124,6 +124,27 @@ export const DEFAULT_STYLES: IStyles = {
         firstColumnWidth: 250,
       },
     },
+    questionGroup: {
+      background: {
+        color: "aliceblue",
+      },
+      title: {
+        font: {
+          size: 19,
+          color: "#000000",
+        },
+      },
+      counter: {
+        font: {
+          size: 19,
+          color: "#2b406a",
+        },
+      },
+      border: {
+        size: 1,
+        color: "#e5e5e5",
+      },
+    },
   },
 };
 

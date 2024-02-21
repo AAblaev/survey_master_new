@@ -558,6 +558,28 @@ export type IStyles = {
         firstColumnWidth: number;
       };
     };
+
+    questionGroup: {
+      background: {
+        color: string;
+      };
+      title: {
+        font: {
+          size: number;
+          color: string;
+        };
+      };
+      counter: {
+        font: {
+          size: number;
+          color: string;
+        };
+      };
+      border: {
+        size: number;
+        color: string;
+      };
+    };
   };
 };
 
