@@ -69,7 +69,9 @@ const AppBarMenu: React.FC<IMenuProps> = ({
   if (
     isEmptyData ||
     location.pathName === "greeting" ||
-    location.pathName === "completion"
+    location.pathName === "disqualification" ||
+    location.pathName === "completion" ||
+    location.pathName === "completion_by_timer"
   ) {
     return null;
   }

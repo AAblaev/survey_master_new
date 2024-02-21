@@ -11,6 +11,7 @@ import Button from "@mui/material/Button";
 import { COMPLETE_SURVEY } from "../../services/redux/types";
 import { onlyDesctopButtonCss } from "../../sc";
 import DelayWrapper from "../common/DelayWrapper";
+import QuestioinsGroup from "../questions/group";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
@@ -23,12 +24,25 @@ const Section: React.FC<IOwnSectionProps> = ({
   questionCount,
   showCompleteBtn,
   completeSurvey,
+  questionGroupStyles,
+  showGroup,
 }) => {
   const questions = page.questions ? page.questions : [];
   let counter = 0;
 
   return (
     <div css={questionListCss(questionCount)}>
+      {showGroup && (
+        <QuestioinsGroup
+          docID={333}
+          title="Группа вопросов"
+          questions={questions}
+          questionGroupStyles={questionGroupStyles}
+          pageID={page.docID}
+          expand={false}
+        />
+      )}
+
       {questions.map((q, index) => {
         if (q.config.dataType === "textblock") {
           return <TextBlock key={index} question={q} />;
@@ -41,9 +55,11 @@ const Section: React.FC<IOwnSectionProps> = ({
             currentQuestionIndex={questionCount + counter}
             question={q}
             pageID={page.docID}
+            isGrouped={false}
           />
         );
       })}
+
       {showCompleteBtn && (
         <DelayWrapper>
           <Button
@@ -69,7 +85,15 @@ const mapStateToProps = (state: IState) => {
     pageTransitionRuleDict,
     pageMovementLogs,
     pagesDict,
+    styles,
   } = state;
+
+  const showGroup = state.params.surveyID === "group_questions";
+
+  const {
+    globalStyle: { brandColor },
+    componentsStyle: { questionGroup: questionGroupStyles },
+  } = styles;
 
   const { pageIndex } = location;
   const pages = data!.pages || [];
@@ -104,6 +128,8 @@ const mapStateToProps = (state: IState) => {
   return {
     questionCount,
     showCompleteBtn,
+    questionGroupStyles,
+    showGroup,
   };
 };
 

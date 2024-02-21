@@ -120,12 +120,33 @@ const Desktop: React.FC<IDesktop> = ({
           buttonStartCaption={buttonStartCaption}
         />
       );
-    if (pathName === "completion") return <InfoPage html={completionPage} />;
+    if (pathName === "completion")
+      return (
+        <InfoPage
+          html={completionPage}
+          useRedirect={true}
+          redirectLink="http://192.168.0.133:5002/link/MultipleChoice
+"
+        />
+      );
     if (pathName === "completion_by_timer")
-      return <InfoPage html={byTimerPage} />;
+      return (
+        <InfoPage
+          html={byTimerPage}
+          useRedirect={true}
+          redirectLink="http://192.168.0.133:5002/link/MultipleChoice
+"
+        />
+      );
 
     if (pathName === "disqualification")
-      return <InfoPage html={disqualificationPage} />;
+      return (
+        <InfoPage
+          html={disqualificationPage}
+          useRedirect={false}
+          redirectLink=""
+        />
+      );
 
     if (pathName === "survey")
       return (

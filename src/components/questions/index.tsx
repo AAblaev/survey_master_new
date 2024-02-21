@@ -114,6 +114,7 @@ export type OwnProps = {
   pageID: number;
   currentQuestionIndex: number;
   question: IQuestion;
+  isGrouped: boolean;
 };
 
 export type StateProps = ReturnType<typeof mapStateToProps>;
@@ -148,6 +149,7 @@ const Question: React.FC<IQuestionProps> = ({
   isVisible,
   isLogicalValiditySuccess,
   questionStyles,
+  isGrouped,
 }) => {
   const {
     docID,
@@ -287,7 +289,8 @@ const Question: React.FC<IQuestionProps> = ({
         <div
           css={titleCountCss(
             questionStyles.counter.font.color,
-            questionStyles.counter.font.size
+            questionStyles.counter.font.size,
+            isGrouped
           )}
         ></div>
         <div
