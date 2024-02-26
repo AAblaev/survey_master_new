@@ -1,9 +1,8 @@
 import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import GreenCheckbox from "../../common/GreenCheckbox";
-import { IAnswer } from "../../../types";
-import { EXTRA_ANSWER } from "../../../consts/const";
-import GreenRadio from "../../common/GreenRadio";
+import { IAnswer } from "../../../../types";
+import { EXTRA_ANSWER } from "../../../../consts/const";
+import GreenRadio from "../../../common/GreenRadio";
 
 export type INothingCheckboxProps = {
   userAnswer: IAnswer;

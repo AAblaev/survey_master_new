@@ -1,11 +1,10 @@
 import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
-import GreenCheckbox from "../../common/GreenCheckbox";
-import { IAnswer, IValue } from "../../../types";
-import { EXTRA_ANSWER } from "../../../consts/const";
-import { textFieldCss } from "../views/dropDown/sc";
-import GreenRadio from "../../common/GreenRadio";
+import { IAnswer, IValue } from "../../../../types";
+import { EXTRA_ANSWER } from "../../../../consts/const";
+import { textFieldCss } from "../../views/dropDown/sc";
+import GreenRadio from "../../../common/GreenRadio";
 
 export type IOtherCheckbox = {
   userAnswer: IAnswer;

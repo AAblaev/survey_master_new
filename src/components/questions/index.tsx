@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import FormControl from "@mui/material/FormControl";
@@ -24,9 +24,9 @@ import SelectView from "./views/select";
 import MatrixView from "./views/matrix";
 import { EXTRA_ANSWER } from "../../consts/const";
 import Html from "./views/html";
-import NothingCheckbox from "./extra/nothingCheckbox";
-import UnableCheckbox from "./extra/unableCheckbox";
-import OtherCheckbox from "./extra/otherCheckbox";
+import NothingCheckbox from "./parts/extra/nothingCheckbox";
+import UnableCheckbox from "./parts/extra/unableCheckbox";
+import OtherCheckbox from "./parts/extra/otherCheckbox";
 import { getNeedCorrect } from "../../utils/questionIsDone";
 import {
   cardCss,
@@ -35,14 +35,13 @@ import {
   titleCss,
   titleTextCss,
   commentCss,
-  limitMessageCss,
-  limitMessageWrapperCss,
 } from "./sc";
 import { visibleChecking } from "../../utils/rule-utils";
 import { requiredRowsEndColumnsChecking } from "../../utils/validation";
 import ExtraMessage from "../common/ExtraMessage";
 import DatePicker from "./views/datePicker";
 import DatePickerListView from "./views/datePicker-list";
+import QuestionHeader from "./parts/header";
 
 const viewDict = {
   free: FreeView,
@@ -165,6 +164,8 @@ const Question: React.FC<IQuestionProps> = ({
     nothingPlaceholder,
     otherPlaceholder,
   } = question;
+
+  const [active, setActive] = useState(false);
   const elementRef = useRef<any>(null);
 
   // const { isLimited, isLimitedValue, limit, limitValue } = config;
@@ -271,103 +272,96 @@ const Question: React.FC<IQuestionProps> = ({
     }
   }, [isVisible]);
 
-  useEffect(() => {
-    // if (selectedQuestion && elementRef.current) {
-    //   setTimeout(() => {
-    //     elementRef.current.scrollIntoView({
-    //       block: "start",
-    //       behavior: "auto",
-    //     });
-    //     setScrolling(false);
-    //   }, 0);
-    // }
-  }, [selectedQuestion]);
+  // useEffect(() => {
+  //   // if (selectedQuestion && elementRef.current) {
+  //   //   setTimeout(() => {
+  //   //     elementRef.current.scrollIntoView({
+  //   //       block: "start",
+  //   //       behavior: "auto",
+  //   //     });
+  //   //     setScrolling(false);
+  //   //   }, 0);
+  //   // }
+  // }, [selectedQuestion]);
   if (!isVisible) return null;
+
   return (
     <div ref={selectedQuestion ? elementRef : null} id={`docID${docID}`}>
-      <div css={titleCss(disabled)}>
-        <div
-          css={titleCountCss(
-            questionStyles.counter.font.color,
-            questionStyles.counter.font.size,
-            isGrouped
-          )}
-        ></div>
-        <div
-          css={titleTextCss(
-            needCorrect,
-            questionStyles.title.font.color,
-            questionStyles.title.font.size
-          )}
-        >
-          <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
-        </div>
-      </div>
-
-      {hasComment && (
-        <div
-          css={commentCss(disabled)}
-          dangerouslySetInnerHTML={{ __html: comment ? comment : "" }}
-        ></div>
-      )}
-      <ExtraMessage
-        config={config}
+      <QuestionHeader
+        isActive={active}
         needCorrect={needCorrect}
-        isReqRowAndColCheckSuccess={isReqRowAndColCheckSuccess}
-      />
-
-      <div
-        css={cardCss(
-          needPadding || Boolean(otherInAnswer),
-          questionStyles.border.color,
-          questionStyles.border.size,
-          question.config.simpleType === "datetime",
-          questionType === "free" && needCorrect,
-          questionStyles.background?.color
-        )}
+        isGrouped={isGrouped}
+        questionStyles={questionStyles}
+        questionText={questionText}
+        disabled={disabled}
+        setActive={() => setActive(true)}
       >
-        <FormControl
-          css={formControlCss({
-            disabled,
-            noBorderOnInput: questionType === "free",
-            boderOnForm: questionType === "free" && needCorrect,
-          })}
-          focused={false}
+        {hasComment && (
+          <div
+            css={commentCss(disabled)}
+            dangerouslySetInnerHTML={{ __html: comment as string }}
+          ></div>
+        )}
+        <ExtraMessage
+          config={config}
+          needCorrect={needCorrect}
+          isReqRowAndColCheckSuccess={isReqRowAndColCheckSuccess}
+        />
+      </QuestionHeader>
+
+      {active && (
+        <div
+          css={cardCss(
+            needPadding || Boolean(otherInAnswer),
+            questionStyles.border.color,
+            questionStyles.border.size,
+            questionType === "free" && needCorrect,
+            questionStyles.background?.color
+          )}
         >
-          {isImplementedQuestionType ? (
-            <ViewComponent
-              currentQuestionIndex={currentQuestionIndex}
-              question={question}
-              userAnswer={
-                questionType === "select" || questionType === "multiselect"
-                  ? (userAnswerForSelect as IAnswer)
-                  : (userAnswerResult as IAnswer)
-              }
-              setAnswer={setAnswer}
-              questionStyles={questionStyles}
-            />
-          ) : (
-            <div>Данного типа вопроса нет {questionType}</div>
-          )}
-          {!isInternalExtra && hasOtherAnswer && (
-            <OtherCheckbox
-              userAnswer={answerWithExtra as IAnswer}
-              setAnswer={setAnswer}
-              questionID={question.docID}
-              singleAnswer={questionType !== "multiselect"}
-              otherPlaceholder={otherPlaceholder}
-            />
-          )}
-          {!isInternalExtra && hasNothingAnswer && (
-            <NothingCheckbox
-              userAnswer={answerWithExtra as IAnswer}
-              setAnswer={setAnswer}
-              questionID={question.docID}
-              nothingPlaceholder={nothingPlaceholder}
-            />
-          )}
-        </FormControl>
-      </div>
+          <FormControl
+            css={formControlCss({
+              disabled,
+              noBorderOnInput: questionType === "free",
+              boderOnForm: questionType === "free" && needCorrect,
+            })}
+            focused={false}
+          >
+            {isImplementedQuestionType ? (
+              <ViewComponent
+                currentQuestionIndex={currentQuestionIndex}
+                question={question}
+                userAnswer={
+                  questionType === "select" || questionType === "multiselect"
+                    ? (userAnswerForSelect as IAnswer)
+                    : (userAnswerResult as IAnswer)
+                }
+                setAnswer={setAnswer}
+                questionStyles={questionStyles}
+              />
+            ) : (
+              <div>Данного типа вопроса нет {questionType}</div>
+            )}
+            {!isInternalExtra && hasOtherAnswer && (
+              <OtherCheckbox
+                userAnswer={answerWithExtra as IAnswer}
+                setAnswer={setAnswer}
+                questionID={question.docID}
+                singleAnswer={questionType !== "multiselect"}
+                otherPlaceholder={otherPlaceholder}
+              />
+            )}
+            {!isInternalExtra && hasNothingAnswer && (
+              <NothingCheckbox
+                userAnswer={answerWithExtra as IAnswer}
+                setAnswer={setAnswer}
+                questionID={question.docID}
+                nothingPlaceholder={nothingPlaceholder}
+              />
+            )}
+          </FormControl>
+        </div>
+      )}
 
       {hasUnableAnswer && (
         <UnableCheckbox

@@ -25,7 +25,8 @@ const TextBlock: React.FC<IOwnTextProps> = ({
       css={cardCss(
         true,
         questionStyles.border.color,
-        questionStyles.border.size
+        questionStyles.border.size,
+        false
       )}
     >
       <div
