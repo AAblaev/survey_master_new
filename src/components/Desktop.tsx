@@ -173,11 +173,26 @@ const Desktop: React.FC<IDesktop> = ({
         )}
 
         {isTimer && (
-          <Timer
-            limitTime={timerTime}
-            brandColor={brandColor}
-            completeSurveyByTimer={completeSurveyByTimer}
-          />
+          <div css={{ marginRight: "auto" }}>
+            <Timer
+              limitTime={timerTime}
+              completeTimer={completeSurveyByTimer}
+              digitBlockStyle={{
+                width: 20,
+                height: 30,
+                fontSize: 15,
+                color: brandColor,
+                backgroundColor: "white",
+              }}
+              separatorStyle={{
+                size: 4,
+                color: "white",
+              }}
+              dividerStyle={{
+                height: 0,
+              }}
+            />
+          </div>
         )}
       </AppBar>
 

@@ -42,6 +42,10 @@ import ExtraMessage from "../common/ExtraMessage";
 import DatePicker from "./views/datePicker";
 import DatePickerListView from "./views/datePicker-list";
 import QuestionHeader from "./parts/header";
+import { css } from "@emotion/react";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 
 const viewDict = {
   free: FreeView,
@@ -165,7 +169,7 @@ const Question: React.FC<IQuestionProps> = ({
     otherPlaceholder,
   } = question;
 
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
   const elementRef = useRef<any>(null);
 
   // const { isLimited, isLimitedValue, limit, limitValue } = config;
@@ -429,3 +433,32 @@ const mapDispathToProps = (dispatch: Dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispathToProps)(Question);
+
+//
+// const groupCss = css`
+//   background-color: transparent;
+//   border: 0px solid red;
+//   &.MuiPaper-root {
+//     border-radius: 0px;
+//   }
+//   &::before {
+//     display: none;
+//   }
+// `;
+//
+// const accDetailsCss = css`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 30px;
+//   padding: 0;
+// `;
+//
+// const summaryCss = css`
+//   background-color: transparent;
+//   border-radius: 0px;
+//   padding: 0;
+//
+//   & .MuiAccordionSummary-content {
+//     display: block;
+//   }
+// `;

@@ -66,6 +66,7 @@ export const commentCss = (disabled: boolean) => css`
 export const titleCss = (disabled: boolean) => css`
   ${disabled && `filter: grayscale(100%)`};
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 `;

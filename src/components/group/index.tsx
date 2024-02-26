@@ -32,7 +32,6 @@ export const accDetailsCss = (padding: string) => css`
   gap: 30px;
   margin-bottom: 40px;
   counter-reset: subSection ${0};
-
   padding: ${padding};
 `;
 
@@ -44,7 +43,6 @@ export const summaryCss = (
   position: sticky;
   background-color: ${backgroundColor};
   border-radius: ${borderRadius}px;
-
   top: 0;
   z-index: 10;
   padding: ${padding};

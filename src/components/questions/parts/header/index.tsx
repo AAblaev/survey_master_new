@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { IStyles } from "../../../../types";
+import Timer from "../../../common/Timer";
 import { cardCss, titleCountCss, titleCss, titleTextCss } from "../../sc";
 import { btnWrapperCss } from "./sc";
 
@@ -86,6 +87,26 @@ const QuestionHeader: React.FC<IQuestionHeaderProps> = ({
           )}
         >
           <div dangerouslySetInnerHTML={{ __html: questionText }}></div>
+        </div>
+        <div style={{ marginLeft: "auto" }}>
+          <Timer
+            limitTime={300}
+            completeTimer={() => console.log("timer")}
+            digitBlockStyle={{
+              width: 20,
+              height: 30,
+              fontSize: 13,
+              color: "red",
+              backgroundColor: "white",
+            }}
+            separatorStyle={{
+              size: 4,
+              color: "red",
+            }}
+            dividerStyle={{
+              height: 0,
+            }}
+          />
         </div>
       </div>
       {children}
