@@ -11,6 +11,7 @@ import {
   ILogicalValidityCheckRule,
   ILogicalValidityCheckRuleDict,
   IPage,
+  IPageMovementLog,
   IPagesDict,
   IPageTransitionRule,
   IPageTransitionRuleDict,
@@ -486,7 +487,7 @@ export type IGetNextLocation = (payload: {
   userAnswers: IUserAnswer;
   pagesDict: IPagesDict;
   targetPageTransitionRuleArr: string[];
-  pageMovementLogs: string[];
+  pageMovementLogs: IPageMovementLog[];
   visibleRuleDict: IVisibleRuleDict;
 }) => ILocation;
 
@@ -608,7 +609,8 @@ export const getNextLocation: IGetNextLocation = ({
 
     return (
       currentLocation.pageIndex < index &&
-      !pageMovementLogs.includes(String(page.docID)) &&
+      // !pageMovementLogs.includes(String(page.docID)) &&
+      !pageMovementLogs.some((log) => log.docID === page.docID) &&
       !targetPageTransitionRuleArr.includes(String(page.docID)) &&
       !isEmptyPage({ page, userAnswers, visibleRuleDict })
     );
@@ -640,7 +642,7 @@ export type IGetPrevLastLocation = (payload: {
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   targetPageTransitionRuleArr: string[];
   visibleRuleDict: IVisibleRuleDict;
-}) => { location: ILocation; pageMovementLogs: string[] };
+}) => { location: ILocation; pageMovementLogs: IPageMovementLog[] };
 
 export const getPrevLastLocation: IGetPrevLastLocation = ({
   userAnswers,
@@ -650,7 +652,7 @@ export const getPrevLastLocation: IGetPrevLastLocation = ({
   targetPageTransitionRuleArr,
   visibleRuleDict,
 }) => {
-  const pageMovementLogs: string[] = [];
+  const pageMovementLogs: IPageMovementLog[] = [];
   const location: ILocation = firstPageLocation;
 
   // есть обязательный без ответа? -> отмена перехода конец
@@ -671,11 +673,11 @@ type IFindFirstIncompleteQuestionInNextPage = (payload: {
   pages: IPage[];
   pagesDict: IPagesDict;
   userAnswers: IUserAnswer;
-  pageMovementLogs: string[];
+  pageMovementLogs: IPageMovementLog[];
   pageTransitionRuleDict: IPageTransitionRuleDict;
   targetPageTransitionRuleArr: string[];
   visibleRuleDict: IVisibleRuleDict;
-}) => { location: ILocation; pageMovementLogs: string[] };
+}) => { location: ILocation; pageMovementLogs: IPageMovementLog[] };
 
 export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestionInNextPage = ({
   currentLocation,
@@ -688,7 +690,7 @@ export const findFirstIncompleteQuestionInNextPage: IFindFirstIncompleteQuestion
   visibleRuleDict,
 }) => {
   const currentPage = pages[currentLocation.pageIndex];
-  pageMovementLogs.push(String(currentPage.docID));
+  pageMovementLogs.push({ docID: currentPage.docID, firstVisitTime: 0 });
   const firstIncompleteQuestion = currentPage.questions.find(
     (q) => q.isRequired && !questionValidation(q, userAnswers)
   );

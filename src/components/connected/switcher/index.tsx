@@ -188,7 +188,7 @@ const mapStateToProps = (state: IState) => {
   const showFinishBtn =
     location.pageIndex + 1 === pagesCount && !pageTransitionRules;
   const pageList = strictModeNavigation
-    ? pageMovementLogs.map((pageDocID) => pagesDict[pageDocID].page)
+    ? pageMovementLogs.map((log) => pagesDict[String(log.docID)].page)
     : pages;
 
   const { pageIndex } = location;
@@ -196,7 +196,9 @@ const mapStateToProps = (state: IState) => {
   const pageTitle = pages[pageIndex].title
     ? pages[pageIndex].title
     : strictModeNavigation
-    ? `Страница ${pageMovementLogs.indexOf(String(currentPage.docID)) + 1}`
+    ? `Страница ${
+        pageMovementLogs.findIndex((log) => log.docID === currentPage.docID) + 1
+      }`
     : `Страница ${location.pageIndex + 1}`;
 
   // console.log("strictModeNavigation", strictModeNavigation);

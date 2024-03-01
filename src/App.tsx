@@ -106,10 +106,12 @@ const mapStateToProps = (state: IState) => {
     styles,
     timerTime,
     showTimer,
+    visitedPageDocIDList,
+    pageMovementLogs,
   } = state;
 
-  // console.log("visitedPageDocIDList", visitedPageDocIDList);
-  // console.log("pageMovementLogs", pageMovementLogs);
+  console.log("visitedPageDocIDList", visitedPageDocIDList);
+  console.log("pageMovementLogs", pageMovementLogs);
 
   const {
     globalStyle: {

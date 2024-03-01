@@ -5,7 +5,7 @@ import {
   FIRST_PAGE_LOCATION,
   DEFAULT_STYLES,
 } from "../../consts/const";
-import { ILocation, IState } from "../../types";
+import { ILocation, IPageMovementLog, IState } from "../../types";
 // import {
 //   fakePageTransitionRules,
 //   fakeRules,
@@ -225,9 +225,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         state.location.pathName === "greeting"
           ? "right-to-left"
           : "left-to-right";
-      const newPageMovementLogs = firtPageIsSurvey
+      const newPageMovementLogs: IPageMovementLog[] = firtPageIsSurvey
         ? []
-        : [String(state.data!.pages[0].docID)];
+        : [{ docID: state.data!.pages[0].docID, firstVisitTime: 0 }];
       return {
         ...state,
         params: {
@@ -286,8 +286,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
             modalMessageType: "completion",
           };
         }
+        const currentTime = Math.floor(new Date().getTime() / 1000);
         const newPageMovementLogs = pages
-          .map((page) => page.docID)
+          .map((page) => ({ docID: page.docID, firstVisitTime: currentTime }))
           .slice(0, nextPageIndex + 1);
 
         const nextLocation: ILocation = {
@@ -331,9 +332,14 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         };
       }
 
-      const newPageMovementLogs = [
+      const currentTime = new Date().getTime() / 1000;
+      ///
+      const newPageMovementLogs: IPageMovementLog[] = [
         ...pageMovementLogs,
-        String(pages[nextLocation.pageIndex].docID),
+        {
+          docID: pages[nextLocation.pageIndex].docID,
+          firstVisitTime: currentTime,
+        },
       ];
 
       return {
@@ -369,6 +375,7 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           pageIndex: prevPageIndex < 0 ? 0 : prevPageIndex,
           questionIndex: 0,
         };
+
         const newPageMovementLogs = pages
           .map((page) => page.docID)
           .slice(0, prevPageIndex + 1);
@@ -387,7 +394,13 @@ export const reducer = (state: IState = initialState, action: IAction) => {
 
       const prevPageDocID = targetPageID
         ? targetPageID
-        : pageMovementLogs[pageMovementLogs.indexOf(currentPageDocID) - 1];
+        : String(
+            pageMovementLogs[
+              pageMovementLogs.findIndex(
+                (log) => log.docID === Number(currentPageDocID)
+              ) - 1
+            ].docID
+          );
 
       const prevLocation = {
         pathName: "section",
@@ -397,7 +410,9 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         questionIndex: 0,
       };
 
-      const prevIndexInLogs = pageMovementLogs.indexOf(prevPageDocID);
+      const prevIndexInLogs = pageMovementLogs.findIndex(
+        (log) => log.docID === Number(prevPageDocID)
+      );
       const newPageMovementLogs = pageMovementLogs.filter(
         (_v, i) => !(i > prevIndexInLogs)
       );
@@ -433,8 +448,11 @@ export const reducer = (state: IState = initialState, action: IAction) => {
           pagesDict[pageDocID].order < location.pageIndex
             ? "left-to-right"
             : "right-to-left";
-        const newPageMovementLogs = pages
-          .map((page) => page.docID)
+
+        const currentTime = new Date().getTime() / 1000;
+
+        const newPageMovementLogs: IPageMovementLog[] = pages
+          .map((page) => ({ docID: page.docID, firstVisitTime: currentTime }))
           .slice(0, pagesDict[pageDocID].order + 1);
         return {
           ...state,
@@ -444,11 +462,12 @@ export const reducer = (state: IState = initialState, action: IAction) => {
         };
       }
 
-      const newPageMovementLogs = [];
-      for (const docID of pageMovementLogs) {
-        newPageMovementLogs.push(docID);
+      const newPageMovementLogs: IPageMovementLog[] = [];
 
-        if (pageDocID === docID) {
+      for (const log of pageMovementLogs) {
+        newPageMovementLogs.push(log);
+
+        if (pageDocID === String(log.docID)) {
           break;
         }
       }

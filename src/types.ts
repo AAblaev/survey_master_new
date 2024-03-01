@@ -589,6 +589,11 @@ export type IStyles = {
   };
 };
 
+export type IPageMovementLog = {
+  docID: number;
+  firstVisitTime: number;
+};
+
 export type IState = {
   loading: boolean;
   error: IError;
@@ -612,7 +617,7 @@ export type IState = {
   disqualificationRuleArr: IDisqualificationRule[];
   surveyCompletionRuleArr: ISurveyCompletionRule[];
   pagesDict: IPagesDict;
-  pageMovementLogs: string[];
+  pageMovementLogs: IPageMovementLog[];
   strictModeNavigation: boolean;
   styles: IStyles;
   timerTime: number;

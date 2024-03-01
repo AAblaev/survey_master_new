@@ -108,8 +108,9 @@ const mapStateToProps = (state: IState) => {
   const showCompleteBtn = isLastPage && !hasTransitionRule;
 
   const prevPages = pageMovementLogs
-    .map((pageID, index) => {
-      if (index + 1 !== pageMovementLogs.length) return pagesDict[pageID].page;
+    .map((log, index) => {
+      if (index + 1 !== pageMovementLogs.length)
+        return pagesDict[String(log.docID)].page;
     })
     .filter((page) => !!page) as IPage[];
 
