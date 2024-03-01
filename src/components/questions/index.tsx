@@ -43,6 +43,7 @@ import { requiredRowsEndColumnsChecking } from "../../utils/validation";
 import ExtraMessage from "../common/ExtraMessage";
 import DatePicker from "./views/datePicker";
 import DatePickerListView from "./views/datePicker-list";
+import MultiSelectView from "./views/multiSelect";
 
 const viewDict = {
   free: FreeView,
@@ -51,7 +52,7 @@ const viewDict = {
   multidropdown: MultiDropDownView,
   scale: ScaleView,
   select: SelectView,
-  multiselect: SelectView,
+  multiselect: MultiSelectView,
   html: Html,
   matrix: MatrixView,
 };
@@ -94,7 +95,7 @@ const getViewComponent: IGetViewComponent = (questionType, simpleType) => {
       return SelectView;
     }
     case "multiselect": {
-      return SelectView;
+      return MultiSelectView;
     }
     case "html": {
       return Html;

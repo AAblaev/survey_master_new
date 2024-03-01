@@ -2,14 +2,14 @@ import React from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
-import { IQuestion, IAnswer, IOption } from "../../../../types";
+import { IQuestion, IAnswer } from "../../../../types";
 import GreenCheckbox from "../../../common/GreenCheckbox";
 import { formGroupCss } from "./sc";
 import { DEFAULT_COLUMNS_COUNT } from "../../../../consts/const";
 import GreenRadio from "../../../common/GreenRadio";
 import { IViewComponentProps } from "../..";
 
-const SelectView: React.FC<IViewComponentProps> = ({
+const MultiSelectView: React.FC<IViewComponentProps> = ({
   question,
   setAnswer,
   userAnswer,
@@ -31,32 +31,35 @@ const SelectView: React.FC<IViewComponentProps> = ({
     return valuesIdArr.some((id) => id === docID);
   };
 
-  const handleChange = (isChecked: boolean, option: IOption) => {
-    setAnswer({
-      questionID: docID,
-      values: isChecked
-        ? []
-        : [
-            {
-              optionID: option.docID,
-              value: option.title,
-              isFocused: false,
-              validationResult: { isValid: true, message: "success" },
-            },
-          ],
-    });
-  };
-
   return (
     <FormGroup css={formGroupCss(columnsCount)}>
       {options.map((item, index) => {
         const isChecked = isSelected(item.docID);
+
+        const handleChange = () => {
+          const newValue = isChecked
+            ? valuesArr.filter((v) => v.optionID !== item.docID)
+            : [
+                ...valuesArr,
+                {
+                  optionID: item.docID,
+                  value: item.title,
+                  isFocused: false,
+                  validationResult: { isValid: true, message: "success" },
+                },
+              ];
+          setAnswer({
+            questionID: docID,
+            values: newValue,
+          });
+        };
+
         return (
           <FormControlLabel
             control={
-              <GreenRadio
+              <GreenCheckbox
                 checked={isChecked}
-                onClick={() => handleChange(isChecked, item)}
+                onChange={handleChange}
                 name={item.title}
               />
             }
@@ -69,4 +72,4 @@ const SelectView: React.FC<IViewComponentProps> = ({
   );
 };
 
-export default SelectView;
+export default MultiSelectView;

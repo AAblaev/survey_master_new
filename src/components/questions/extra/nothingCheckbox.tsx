@@ -23,29 +23,37 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
       userAnswer.values.length &&
       userAnswer.values[0].optionID === EXTRA_ANSWER.NOTHING
   );
+
   const handleChange = () => {
-    checked &&
+    console.log("handleChange");
+    if (checked) {
       setAnswer({
         questionID: questionID,
         values: [],
       });
-    !checked &&
-      setAnswer({
-        questionID: questionID,
-        values: [
-          {
-            optionID: EXTRA_ANSWER.NOTHING,
-            value: "ничего из вышеперечисленного",
-            validationResult: { isValid: true, message: "success" },
-            isFocused: false,
-          },
-        ],
-      });
+      return;
+    }
+
+    setAnswer({
+      questionID: questionID,
+      values: [
+        {
+          optionID: EXTRA_ANSWER.NOTHING,
+          value: "ничего из вышеперечисленного",
+          validationResult: { isValid: true, message: "success" },
+          isFocused: false,
+        },
+      ],
+    });
   };
   return (
     <FormControlLabel
       control={
-        <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
+        <GreenRadio
+          checked={checked}
+          onChange={() => handleChange()}
+          name={"name"}
+        />
       }
       label={
         nothingPlaceholder ? nothingPlaceholder : "Ничего из вышеперечисленного"
