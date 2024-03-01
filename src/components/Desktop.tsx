@@ -122,21 +122,11 @@ const Desktop: React.FC<IDesktop> = ({
       );
     if (pathName === "completion")
       return (
-        <InfoPage
-          html={completionPage}
-          useRedirect={true}
-          redirectLink="http://192.168.0.133:5002/link/MultipleChoice
-"
-        />
+        <InfoPage html={completionPage} useRedirect={false} redirectLink="" />
       );
     if (pathName === "completion_by_timer")
       return (
-        <InfoPage
-          html={byTimerPage}
-          useRedirect={true}
-          redirectLink="http://192.168.0.133:5002/link/MultipleChoice
-"
-        />
+        <InfoPage html={byTimerPage} useRedirect={false} redirectLink="" />
       );
 
     if (pathName === "disqualification")

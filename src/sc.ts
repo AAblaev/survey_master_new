@@ -105,14 +105,14 @@ export const modalHeaderWrapperCss = css`
 `;
 
 export const gridContainerCss = css`
-  height: 95%;
+  height: calc(100%-20px);
   flex-grow: 1;
   position: relative;
   display: grid;
   gap: 2%;
   grid-template-columns: 3% 90% 3%;
   grid-template-rows: auto;
-  margin-top: 10px;
+  margin-top: 20px;
 
   @media (min-width: 576px) {
     grid-template-columns: 3% 90% 3%;
@@ -155,7 +155,7 @@ export const progressQuestionCountCss = (
   fontSize: number,
   color: string
 ) => css`
-  margin-top: 10px;
+  margin-top: 20px;
   font-size: ${fontSize}px;
   font-weight: 500;
   color: ${color};
