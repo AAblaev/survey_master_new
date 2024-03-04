@@ -46,7 +46,7 @@ const UnableCheckbox: React.FC<IUnableCheckbox> = ({
   return (
     <FormControlLabel
       control={
-        <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
+        <GreenRadio checked={checked} onClick={handleChange} name={"name"} />
       }
       label={
         difficultToAnswerPlaceholder

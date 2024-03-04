@@ -191,7 +191,9 @@ const Question: React.FC<IQuestionProps> = ({
     !isImplementedQuestionType;
 
   const isInternalExtra =
-    questionType === "dropdown" || questionType === "multidropdown";
+    questionType === "dropdown" ||
+    questionType === "multidropdown" ||
+    questionType === "multiselect";
 
   const userAnswer =
     answerWithExtra && hasExtra
@@ -340,7 +342,7 @@ const Question: React.FC<IQuestionProps> = ({
               currentQuestionIndex={currentQuestionIndex}
               question={question}
               userAnswer={
-                questionType === "select" || questionType === "multiselect"
+                questionType === "select"
                   ? (userAnswerForSelect as IAnswer)
                   : (userAnswerResult as IAnswer)
               }
@@ -355,7 +357,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
-              singleAnswer={questionType !== "multiselect"}
+              singleAnswer={true}
               otherPlaceholder={otherPlaceholder}
             />
           )}
@@ -364,6 +366,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
+              singleAnswer={true}
               nothingPlaceholder={nothingPlaceholder}
             />
           )}

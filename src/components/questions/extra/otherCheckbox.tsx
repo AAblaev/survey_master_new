@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import GreenCheckbox from "../../common/GreenCheckbox";
@@ -30,7 +30,11 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
 
   const value = checked ? (hasOtherInUserAnswer as IValue).value : "";
 
+  const [textValue, setTextValue] = useState(value);
+
   const values = userAnswer ? userAnswer.values : [];
+
+  const ControlComponent = singleAnswer ? GreenRadio : GreenCheckbox;
 
   const handleChange = () => {
     const newValues = singleAnswer ? [] : values;
@@ -66,7 +70,11 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
     <>
       <FormControlLabel
         control={
-          <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
+          <ControlComponent
+            checked={checked}
+            onChange={handleChange}
+            name={"name"}
+          />
         }
         label={otherPlaceholder ? otherPlaceholder : "Другое"}
         key={"other"}
@@ -84,7 +92,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
           multiline
           minRows={3}
           variant="filled"
-          value={value}
+          value={textValue}
           onFocus={(e) => {
             const newValues = values.map((v) => {
               if (v.optionID === EXTRA_ANSWER.OTHER) {
@@ -107,31 +115,29 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
               if (v.optionID === EXTRA_ANSWER.OTHER) {
                 return {
                   optionID: EXTRA_ANSWER.OTHER,
-                  value: v.value,
-                  validationResult: v.validationResult,
+                  value: textValue,
+                  validationResult: { isValid: textValue !== "", message: "" },
                   isFocused: false,
                 };
               }
               return v;
             });
+
+            if (!hasOtherInUserAnswer) {
+              newValues.push({
+                optionID: EXTRA_ANSWER.OTHER,
+                value: textValue,
+                validationResult: { isValid: textValue !== "", message: "" },
+                isFocused: false,
+              });
+            }
             setAnswer({
               questionID: questionID,
               values: newValues,
             });
           }}
           onChange={(e) => {
-            const isValid = e.target.value === "" ? false : true;
-            setAnswer({
-              questionID: questionID,
-              values: [
-                {
-                  optionID: EXTRA_ANSWER.OTHER,
-                  value: e.target.value,
-                  validationResult: { isValid: isValid, message: "success" },
-                  isFocused: true,
-                },
-              ],
-            });
+            setTextValue(e.target.value);
           }}
         />
       )}

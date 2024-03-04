@@ -9,6 +9,7 @@ export type INothingCheckboxProps = {
   userAnswer: IAnswer;
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
+  singleAnswer: boolean;
   nothingPlaceholder: string;
 };
 
@@ -17,15 +18,15 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
   setAnswer,
   questionID,
   nothingPlaceholder,
+  singleAnswer,
 }) => {
   const checked = Boolean(
     userAnswer &&
       userAnswer.values.length &&
       userAnswer.values[0].optionID === EXTRA_ANSWER.NOTHING
   );
-
+  const ControlComponent = singleAnswer ? GreenRadio : GreenCheckbox;
   const handleChange = () => {
-    console.log("handleChange");
     if (checked) {
       setAnswer({
         questionID: questionID,
@@ -49,7 +50,7 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
   return (
     <FormControlLabel
       control={
-        <GreenRadio
+        <ControlComponent
           checked={checked}
           onChange={() => handleChange()}
           name={"name"}
