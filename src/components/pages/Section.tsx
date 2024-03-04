@@ -32,7 +32,7 @@ const Section: React.FC<IOwnSectionProps> = ({
 
   return (
     <div css={questionListCss(questionCount)}>
-      {showGroup && (
+      {false && (
         <QuestioinsGroup
           docID={333}
           title="Группа вопросов"

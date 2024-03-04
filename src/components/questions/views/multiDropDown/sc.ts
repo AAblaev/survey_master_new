@@ -67,11 +67,14 @@ export const menuItemCss = css`
   }
 `;
 
-export const textFieldCss = css`
+export const textFieldCss = (alarm: boolean) => css`
   &.MuiFormControl-root {
     margin-top: 15px;
   }
   & .MuiFilledInput-multiline {
     padding: 10px;
+  }
+  & .MuiFilledInput-root {
+    ${alarm && `border-color:red`}
   }
 `;

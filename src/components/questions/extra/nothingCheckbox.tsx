@@ -9,6 +9,7 @@ export type INothingCheckboxProps = {
   userAnswer: IAnswer;
   setAnswer: (answer: IAnswer) => void;
   questionID: number;
+  singleAnswer: boolean;
   nothingPlaceholder: string;
 };
 
@@ -17,35 +18,43 @@ const NothingCheckbox: React.FC<INothingCheckboxProps> = ({
   setAnswer,
   questionID,
   nothingPlaceholder,
+  singleAnswer,
 }) => {
   const checked = Boolean(
     userAnswer &&
       userAnswer.values.length &&
       userAnswer.values[0].optionID === EXTRA_ANSWER.NOTHING
   );
+  const ControlComponent = singleAnswer ? GreenRadio : GreenCheckbox;
   const handleChange = () => {
-    checked &&
+    if (checked) {
       setAnswer({
         questionID: questionID,
         values: [],
       });
-    !checked &&
-      setAnswer({
-        questionID: questionID,
-        values: [
-          {
-            optionID: EXTRA_ANSWER.NOTHING,
-            value: "ничего из вышеперечисленного",
-            validationResult: { isValid: true, message: "success" },
-            isFocused: false,
-          },
-        ],
-      });
+      return;
+    }
+
+    setAnswer({
+      questionID: questionID,
+      values: [
+        {
+          optionID: EXTRA_ANSWER.NOTHING,
+          value: "ничего из вышеперечисленного",
+          validationResult: { isValid: true, message: "success" },
+          isFocused: false,
+        },
+      ],
+    });
   };
   return (
     <FormControlLabel
       control={
-        <GreenRadio checked={checked} onChange={handleChange} name={"name"} />
+        <ControlComponent
+          checked={checked}
+          onChange={() => handleChange()}
+          name={"name"}
+        />
       }
       label={
         nothingPlaceholder ? nothingPlaceholder : "Ничего из вышеперечисленного"

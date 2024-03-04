@@ -43,6 +43,7 @@ import { requiredRowsEndColumnsChecking } from "../../utils/validation";
 import ExtraMessage from "../common/ExtraMessage";
 import DatePicker from "./views/datePicker";
 import DatePickerListView from "./views/datePicker-list";
+import MultiSelectView from "./views/multiSelect";
 
 const viewDict = {
   free: FreeView,
@@ -51,7 +52,7 @@ const viewDict = {
   multidropdown: MultiDropDownView,
   scale: ScaleView,
   select: SelectView,
-  multiselect: SelectView,
+  multiselect: MultiSelectView,
   html: Html,
   matrix: MatrixView,
 };
@@ -94,7 +95,7 @@ const getViewComponent: IGetViewComponent = (questionType, simpleType) => {
       return SelectView;
     }
     case "multiselect": {
-      return SelectView;
+      return MultiSelectView;
     }
     case "html": {
       return Html;
@@ -190,7 +191,9 @@ const Question: React.FC<IQuestionProps> = ({
     !isImplementedQuestionType;
 
   const isInternalExtra =
-    questionType === "dropdown" || questionType === "multidropdown";
+    questionType === "dropdown" ||
+    questionType === "multidropdown" ||
+    questionType === "multiselect";
 
   const userAnswer =
     answerWithExtra && hasExtra
@@ -339,7 +342,7 @@ const Question: React.FC<IQuestionProps> = ({
               currentQuestionIndex={currentQuestionIndex}
               question={question}
               userAnswer={
-                questionType === "select" || questionType === "multiselect"
+                questionType === "select"
                   ? (userAnswerForSelect as IAnswer)
                   : (userAnswerResult as IAnswer)
               }
@@ -354,7 +357,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
-              singleAnswer={questionType !== "multiselect"}
+              singleAnswer={true}
               otherPlaceholder={otherPlaceholder}
             />
           )}
@@ -363,6 +366,7 @@ const Question: React.FC<IQuestionProps> = ({
               userAnswer={answerWithExtra as IAnswer}
               setAnswer={setAnswer}
               questionID={question.docID}
+              singleAnswer={true}
               nothingPlaceholder={nothingPlaceholder}
             />
           )}

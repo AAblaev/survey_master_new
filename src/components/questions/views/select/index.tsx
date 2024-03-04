@@ -2,7 +2,7 @@ import React from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
-import { IQuestion, IAnswer } from "../../../../types";
+import { IQuestion, IAnswer, IOption } from "../../../../types";
 import GreenCheckbox from "../../../common/GreenCheckbox";
 import { formGroupCss } from "./sc";
 import { DEFAULT_COLUMNS_COUNT } from "../../../../consts/const";
@@ -31,50 +31,32 @@ const SelectView: React.FC<IViewComponentProps> = ({
     return valuesIdArr.some((id) => id === docID);
   };
 
+  const handleChange = (isChecked: boolean, option: IOption) => {
+    setAnswer({
+      questionID: docID,
+      values: isChecked
+        ? []
+        : [
+            {
+              optionID: option.docID,
+              value: option.title,
+              isFocused: false,
+              validationResult: { isValid: true, message: "success" },
+            },
+          ],
+    });
+  };
+
   return (
     <FormGroup css={formGroupCss(columnsCount)}>
       {options.map((item, index) => {
         const isChecked = isSelected(item.docID);
-        const handleChange = () => {
-          setAnswer({
-            questionID: docID,
-            values: isChecked
-              ? []
-              : [
-                  {
-                    optionID: item.docID,
-                    value: item.title,
-                    isFocused: false,
-                    validationResult: { isValid: true, message: "success" },
-                  },
-                ],
-          });
-        };
-
-        const handleChange2 = () => {
-          const newValue = isChecked
-            ? valuesArr.filter((v) => v.optionID !== item.docID)
-            : [
-                ...valuesArr,
-                {
-                  optionID: item.docID,
-                  value: item.title,
-                  isFocused: false,
-                  validationResult: { isValid: true, message: "success" },
-                },
-              ];
-          setAnswer({
-            questionID: docID,
-            values: newValue,
-          });
-        };
-
         return (
           <FormControlLabel
             control={
               <GreenRadio
                 checked={isChecked}
-                onChange={dataType === "select" ? handleChange : handleChange2}
+                onClick={() => handleChange(isChecked, item)}
                 name={item.title}
               />
             }

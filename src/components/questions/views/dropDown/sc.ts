@@ -10,7 +10,7 @@ export const renderValueCss = (isDefault: boolean) =>
     padding: 0.5em;
   `;
 
-export const textFieldCss = css`
+export const textFieldCss = (alarm: boolean) => css`
   &.MuiFormControl-root {
     margin-top: 15px;
   }
@@ -19,5 +19,8 @@ export const textFieldCss = css`
   }
   & .PrivateNotchedOutline-root-7 {
     border-radius: 0;
+  }
+  & .MuiFilledInput-root {
+    ${alarm && `border-color:red`}
   }
 `;
