@@ -141,6 +141,8 @@ export function* completeValidation() {
     pageMovementLogs,
   } = yield select(selectChangePageProps);
 
+  // console.log("pageMovementLogs", pageMovementLogs);
+
   const isDisqualificated = disqualificationRuleArr.some(
     (rule: IDisqualificationRule) =>
       disqualificationRuleChecking(userAnswers, rule)
@@ -161,10 +163,13 @@ export function* completeValidation() {
   }
   const firstIncompleteQuestion = findFirstIncompleteQuestion(
     pages.filter((page: IPage) =>
-      (pageMovementLogs as number[]).includes(page.docID)
+      (pageMovementLogs as string[]).includes(String(page.docID))
     ) as IPage[],
     userAnswers
   );
+
+  // console.log("firstIncompleteQuestion", firstIncompleteQuestion);
+
   const resultCheckingRules: IResultCheckingRules = yield call(() =>
     checkAllPagesLogicalValidity()
   );
@@ -196,6 +201,8 @@ export function* completeSurvey() {
   const completeValidationResult: boolean = yield call(() =>
     completeValidation()
   );
+
+  console.log("completeValidationResult", completeValidationResult);
 
   if (completeValidationResult) {
     yield imediateCompletion();
