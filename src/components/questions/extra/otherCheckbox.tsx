@@ -34,6 +34,11 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
 
   const values = userAnswer ? userAnswer.values : [];
 
+  const showAlert =
+    hasOtherInUserAnswer &&
+    hasOtherInUserAnswer.value === "" &&
+    !hasOtherInUserAnswer.isFocused;
+
   const ControlComponent = singleAnswer ? GreenRadio : GreenCheckbox;
 
   const handleChange = () => {
@@ -72,7 +77,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
         control={
           <ControlComponent
             checked={checked}
-            onChange={handleChange}
+            onClick={handleChange}
             name={"name"}
           />
         }
@@ -82,7 +87,7 @@ const OtherCheckbox: React.FC<IOtherCheckbox> = ({
       {checked && (
         <TextField
           id={"otherTextField" + questionID}
-          css={textFieldCss}
+          css={textFieldCss(Boolean(showAlert))}
           autoFocus={autoFocus}
           InputProps={{ disableUnderline: true }}
           label=""

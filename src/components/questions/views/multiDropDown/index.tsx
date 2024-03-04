@@ -29,6 +29,14 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const { brandColor } = useSelector(getBrandColor);
+  const hasOtherInUserAnswer =
+    userAnswer &&
+    userAnswer.values.length > 0 &&
+    userAnswer.values.find((v) => v.optionID === EXTRA_ANSWER.OTHER);
+
+  const [textValue, setTextValue] = useState(
+    hasOtherInUserAnswer ? hasOtherInUserAnswer.value : ""
+  );
 
   const {
     docID,
@@ -39,11 +47,11 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
     nothingPlaceholder,
     otherPlaceholder,
   } = question;
-  const hasOtherInUserAnswer =
-    userAnswer &&
-    userAnswer.values.length > 0 &&
-    userAnswer.values.find((v) => v.optionID === EXTRA_ANSWER.OTHER);
 
+  const showAlert =
+    hasOtherInUserAnswer &&
+    hasOtherInUserAnswer.value === "" &&
+    !hasOtherInUserAnswer.isFocused;
   const options = config.options!;
   const selectItems = [...options];
   hasOtherAnswer &&
@@ -246,7 +254,7 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
       {Boolean(hasOtherInUserAnswer) && (
         <TextField
           id={"otherTextField" + docID}
-          css={textFieldCss}
+          css={textFieldCss(Boolean(showAlert))}
           autoFocus
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
@@ -256,7 +264,7 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
           multiline
           minRows={3}
           variant="filled"
-          value={hasOtherInUserAnswer ? hasOtherInUserAnswer.value : ""}
+          value={textValue}
           onFocus={(e) => {
             const values = userAnswer.values;
             const newValues = values.map((value) => {
@@ -292,30 +300,22 @@ const MultiDropDownView: React.FC<IViewComponentProps> = ({
 
               return value;
             });
+
+            if (!hasOtherInUserAnswer) {
+              newValues.push({
+                optionID: EXTRA_ANSWER.OTHER,
+                value: textValue,
+                validationResult: { isValid: textValue !== "", message: "" },
+                isFocused: false,
+              });
+            }
             setAnswer({
               questionID: docID,
               values: newValues,
             });
           }}
           onChange={(e) => {
-            const values = userAnswer.values;
-            const newValues = values.map((value) => {
-              if (value.optionID === EXTRA_ANSWER.OTHER) {
-                const isValid = e.target.value !== "";
-                return {
-                  optionID: EXTRA_ANSWER.OTHER,
-                  value: e.target.value,
-                  validationResult: { isValid: isValid, message: "success" },
-                  isFocused: true,
-                };
-              }
-
-              return value;
-            });
-            setAnswer({
-              questionID: docID,
-              values: newValues,
-            });
+            setTextValue(e.target.value);
           }}
         />
       )}

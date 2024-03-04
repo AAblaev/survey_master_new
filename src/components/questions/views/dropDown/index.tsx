@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import { IAnswer, IOption, IQuestion } from "../../../../types";
 import TextField from "@mui/material/TextField";
@@ -27,6 +27,21 @@ const DropDownView: React.FC<IViewComponentProps> = ({
 
   const options = config.options!;
   const selectItems = [...options];
+
+  const hasOtherInUserAnswer =
+    userAnswer &&
+    userAnswer.values.length > 0 &&
+    userAnswer.values.find((v) => v.optionID === EXTRA_ANSWER.OTHER);
+
+  const [textValue, setTextValue] = useState(
+    hasOtherInUserAnswer ? hasOtherInUserAnswer.value : ""
+  );
+
+  const showAlert =
+    hasOtherInUserAnswer &&
+    hasOtherInUserAnswer.value === "" &&
+    !hasOtherInUserAnswer.isFocused;
+
   hasOtherAnswer &&
     selectItems.push({
       docID: -3,
@@ -149,7 +164,7 @@ const DropDownView: React.FC<IViewComponentProps> = ({
       {value === EXTRA_ANSWER.OTHER && (
         <TextField
           id={"otherTextField" + docID}
-          css={textFieldCss}
+          css={textFieldCss(Boolean(showAlert))}
           autoFocus={autoFocus}
           InputProps={{ disableUnderline: true }}
           placeholder="напишите свой вариант"
@@ -159,32 +174,28 @@ const DropDownView: React.FC<IViewComponentProps> = ({
           multiline
           minRows={3}
           variant="filled"
-          value={userAnswer.values[0].value}
-          onFocus={(e) => {
+          value={textValue}
+          onFocus={() => {
             setAnswer({
               questionID: docID,
               values: [{ ...userAnswer.values[0], isFocused: true }],
             });
           }}
-          onBlur={(e) => {
-            setAnswer({
-              questionID: docID,
-              values: [{ ...userAnswer.values[0], isFocused: false }],
-            });
-          }}
-          onChange={(e) => {
-            const isValid = e.target.value === "" ? false : true;
+          onBlur={() => {
             setAnswer({
               questionID: docID,
               values: [
                 {
-                  optionID: EXTRA_ANSWER.OTHER,
-                  value: e.target.value,
-                  validationResult: { isValid: isValid, message: "success" },
-                  isFocused: true,
+                  ...userAnswer.values[0],
+                  value: textValue,
+                  validationResult: { isValid: textValue !== "", message: "" },
+                  isFocused: false,
                 },
               ],
             });
+          }}
+          onChange={(e) => {
+            setTextValue(e.target.value);
           }}
         />
       )}
