@@ -81,7 +81,7 @@ p {
 
 .right-to-left,
 .left-to-right {
-  width: 100%;
+  width: 90%;
 }
 
 .right-to-left-enter {
@@ -98,11 +98,11 @@ p {
 }
 
 .right-to-left-exit {
-  width: 100%;
+  width: 90%;
   transform: translateX(0);
 }
 .right-to-left-exit-active {
-  width: 100%;
+  width: 90%;
   transform: translateX(-200%);
   transition: all var(--transition-duration) ease;
 }
@@ -121,13 +121,13 @@ p {
 }
 
 .left-to-right-exit {
-  width: 100%;
+  width: 90%;
   /* position: absolute; */
   transform: translateX(0);
   /* z-index: 11; */
 }
 .left-to-right-exit-active {
-  width: 100%;
+  width: 90%;
   /* position: absolute; */
   transform: translateX(200%);
   transition: all var(--transition-duration) ease;
