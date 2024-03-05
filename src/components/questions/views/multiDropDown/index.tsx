@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import CheckIcon from "@mui/icons-material/Check";
 import FormControl from "@mui/material/FormControl";
-import { IAnswer, IOption, IQuestion, IState } from "../../../../types";
 import { MenuItem, TextField } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import CancelIcon from "@mui/icons-material/Cancel";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import { getBrandColor } from "../../../../services/redux/selectors";
+import { IAnswer, IOption } from "../../../../types";
 import { DEFAULT_HINT_VALUE, EXTRA_ANSWER } from "../../../../consts/const";
 import {
   chipCss,
@@ -18,8 +19,6 @@ import {
   selectCss,
   textFieldCss,
 } from "./sc";
-import { useSelector } from "react-redux";
-import { getBrandColor } from "../../../../services/redux/selectors";
 import { IViewComponentProps } from "../..";
 
 const MultiDropDownView: React.FC<IViewComponentProps> = ({

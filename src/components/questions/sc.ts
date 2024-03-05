@@ -44,7 +44,6 @@ export const cardCss = (
   needPadding: boolean,
   borderColor: string,
   borderSize: number,
-  smallSise: boolean,
   alert: boolean,
   backgroundColor?: string
 ) => css`

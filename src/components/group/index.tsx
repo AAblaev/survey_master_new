@@ -3,12 +3,12 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { IQuestion, IStyles } from "../../../types";
-import TextBlock from "../../textBlock";
-import Question from "../../questions";
+import { IQuestion, IStyles } from "../../types";
+import TextBlock from "../textBlock";
+import Question from "../questions";
 import { css } from "@emotion/react";
-import { titleCountCss, titleCss, titleTextCss } from "../sc";
-import { DEFAULT_STYLES } from "../../../consts/const";
+import { DEFAULT_STYLES } from "../../consts/const";
+import { titleCountCss, titleCss, titleTextCss } from "../questions/sc";
 
 export const groupCss = (
   backgroundColor: string,

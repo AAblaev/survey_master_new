@@ -2,14 +2,13 @@ import React from "react";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
-import { IQuestion, IAnswer, IOption } from "../../../../types";
+import OtherCheckbox from "../../parts/extra/otherCheckbox";
+import NothingCheckbox from "../../parts/extra/nothingCheckbox";
 import GreenCheckbox from "../../../common/GreenCheckbox";
-import { formGroupCss } from "./sc";
-import { DEFAULT_COLUMNS_COUNT } from "../../../../consts/const";
-import GreenRadio from "../../../common/GreenRadio";
+import { IAnswer, IOption } from "../../../../types";
 import { IViewComponentProps } from "../..";
-import OtherCheckbox from "../../extra/otherCheckbox";
-import NothingCheckbox from "../../extra/nothingCheckbox";
+import { formGroupCss } from "./sc";
+import { DEFAULT_COLUMNS_COUNT, EXTRA_ANSWER } from "../../../../consts/const";
 
 const MultiSelectView: React.FC<IViewComponentProps> = ({
   question,
@@ -24,7 +23,7 @@ const MultiSelectView: React.FC<IViewComponentProps> = ({
     nothingPlaceholder,
     otherPlaceholder,
   } = question;
-  const { dataType, columnsCount: backendColumnsCount } = config;
+  const { columnsCount: backendColumnsCount } = config;
   const columnsCount = backendColumnsCount
     ? backendColumnsCount
     : DEFAULT_COLUMNS_COUNT;
@@ -51,36 +50,6 @@ const MultiSelectView: React.FC<IViewComponentProps> = ({
       width: 0,
     });
 
-  const optionsDict = options.reduce(
-    (res, option) => ({ ...res, [`${option.docID}`]: option }),
-    {
-      "-1": {
-        docID: -1,
-        height: 0,
-        order: 0,
-        photoID: 0,
-        title: "затрудняюсь ответить",
-        width: 0,
-      },
-      "-2": {
-        docID: -2,
-        height: 0,
-        order: 0,
-        photoID: 0,
-        title: nothingPlaceholder,
-        width: 0,
-      },
-      "-3": {
-        docID: -3,
-        height: 0,
-        order: 0,
-        photoID: 0,
-        title: "",
-        width: 0,
-      },
-    }
-  ) as { [key: string]: IOption };
-
   const userAnswerExist = userAnswer && userAnswer.values.length > 0;
   const valuesArr = userAnswerExist ? (userAnswer as IAnswer).values : [];
   const valuesIdArr: (number | string)[] = userAnswerExist
@@ -92,11 +61,10 @@ const MultiSelectView: React.FC<IViewComponentProps> = ({
   };
 
   const handleChange = (item: IOption, isChecked: boolean) => {
-    // console.log(item);
     const newValue = isChecked
       ? valuesArr.filter((v) => v.optionID !== item.docID)
       : [
-          ...valuesArr,
+          ...valuesArr.filter((v) => v.optionID !== EXTRA_ANSWER.UNABLE),
           {
             optionID: item.docID,
             value: item.title,
@@ -110,23 +78,7 @@ const MultiSelectView: React.FC<IViewComponentProps> = ({
       values: newValue,
     });
   };
-  // const handleChange = () => {
-  //   const newValue = isChecked
-  //     ? valuesArr.filter((v) => v.optionID !== item.docID)
-  //     : [
-  //         ...valuesArr,
-  //         {
-  //           optionID: item.docID,
-  //           value: item.title,
-  //           isFocused: false,
-  //           validationResult: { isValid: true, message: "success" },
-  //         },
-  //       ];
-  //   setAnswer({
-  //     questionID: docID,
-  //     values: newValue,
-  //   });
-  // };
+
   return (
     <>
       <FormGroup css={formGroupCss(columnsCount)}>

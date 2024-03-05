@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import { COMPLETE_SURVEY } from "../../services/redux/types";
 import { onlyDesctopButtonCss } from "../../sc";
 import DelayWrapper from "../common/DelayWrapper";
-import QuestioinsGroup from "../questions/group";
+import QuestioinsGroup from "../group";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 

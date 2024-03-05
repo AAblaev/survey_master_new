@@ -1,9 +1,9 @@
 import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import GreenCheckbox from "../../common/GreenCheckbox";
-import { IAnswer } from "../../../types";
-import { EXTRA_ANSWER } from "../../../consts/const";
-import GreenRadio from "../../common/GreenRadio";
+import GreenCheckbox from "../../../common/GreenCheckbox";
+import { IAnswer } from "../../../../types";
+import { EXTRA_ANSWER } from "../../../../consts/const";
+import GreenRadio from "../../../common/GreenRadio";
 import { css } from "@emotion/react";
 
 export type IUnableCheckbox = {
