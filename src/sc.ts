@@ -25,10 +25,15 @@ export const progressWrapperCss = (
   height: ${isShowProgressbar ? "55px" : "0px"};
 
   position: fixed;
-  top: 64px;
 
   background-color: ${backgroundColor};
   z-index: 3;
+
+  top: 56px;
+
+  @media (min-width: 768px) {
+    top: 64px;
+  }
 `;
 
 export const indentCss = (isShowProgressbar: boolean) => css`
