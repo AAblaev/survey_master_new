@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
@@ -22,6 +22,8 @@ type ITextFieldRow = {
 };
 
 const TextFieldRow: React.FC<ITextFieldRow> = (props) => {
+  const inputRef = useRef(null);
+
   // console.log(props);
   const {
     value,
@@ -64,6 +66,9 @@ const TextFieldRow: React.FC<ITextFieldRow> = (props) => {
             simpleType === "integer" || simpleType === "float"
               ? "number"
               : "text",
+          onWheel: (e) => {
+            inputRef.current && (inputRef.current as any).blur();
+          },
         }}
         color="primary"
         variant="filled"
@@ -74,6 +79,7 @@ const TextFieldRow: React.FC<ITextFieldRow> = (props) => {
         minRows={4}
         maxRows={4}
         placeholder={hint}
+        inputRef={inputRef}
         onChange={(e) => setTextValue(e.target.value)}
         onFocus={(_e) => handleFocus(rowDocID)}
         onBlur={(_e) => handleBlur(rowDocID, textValue)}

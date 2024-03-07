@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import { ISimpleType, IValue } from "../../../../types";
@@ -110,6 +110,8 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
   mobileTabularView,
   simpleType,
 }) => {
+  const inputRef = useRef(null);
+
   const storeTextValue = value ? value.value : "";
   const [textValue, setTextValue] = useState(storeTextValue);
   const isValid = value ? value.validationResult.isValid : true;
@@ -130,6 +132,9 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
               simpleType === "integer" || simpleType === "float"
                 ? "number"
                 : "text",
+            onWheel: (e) => {
+              inputRef.current && (inputRef.current as any).blur();
+            },
           }}
           hiddenLabel
           fullWidth
@@ -139,6 +144,7 @@ const TextFieldCell: React.FC<ITextFieldCellProps> = ({
           variant="filled"
           css={borderColorMatrixCss(!isValid)}
           value={textValue}
+          inputRef={inputRef}
           onChange={(e) => {
             const value = e.target.value;
             if (

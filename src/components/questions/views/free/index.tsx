@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import { IAnswer, IQuestion } from "../../../../types";
 import { REGEXP_DICT, validation } from "../../../../utils/validation";
@@ -14,6 +14,7 @@ const FreeView: React.FC<IViewComponentProps> = ({
   setAnswer,
   userAnswer,
 }) => {
+  const inputRef = useRef(null);
   const { docID, config } = question;
   const {
     isMultiline,
@@ -111,6 +112,9 @@ const FreeView: React.FC<IViewComponentProps> = ({
             simpleType === "integer" || simpleType === "float"
               ? "number"
               : "text",
+          onWheel: (e) => {
+            inputRef.current && (inputRef.current as any).blur();
+          },
         }}
         hiddenLabel
         placeholder={question.hint}
@@ -125,6 +129,7 @@ const FreeView: React.FC<IViewComponentProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputRef={inputRef}
       />
       <div style={{ minWidth: "40px" }}>
         {showAlert && (
