@@ -156,6 +156,7 @@ export type IDataType =
   | "scale"
   | "html"
   | "textblock"
+  | "fileuploader"
   | "default";
 
 export type IValidationResult = {
@@ -163,12 +164,21 @@ export type IValidationResult = {
   message: string;
 };
 
+export type IFileProps = {
+  lastModified: number;
+  name: string;
+  size: number;
+  type: string;
+  loading: boolean;
+} & { [key: string]: any };
+
 export type IValue = {
   optionID: number;
   value: string;
   dimension0?: string;
   dimension1?: string;
   dimension2?: string;
+  fileProps?: IFileProps;
   validationResult: IValidationResult;
   isFocused: boolean;
 };

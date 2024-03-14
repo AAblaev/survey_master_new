@@ -12,6 +12,7 @@ import { COMPLETE_SURVEY } from "../../services/redux/types";
 import { onlyDesctopButtonCss } from "../../sc";
 import DelayWrapper from "../common/DelayWrapper";
 import QuestioinsGroup from "../group";
+import FileUploader from "../questions/views/uploader";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
@@ -42,6 +43,19 @@ const Section: React.FC<IOwnSectionProps> = ({
           expand={false}
         />
       )}
+
+      <Question
+        key={"123"}
+        index={33}
+        currentQuestionIndex={0}
+        question={{
+          ...questions[0],
+          title: "Прикрепите файлы",
+          config: { ...questions[0].config, dataType: "fileuploader" },
+        }}
+        pageID={page.docID}
+        isGrouped={false}
+      />
 
       {questions.map((q, index) => {
         if (q.config.dataType === "textblock") {
