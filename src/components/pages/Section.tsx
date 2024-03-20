@@ -1,17 +1,15 @@
 import React from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
+import Button from "@mui/material/Button";
 import Question from "../questions";
 import TextBlock from "../textBlock";
-import { IPage, IState } from "../../types";
-import { questionListCss } from "./sc";
-import { visibleChecking } from "../../utils/rule-utils";
-// import Button from "@material-ui/core/Button";
-import Button from "@mui/material/Button";
-import { COMPLETE_SURVEY } from "../../services/redux/types";
-import { onlyDesctopButtonCss } from "../../sc";
 import DelayWrapper from "../common/DelayWrapper";
 import QuestioinsGroup from "../group";
+import { IPage, IState } from "../../types";
+import { questionListCss, completeButtonCss } from "./sc";
+import { visibleChecking } from "../../utils/rule-utils";
+import { COMPLETE_SURVEY } from "../../services/redux/types";
 
 export type IOwnSectionProps = ISectionProps & ConnectedProps<typeof connector>;
 
@@ -43,6 +41,26 @@ const Section: React.FC<IOwnSectionProps> = ({
         />
       )}
 
+      {false && (
+        <Question
+          key={"123"}
+          index={33}
+          currentQuestionIndex={0}
+          question={{
+            ...questions[0],
+            title: "Прикрепите файлы",
+            config: {
+              ...questions[0].config,
+              dataType: "fileuploader",
+              filesCount: 5,
+              fileSizeLimit: 45,
+            },
+          }}
+          pageID={page.docID}
+          isGrouped={false}
+        />
+      )}
+
       {questions.map((q, index) => {
         if (q.config.dataType === "textblock") {
           return <TextBlock key={index} question={q} />;
@@ -65,7 +83,7 @@ const Section: React.FC<IOwnSectionProps> = ({
           <Button
             key="continue"
             variant="contained"
-            css={onlyDesctopButtonCss}
+            css={completeButtonCss}
             onClick={() => completeSurvey()}
           >
             Завершить

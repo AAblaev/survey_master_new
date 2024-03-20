@@ -45,6 +45,7 @@ import DatePicker from "./views/datePicker";
 import DatePickerListView from "./views/datePicker-list";
 import MultiSelectView from "./views/multiSelect";
 import QuestionHeader from "./parts/header";
+import FileUploader from "./views/uploader";
 
 const viewDict = {
   free: FreeView,
@@ -56,6 +57,7 @@ const viewDict = {
   multiselect: MultiSelectView,
   html: Html,
   matrix: MatrixView,
+  fileuploader: FileUploader,
 };
 
 export type IViewComponentProps = {
@@ -103,6 +105,9 @@ const getViewComponent: IGetViewComponent = (questionType, simpleType) => {
     }
     case "matrix": {
       return MatrixView;
+    }
+    case "fileuploader": {
+      return FileUploader;
     }
 
     default: {
@@ -191,6 +196,7 @@ const Question: React.FC<IQuestionProps> = ({
     questionType === "multiselect" ||
     questionType === "html" ||
     questionType === "matrix" ||
+    questionType === "fileuploader" ||
     !isImplementedQuestionType;
 
   const isInternalExtra =

@@ -105,6 +105,7 @@ export type IConfig = {
   orientation?: IOrientation;
   //
   columnsCount?: number;
+  filesCount?: number;
   isLimited?: boolean;
   isLimitedValue?: boolean;
   limit?: {
@@ -123,6 +124,8 @@ export type IConfig = {
   isSimpleDateLimit?: boolean;
   simpleDateMax?: string;
   simpleDateMin?: string;
+  fileSizeLimit?: number;
+
   //
   dateType?: unknown;
   scaleType?: unknown;
@@ -156,6 +159,7 @@ export type IDataType =
   | "scale"
   | "html"
   | "textblock"
+  | "fileuploader"
   | "default";
 
 export type IValidationResult = {
@@ -163,12 +167,21 @@ export type IValidationResult = {
   message: string;
 };
 
+export type IFileProps = {
+  lastModified: number;
+  name: string;
+  size: number;
+  type: string;
+  loading: boolean;
+} & { [key: string]: any };
+
 export type IValue = {
   optionID: number;
   value: string;
   dimension0?: string;
   dimension1?: string;
   dimension2?: string;
+  fileProps?: IFileProps;
   validationResult: IValidationResult;
   isFocused: boolean;
 };
@@ -178,9 +191,16 @@ export type IBackendAnswer = {
   values: Omit<IValue, "validationResult" | "isFocused">[];
 };
 
+export type IStatus = "success" | "error";
+
 export type IAnswer = {
   questionID: number;
   values: IValue[];
+  alert?: {
+    showAlert: boolean;
+    alertMessage: string;
+    status: IStatus;
+  };
 };
 
 export type IBranchRule = {};
