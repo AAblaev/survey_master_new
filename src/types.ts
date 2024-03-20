@@ -105,6 +105,7 @@ export type IConfig = {
   orientation?: IOrientation;
   //
   columnsCount?: number;
+  filesCount?: number;
   isLimited?: boolean;
   isLimitedValue?: boolean;
   limit?: {
@@ -123,6 +124,8 @@ export type IConfig = {
   isSimpleDateLimit?: boolean;
   simpleDateMax?: string;
   simpleDateMin?: string;
+  fileSizeLimit?: number;
+
   //
   dateType?: unknown;
   scaleType?: unknown;
@@ -188,9 +191,16 @@ export type IBackendAnswer = {
   values: Omit<IValue, "validationResult" | "isFocused">[];
 };
 
+export type IStatus = "success" | "error";
+
 export type IAnswer = {
   questionID: number;
   values: IValue[];
+  alert?: {
+    showAlert: boolean;
+    alertMessage: string;
+    status: IStatus;
+  };
 };
 
 export type IBranchRule = {};

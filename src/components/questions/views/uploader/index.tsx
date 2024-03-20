@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { PRIMARY_COLOR } from "../../../../consts/const";
 import {
-  btnCss,
+  areaTextCss,
   ddAreaCss,
   listItemCss,
-  listItemEndIconCss,
   listItemStartIconCss,
+  messageCss,
+  messageWrapperCss,
   visuallyHiddenInputCss,
 } from "./sc";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -23,14 +23,24 @@ import {
   SAGA_UPLOAD_FILES,
 } from "../../../../services/redux/types";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { IStatus } from "../../../../types";
 
 const FileUploader: React.FC<IViewComponentProps> = ({
   question,
   questionStyles,
   userAnswer,
+  setAnswer,
 }) => {
   const [isOverArea, setOverArea] = useState<boolean>(false);
+  const [showAlert, setAlert] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const {
+    docID,
+    config: { filesCount, fileSizeLimit },
+  } = question;
 
   const values = userAnswer ? userAnswer.values : [];
   const loading = values.some((v) => v.fileProps!.loading);
@@ -71,8 +81,10 @@ const FileUploader: React.FC<IViewComponentProps> = ({
   const handleUpload = (files: FileList) => {
     dispatch({
       type: SAGA_UPLOAD_FILES,
-      questionID: question.docID,
+      questionID: docID,
       files: files,
+      filesCount: filesCount,
+      fileSizeLimit: fileSizeLimit,
     });
   };
 
@@ -80,12 +92,63 @@ const FileUploader: React.FC<IViewComponentProps> = ({
     dispatch({
       type: SAGA_DELETE_FILES,
       index: index,
-      questionID: question.docID,
+      questionID: docID,
     });
   };
 
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlert(false);
+
+    const alert = Boolean(userAnswer?.alert)
+      ? { ...userAnswer.alert!, showAlert: false }
+      : { showAlert: false, alertMessage: "", status: "success" as IStatus };
+    setAnswer({
+      ...userAnswer,
+      alert: alert,
+    });
+  };
+
+  useEffect(() => {
+    if (userAnswer?.alert?.showAlert) {
+      setAlert(true);
+    }
+  }, [userAnswer?.alert?.showAlert]);
+
   return (
     <>
+      <Snackbar open={showAlert} autoHideDuration={1500} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={userAnswer?.alert?.status}
+          variant="outlined"
+          sx={{ width: "100%" }}
+        >
+          {userAnswer?.alert?.alertMessage}
+        </Alert>
+      </Snackbar>
+      <div css={messageWrapperCss}>
+        <div css={messageCss}>
+          {fileSizeLimit && (
+            <span> {`Максимальный размер файла: ${fileSizeLimit} МБ. `}</span>
+          )}
+          {filesCount && (
+            <span> {`Загрузить можно не более ${filesCount} файлов. `}</span>
+          )}
+          <Tooltip
+            title={
+              "jpeg, jpg, png, gif, bmp, ico, avi, mp4, 3gp, mkv, flv, mov, mpg, mp3, wav, pdf, doc, docx, xls, xlsx, csv, txt, ppt, pptx, odt, odx, rtf, zip, rar, gz, tar.gz, tar, 7z"
+            }
+          >
+            <span style={{ color: "blue" }}>Разрешенные форматы файлов.</span>
+          </Tooltip>
+        </div>
+      </div>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -93,12 +156,7 @@ const FileUploader: React.FC<IViewComponentProps> = ({
         onDragLeave={handleDragLeave}
         css={ddAreaCss(areaBorderColor, isOverArea)}
       >
-        {loading ? (
-          <div>Загрузка</div>
-        ) : (
-          <div>Перетащите файлы или выберите на компьютере</div>
-        )}
-
+        {loading ? <div>Загрузка</div> : <div css={areaTextCss}></div>}
         <Button
           component="label"
           role={undefined}
@@ -116,6 +174,7 @@ const FileUploader: React.FC<IViewComponentProps> = ({
           />
         </Button>
       </div>
+
       {values.filter((v) => !v.fileProps?.loading).length > 0 && (
         <List>
           {values

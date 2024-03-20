@@ -6,16 +6,11 @@ export const ddAreaCss = (color: string, isOverArea: boolean) => css`
   background: ${isOverArea ? chroma(color).alpha(0.1).css() : "#fff"};
   padding: 20px;
   border-radius: 4px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px;
-`;
-
-export const btnCss = css`
-  // display: block;
 `;
 
 export const visuallyHiddenInputCss = css`
@@ -42,4 +37,32 @@ export const listItemStartIconCss = css`
 
 export const listItemEndIconCss = css`
   flex-direction: row-reverse;
+`;
+
+export const messageWrapperCss = css`
+  margin-top: 5px;
+  margin-bottom: 20px;
+  position: relative;
+`;
+
+export const messageCss = css`
+  font-size: 1rem;
+  font-weight: 300;
+  color: gray;
+`;
+
+export const areaTextCss = css`
+  @media screen and (max-width: 767px) {
+    &::after {
+      content: "Выберите файлы";
+      color: black;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    &::after {
+      content: "Перетащите файлы или выберите на компьютере";
+      color: black;
+    }
+  }
 `;

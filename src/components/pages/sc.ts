@@ -19,14 +19,18 @@ export const questionListCss = (questionCount: number) => css`
   margin-bottom: 40px;
   counter-reset: section ${questionCount};
 `;
-//
-// export const titleCss = css`
-//   &.MuiTypography-body1 {
-//     font-size: 1.2rem;
-//     color: ${PRIMARY_COLOR};
-//     font-weight: bold;
-//   }
-// `;
+
+export const completeButtonCss = css`
+  &.MuiButtonBase-root {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    &.MuiButtonBase-root {
+      display: inline-flex;
+    }
+  }
+`;
 
 export const pageCss = css`
   @media (max-width: 576px) {

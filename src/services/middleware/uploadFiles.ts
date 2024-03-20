@@ -6,15 +6,18 @@ import { SAGA_DELETE_FILES, SAGA_UPLOAD_FILES } from "../redux/types";
 import {
   creacteNewValues,
   createUploadingValues,
+  megabytesToBytes,
   removeObjectAtIndex,
 } from "./utils";
 
 export function* onFilesUploaded(payload: {
   files: FileList;
   questionID: number;
+  filesCount: number;
+  fileSizeLimit: number;
   type: typeof SAGA_UPLOAD_FILES;
 }) {
-  const { files, questionID } = payload;
+  const { files, questionID, filesCount, fileSizeLimit } = payload;
   const { userAnswers } = yield select(selectAnswers);
 
   const values = createUploadingValues(files);
@@ -22,9 +25,48 @@ export function* onFilesUploaded(payload: {
     ? userAnswers[String(questionID)].values
     : [];
   const newValues = creacteNewValues(prewValues, values);
+  // проверка на количество и размер
+
+  if (newValues.length > filesCount) {
+    yield put(
+      setAnswer({
+        questionID,
+        values: prewValues,
+        alert: {
+          showAlert: true,
+          alertMessage: "Превышено допустимое количество файлов ",
+          status: "error",
+        },
+      })
+    );
+    return;
+  }
+
+  const filesSize = newValues.reduce((acc, v) => (acc += v.fileProps!.size), 0);
+
+  if (filesSize > megabytesToBytes(fileSizeLimit)) {
+    yield put(
+      setAnswer({
+        questionID,
+        values: prewValues,
+        alert: {
+          showAlert: true,
+          alertMessage: "Превышен допустимый размер файлов ",
+          status: "error",
+        },
+      })
+    );
+    return;
+  }
 
   // установить loading
-  yield put(setAnswer({ questionID, values: newValues }));
+  yield put(
+    setAnswer({
+      questionID,
+      values: newValues,
+      alert: { showAlert: false, alertMessage: "", status: "success" },
+    })
+  );
   // отправка данных
   yield delay(1000);
   // установить loading в false при успехе
@@ -36,6 +78,11 @@ export function* onFilesUploaded(payload: {
         ...v,
         fileProps: { ...v.fileProps!, loading: false },
       })),
+      alert: {
+        showAlert: true,
+        alertMessage: "Файлы загружены",
+        status: "success",
+      },
     })
   );
 }
@@ -54,6 +101,17 @@ export function* onFilesDeleted(payload: {
 
   const newValues = removeObjectAtIndex(prewValues, index);
 
+  yield put(
+    setAnswer({
+      questionID,
+      values: prewValues,
+      alert: {
+        showAlert: false,
+        alertMessage: "Файл удалён",
+        status: "success",
+      },
+    })
+  );
   // отправка данных
   yield delay(1000);
 
@@ -61,6 +119,11 @@ export function* onFilesDeleted(payload: {
     setAnswer({
       questionID,
       values: newValues,
+      alert: {
+        showAlert: true,
+        alertMessage: "Файл удалён",
+        status: "success",
+      },
     })
   );
 }

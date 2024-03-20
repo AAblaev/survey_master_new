@@ -94,3 +94,7 @@ export const removeObjectAtIndex = <T>(array: T[], index: number): T[] => {
   const newArray = [...array.slice(0, index), ...array.slice(index + 1)];
   return newArray;
 };
+export const megabytesToBytes = (megabytes: number): number => {
+  const bytesInMegabyte = 1024 * 1024;
+  return megabytes * bytesInMegabyte;
+};
