@@ -225,7 +225,7 @@ const Desktop: React.FC<IDesktop> = ({
             <div css={borderCss(backgroundColor)}></div>
             <TransitionGroup
               css={transitionGroupCss}
-              childFactory={(child) =>
+              childFactory={(child: any) =>
                 React.cloneElement(child, {
                   classNames: slideMoveDirection,
                 })
