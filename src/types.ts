@@ -1,68 +1,72 @@
 export type IData = {
-  docID: number;
-  name: string;
-  isClosed: boolean;
-  beginDate: string;
-  endDate: string;
-  closeDate: string;
-  isLimitTimeForCompletion: boolean;
-  isShowGreetingsPage: boolean;
-  greetingsPage: string;
-  byTimerPage: string;
-  isShowButtonBack: boolean;
-  isShowCompletionPage: boolean;
-  isShowDisqualificationPage: boolean;
-  isShowQuestionsCount: boolean;
-  isShowProgressbar: boolean;
-  isShowPageList: boolean;
-  isShowSurveyName: boolean;
-  disqualificationPage: string;
-  completionPage: string;
-  limitTime: number;
-  limitTimeLeft: number;
-  pages: IPage[];
-  buttonBackCaption: string;
-  buttonFinishCaption: string;
-  buttonNextCaption: string;
-  buttonStartCaption: string;
-  answers: IBackendAnswer[];
-  rules: IRule[];
-  colorScheme: {
-    docID: number;
-    jsonStyle: IStyles;
-  };
+	docID: number;
+	name: string;
+	isClosed: boolean;
+	beginDate: string;
+	endDate: string;
+	closeDate: string;
+	isLimitTimeForCompletion: boolean;
+	isShowGreetingsPage: boolean;
+	greetingsPage: string;
+	byTimerPage: string;
+	isShowButtonBack: boolean;
+	isShowCompletionPage: boolean;
+	isShowDisqualificationPage: boolean;
+	isShowQuestionsCount: boolean;
+	isShowProgressbar: boolean;
+	isShowPageList: boolean;
+	isShowSurveyName: boolean;
+	disqualificationPage: string;
+	completionPage: string;
+	limitTime: number;
+	limitTimeLeft: number;
+	pages: IPage[];
+	buttonBackCaption: string;
+	buttonFinishCaption: string;
+	buttonNextCaption: string;
+	buttonStartCaption: string;
+	answers: IBackendAnswer[];
+	rules: IRule[];
+	buttonMoveCaption: string;
+	progressbarCaption: string;
+	requiredQuestions: string;
+	totalQuestions: string;
+	colorScheme: {
+		docID: number;
+		jsonStyle: IStyles;
+	};
 };
 
 export type IPage = {
-  docID: number;
-  title: string;
-  surveyID: number;
-  order: number;
-  questions: IQuestion[];
+	docID: number;
+	title: string;
+	surveyID: number;
+	order: number;
+	questions: IQuestion[];
 };
 
 export type IQuestion = {
-  docID: number;
-  surveyID: number; //???
-  pageID: number;
-  type: number; //???
-  title: string;
-  order: number;
-  comment: string | null;
-  hasComment?: boolean;
-  branchRules?: IBranchRule[];
-  quoteRules?: IQuoteRule[];
-  visibilityRules?: IVisibilityRule[];
-  config: IConfig;
-  isRequired: boolean;
-  hasOtherAnswer: boolean;
-  hasNothingAnswer: boolean;
-  hasUnableAnswer: boolean;
-  difficultToAnswerPlaceholder: string;
-  nothingPlaceholder: string;
-  otherPlaceholder: string;
-  hint?: string;
-  scaleType?: number;
+	docID: number;
+	surveyID: number; //???
+	pageID: number;
+	type: number; //???
+	title: string;
+	order: number;
+	comment: string | null;
+	hasComment?: boolean;
+	branchRules?: IBranchRule[];
+	quoteRules?: IQuoteRule[];
+	visibilityRules?: IVisibilityRule[];
+	config: IConfig;
+	isRequired: boolean;
+	hasOtherAnswer: boolean;
+	hasNothingAnswer: boolean;
+	hasUnableAnswer: boolean;
+	difficultToAnswerPlaceholder: string;
+	nothingPlaceholder: string;
+	otherPlaceholder: string;
+	hint?: string;
+	scaleType?: number;
 };
 
 // difficultToAnswerPlaceholder:"Затрудняюсь ответить"
@@ -70,137 +74,137 @@ export type IQuestion = {
 // otherPlaceholder: "Другое"
 
 export type IOption = {
-  docID: number;
-  height: number;
-  order: number;
-  photoID: number;
-  title: string;
-  width: number;
-  dimension?: number;
+	docID: number;
+	height: number;
+	order: number;
+	photoID: number;
+	title: string;
+	width: number;
+	dimension?: number;
 };
 
 export type IView =
-  | "stars"
-  | "table"
-  | "color"
-  | "smiles"
-  | "smiles-monochrome";
+	| "stars"
+	| "table"
+	| "color"
+	| "smiles"
+	| "smiles-monochrome";
 
 export type IOrientation = "horizontal" | "vertical";
 
 export type IConfig = {
-  dataType: IDataType;
-  isConfirmable: boolean;
-  isEnable: boolean;
-  isMultiline: boolean;
-  isRequired: boolean;
-  isSaveTime: boolean;
-  isShowOnButton: boolean;
-  isTimeLimited: boolean;
-  timeLimit: number;
-  title: string;
-  options?: IOption[] | null;
-  simpleType: ISimpleType;
-  view?: IView;
-  orientation?: IOrientation;
-  //
-  columnsCount?: number;
-  filesCount?: number;
-  isLimited?: boolean;
-  isLimitedValue?: boolean;
-  limit?: {
-    min: number;
-    max: number;
-  };
-  limitValue?:
-    | {
-        min: number;
-        max: number;
-      }
-    | {
-        min: string;
-        max: string;
-      };
-  isSimpleDateLimit?: boolean;
-  simpleDateMax?: string;
-  simpleDateMin?: string;
-  fileSizeLimit?: number;
+	dataType: IDataType;
+	isConfirmable: boolean;
+	isEnable: boolean;
+	isMultiline: boolean;
+	isRequired: boolean;
+	isSaveTime: boolean;
+	isShowOnButton: boolean;
+	isTimeLimited: boolean;
+	timeLimit: number;
+	title: string;
+	options?: IOption[] | null;
+	simpleType: ISimpleType;
+	view?: IView;
+	orientation?: IOrientation;
+	//
+	columnsCount?: number;
+	filesCount?: number;
+	isLimited?: boolean;
+	isLimitedValue?: boolean;
+	limit?: {
+		min: number;
+		max: number;
+	};
+	limitValue?:
+		| {
+				min: number;
+				max: number;
+		  }
+		| {
+				min: string;
+				max: string;
+		  };
+	isSimpleDateLimit?: boolean;
+	simpleDateMax?: string;
+	simpleDateMin?: string;
+	fileSizeLimit?: number;
 
-  //
-  dateType?: unknown;
-  scaleType?: unknown;
-  mobileTabularView?: boolean;
-  isChooseManyInrow?: boolean;
-  isChooseManyIncol?: boolean;
-  requiredColunmsCount?: number;
-  requiredRowsCount?: number;
+	//
+	dateType?: unknown;
+	scaleType?: unknown;
+	mobileTabularView?: boolean;
+	isChooseManyInrow?: boolean;
+	isChooseManyIncol?: boolean;
+	requiredColunmsCount?: number;
+	requiredRowsCount?: number;
 };
 export type ISimpleType =
-  | "boolean"
-  | "string"
-  | "integer"
-  | "float"
-  | "datetime"; //number, float, date
+	| "boolean"
+	| "string"
+	| "integer"
+	| "float"
+	| "datetime"; //number, float, date
 
 export type IDataType =
-  | "select"
-  | "dropdown"
-  | "multiselect"
-  | "multidropdown"
-  | "matrix"
-  | "matrix3d"
-  | "free"
-  | "freelist"
-  | "freematrix"
-  | "order"
-  | "ratingscale"
-  | "paircompare"
-  | "complex"
-  | "scale"
-  | "html"
-  | "textblock"
-  | "fileuploader"
-  | "default";
+	| "select"
+	| "dropdown"
+	| "multiselect"
+	| "multidropdown"
+	| "matrix"
+	| "matrix3d"
+	| "free"
+	| "freelist"
+	| "freematrix"
+	| "order"
+	| "ratingscale"
+	| "paircompare"
+	| "complex"
+	| "scale"
+	| "html"
+	| "textblock"
+	| "fileuploader"
+	| "default";
 
 export type IValidationResult = {
-  isValid: boolean;
-  message: string;
+	isValid: boolean;
+	message: string;
 };
 
 export type IFileProps = {
-  lastModified: number;
-  name: string;
-  size: number;
-  type: string;
-  loading: boolean;
+	lastModified: number;
+	name: string;
+	size: number;
+	type: string;
+	loading: boolean;
 } & { [key: string]: any };
 
 export type IValue = {
-  optionID: number;
-  value: string;
-  dimension0?: string;
-  dimension1?: string;
-  dimension2?: string;
-  fileProps?: IFileProps;
-  validationResult: IValidationResult;
-  isFocused: boolean;
+	optionID: number;
+	value: string;
+	dimension0?: string;
+	dimension1?: string;
+	dimension2?: string;
+	fileProps?: IFileProps;
+	validationResult: IValidationResult;
+	isFocused: boolean;
 };
 
 export type IBackendAnswer = {
-  questionID: number;
-  values: Omit<IValue, "validationResult" | "isFocused">[];
+	questionID: number;
+	values: Omit<IValue, "validationResult" | "isFocused">[];
 };
 
 export type IStatus = "success" | "error";
 
 export type IAnswer = {
-  questionID: number;
-  values: IValue[];
-  alert?: {
-    showAlert: boolean;
-    alertMessage: string;
-    status: IStatus;
-  };
+	questionID: number;
+	values: IValue[];
+	alert?: {
+		showAlert: boolean;
+		alertMessage: string;
+		status: IStatus;
+	};
 };
 
 export type IBranchRule = {};
@@ -208,145 +212,145 @@ export type IQuoteRule = {};
 export type IVisibilityRule = {};
 
 export type IError = {
-  status: boolean;
-  message: string;
+	status: boolean;
+	message: string;
 };
 
 export type IParams = {
-  [key: string]: string;
+	[key: string]: string;
 };
 
 export type IParsedData = IData;
 export type IPageName = string;
 export type IPathName =
-  | "greeting"
-  | "survey"
-  | "section"
-  | "completion"
-  | "completion_by_timer"
-  | "disqualification";
+	| "greeting"
+	| "survey"
+	| "section"
+	| "completion"
+	| "completion_by_timer"
+	| "disqualification";
 
 export type ILocation = {
-  pathName: IPathName;
-  title: string;
-  pageIndex: number;
-  questionIndex: number;
+	pathName: IPathName;
+	title: string;
+	pageIndex: number;
+	questionIndex: number;
 };
 
 export type IUserAnswer = {
-  [key: string]: IAnswer;
+	[key: string]: IAnswer;
 };
 
 export type IPagesDict = {
-  [key: string]: { page: IPage; order: number };
+	[key: string]: { page: IPage; order: number };
 };
 
 export type ISlideMoveDirection = "left-to-right" | "right-to-left";
 
 // rules and events
 export type IEventType =
-  | "answeredQuestion"
-  | "skippedQuestion"
-  | "selectedOption"
-  | "struggledToAnswer"
-  | "formula"
-  | "grouped";
+	| "answeredQuestion"
+	| "skippedQuestion"
+	| "selectedOption"
+	| "struggledToAnswer"
+	| "formula"
+	| "grouped";
 
 export interface IBaseEvent {
-  docID: number;
-  eventOperator: "AND" | "OR" | null;
-  type: IEventType;
-  reverseCondition: boolean;
+	docID: number;
+	eventOperator: "AND" | "OR" | null;
+	type: IEventType;
+	reverseCondition: boolean;
 }
 
 export type IEvent =
-  | IAnsweredQuestionEvent
-  | ISkippedQuestionEvent
-  | ISelectedOptionEvent
-  | IStruggledToAnswerEvent
-  | IFormulaEvent
-  | IGroupedQuestionEvent;
+	| IAnsweredQuestionEvent
+	| ISkippedQuestionEvent
+	| ISelectedOptionEvent
+	| IStruggledToAnswerEvent
+	| IFormulaEvent
+	| IGroupedQuestionEvent;
 
 // 'answeredQuestionEvent'|'skippedQuestionEvent'|'selectedOptionEvent'|'struggledToAnswerEvent'|'formulaEvent'
 
 export interface IGroupedQuestionEvent extends IBaseEvent {
-  type: "grouped";
-  events: IEvent[];
+	type: "grouped";
+	events: IEvent[];
 }
 export interface IAnsweredQuestionEvent extends IBaseEvent {
-  type: "answeredQuestion";
-  questionID: number;
+	type: "answeredQuestion";
+	questionID: number;
 }
 export interface ISkippedQuestionEvent extends IBaseEvent {
-  type: "skippedQuestion";
-  questionID: number;
+	type: "skippedQuestion";
+	questionID: number;
 }
 export interface ISelectedOptionEvent extends IBaseEvent {
-  type: "selectedOption";
-  questionID: number;
-  optionID: number; // для selectedOptionEvent
-  dimention0?: number; // для selectedOptionEvent
-  dimention1?: number; // для selectedOptionEvent
-  dimention2?: number; // для selectedOptionEvent
+	type: "selectedOption";
+	questionID: number;
+	optionID: number; // для selectedOptionEvent
+	dimention0?: number; // для selectedOptionEvent
+	dimention1?: number; // для selectedOptionEvent
+	dimention2?: number; // для selectedOptionEvent
 }
 export interface IStruggledToAnswerEvent extends IBaseEvent {
-  type: "struggledToAnswer";
-  questionID: number;
+	type: "struggledToAnswer";
+	questionID: number;
 }
 export interface IFormulaEvent extends IBaseEvent {
-  type: "formula";
-  formula: IFormula;
+	type: "formula";
+	formula: IFormula;
 }
 
 export type IFormula = {
-  expressionFirst: string;
-  expressionSecond: string;
-  operator: "<" | ">" | "<>" | "=";
-  variables: IVariable[];
+	expressionFirst: string;
+	expressionSecond: string;
+	operator: "<" | ">" | "<>" | "=";
+	variables: IVariable[];
 };
 
 export type IVariable = {
-  code: string;
-  value: {
-    questionID: number;
-    optionID?: number;
-    dimention0?: number;
-    dimention1?: number;
-    dimention2?: number;
-  };
+	code: string;
+	value: {
+		questionID: number;
+		optionID?: number;
+		dimention0?: number;
+		dimention1?: number;
+		dimention2?: number;
+	};
 };
 
 export interface IBaseRule {
-  docID: number;
-  title: string;
-  rootEvent: IEvent;
-  type:
-    | "pageTransitionRule"
-    | "surveyCompletionRule"
-    | "disqualificationRule"
-    | "visibilityQuestionRule"
-    | "logicalValidityCheckRule";
+	docID: number;
+	title: string;
+	rootEvent: IEvent;
+	type:
+		| "pageTransitionRule"
+		| "surveyCompletionRule"
+		| "disqualificationRule"
+		| "visibilityQuestionRule"
+		| "logicalValidityCheckRule";
 }
 // 'pageTransition'|'surveyCompletion'|'disqualification'|'visibilityQuestion'
 export interface IPageTransitionRule extends IBaseRule {
-  type: "pageTransitionRule";
-  pageID: number;
-  targetPageID: number;
+	type: "pageTransitionRule";
+	pageID: number;
+	targetPageID: number;
 }
 export interface ISurveyCompletionRule extends IBaseRule {
-  type: "surveyCompletionRule";
+	type: "surveyCompletionRule";
 }
 export interface IDisqualificationRule extends IBaseRule {
-  type: "disqualificationRule";
+	type: "disqualificationRule";
 }
 export interface IVisibilityQuestionRule extends IBaseRule {
-  type: "visibilityQuestionRule";
-  questionID: number;
-  visibleQuestionID: number;
+	type: "visibilityQuestionRule";
+	questionID: number;
+	visibleQuestionID: number;
 }
 export interface ILogicalValidityCheckRule extends IBaseRule {
-  type: "logicalValidityCheckRule";
-  pageID: number;
+	type: "logicalValidityCheckRule";
+	pageID: number;
 }
 
 // const oldRules = [
@@ -456,185 +460,185 @@ export interface ILogicalValidityCheckRule extends IBaseRule {
 // ];
 
 export type IRule =
-  | IPageTransitionRule
-  | ISurveyCompletionRule
-  | IDisqualificationRule
-  | IVisibilityQuestionRule
-  | ILogicalValidityCheckRule;
+	| IPageTransitionRule
+	| ISurveyCompletionRule
+	| IDisqualificationRule
+	| IVisibilityQuestionRule
+	| ILogicalValidityCheckRule;
 
 export type IVisibleRuleDict = {
-  [key: string]: IVisibilityQuestionRule;
+	[key: string]: IVisibilityQuestionRule;
 };
 
 export type IPageTransitionRuleDict = {
-  [key: string]: IPageTransitionRule[];
+	[key: string]: IPageTransitionRule[];
 };
 
 export type ILogicalValidityCheckRuleDict = {
-  [key: string]: { logicRule: ILogicalValidityCheckRule; status: boolean };
+	[key: string]: { logicRule: ILogicalValidityCheckRule; status: boolean };
 };
 
 export type IDependentsQuestionsLogicalValidity = {
-  [key: string]: ILogicalValidityCheckRule["docID"][];
+	[key: string]: ILogicalValidityCheckRule["docID"][];
 };
 
 export type IDependentsPagesLogicalValidity = {
-  [key: string]: ILogicalValidityCheckRule["docID"][];
+	[key: string]: ILogicalValidityCheckRule["docID"][];
 };
 
 export type ICheckingConfig = {
-  questionChecking: boolean;
-  logicalChecking: boolean;
-  disqualificationChecking: boolean;
-  completeChecking: boolean;
-  immediatelyComplete: boolean;
+	questionChecking: boolean;
+	logicalChecking: boolean;
+	disqualificationChecking: boolean;
+	completeChecking: boolean;
+	immediatelyComplete: boolean;
 };
 
 export type IResultCheckingRules = {
-  status: boolean;
-  deviationPageIndex: number;
+	status: boolean;
+	deviationPageIndex: number;
 };
 
 export type IModalMessageType = "greeting" | "cancelTransition" | "completion";
 
 export type IModalMessage =
-  | {
-      code: 101;
-      type: "greeting";
-    }
-  | {
-      code: 201;
-      type: "cancelTransition";
-    }
-  | {
-      code: 202;
-      type: "cancelTransition";
-    }
-  | {
-      code: 301;
-      type: "completion";
-    }
-  | {
-      code: 302;
-      type: "completion";
-    }
-  | {
-      code: 303;
-      type: "completion";
-    }
-  | { code: 401; type: "disqualification" };
+	| {
+			code: 101;
+			type: "greeting";
+	  }
+	| {
+			code: 201;
+			type: "cancelTransition";
+	  }
+	| {
+			code: 202;
+			type: "cancelTransition";
+	  }
+	| {
+			code: 301;
+			type: "completion";
+	  }
+	| {
+			code: 302;
+			type: "completion";
+	  }
+	| {
+			code: 303;
+			type: "completion";
+	  }
+	| { code: 401; type: "disqualification" };
 
 export type IStyles = {
-  globalStyle: {
-    brandColor: string;
-    background: {
-      color: string;
-    };
-  };
+	globalStyle: {
+		brandColor: string;
+		background: {
+			color: string;
+		};
+	};
 
-  componentsStyle: {
-    appBar: {
-      background: {
-        color: string;
-      };
-      font: {
-        size: number;
-        color: string;
-      };
-    };
-    progressBar: {
-      title: {
-        font: {
-          size: number;
-          color: string;
-        };
-      };
-      progress: {
-        strokeColor: string[];
-        trailColor: string;
-      };
-    };
-    question: {
-      background: {
-        color: string;
-      };
-      title: {
-        font: {
-          size: number;
-          color: string;
-        };
-      };
-      counter: {
-        font: {
-          size: number;
-          color: string;
-        };
-      };
-      border: {
-        size: number;
-        color: string;
-      };
-      table: {
-        firstColumnWidth: number;
-      };
-    };
+	componentsStyle: {
+		appBar: {
+			background: {
+				color: string;
+			};
+			font: {
+				size: number;
+				color: string;
+			};
+		};
+		progressBar: {
+			title: {
+				font: {
+					size: number;
+					color: string;
+				};
+			};
+			progress: {
+				strokeColor: string[];
+				trailColor: string;
+			};
+		};
+		question: {
+			background: {
+				color: string;
+			};
+			title: {
+				font: {
+					size: number;
+					color: string;
+				};
+			};
+			counter: {
+				font: {
+					size: number;
+					color: string;
+				};
+			};
+			border: {
+				size: number;
+				color: string;
+			};
+			table: {
+				firstColumnWidth: number;
+			};
+		};
 
-    questionGroup: {
-      background: {
-        color: string;
-      };
-      title: {
-        font: {
-          size: number;
-          color: string;
-        };
-        padding: string;
-      };
-      counter: {
-        font: {
-          size: number;
-          color: string;
-        };
-      };
-      border: {
-        size: number;
-        color: string;
-        radius: number;
-      };
-      elevation: number;
-      details: {
-        padding: string;
-      };
-    };
-  };
+		questionGroup: {
+			background: {
+				color: string;
+			};
+			title: {
+				font: {
+					size: number;
+					color: string;
+				};
+				padding: string;
+			};
+			counter: {
+				font: {
+					size: number;
+					color: string;
+				};
+			};
+			border: {
+				size: number;
+				color: string;
+				radius: number;
+			};
+			elevation: number;
+			details: {
+				padding: string;
+			};
+		};
+	};
 };
 
 export type IState = {
-  loading: boolean;
-  error: IError;
-  data: IParsedData | null;
-  location: ILocation;
-  firstLocationWithDeviation: ILocation;
-  params: IParams;
-  userAnswers: IUserAnswer;
-  slideMoveDirection: ISlideMoveDirection;
-  modalVisible: boolean;
-  modalMessage: IModalMessage;
-  visitedPageDocIDList: string[];
-  needScrolling: boolean;
-  // переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
-  visiblityRulesDict: IVisibleRuleDict;
-  pageTransitionRuleDict: IPageTransitionRuleDict;
-  logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
-  dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
-  dependentPagesDict: IDependentsPagesLogicalValidity;
-  targetPageTransitionRuleArr: string[];
-  disqualificationRuleArr: IDisqualificationRule[];
-  surveyCompletionRuleArr: ISurveyCompletionRule[];
-  pagesDict: IPagesDict;
-  pageMovementLogs: string[];
-  strictModeNavigation: boolean;
-  styles: IStyles;
-  timerTime: number;
-  showTimer: boolean;
+	loading: boolean;
+	error: IError;
+	data: IParsedData | null;
+	location: ILocation;
+	firstLocationWithDeviation: ILocation;
+	params: IParams;
+	userAnswers: IUserAnswer;
+	slideMoveDirection: ISlideMoveDirection;
+	modalVisible: boolean;
+	modalMessage: IModalMessage;
+	visitedPageDocIDList: string[];
+	needScrolling: boolean;
+	// переименовать visiblityRulesDict --> visibilityQuestionRuleDuct
+	visiblityRulesDict: IVisibleRuleDict;
+	pageTransitionRuleDict: IPageTransitionRuleDict;
+	logicalValidityCheckRuleDict: ILogicalValidityCheckRuleDict;
+	dependentQuestionsDict: IDependentsQuestionsLogicalValidity;
+	dependentPagesDict: IDependentsPagesLogicalValidity;
+	targetPageTransitionRuleArr: string[];
+	disqualificationRuleArr: IDisqualificationRule[];
+	surveyCompletionRuleArr: ISurveyCompletionRule[];
+	pagesDict: IPagesDict;
+	pageMovementLogs: string[];
+	strictModeNavigation: boolean;
+	styles: IStyles;
+	timerTime: number;
+	showTimer: boolean;
 };
