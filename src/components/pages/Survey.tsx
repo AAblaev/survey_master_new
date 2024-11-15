@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -43,6 +44,8 @@ const Survey: React.FC<ISurveyProps> = ({
 		"0%": progress.strokeColor[0],
 		"100%": progress.strokeColor[1],
 	};
+
+	const { t } = useTranslation();
 
 	return (
 		<div css={pageCss}>
@@ -108,13 +111,13 @@ const Survey: React.FC<ISurveyProps> = ({
 								<AccordionDetails>
 									<div>
 										<div className="questionSize">
-											<div className="question">{totalQuestions}: </div>
+											<div className="question">{totalQuestions}:</div>
 											<div css={questionNumberCss(brandColor)}>
 												{allQuestionCount}
 											</div>
 										</div>
 										<div className="questionSize">
-											<div className="question">{requiredQuestions}: </div>
+											<div className="question">{requiredQuestions}:</div>
 											<div css={questionNumberCss(brandColor)}>
 												{requiredQuestionsCount}
 											</div>

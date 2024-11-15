@@ -35,6 +35,7 @@ export type IData = {
 		docID: number;
 		jsonStyle: IStyles;
 	};
+	language: string;
 };
 
 export type IPage = {

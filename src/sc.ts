@@ -2,14 +2,14 @@ import { css } from "@emotion/react";
 import { DEFAULT_BACKGROUND_COLOR, PRIMARY_COLOR } from "./consts/const";
 
 export const desctopCss = (backgroundColor: string) => css`
-  background-color: ${backgroundColor};
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  align-items: center;
+	background-color: ${backgroundColor};
+	width: 100%;
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+	align-items: center;
 `;
 //
 // {docID === EXTRA_ANSWER.OTHER ? otherPlaceholder : title}
@@ -18,152 +18,153 @@ export const desctopCss = (backgroundColor: string) => css`
 // </IconButton>
 
 export const progressWrapperCss = (
-  backgroundColor: string,
-  isShowProgressbar: boolean
+	backgroundColor: string,
+	isShowProgressbar: boolean
 ) => css`
-  width: 100%;
-  height: ${isShowProgressbar ? "55px" : "0px"};
+	width: 100%;
+	height: ${isShowProgressbar ? "55px" : "0px"};
 
-  position: fixed;
+	position: fixed;
 
-  background-color: ${backgroundColor};
-  z-index: 3;
+	background-color: ${backgroundColor};
+	z-index: 3;
 
-  top: 56px;
+	top: 56px;
 
-  @media (min-width: 768px) {
-    top: 64px;
-  }
+	@media (min-width: 768px) {
+		top: 64px;
+	}
 `;
 
 export const indentCss = (isShowProgressbar: boolean) => css`
-  height: ${isShowProgressbar ? "55px" : "15px"};
+	height: ${isShowProgressbar ? "55px" : "15px"};
 `;
 
 export const contentCss = css`
-  flex: 1 0 auto;
-  width: 100%;
-  margin-top: 56px;
-  margin-bottom: 56px;
-  height: calc(100% - 112px);
+	flex: 1 0 auto;
+	width: 100%;
+	margin-top: 56px;
+	margin-bottom: 56px;
+	height: calc(100% - 112px);
 
-  @media (min-width: 768px) {
-    margin-top: 64px;
-    margin-bottom: 0px;
-    height: calc(100% - 128px);
-  }
+	@media (min-width: 768px) {
+		margin-top: 64px;
+		margin-bottom: 0px;
+		height: calc(100% - 128px);
+	}
 `;
 
 export const homeButtonCss = css`
-  // background-color: #3b424a;
-  &.MuiButton-root {
-    display: flex;
-    justify-content: space-between;
-    white-space: nowrap;
-    font-size: inherit;
-  }
+	// background-color: #3b424a;
+	&.MuiButton-root {
+		display: flex;
+		justify-content: space-between;
+		white-space: nowrap;
+		font-size: inherit;
+	}
 `;
 
 export const surveyNameCss = (showAnyway: boolean) => css`
-  display: ${showAnyway ? "block" : "none"};
-  text-transform: uppercase;
+	display: ${showAnyway ? "block" : "none"};
+	text-transform: uppercase;
 
-  &.MuiTypography-body1 {
-    font-weight: 600;
-    font-size: inherit;
-  }
+	&.MuiTypography-body1 {
+		font-weight: 600;
+		font-size: inherit;
+	}
 
-  &.MuiTypography-root {
-    margin-right: auto;
-  }
-  @media (min-width: 768px) {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+	&.MuiTypography-root {
+		margin-right: auto;
+	}
+	@media (min-width: 768px) {
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 `;
 
 export const onlyDesctopButtonCss = css`
-  &.MuiButtonBase-root {
-    display: none;
-  }
+	&.MuiButtonBase-root {
+		display: none;
+	}
 
-  @media (min-width: 768px) {
-    &.MuiButtonBase-root {
-      display: inline-flex;
-    }
-  }
+	@media (min-width: 768px) {
+		&.MuiButtonBase-root {
+			display: inline-flex;
+		}
+	}
 `;
 
 export const transitionGroupCss = css`
-  // padding-bottom: 40px;
-  & > div {
-    box-sizing: border-box;
-  }
+	// padding-bottom: 40px;
+	& > div {
+		box-sizing: border-box;
+	}
 `;
 
 export const modalHeaderWrapperCss = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 `;
 
 export const gridContainerCss = css`
-  height: calc(100%-20px);
-  flex-grow: 1;
-  position: relative;
-  display: grid;
-  gap: 2%;
-  grid-template-columns: 3% 90% 3%;
-  grid-template-rows: auto;
-  margin-top: 20px;
+	height: calc(100%-20px);
+	flex-grow: 1;
+	position: relative;
+	display: grid;
+	gap: 2%;
+	grid-template-columns: 3% 90% 3%;
+	grid-template-rows: auto;
+	margin-top: 20px;
 
-  @media (min-width: 576px) {
-    grid-template-columns: 3% 90% 3%;
-  }
+	@media (min-width: 576px) {
+		grid-template-columns: 3% 90% 3%;
+	}
 
-  @media (min-width: 768px) {
-    grid-template-columns: 8% 80% 8%;
-  }
+	@media (min-width: 768px) {
+		grid-template-columns: 8% 80% 8%;
+	}
 
-  @media (min-width: 992px) {
-    grid-template-columns: 13% 70% 13%;
-  }
+	@media (min-width: 992px) {
+		grid-template-columns: 13% 70% 13%;
+	}
 
-  @media (min-width: 1200px) {
-    grid-template-columns: 18% 60% 18%;
-  }
+	@media (min-width: 1200px) {
+		grid-template-columns: 18% 60% 18%;
+	}
 `;
 
 export const borderCss = (backgroundColor: string) => css`
-  background-color: ${backgroundColor};
-  z-index: 1;
+	background-color: ${backgroundColor};
+	z-index: 1;
 `;
 
 export const footerCss = (brandColor: string) => css`
-  width: 100%;
-  height: 56px;
-  background-color: ${brandColor};
-  position: fixed;
-  top: auto;
-  bottom: 0;
-  left: 0;
-  right: auto;
-  z-index: 3000;
-  @media (min-width: 768px) {
-    display: none;
-  }
+	width: 100%;
+	height: 56px;
+	background-color: ${brandColor};
+	position: fixed;
+	top: auto;
+	bottom: 0;
+	left: 0;
+	right: auto;
+	z-index: 3000;
+	@media (min-width: 768px) {
+		display: none;
+	}
 `;
 
 export const progressQuestionCountCss = (
-  fontSize: number,
-  color: string
+	fontSize: number,
+	color: string
 ) => css`
-  margin-top: 20px;
-  font-size: ${fontSize}px;
-  font-weight: 500;
-  color: ${color};
+	margin-top: 20px;
+	font-size: ${fontSize}px;
+	font-weight: 500;
+	color: ${color};
+	text-transform: uppercase;
 `;
 
 //

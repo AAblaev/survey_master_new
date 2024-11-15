@@ -1,5 +1,6 @@
 import React from "react";
 import { Progress } from "antd";
+// import { useTranslation } from "react-i18next";
 import Typography from "@mui/material/Typography";
 import { DEFAULT_STROKE_COLOR, DEFAULT_TRAIL_COLOR } from "../../consts/const";
 import { useSelector } from "react-redux";
@@ -27,13 +28,14 @@ const ProgressLinear: React.FC<IProgressLinearProps> = ({
 	const {
 		progressBarStyle: { progress: progressStyle, title },
 	} = useSelector(getProgressBarStyle);
+	// const { t } = useTranslation();
 
 	const strokeColor = {
 		"0%": progressStyle.strokeColor[0],
 		"100%": progressStyle.strokeColor[1],
 	};
 	const progress = Math.floor((allQuestionsDoneCount / allQuestionCount) * 100);
-	const questionCount = `ПРОЙДЕНО: ${allQuestionsDoneCount} из ${allQuestionCount} (${progress}%)`;
+	const questionCount = `${progressbarCaption}: ${allQuestionsDoneCount} / ${allQuestionCount} (${progress}%)`;
 	return (
 		<>
 			{isShowQuestionsCount && (

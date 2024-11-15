@@ -26,6 +26,7 @@ import {
 	START_SURVEY,
 } from "../redux/types";
 import { getParams } from "./utils";
+import i18n from "../lang/i18n";
 
 export type IFetchResult = {
 	data: IData;
@@ -71,8 +72,10 @@ export function* fetchSurveyData({
 				notTheFirstTime: notTheFirstTime && correctUid,
 			})
 		);
-		const { isShowGreetingsPage } = data;
+		const { isShowGreetingsPage, language } = data;
 		const needEmediatlyStartSurvey = !isShowGreetingsPage && !notTheFirstTime;
+		yield call([i18n, i18n.changeLanguage], language);
+		// yield call([i18n, i18n.changeLanguage], "en");
 
 		yield put(setLoading(false));
 		if (needEmediatlyStartSurvey) {
