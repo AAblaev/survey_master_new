@@ -1,145 +1,188 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import ErrorIcon from "@mui/icons-material/Error";
 import { IConfig } from "../../types";
 import { limitMessageCss, limitMessageWrapperCss } from "../questions/sc";
 import { css } from "@emotion/react";
-import { getDateRangeMessage } from "../../utils/dateParser";
+// import { getDateRangeMessage } from "../../utils/dateParser";
 
 type IExtraMessageProps = {
-  config: IConfig;
-  needCorrect: boolean;
-  isReqRowAndColCheckSuccess: boolean;
+	config: IConfig;
+	needCorrect: boolean;
+	isReqRowAndColCheckSuccess: boolean;
 };
 
 export const alertCss = css`
-  position: absolute;
-  top: -10px;
-  right: -40px;
-  z-index: 1000000000;
+	position: absolute;
+	top: -10px;
+	right: -40px;
+	z-index: 1000000000;
 `;
 
 const ExtraMessage: React.FC<IExtraMessageProps> = ({
-  config,
-  needCorrect,
-  isReqRowAndColCheckSuccess,
+	config,
+	needCorrect,
+	isReqRowAndColCheckSuccess,
 }) => {
-  const {
-    isLimited,
-    isLimitedValue,
-    limit,
-    limitValue,
-    dataType,
-    dateType,
-    requiredRowsCount,
-    requiredColunmsCount,
-    simpleType,
-    options,
-    isRequired,
-    isSimpleDateLimit,
-    simpleDateMax,
-    simpleDateMin,
-  } = config;
+	const { t } = useTranslation();
+	const {
+		isLimited,
+		isLimitedValue,
+		limit,
+		limitValue,
+		dataType,
+		dateType,
+		requiredRowsCount,
+		requiredColunmsCount,
+		simpleType,
+		options,
+		isRequired,
+		isSimpleDateLimit,
+		simpleDateMax,
+		simpleDateMin,
+	} = config;
 
-  // isRequired
+	// isRequired
 
-  const getExtraText = () => {
-    let result = "";
+	const getDateRangeMessage = (dateType: number) => {
+		const today = new Date();
+		const yesterday = new Date(today);
+		yesterday.setDate(today.getDate() - 1);
+		const tomorrow = new Date(today);
+		tomorrow.setDate(today.getDate() + 1);
 
-    if (simpleType === "integer") {
-      result += `Текст ответа должен быть целым числом. `;
-    }
-    if (simpleType === "float") {
-      result += `Текст ответа должен быть числом в формате 0.00. `;
-    }
+		switch (dateType) {
+			case 1: {
+				return t("extraMessagePastDateRequired");
+			}
+			case 2: {
+				return t("extraMessagePastOrTodayDateRequired");
+			}
+			case 3: {
+				return t("extraMessageFutureDateRequired");
+			}
+			case 4: {
+				return t("extraMessageFutureOrTodayDateRequired");
+			}
+			case 0:
+			default:
+				return "";
+		}
+	};
 
-    if (simpleType === "datetime") {
-      result += ``;
-    }
-    if (isLimited) {
-      result += `Длина текста должна составлять не менее ${limit?.min} и не более ${limit?.max} символов. `;
-    }
-    if (isLimitedValue) {
-      result += `Значение числа должно быть не менее ${limitValue?.min} и не более ${limitValue?.max}. `;
-    }
+	const getExtraText = () => {
+		let result = "";
 
-    if (isSimpleDateLimit) {
-      result += `Пожалуйста, выберите дату в диапазоне с ${
-        simpleDateMin!.split(" ")[0]
-      } по ${simpleDateMax!.split(" ")[0]}. `;
-    } else {
-      result += getDateRangeMessage(dateType as number);
-    }
+		if (simpleType === "integer") {
+			result += t("extraMessageInteger");
+		}
+		if (simpleType === "float") {
+			result += t("extraMessageFloat");
+		}
 
-    if (dataType === "freelist" && isRequired) {
-      const rowsCount = options!.filter((option) => option.dimension === 0)
-        .length;
+		if (simpleType === "datetime") {
+			result += ``;
+		}
+		if (isLimited) {
+			result += t("extraMessageLimited", {
+				min: limit?.min,
+				max: limit?.max,
+			});
+		}
+		if (isLimitedValue) {
+			result += t("extraMessageLimitedValue", {
+				min: limitValue?.min,
+				max: limitValue?.max,
+			});
+		}
 
-      const allRowsAreRequired =
-        requiredRowsCount === 0 || requiredRowsCount === rowsCount;
+		if (isSimpleDateLimit) {
+			result += t("extraMessageDateLimited", {
+				startDate: simpleDateMin!.split(" ")[0],
+				endDate: simpleDateMax!.split(" ")[0],
+			});
+		} else {
+			result += getDateRangeMessage(dateType as number);
+		}
 
-      result += allRowsAreRequired
-        ? `Необходимо ответить на все строки. `
-        : `Минимальное количество строк, на которые нужно дать ответ - ${requiredRowsCount}.`;
-    }
+		if (dataType === "freelist" && isRequired) {
+			const rowsCount = options!.filter(
+				option => option.dimension === 0
+			).length;
 
-    if (dataType === "matrix" && isRequired) {
-      const columnsCount = options!.filter((option) => option.dimension === 1)
-        .length;
+			const allRowsAreRequired =
+				requiredRowsCount === 0 || requiredRowsCount === rowsCount;
 
-      const rowsCount = options!.filter((option) => option.dimension === 0)
-        .length;
+			result += allRowsAreRequired
+				? t("extraMessageRequiredRows")
+				: t("extraMessageRequiredRows", { rows: requiredRowsCount });
+		}
 
-      const allColumnsAreRequired =
-        requiredColunmsCount === 0 || requiredColunmsCount === columnsCount;
-      const allRowsAreRequired =
-        requiredRowsCount === 0 || requiredRowsCount === rowsCount;
+		if (dataType === "matrix" && isRequired) {
+			const columnsCount = options!.filter(
+				option => option.dimension === 1
+			).length;
 
-      if (allColumnsAreRequired && allRowsAreRequired) {
-        result += `Необходимо ответить на все строки и все колонки. `;
-        return result;
-      }
+			const rowsCount = options!.filter(
+				option => option.dimension === 0
+			).length;
 
-      if (requiredRowsCount === 1 && requiredColunmsCount === 1) {
-        result += `Необходимо ответить минимум на 1 строку.`;
-        return result;
-      }
+			const allColumnsAreRequired =
+				requiredColunmsCount === 0 || requiredColunmsCount === columnsCount;
+			const allRowsAreRequired =
+				requiredRowsCount === 0 || requiredRowsCount === rowsCount;
 
-      if (requiredRowsCount === 1) {
-        result += allColumnsAreRequired
-          ? `Необходимо ответить на все колонки.`
-          : `Минимальное количество колонок, на которые нужно дать ответ - ${requiredColunmsCount}`;
-        return result;
-      }
+			if (allColumnsAreRequired && allRowsAreRequired) {
+				result += t("extraMessageRequiredRowsAndColumns");
+				return result;
+			}
 
-      if (requiredColunmsCount === 1) {
-        result += allRowsAreRequired
-          ? `Необходимо ответить на все строки.`
-          : `Минимальное количество строк, на которые нужно дать ответ - ${requiredRowsCount}`;
-        return result;
-      }
-    }
-    return result;
-  };
+			if (requiredRowsCount === 1 && requiredColunmsCount === 1) {
+				result += t("extraMessageRequiredOneRowsMatrix");
+				return result;
+			}
 
-  const text = getExtraText();
-  if (text === "") return null;
+			if (requiredRowsCount === 1) {
+				result += allColumnsAreRequired
+					? t("extraMessageRequiredAllColumsMatrix")
+					: t("extraMessageRequiredMinimumColumsMatrix", {
+							columns: requiredColunmsCount,
+					  });
+				return result;
+			}
 
-  return (
-    <div css={limitMessageWrapperCss}>
-      <div css={limitMessageCss}>{text}</div>
-      {needCorrect && !isReqRowAndColCheckSuccess && (
-        <div css={alertCss}>
-          <Tooltip title={"проверьте выполнение условия"}>
-            <IconButton>
-              <ErrorIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
-      )}
-    </div>
-  );
+			if (requiredColunmsCount === 1) {
+				result += allRowsAreRequired
+					? t("extraMessageRequiredAllRowsMatrix")
+					: t("extraMessageRequiredMinimumRowsMatrix", {
+							rows: requiredRowsCount,
+					  });
+				return result;
+			}
+		}
+		return result;
+	};
+
+	const text = getExtraText();
+	if (text === "") return null;
+
+	return (
+		<div css={limitMessageWrapperCss}>
+			<div css={limitMessageCss}>{text}</div>
+			{needCorrect && !isReqRowAndColCheckSuccess && (
+				<div css={alertCss}>
+					<Tooltip title={t("extraMessageTooltip")}>
+						<IconButton>
+							<ErrorIcon />
+						</IconButton>
+					</Tooltip>
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default ExtraMessage;

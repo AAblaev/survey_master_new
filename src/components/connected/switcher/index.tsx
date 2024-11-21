@@ -2,7 +2,6 @@ import React from "react";
 import { Dispatch } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { useTranslation } from "react-i18next";
-
 import { Button, IconButton } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Nav from "../../common/Nav";
