@@ -51,5 +51,13 @@
 	"extraMessageRequiredMinimumColumsMatrix": "The minimum number of columns that must be answered is {{columns}}.",
 	"extraMessageRequiredAllRowsMatrix": "All rows must be answered.",
 	"extraMessageRequiredMinimumRowsMatrix": "The minimum number of rows that must be answered is {{rows}}.",
-	"extraMessageTooltip": "Please check the condition."
+	"extraMessageTooltip": "Please check the condition.",
+	"validMessageEmpty": "empty",
+	"validMessageDateFormat": "valid format mm.dd.yyyy",
+	"validMessageInteger": "the answer must be an integer",
+	"validMessageFloat": "the answer must be a number",
+	"validMessageIntegerMin": "value cannot be less than {{value}}",
+	"validMessageIntegerMax": "value cannot be greater than {{value}}",
+	"validMessageStringMin": "the number of characters in the answer cannot be less than {{value}}",
+	"validMessageStringMax": "the number of characters in the answer cannot be more than {{value}}"
 }

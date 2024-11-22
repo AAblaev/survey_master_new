@@ -35,7 +35,7 @@ export type IData = {
 		docID: number;
 		jsonStyle: IStyles;
 	};
-	language: string;
+	language: ILanguage;
 };
 
 export type IPage = {
@@ -170,6 +170,7 @@ export type IDataType =
 export type IValidationResult = {
 	isValid: boolean;
 	message: string;
+	params?: { [key: string]: string };
 };
 
 export type IFileProps = {
@@ -201,11 +202,11 @@ export type IStatus = "success" | "error";
 export type IAnswer = {
 	questionID: number;
 	values: IValue[];
-	alert?: {
-		showAlert: boolean;
-		alertMessage: string;
-		status: IStatus;
-	};
+	// alert?: {
+	// 	showAlert: boolean;
+	// 	alertMessage: string;
+	// 	status: IStatus;
+	// };
 };
 
 export type IBranchRule = {};
@@ -643,3 +644,5 @@ export type IState = {
 	timerTime: number;
 	showTimer: boolean;
 };
+
+export type ILanguage = "en" | "ru";

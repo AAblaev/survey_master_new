@@ -1,33 +1,40 @@
 import dayjs from "dayjs";
+import { ILanguage } from "../types";
 
-export const dateParser = (date: Date | null) => {
+export const dateParser = (date: Date | null, locale: ILanguage) => {
 	if (!date) return null;
 	const dd = date.getDate();
 	const dd_str = dd < 10 ? "0" + dd : String(dd);
 	const mm = date.getMonth() + 1;
 	const mm_str = mm < 10 ? "0" + mm : String(mm);
 	const yy = date.getFullYear();
+	if (locale === "en") {
+		return mm_str + "." + dd_str + "." + yy;
+	}
 	return dd_str + "." + mm_str + "." + yy;
 };
 
-export const dateParserForDayjs = (date: string | null) => {
+export const dateParserForDayjs = (date: string | null, locale: ILanguage) => {
 	if (!date) return null;
 	const [day, month, year] = date.split(".");
-	const date_str = `${year}-${month}-${day}`;
+	const date_str =
+		locale === "en" ? `${year}-${day}-${month}` : `${year}-${month}-${day}`;
 	return dayjs(date_str);
 };
 
 export const getDateRange = (payload: {
 	isSimpleDateLimit?: boolean;
 	dateType: number;
+	locale: ILanguage;
 	simpleDateMax?: string;
 	simpleDateMin?: string;
 }) => {
-	const { isSimpleDateLimit, dateType, simpleDateMax, simpleDateMin } = payload;
+	const { isSimpleDateLimit, dateType, simpleDateMax, simpleDateMin, locale } =
+		payload;
 	if (isSimpleDateLimit) {
 		return [
-			dateParserForDayjs(simpleDateMin!.split(" ")[0]),
-			dateParserForDayjs(simpleDateMax!.split(" ")[0]),
+			dateParserForDayjs(simpleDateMin!.split(" ")[0], locale),
+			dateParserForDayjs(simpleDateMax!.split(" ")[0], locale),
 		];
 	}
 

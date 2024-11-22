@@ -51,5 +51,13 @@
 	"extraMessageRequiredMinimumColumsMatrix": "Минимальное количество колонок, на которые нужно дать ответ - {{columns}}",
 	"extraMessageRequiredAllRowsMatrix": "Необходимо ответить на все строки.",
 	"extraMessageRequiredMinimumRowsMatrix": "Минимальное количество строк, на которые нужно дать ответ - {{rows}}",
-	"extraMessageTooltip": "проверьте выполнение условия"
+	"extraMessageTooltip": "проверьте выполнение условия",
+	"validMessageEmpty": "пусто",
+	"validMessageDateFormat": "допустимый формат дд.мм.гггг",
+	"validMessageInteger": "ответ должен быть целым числом",
+	"validMessageFloat": "ответ должен быть числом",
+	"validMessageIntegerMin": "значение не может быть меньше {{value}}",
+	"validMessageIntegerMax": "значение не может быть больше {{value}}",
+	"validMessageStringMin": "количесво символов в ответе не может быть меньше {{value}}",
+	"validMessageStringMax": "количесво символов в ответе не может быть больше {{value}}"
 }
