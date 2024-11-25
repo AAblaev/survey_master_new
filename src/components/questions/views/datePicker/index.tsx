@@ -1,18 +1,13 @@
 import React from "react";
 import { ruRU } from "@mui/x-date-pickers/locales";
-import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker as MuiDatePicker } from "@mui/x-date-pickers/DatePicker";
-import IconButton from "@mui/material/IconButton";
-import ErrorIcon from "@mui/icons-material/Error";
-import Tooltip from "@mui/material/Tooltip";
 import { IAnswer } from "../../../../types";
 import { validation } from "../../../../utils/validation";
 import { alertCss, textFieldWrapperCss } from "../free-list";
-import { css } from "@emotion/react";
 import {
 	dateParser,
 	dateParserForDayjs,
@@ -21,7 +16,6 @@ import {
 import { IViewComponentProps } from "../..";
 import { FORMAT_MASK_EN, FORMAT_MASK_RU } from "./const";
 import ErrorComponent from "../../../common/ErrorComponent";
-import { message } from "antd";
 import { datePickerCss } from "./sc";
 
 const ruLocale =
@@ -35,12 +29,17 @@ const DatePicker: React.FC<IViewComponentProps> = ({
 }) => {
 	// const locale = "en";
 	// console.log("DatePicker locale", locale);
-	const { t } = useTranslation();
 
 	const { docID, config } = question;
 	const { isSimpleDateLimit, simpleDateMax, simpleDateMin, dateType } = config;
 	// const { simpleDateMax, simpleDateMin, dateType } = config;
 	// const isSimpleDateLimit = false;
+	// console.log("_________________________________________");
+	// console.log("isSimpleDateLimit", isSimpleDateLimit);
+	// console.log("simpleDateMin", simpleDateMin);
+	// console.log("simpleDateMax", simpleDateMax);
+	// console.log("dateType", dateType);
+
 	const userAnswerExist = userAnswer && userAnswer.values.length > 0;
 	const showAlert =
 		userAnswerExist &&
@@ -71,6 +70,10 @@ const DatePicker: React.FC<IViewComponentProps> = ({
 		locale,
 	});
 
+	// console.log("minDate", minDate);
+	// console.log("maxDate", maxDate);
+	// console.log("_________________________________________");
+
 	const onChange = (newValue: dayjs.Dayjs | null) => {
 		const value_str =
 			dateParser(newValue ? newValue.toDate() : null, locale) ?? "";
@@ -85,8 +88,8 @@ const DatePicker: React.FC<IViewComponentProps> = ({
 			value: value_str,
 			simpleType: "datetime",
 			isSimpleDateLimit,
-			simpleDateMin,
-			simpleDateMax,
+			simpleDateMin: (minDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
+			simpleDateMax: (maxDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
 			locale,
 		});
 
@@ -133,8 +136,8 @@ const DatePicker: React.FC<IViewComponentProps> = ({
 			value,
 			simpleType: "datetime",
 			isSimpleDateLimit,
-			simpleDateMin,
-			simpleDateMax,
+			simpleDateMin: (minDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
+			simpleDateMax: (maxDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
 			locale,
 		});
 

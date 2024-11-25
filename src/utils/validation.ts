@@ -31,8 +31,8 @@ export const isValidDate = (dateString: string, locale: ILanguage): boolean => {
 
 	const year: number = parseInt(parts[2], 10);
 	const date: Date = new Date(year, month - 1, day);
-	console.log("dateString", dateString);
-	console.log("date", date);
+	// console.log("dateString", dateString);
+	// console.log("date", date);
 
 	return (
 		date.getDate() === day &&
@@ -93,6 +93,9 @@ export const validation = (payload: {
 		locale,
 	} = payload;
 
+	// console.log("simpleDateMin!!!", simpleDateMin);
+	// console.log("simpleDateMax!!!", simpleDateMax);
+
 	// check empty value
 	if (value === "") return { isValid: false, message: "validMessageEmpty" };
 
@@ -147,7 +150,7 @@ export const validation = (payload: {
 
 	// check out of range datatime
 
-	if (isSimpleDateLimit && simpleType === "datetime") {
+	if (simpleType === "datetime") {
 		const valueDateArr = value.split(".");
 		const valueDate = new Date(
 			Number(valueDateArr[2]),
