@@ -93,8 +93,8 @@ export const validation = (payload: {
 		locale,
 	} = payload;
 
-	// console.log("simpleDateMin!!!", simpleDateMin);
-	// console.log("simpleDateMax!!!", simpleDateMax);
+	// console.log("value", value);
+	// console.log("simpleType", simpleType);
 
 	// check empty value
 	if (value === "") return { isValid: false, message: "validMessageEmpty" };

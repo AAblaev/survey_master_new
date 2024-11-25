@@ -7,14 +7,8 @@ import "dayjs/locale/ru";
 import { ruRU } from "@mui/x-date-pickers/locales";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
-import ErrorIcon from "@mui/icons-material/Error";
-import Tooltip from "@mui/material/Tooltip";
-import { REGEXP_DICT, validation } from "../../../../utils/validation";
+import { validation } from "../../../../utils/validation";
 import { IViewComponentProps } from "../..";
-import { css } from "@emotion/react";
 import {
 	dateParser,
 	dateParserForDayjs,
@@ -63,8 +57,8 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
 			value: value_str,
 			simpleType: "datetime",
 			isSimpleDateLimit,
-			simpleDateMin,
-			simpleDateMax,
+			simpleDateMin: (minDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
+			simpleDateMax: (maxDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
 			locale,
 		});
 
@@ -143,8 +137,8 @@ const DatePickerListView: React.FC<IViewComponentProps> = ({
 			value,
 			simpleType: "datetime",
 			isSimpleDateLimit: true,
-			simpleDateMin,
-			simpleDateMax,
+			simpleDateMin: (minDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
+			simpleDateMax: (maxDate as dayjs.Dayjs).format("DD.MM.YYYY HH:mm:ss"),
 			locale,
 		});
 
