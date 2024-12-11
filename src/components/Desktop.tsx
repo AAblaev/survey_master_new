@@ -82,6 +82,7 @@ const Desktop: React.FC<IDesktop> = ({
 		byTimerPage,
 		disqualificationPage,
 		name,
+		linkDescription,
 		isLimitTimeForCompletion,
 		isShowQuestionsCount,
 		buttonMoveCaption,
@@ -165,7 +166,7 @@ const Desktop: React.FC<IDesktop> = ({
 				<Switcher />
 				{isShowSurveyName && (
 					<Typography css={surveyNameCss(pathName === "survey")}>
-						{name}
+						{`${name} | ${linkDescription}`}
 					</Typography>
 				)}
 

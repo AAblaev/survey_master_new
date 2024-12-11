@@ -20,6 +20,7 @@ export type IData = {
 	completionPage: string;
 	limitTime: number;
 	limitTimeLeft: number;
+	linkDescription: string;
 	pages: IPage[];
 	buttonBackCaption: string;
 	buttonFinishCaption: string;
